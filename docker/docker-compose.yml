@@ -1,0 +1,98 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: kadsamhsa-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - moodle_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - moodle
+
+  moodle-php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: kadsamhsa-php
+    restart: unless-stopped
+    # php-fpm master must run as root; pool uses www-data
+    volumes:
+      - ../moodle:/var/www/html
+      - moodledata:/var/www/moodledata
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    networks:
+      - moodle
+
+  moodle-web:
+    image: nginx:1.27-alpine
+    container_name: kadsamhsa-web
+    restart: unless-stopped
+    ports:
+      - "${MOODLE_HTTP_PORT:-8080}:80"
+    volumes:
+      - ../moodle:/var/www/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - moodle-php
+    networks:
+      - moodle
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: kadsamhsa-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+    networks:
+      - moodle
+
+  cron:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: kadsamhsa-cron
+    restart: unless-stopped
+    user: "33:33"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Moodle cron sidecar starting (every 60s)..."
+        while true; do
+          php /var/www/html/admin/cli/cron.php || true
+          sleep 60
+        done
+    volumes:
+      - ../moodle:/var/www/html
+      - moodledata:/var/www/moodledata
+    depends_on:
+      db:
+        condition: service_healthy
+      moodle-php:
+        condition: service_started
+    networks:
+      - moodle
+
+volumes:
+  moodle_db:
+    name: kadsamhsa_moodle_db
+  moodledata:
+    name: kadsamhsa_moodledata
+
+networks:
+  moodle:
+    name: kadsamhsa_moodle

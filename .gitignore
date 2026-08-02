@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+*.pem
+*.key
+credentials.json
+secrets/
+
+# Moodle core (cloned locally via scripts/clone-moodle.sh)
+moodle/
+
+# Moodle data (local path if used outside Docker volume)
+moodledata/
+moodledata_*/
+
+# Docker leftovers
+docker/data/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Composer / Node (if used later for tooling)
+vendor/
+node_modules/

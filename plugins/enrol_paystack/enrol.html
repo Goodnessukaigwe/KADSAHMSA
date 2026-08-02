@@ -1,0 +1,52 @@
+<div class="mdl-align">
+    <h3><?php echo $instancename; ?></h3>
+    <p><?php echo $message; ?></p>
+    <p><b><?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?></b></p>
+    <div>
+        <?php
+            $data = [
+                "cmd" => "_xclick",
+                "charset" => "utf-8",
+                "item_name" => s($coursefullname),
+                "item_name" => s($coursefullname),
+                "item_number" => s($courseshortname),
+                "quantity" => "1",
+                "on0" => get_string("user"),
+                "os0" => s($userfullname),
+                "custom" => "{$USER->id}-{$course->id}-{$instance->id}",
+                "currency_code" => $instance->currency,
+                "amount" => $cost,
+                "for_auction" => "false",
+                "no_note" => "1",
+                "no_shipping" => "1" ,
+                "rm" => "2",
+                "first_name" => s($userfirstname),
+                "last_name" => s($userlastname),
+                "email" => s($useremail),
+                "reference" => $reference,
+                "custom_fields" => $customfields
+            ];
+        ?>
+        <form method="post" action="<?php echo "$CFG->wwwroot/enrol/paystack/verify.php"?>">
+            <?php
+                foreach ($data as $key => $value) {
+                    echo '<input type="hidden" name="' . $key . '" value="' . $value . '" />';
+                }
+            ?>
+            <input type="hidden" name="charset" value="utf-8" />
+            <input type="hidden" name="custom" value="<?php echo "{$USER->id}-{$course->id}-{$instance->id}" ?>" />
+
+            <script src="https://js.paystack.co/v1/inline.js" 
+                data-key="<?php echo $publickey; ?>"
+                data-ref="<?php echo $reference; ?>" 
+                data-firstname="<?php echo s($userfirstname) ?>"
+                data-lastname="<?php echo s($userlastname) ?>"
+                data-email="<?php p($useremail) ?>"
+                data-currency="<?php p($instance->currency) ?>" 
+                data-amount="<?php p($cost * 100) ?>"
+                data-metadata='<?php echo json_encode($data) ?>' 
+                data-locale="<?php echo current_language(); ?>">
+            </script>
+        </form>
+
+    </div>
