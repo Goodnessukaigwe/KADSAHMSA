@@ -1,0 +1,28 @@
+{{!
+    @template core/signup_form_layout
+
+    KADSAMHSA two-column signup shell wrapping the Moodle mform.
+}}
+<div class="kadsamhsa-signup">
+    <div class="kadsamhsa-signup__media" aria-hidden="true">
+        {{#signinimageurl}}
+            <img src="{{{signinimageurl}}}" alt="" class="kadsamhsa-signup__media-img">
+        {{/signinimageurl}}
+        {{^signinimageurl}}
+            <span class="kadsamhsa-signup__media-label">{{#str}}signupmediaplaceholder, theme_kadsamhsa{{/str}}</span>
+        {{/signinimageurl}}
+    </div>
+
+    <div class="kadsamhsa-signup__form-col">
+        <h1 class="kadsamhsa-signup__title">{{#str}}signupcreateaccount, theme_kadsamhsa{{/str}}</h1>
+
+        <div class="kadsamhsa-signup__form">
+            {{{formhtml}}}
+        </div>
+
+        <p class="kadsamhsa-signup__login-prompt">
+            {{#str}}signupalreadyhaveaccount, theme_kadsamhsa{{/str}}
+            <a href="{{{loginurl}}}">{{#str}}signuploginlink, theme_kadsamhsa{{/str}}</a>
+        </p>
+    </div>
+</div>

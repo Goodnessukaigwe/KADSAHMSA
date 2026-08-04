@@ -1,0 +1,162 @@
+{{!
+    @template theme_kadsamhsa/course_play
+
+    Course Play — video / image / text lesson modes (Figma flow).
+}}
+<div class="kadsamhsa-shome kadsamhsa-play" data-region="kadsamhsa-course-play" data-mode="{{lesson.mode}}">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main kadsamhsa-play-main" id="kadsamhsa-shome-main">
+        {{#istext}}
+        <div class="kadsamhsa-play-banner">
+            <span>{{lessonbanner}}</span>
+            <a href="#" class="kadsamhsa-play-banner__pdf">{{#str}}playdownloadpdf, theme_kadsamhsa{{/str}}</a>
+        </div>
+        {{/istext}}
+
+        <div class="kadsamhsa-play__layout">
+            <div class="kadsamhsa-play__primary">
+                {{#isvideo}}
+                <div class="kadsamhsa-play-media kadsamhsa-play-media--video">
+                    <div class="kadsamhsa-play-media__stage" aria-hidden="true">
+                        {{#mediaimageurl}}
+                            <img src="{{{mediaimageurl}}}" alt="" class="kadsamhsa-play-media__img" />
+                        {{/mediaimageurl}}
+                        {{^mediaimageurl}}
+                            <div class="kadsamhsa-play-media__ph"></div>
+                        {{/mediaimageurl}}
+                        <button type="button" class="kadsamhsa-play-media__playbtn" data-action="play-toggle" aria-label="{{#str}}playvideo, theme_kadsamhsa{{/str}}">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/></svg>
+                        </button>
+                    </div>
+                    <div class="kadsamhsa-play-media__controls" aria-hidden="true">
+                        <span>▶</span>
+                        <span>🔊</span>
+                        <span>00:12 / {{lesson.duration}}</span>
+                        <span class="kadsamhsa-play-media__spacer"></span>
+                        <span>360p</span>
+                        <span>1x</span>
+                        <span>⛶</span>
+                    </div>
+                </div>
+                {{/isvideo}}
+
+                {{#isimage}}
+                <div class="kadsamhsa-play-media kadsamhsa-play-media--image">
+                    <div class="kadsamhsa-play-media__stage" aria-hidden="true">
+                        {{#mediaimageurl}}
+                            <img src="{{{mediaimageurl}}}" alt="" class="kadsamhsa-play-media__img kadsamhsa-play-media__img--image" />
+                        {{/mediaimageurl}}
+                        {{^mediaimageurl}}
+                            <div class="kadsamhsa-play-media__ph kadsamhsa-play-media__ph--image"></div>
+                        {{/mediaimageurl}}
+                    </div>
+                </div>
+                {{/isimage}}
+
+                {{#istext}}
+                <article class="kadsamhsa-play-text">
+                    <div class="kadsamhsa-play-text__head">
+                        <h1 class="kadsamhsa-play-text__title">{{lesson.title}}</h1>
+                        <span class="kadsamhsa-play-text__read">{{lesson.readtime}}</span>
+                    </div>
+                    <div class="kadsamhsa-play-text__body">{{{bodyhtml}}}</div>
+                    <aside class="kadsamhsa-play-text__keyterm">
+                        <strong>{{#str}}playkeytermlabel, theme_kadsamhsa{{/str}}</strong>
+                        <p>{{keyterm}}</p>
+                    </aside>
+                </article>
+                {{/istext}}
+
+                {{^istext}}
+                <div class="kadsamhsa-play-meta">
+                    <h1 class="kadsamhsa-play-meta__title">{{lesson.title}}</h1>
+                    <button type="button" class="kadsamhsa-play-meta__pdf">{{#str}}playdownloadpdf, theme_kadsamhsa{{/str}}</button>
+                </div>
+                <p class="kadsamhsa-play-meta__desc">{{description}}</p>
+                <div class="kadsamhsa-play-facts">
+                    <div class="kadsamhsa-play-facts__card"><span>{{#str}}dashprice, theme_kadsamhsa{{/str}}</span><strong>{{#str}}coursesbadgefree, theme_kadsamhsa{{/str}}</strong></div>
+                    <div class="kadsamhsa-play-facts__card"><span>{{#str}}dashdurationlabel, theme_kadsamhsa{{/str}}</span><strong>{{#str}}coursecertincluded, theme_kadsamhsa{{/str}}</strong></div>
+                    <div class="kadsamhsa-play-facts__card"><span>{{#str}}courselevellbl, theme_kadsamhsa{{/str}}</span><strong>{{#str}}courselevelfoundational, theme_kadsamhsa{{/str}}</strong></div>
+                    <div class="kadsamhsa-play-facts__card"><span>{{#str}}coursecertlbl, theme_kadsamhsa{{/str}}</span><strong>{{#str}}coursecertincluded, theme_kadsamhsa{{/str}}</strong></div>
+                </div>
+                {{/istext}}
+            </div>
+
+            <aside class="kadsamhsa-play-rail">
+                <div class="kadsamhsa-play-rail__publisher">
+                    {{#logourl}}
+                        <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-play-rail__logo" width="36" height="27" />
+                    {{/logourl}}
+                    {{^logourl}}
+                        <span class="kadsamhsa-play-rail__logo-ph" aria-hidden="true"></span>
+                    {{/logourl}}
+                    <div>
+                        <strong>{{publisher}}</strong>
+                    </div>
+                    <button type="button" class="kadsamhsa-play-rail__share">{{#str}}playshare, theme_kadsamhsa{{/str}}</button>
+                </div>
+
+                {{#istext}}
+                <div class="kadsamhsa-play-rail__check">
+                    <div class="kadsamhsa-play-rail__ring" aria-hidden="true"><span>0</span></div>
+                    <p>{{#str}}playknowledgecheck, theme_kadsamhsa{{/str}}</p>
+                </div>
+                <div class="kadsamhsa-play-rail__inlesson">
+                    <h2>{{#str}}playinthislesson, theme_kadsamhsa{{/str}}</h2>
+                    <ul>
+                        <li>{{#str}}playinlesson1, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}playinlesson2, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}playinlesson3, theme_kadsamhsa{{/str}}</li>
+                    </ul>
+                </div>
+                {{/istext}}
+
+                {{^istext}}
+                <div class="kadsamhsa-play-rail__list">
+                    <h2>{{#str}}playhighlights, theme_kadsamhsa{{/str}}</h2>
+                    <ul>
+                        {{#lessons}}
+                        <li class="{{#isactive}}is-active{{/isactive}}">
+                            <a href="{{{url}}}">
+                                <span class="kadsamhsa-play-rail__time">{{timestamp}}</span>
+                                <span>{{label}}</span>
+                            </a>
+                        </li>
+                        {{/lessons}}
+                    </ul>
+                </div>
+                {{/istext}}
+
+                <a href="{{{takequizurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--dark kadsamhsa-play-rail__quiz">
+                    <span>{{#str}}playtakequiz, theme_kadsamhsa{{/str}}</span>
+                    <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                </a>
+
+                <div class="kadsamhsa-play-rail__rating">
+                    <span>{{#str}}playratinglabel, theme_kadsamhsa{{/str}}</span>
+                    <strong>{{rating}}</strong>
+                    <span class="kadsamhsa-play-rail__stars" aria-hidden="true">★★★★★</span>
+                    <span>{{reviews}}</span>
+                </div>
+
+                <div class="kadsamhsa-play-rail__nav">
+                    {{#hasprev}}
+                    <a href="{{{prevurl}}}" class="kadsamhsa-play-rail__navbtn">{{prevlabel}}</a>
+                    {{/hasprev}}
+                    {{^hasprev}}
+                    <span class="kadsamhsa-play-rail__navbtn is-disabled">{{prevlabel}}</span>
+                    {{/hasprev}}
+                    {{#hasnext}}
+                    <a href="{{{nexturl}}}" class="kadsamhsa-play-rail__navbtn is-next">{{nextlabel}}</a>
+                    {{/hasnext}}
+                    {{^hasnext}}
+                    <a href="{{{detailurl}}}" class="kadsamhsa-play-rail__navbtn is-next">{{#str}}playbacktodetails, theme_kadsamhsa{{/str}}</a>
+                    {{/hasnext}}
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>

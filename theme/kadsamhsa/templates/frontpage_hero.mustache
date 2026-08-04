@@ -1,0 +1,35 @@
+{{!
+    @template theme_kadsamhsa/frontpage_hero
+
+    WHO Academy-style landing hero section.
+}}
+<section class="kadsamhsa-hero" aria-labelledby="kadsamhsa-hero-title">
+    <div class="kadsamhsa-container kadsamhsa-hero__content">
+        <p class="kadsamhsa-eyebrow">{{#str}}heroeyebrow, theme_kadsamhsa{{/str}}</p>
+        <h1 id="kadsamhsa-hero-title" class="kadsamhsa-hero__title">{{#str}}herotitle, theme_kadsamhsa{{/str}}</h1>
+        <p class="kadsamhsa-hero__subtitle">{{#str}}herosubtitle, theme_kadsamhsa{{/str}}</p>
+        <div class="kadsamhsa-hero__actions">
+            <a href="{{{catalogueurl}}}" class="kadsamhsa-hero__btn-primary">{{#str}}explorecourses, theme_kadsamhsa{{/str}}</a>
+            {{#isguest}}
+                <a href="{{{signupurl}}}" class="kadsamhsa-hero__btn-secondary">{{#str}}createaccount, theme_kadsamhsa{{/str}}</a>
+            {{/isguest}}
+            {{^isguest}}
+                <a href="{{{dashboardurl}}}" class="kadsamhsa-hero__btn-secondary">{{#str}}gotodashboard, theme_kadsamhsa{{/str}}</a>
+            {{/isguest}}
+        </div>
+        <div class="kadsamhsa-stats" role="list">
+            <div class="kadsamhsa-stats__item" role="listitem">
+                <div class="kadsamhsa-stats__number">{{coursecount}}</div>
+                <div class="kadsamhsa-stats__label">{{#str}}statcourses, theme_kadsamhsa{{/str}}</div>
+            </div>
+            <div class="kadsamhsa-stats__item" role="listitem">
+                <div class="kadsamhsa-stats__number">{{#str}}statfree, theme_kadsamhsa{{/str}}</div>
+                <div class="kadsamhsa-stats__label">{{#str}}stataccess, theme_kadsamhsa{{/str}}</div>
+            </div>
+            <div class="kadsamhsa-stats__item" role="listitem">
+                <div class="kadsamhsa-stats__number">100%</div>
+                <div class="kadsamhsa-stats__label">{{#str}}statcertified, theme_kadsamhsa{{/str}}</div>
+            </div>
+        </div>
+    </div>
+</section>

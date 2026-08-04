@@ -1,0 +1,320 @@
+// KADSAMHSA 404 error page — Figma match
+
+$e-text: #111111;
+$e-muted: #6b7280;
+$e-soft: #f3f3f3;
+$e-border: #e8e8e8;
+
+body.kadsamhsa-error404-page {
+    background: #fff !important;
+    background-image: none !important;
+
+    .kadsamhsa-auth-wrapper,
+    #page,
+    .kadsamhsa-auth-page {
+        background: #fff !important;
+        background-image: none !important;
+    }
+
+    .kadsamhsa-auth-page__content {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .kadsamhsa-auth-page__main-box,
+    .kadsamhsa-auth-page__main,
+    #region-main,
+    #region-main-box {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .kadsamhsa-signup-nav {
+        background: #fff;
+        border-bottom: 1px solid $e-border;
+    }
+}
+
+.kadsamhsa-error404 {
+    min-height: calc(100vh - 88px);
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+
+    .kadsamhsa-container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+.kadsamhsa-error404-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 3.5rem 0 4rem;
+}
+
+.kadsamhsa-error404-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+    background: $e-soft;
+    border-radius: 28px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid $e-border;
+        color: $e-muted;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        margin-bottom: 1rem;
+    }
+
+    &__title {
+        margin: 0 0 0.85rem;
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        color: $e-text;
+        max-width: 14ch;
+    }
+
+    &__text {
+        margin: 0 0 1.75rem;
+        color: $e-muted;
+        font-size: 1rem;
+        line-height: 1.65;
+        max-width: 36ch;
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 12px 14px 12px 20px;
+        border-radius: 999px;
+        background: #111;
+        color: #fff !important;
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: background 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: #2a2a2a;
+            color: #fff !important;
+            text-decoration: none;
+        }
+    }
+
+    &__cta-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #fff;
+        color: #111;
+    }
+
+    &__code {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(6rem, 18vw, 11rem);
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        line-height: 0.9;
+        color: #111;
+        text-align: center;
+        user-select: none;
+    }
+
+    @media (min-width: 900px) {
+        grid-template-columns: 1.1fr 0.9fr;
+        padding: 3.5rem 3.25rem;
+        gap: 2.5rem;
+
+        &__code {
+            text-align: right;
+        }
+    }
+}
+
+.kadsamhsa-error404-newsletter {
+    background: #111;
+    color: #fff;
+    padding: 2.75rem 0;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        align-items: end;
+    }
+
+    &__copy {
+        h2 {
+            margin: 0 0 1rem;
+            font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            line-height: 1.2;
+        }
+
+        .kadsamhsa-error404-newsletter__list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.9rem;
+            line-height: 1.45;
+
+            li {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.65rem;
+            }
+
+            li + li {
+                margin-top: 0.55rem;
+            }
+        }
+
+        .kadsamhsa-error404-newsletter__check {
+            flex: 0 0 auto;
+            width: 18px;
+            height: 18px;
+            margin-top: 0.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 3px;
+            background: transparent;
+            position: relative;
+
+            &::after {
+                content: "";
+                position: absolute;
+                left: 5px;
+                top: 2px;
+                width: 5px;
+                height: 9px;
+                border: solid #fff;
+                border-width: 0 1.5px 1.5px 0;
+                transform: rotate(45deg);
+            }
+        }
+    }
+
+    &__form {
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+
+    &__row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        input[type="email"] {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            background: #1c1c1c;
+            color: #fff;
+            padding: 0.95rem 1rem;
+            font-size: 0.95rem;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+            }
+
+            &:focus {
+                outline: none;
+                border-color: rgba(126, 184, 201, 0.7);
+                box-shadow: 0 0 0 3px rgba(126, 184, 201, 0.2);
+            }
+        }
+    }
+
+    &__submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        background: #fff;
+        color: #111;
+        padding: 12px 14px 12px 18px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: #f0f0f0;
+        }
+    }
+
+    &__submit-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+    }
+
+    @media (min-width: 900px) {
+        &__grid {
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+        }
+
+        &__row {
+            flex-direction: row;
+            align-items: stretch;
+
+            input[type="email"] {
+                flex: 1;
+            }
+
+            .kadsamhsa-error404-newsletter__submit {
+                width: auto;
+                white-space: nowrap;
+            }
+        }
+    }
+}

@@ -1,15 +1,3 @@
-// KADSAMHSA theme preset — Phase 0 placeholder tokens.
-// Phase 1 will replace these with Figma design tokens.
-
-$font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
-
-// Brand placeholders (not final brand — Phase 1).
-$primary: #0b5f2a !default;
-$secondary: #1a3a2a !default;
-$success: #198754 !default;
-$info: #0dcaf0 !default;
-$warning: #ffc107 !default;
-$danger: #dc3545 !default;
-
-$body-bg: #f7f9f7 !default;
-$body-color: #1a1a1a !default;
+// KADSAMHSA preset stub — main Boost CSS comes from theme_boost_get_main_scss_content().
+// Custom component styles live in scss/post.scss (appended after Boost).
+// Kept so Site administration → Theme settings → preset = default.scss still resolves.

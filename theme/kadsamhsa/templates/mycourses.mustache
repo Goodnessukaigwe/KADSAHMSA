@@ -1,0 +1,96 @@
+{{!
+    @template theme_kadsamhsa/mycourses
+
+    My Courses — Figma learner catalogue with stats + tabs.
+}}
+<div class="kadsamhsa-shome" data-region="kadsamhsa-mycourses">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main" id="kadsamhsa-shome-main">
+        <div class="kadsamhsa-shome-main__inner">
+            <header class="kadsamhsa-mycourses-head">
+                <h1 class="kadsamhsa-mycourses-head__title">{{#str}}mycoursestitle, theme_kadsamhsa{{/str}}</h1>
+                <p class="kadsamhsa-mycourses-head__sub">{{#str}}mycoursessubtitle, theme_kadsamhsa{{/str}}</p>
+            </header>
+
+            <div class="kadsamhsa-mycourses-stats" aria-label="{{#str}}mycoursesstats, theme_kadsamhsa{{/str}}">
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{statinprogress}}</strong>
+                    <span>{{#str}}mycoursesinprogress, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{statcerts}}</strong>
+                    <span>{{#str}}mycoursescerts, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{statdptc}}</strong>
+                    <span>{{#str}}mycoursesdptc, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{stattime}}</strong>
+                    <span>{{#str}}mycoursestime, theme_kadsamhsa{{/str}}</span>
+                </div>
+            </div>
+
+            <div class="kadsamhsa-mycourses-toolbar">
+                <div class="kadsamhsa-mycourses-tabs" role="tablist" aria-label="{{#str}}mycoursesfilter, theme_kadsamhsa{{/str}}">
+                    <button type="button" class="kadsamhsa-mycourses-tabs__btn" role="tab" data-filter="all" aria-selected="false">
+                        {{#str}}mycoursesall, theme_kadsamhsa{{/str}}
+                    </button>
+                    <button type="button" class="kadsamhsa-mycourses-tabs__btn" role="tab" data-filter="inprogress" aria-selected="false">
+                        {{#str}}mycoursestabprogress, theme_kadsamhsa{{/str}} ({{countinprogress}})
+                    </button>
+                    <button type="button" class="kadsamhsa-mycourses-tabs__btn" role="tab" data-filter="completed" aria-selected="false">
+                        {{#str}}mycoursestabcompleted, theme_kadsamhsa{{/str}} ({{countcompleted}})
+                    </button>
+                    <button type="button" class="kadsamhsa-mycourses-tabs__btn is-active" role="tab" data-filter="notstarted" aria-selected="true">
+                        {{#str}}mycoursestabnotstarted, theme_kadsamhsa{{/str}} ({{countnotstarted}})
+                    </button>
+                </div>
+                <button type="button" class="kadsamhsa-mycourses-filterbtn" data-action="mycourses-filter">
+                    {{#str}}mycoursesfilterbtn, theme_kadsamhsa{{/str}}
+                </button>
+            </div>
+
+            <section class="kadsamhsa-mycourses-section" aria-labelledby="kadsamhsa-mycourses-section-title">
+                <h2 id="kadsamhsa-mycourses-section-title" class="kadsamhsa-mycourses-section__title" data-region="section-title">
+                    {{#str}}mycoursesnotstartedyet, theme_kadsamhsa{{/str}}
+                </h2>
+                <div class="kadsamhsa-shome-grid" data-region="mycourses-grid">
+                    {{#courses}}
+                    <article class="kadsamhsa-shome-card" data-status="{{status}}" data-title="{{name}}">
+                        <div class="kadsamhsa-shome-card__media">
+                            {{#imageurl}}
+                                <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                            {{/imageurl}}
+                            {{^imageurl}}
+                                <div class="kadsamhsa-shome-card__ph" aria-hidden="true"></div>
+                            {{/imageurl}}
+                            <span class="kadsamhsa-shome-card__badge">{{badgelabel}}</span>
+                            {{#typelabel}}
+                            <span class="kadsamhsa-shome-card__type{{#istextcourse}} kadsamhsa-shome-card__type--text{{/istextcourse}}">{{typelabel}}</span>
+                            {{/typelabel}}
+                        </div>
+                        <div class="kadsamhsa-shome-card__body">
+                            <h3 class="kadsamhsa-shome-card__title">{{name}}</h3>
+                            <p class="kadsamhsa-shome-card__lessons">{{lessons}}</p>
+                            <div class="kadsamhsa-shome-card__actions">
+                                <a href="{{{enrolurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--dark">
+                                    <span>{{#str}}dashenroll, theme_kadsamhsa{{/str}}</span>
+                                    <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </a>
+                                <a href="{{{url}}}" class="kadsamhsa-shome-card__more">{{#str}}dashreadmore, theme_kadsamhsa{{/str}}</a>
+                            </div>
+                        </div>
+                    </article>
+                    {{/courses}}
+                </div>
+                <p class="kadsamhsa-shome-empty" data-region="mycourses-empty" hidden>
+                    {{#str}}mycoursesempty, theme_kadsamhsa{{/str}}
+                </p>
+            </section>
+        </div>
+    </main>
+</div>

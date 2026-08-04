@@ -1,0 +1,37 @@
+{{!
+    @template theme_kadsamhsa/verify_certificate
+
+    Public certificate verification page wrapper.
+}}
+<div class="kadsamhsa-verify">
+    <div class="kadsamhsa-verify__header">
+        <h1 class="kadsamhsa-verify__title">{{#str}}verifytitle, theme_kadsamhsa{{/str}}</h1>
+        <p class="kadsamhsa-verify__subtitle">{{#str}}verifysubtitle, theme_kadsamhsa{{/str}}</p>
+    </div>
+    <div class="kadsamhsa-verify__form-card">
+        {{{formhtml}}}
+    </div>
+    {{#hasresult}}
+        <div class="kadsamhsa-verify__result kadsamhsa-verify__result--{{resultstatus}}" role="status" aria-live="polite">
+            <div class="kadsamhsa-verify__result-icon" aria-hidden="true">{{#valid}}✓{{/valid}}{{^valid}}✗{{/valid}}</div>
+            <div class="kadsamhsa-verify__result-status">
+                {{#valid}}{{#str}}certvalid, theme_kadsamhsa{{/str}}{{/valid}}
+                {{^valid}}{{#str}}certinvalid, theme_kadsamhsa{{/str}}{{/valid}}
+            </div>
+            {{#valid}}
+                <div class="kadsamhsa-verify__result-details">
+                    <dl>
+                        <dt>{{#str}}recipientname, theme_kadsamhsa{{/str}}</dt>
+                        <dd>{{recipientname}}</dd>
+                        <dt>{{#str}}coursename, theme_kadsamhsa{{/str}}</dt>
+                        <dd>{{coursename}}</dd>
+                        <dt>{{#str}}issuedate, theme_kadsamhsa{{/str}}</dt>
+                        <dd>{{issuedate}}</dd>
+                        <dt>{{#str}}certcode, theme_kadsamhsa{{/str}}</dt>
+                        <dd><code>{{certcode}}</code></dd>
+                    </dl>
+                </div>
+            {{/valid}}
+        </div>
+    {{/hasresult}}
+</div>

@@ -98,34 +98,34 @@ Design phase skipped — Figma is source of truth. Implement directly into `them
 
 ### Design tokens & base theme
 
-- [ ] Colors, typography, spacing tokens from Figma → SCSS/CSS variables
-- [ ] Base Mustache layouts: header, footer, nav, mobile menu
-- [ ] Responsive breakpoints (mobile-first; Nigerian smartphone target)
-- [ ] Low-bandwidth asset strategy (compressed images, lazy load, minimal JS)
+- [x] Colors, typography, spacing tokens from Figma → SCSS/CSS variables
+- [x] Base Mustache layouts: header, footer, nav, mobile menu
+- [x] Responsive breakpoints (mobile-first; Nigerian smartphone target)
+- [x] Low-bandwidth asset strategy (compressed images, lazy load, minimal JS)
 
 ### Learner screens (PRD F1–F8, F11)
 
-- [ ] Public landing page (WHO Academy style)
-- [ ] Course catalogue — card grid, search, filters (topic, audience, type)
-- [ ] Course detail page — overview, objectives, module outline, duration, cert info, Enrol CTA
-- [ ] Registration / login / password reset
-- [ ] Course player — left module nav, content area, mark-complete, progress bar, resume
-- [ ] Quiz / assessment UI — score, retry, feedback
-- [ ] Learner dashboard — enrolled courses, progress, certificates, payment history
-- [ ] Certificate download view (PDF trigger)
+- [x] Public landing page (WHO Academy style)
+- [x] Course catalogue — card grid, search, filters (topic, audience, type)
+- [x] Course detail page — overview, objectives, module outline, duration, cert info, Enrol CTA
+- [x] Registration / login / password reset
+- [x] Course player — left module nav, content area, mark-complete, progress bar, resume
+- [x] Quiz / assessment UI — score, retry, feedback
+- [x] Learner dashboard — enrolled courses, progress, certificates, payment history
+- [x] Certificate download view (PDF trigger)
 
 ### Admin & org screens (PRD A1–A6 streamlining)
 
-- [ ] Admin sidebar navigation streamlined (Gurucan-style grouping)
-- [ ] Course builder screens simplified where stock Moodle is too complex
-- [ ] Organization dashboard — staff progress, completions
-- [ ] Public certificate verification page (enter ID → valid/invalid, name, course, date)
+- [x] Admin sidebar navigation streamlined (Gurucan-style grouping)
+- [x] Course builder screens simplified where stock Moodle is too complex
+- [x] Organization dashboard — staff progress, completions
+- [x] Public certificate verification page (enter ID → valid/invalid, name, course, date)
 
 ### Quality
 
-- [ ] Desktop layouts match Figma
-- [ ] Mobile layouts match Figma
-- [ ] WCAG 2.1 AA intent: contrast, keyboard nav
+- [x] Desktop layouts match Figma
+- [x] Mobile layouts match Figma
+- [x] WCAG 2.1 AA intent: contrast, keyboard nav
 - [ ] Tested on low-end Android + common Nigerian browsers
 
 **Done when:** all P0 learner screens and verification page implemented in theme; admin UI streamlined for core flows; responsive and usable on mobile.

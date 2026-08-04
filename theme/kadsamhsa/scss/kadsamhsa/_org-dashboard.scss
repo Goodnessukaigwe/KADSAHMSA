@@ -1,0 +1,150 @@
+// KADSAMHSA organization dashboard shell (Phase 1 UI only)
+
+body.kadsamhsa-org-dashboard {
+    background: var(--kadsamhsa-bg);
+
+    #region-main {
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+}
+
+.kadsamhsa-org-dashboard {
+    &__header {
+        background: var(--kadsamhsa-surface);
+        border-bottom: 1px solid var(--kadsamhsa-border);
+        padding: var(--kadsamhsa-space-xl) 0;
+        margin-bottom: var(--kadsamhsa-space-xl);
+    }
+
+    &__logo {
+        display: block;
+        width: 72px;
+        height: auto;
+        max-height: 54px;
+        object-fit: contain;
+        margin-bottom: var(--kadsamhsa-space-md);
+    }
+
+    &__title {
+        font-size: 1.5rem;
+        margin-bottom: var(--kadsamhsa-space-xs);
+    }
+
+    &__org-name {
+        color: var(--kadsamhsa-text-muted);
+        font-size: 0.875rem;
+    }
+
+    &__stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: var(--kadsamhsa-space-md);
+        margin-bottom: var(--kadsamhsa-space-xl);
+    }
+
+    &__stat-card {
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-md);
+        padding: var(--kadsamhsa-space-lg);
+        text-align: center;
+
+        &-value {
+            font-family: var(--kadsamhsa-font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--kadsamhsa-primary);
+            line-height: 1;
+        }
+
+        &-label {
+            font-size: 0.8125rem;
+            color: var(--kadsamhsa-text-muted);
+            margin-top: var(--kadsamhsa-space-xs);
+        }
+    }
+
+    &__panel {
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-lg);
+        margin-bottom: var(--kadsamhsa-space-xl);
+        overflow: hidden;
+
+        &-header {
+            padding: var(--kadsamhsa-space-lg);
+            border-bottom: 1px solid var(--kadsamhsa-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            h3 {
+                font-size: 1rem;
+                margin: 0;
+            }
+        }
+
+        &-body {
+            padding: var(--kadsamhsa-space-lg);
+        }
+    }
+
+    &__table {
+        width: 100%;
+        font-size: 0.875rem;
+
+        th {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--kadsamhsa-text-muted);
+            padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+            border-bottom: 2px solid var(--kadsamhsa-border);
+            text-align: left;
+        }
+
+        td {
+            padding: var(--kadsamhsa-space-md);
+            border-bottom: 1px solid var(--kadsamhsa-border-light);
+        }
+
+        .progress-mini {
+            height: 6px;
+            background: var(--kadsamhsa-border-light);
+            border-radius: 999px;
+            overflow: hidden;
+            min-width: 80px;
+
+            &-fill {
+                height: 100%;
+                background: var(--kadsamhsa-primary);
+                border-radius: 999px;
+            }
+        }
+
+        .badge-complete {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            background: var(--kadsamhsa-primary-light);
+            color: var(--kadsamhsa-primary);
+        }
+
+        .badge-inprogress {
+            background: #fef3cd;
+            color: #856404;
+        }
+    }
+
+    &__placeholder {
+        text-align: center;
+        padding: var(--kadsamhsa-space-2xl);
+        color: var(--kadsamhsa-text-muted);
+        font-size: 0.875rem;
+    }
+}

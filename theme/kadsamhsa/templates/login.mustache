@@ -1,0 +1,38 @@
+{{!
+    @template theme_kadsamhsa/login
+
+    KADSAMHSA auth page layout (login, signup, password reset).
+}}
+{{> theme_kadsamhsa/head }}
+
+<body {{{ bodyattributes }}}>
+<a href="#maincontent" class="kadsamhsa-skip-link">{{#str}}skiptomain, theme_kadsamhsa{{/str}}</a>
+{{> core/local/toast/wrapper}}
+
+<div id="page-wrapper" class="kadsamhsa-auth-wrapper{{#issignup}} kadsamhsa-auth-wrapper--signup{{/issignup}}{{#islogin}} kadsamhsa-auth-wrapper--signup{{/islogin}}">
+
+    {{{ output.standard_top_of_body_html }}}
+
+    {{> theme_kadsamhsa/signup_navbar }}
+
+    <div id="page" class="kadsamhsa-auth-page">
+        <div id="page-content" class="kadsamhsa-auth-page__content">
+            <div id="region-main-box" class="kadsamhsa-auth-page__main-box">
+                <div id="region-main" class="kadsamhsa-auth-page__main">
+                    <span id="maincontent" tabindex="-1"></span>
+                    {{{ output.main_content }}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{{ output.standard_end_of_body_html }}}
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_kadsamhsa/loader');
+require(['theme_kadsamhsa/loader'], function() {
+    M.util.js_complete('theme_kadsamhsa/loader');
+});
+{{/js}}

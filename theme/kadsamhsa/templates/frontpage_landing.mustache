@@ -1,0 +1,207 @@
+{{!
+    @template theme_kadsamhsa/frontpage_landing
+
+    Full public landing page matching Figma (image placeholders only).
+}}
+<div class="kadsamhsa-landing">
+
+    {{! —— Hero —— }}
+    <section class="kadsamhsa-landing-hero" aria-labelledby="kadsamhsa-landing-hero-title">
+        <div class="kadsamhsa-container kadsamhsa-landing-hero__inner">
+            <h1 id="kadsamhsa-landing-hero-title" class="kadsamhsa-landing-hero__title">
+                {{#str}}landingherotitle, theme_kadsamhsa{{/str}}
+            </h1>
+            <p class="kadsamhsa-landing-hero__subtitle">
+                {{#str}}landingherosubtitle, theme_kadsamhsa{{/str}}
+            </p>
+            <a href="{{{getstartedurl}}}" class="kadsamhsa-btn kadsamhsa-btn--pill">
+                <span>{{#str}}landinggetstarted, theme_kadsamhsa{{/str}}</span>
+                <span class="kadsamhsa-btn__arrow" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </a>
+
+            <div class="kadsamhsa-landing-hero__gallery" aria-hidden="true">
+                <div class="kadsamhsa-media-ph kadsamhsa-media-ph--hero"></div>
+                <div class="kadsamhsa-media-ph kadsamhsa-media-ph--hero"></div>
+                <div class="kadsamhsa-media-ph kadsamhsa-media-ph--hero"></div>
+            </div>
+        </div>
+    </section>
+
+    {{! —— About + stats —— }}
+    <section id="about" class="kadsamhsa-landing-about">
+        <div class="kadsamhsa-container kadsamhsa-landing-about__grid">
+            <div class="kadsamhsa-landing-about__copy">
+                <h2 class="kadsamhsa-landing-about__title">{{#str}}landingabouttitle, theme_kadsamhsa{{/str}}</h2>
+                <p class="kadsamhsa-landing-about__text">{{#str}}landingaboutbody, theme_kadsamhsa{{/str}}</p>
+                <a href="{{{catalogueurl}}}" class="kadsamhsa-btn kadsamhsa-btn--pill">
+                    {{#str}}landinglearnmore, theme_kadsamhsa{{/str}}
+                </a>
+
+                <div class="kadsamhsa-landing-stats" role="list">
+                    <div class="kadsamhsa-landing-stats__item" role="listitem">
+                        <div class="kadsamhsa-landing-stats__number">{{#str}}landingstat1num, theme_kadsamhsa{{/str}}</div>
+                        <div class="kadsamhsa-landing-stats__label">{{#str}}landingstat1label, theme_kadsamhsa{{/str}}</div>
+                    </div>
+                    <div class="kadsamhsa-landing-stats__item" role="listitem">
+                        <div class="kadsamhsa-landing-stats__number">{{coursecount}}+</div>
+                        <div class="kadsamhsa-landing-stats__label">{{#str}}landingstat2label, theme_kadsamhsa{{/str}}</div>
+                    </div>
+                    <div class="kadsamhsa-landing-stats__item" role="listitem">
+                        <div class="kadsamhsa-landing-stats__number">{{#str}}landingstat3num, theme_kadsamhsa{{/str}}</div>
+                        <div class="kadsamhsa-landing-stats__label">{{#str}}landingstat3label, theme_kadsamhsa{{/str}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="kadsamhsa-landing-about__media" aria-hidden="true">
+                <div class="kadsamhsa-media-ph kadsamhsa-media-ph--about">
+                    <span>{{#str}}signupmediaplaceholder, theme_kadsamhsa{{/str}}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{! —— Featured courses —— }}
+    <section id="courses" class="kadsamhsa-landing-courses">
+        <div class="kadsamhsa-container">
+            <header class="kadsamhsa-landing-sectionhead">
+                <h2>{{#str}}landingfeaturedtitle, theme_kadsamhsa{{/str}}</h2>
+                <p>{{#str}}landingfeaturedsubtitle, theme_kadsamhsa{{/str}}</p>
+            </header>
+
+            <div class="kadsamhsa-landing-courses__grid">
+                {{#courses}}
+                    <article class="kadsamhsa-course-card">
+                        <div class="kadsamhsa-course-card__media" aria-hidden="true">
+                            {{#imageurl}}
+                                <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                            {{/imageurl}}
+                            {{^imageurl}}
+                                <div class="kadsamhsa-media-ph"></div>
+                            {{/imageurl}}
+                        </div>
+                        <div class="kadsamhsa-course-card__body">
+                            <h3 class="kadsamhsa-course-card__title">{{name}}</h3>
+                            <ul class="kadsamhsa-course-card__meta">
+                                <li>{{lessons}}</li>
+                                <li>{{duration}}</li>
+                                <li>{{rating}}</li>
+                            </ul>
+                            <p class="kadsamhsa-course-card__desc">{{summary}}</p>
+                            <a href="{{{url}}}" class="kadsamhsa-btn kadsamhsa-btn--pill kadsamhsa-btn--block">
+                                {{#str}}landingenrollnow, theme_kadsamhsa{{/str}}
+                            </a>
+                        </div>
+                    </article>
+                {{/courses}}
+            </div>
+        </div>
+    </section>
+
+    {{! —— Plans —— }}
+    <section id="plans" class="kadsamhsa-landing-plans">
+        <div class="kadsamhsa-container">
+            <header class="kadsamhsa-landing-sectionhead">
+                <h2>{{#str}}landingplanstitle, theme_kadsamhsa{{/str}}</h2>
+                <p>{{#str}}landingplanssubtitle, theme_kadsamhsa{{/str}}</p>
+            </header>
+
+            <div class="kadsamhsa-landing-plans__grid">
+                <article class="kadsamhsa-plan-card">
+                    <h3 class="kadsamhsa-plan-card__name">{{#str}}landingplan1name, theme_kadsamhsa{{/str}}</h3>
+                    <p class="kadsamhsa-plan-card__price">{{#str}}landingplan1price, theme_kadsamhsa{{/str}}</p>
+                    <ul class="kadsamhsa-plan-card__features">
+                        <li>{{#str}}landingplan1f1, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}landingplan1f2, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}landingplan1f3, theme_kadsamhsa{{/str}}</li>
+                    </ul>
+                    <a href="{{{signupurl}}}" class="kadsamhsa-btn kadsamhsa-btn--pill kadsamhsa-btn--block">
+                        {{#str}}landingchooseplan, theme_kadsamhsa{{/str}}
+                    </a>
+                </article>
+
+                <article class="kadsamhsa-plan-card">
+                    <h3 class="kadsamhsa-plan-card__name">{{#str}}landingplan2name, theme_kadsamhsa{{/str}}</h3>
+                    <p class="kadsamhsa-plan-card__price">{{#str}}landingplan2price, theme_kadsamhsa{{/str}}</p>
+                    <ul class="kadsamhsa-plan-card__features">
+                        <li>{{#str}}landingplan2f1, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}landingplan2f2, theme_kadsamhsa{{/str}}</li>
+                        <li>{{#str}}landingplan2f3, theme_kadsamhsa{{/str}}</li>
+                    </ul>
+                    <a href="{{{catalogueurl}}}" class="kadsamhsa-btn kadsamhsa-btn--pill kadsamhsa-btn--block">
+                        {{#str}}landingchooseplan, theme_kadsamhsa{{/str}}
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    {{! —— FAQ + contact visual —— }}
+    <section id="faq" class="kadsamhsa-landing-faq">
+        <div class="kadsamhsa-container kadsamhsa-landing-faq__grid">
+            <div class="kadsamhsa-landing-faq__copy">
+                <h2>{{#str}}landingfaqtitle, theme_kadsamhsa{{/str}}</h2>
+                <div class="kadsamhsa-faq-list">
+                    <details class="kadsamhsa-faq-item" open>
+                        <summary>{{#str}}landingfaq1q, theme_kadsamhsa{{/str}}</summary>
+                        <div class="kadsamhsa-faq-item__body">{{#str}}landingfaq1a, theme_kadsamhsa{{/str}}</div>
+                    </details>
+                    <details class="kadsamhsa-faq-item">
+                        <summary>{{#str}}landingfaq2q, theme_kadsamhsa{{/str}}</summary>
+                        <div class="kadsamhsa-faq-item__body">{{#str}}landingfaq2a, theme_kadsamhsa{{/str}}</div>
+                    </details>
+                    <details class="kadsamhsa-faq-item">
+                        <summary>{{#str}}landingfaq3q, theme_kadsamhsa{{/str}}</summary>
+                        <div class="kadsamhsa-faq-item__body">{{#str}}landingfaq3a, theme_kadsamhsa{{/str}}</div>
+                    </details>
+                    <details class="kadsamhsa-faq-item">
+                        <summary>{{#str}}landingfaq4q, theme_kadsamhsa{{/str}}</summary>
+                        <div class="kadsamhsa-faq-item__body">{{#str}}landingfaq4a, theme_kadsamhsa{{/str}}</div>
+                    </details>
+                </div>
+            </div>
+            <div class="kadsamhsa-landing-faq__aside">
+                <div class="kadsamhsa-media-ph kadsamhsa-media-ph--faq" aria-hidden="true">
+                    <span>{{#str}}signupmediaplaceholder, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-landing-faq__contact-card" id="contact">
+                    <p>{{#str}}landingcontactblurb, theme_kadsamhsa{{/str}}</p>
+                    <a href="mailto:{{{contactemail}}}" class="kadsamhsa-btn kadsamhsa-btn--pill">
+                        {{#str}}landingcontactcta, theme_kadsamhsa{{/str}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{! —— Brand strip —— }}
+    <section class="kadsamhsa-landing-brand" aria-label="{{{ sitename }}}">
+        <div class="kadsamhsa-container kadsamhsa-landing-brand__inner">
+            {{#logourl}}
+                <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-landing-brand__logo" width="120" height="90" />
+            {{/logourl}}
+            {{^logourl}}
+                <div class="kadsamhsa-landing-brand__logo-ph" aria-hidden="true"></div>
+            {{/logourl}}
+            <p class="kadsamhsa-landing-brand__name">{{{ sitename }}}</p>
+            <div class="kadsamhsa-landing-brand__contact">
+                <div>
+                    <strong>{{#str}}landingaddresslabel, theme_kadsamhsa{{/str}}</strong>
+                    <span>{{#str}}landingaddress, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div>
+                    <strong>{{#str}}landingemaillabel, theme_kadsamhsa{{/str}}</strong>
+                    <a href="mailto:{{{contactemail}}}">{{{contactemail}}}</a>
+                </div>
+                <div>
+                    <strong>{{#str}}landingphonelabel, theme_kadsamhsa{{/str}}</strong>
+                    <span>{{#str}}landingphone, theme_kadsamhsa{{/str}}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

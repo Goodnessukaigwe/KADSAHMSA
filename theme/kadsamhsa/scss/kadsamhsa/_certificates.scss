@@ -1,0 +1,81 @@
+// KADSAMHSA certificate download UI
+
+body.kadsamhsa-certificates,
+body.path-mod-customcert {
+    #region-main {
+        background: var(--kadsamhsa-surface);
+        border-radius: var(--kadsamhsa-radius-lg);
+        border: 1px solid var(--kadsamhsa-border);
+    }
+}
+
+.kadsamhsa-cert-download {
+    text-align: center;
+    padding: var(--kadsamhsa-space-2xl);
+    max-width: 560px;
+    margin: 0 auto;
+
+    &__icon {
+        width: 80px;
+        height: 80px;
+        background: var(--kadsamhsa-primary-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--kadsamhsa-space-lg);
+        font-size: 2rem;
+    }
+
+    &__title {
+        font-family: var(--kadsamhsa-font-display);
+        font-size: 1.5rem;
+        margin-bottom: var(--kadsamhsa-space-sm);
+    }
+
+    &__desc {
+        color: var(--kadsamhsa-text-muted);
+        margin-bottom: var(--kadsamhsa-space-xl);
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--kadsamhsa-space-sm);
+        background: var(--kadsamhsa-primary);
+        color: #fff !important;
+        padding: var(--kadsamhsa-space-md) var(--kadsamhsa-space-xl);
+        border-radius: var(--kadsamhsa-radius-md);
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        transition: background var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus {
+            background: var(--kadsamhsa-primary-hover);
+            color: #fff !important;
+        }
+    }
+
+    &__meta {
+        margin-top: var(--kadsamhsa-space-xl);
+        padding-top: var(--kadsamhsa-space-lg);
+        border-top: 1px solid var(--kadsamhsa-border);
+        font-size: 0.8125rem;
+        color: var(--kadsamhsa-text-muted);
+    }
+}
+
+// My certificates page
+.path-mod-customcert .customcert {
+    .no-overflow {
+        border-radius: var(--kadsamhsa-radius-md);
+    }
+}
+
+.customcert .downloadlink a,
+.customcert .btn-primary {
+    border-radius: var(--kadsamhsa-radius-md);
+    font-weight: 600;
+}

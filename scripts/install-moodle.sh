@@ -78,5 +78,15 @@ docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data
 docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
   php admin/cli/cfg.php --name=noreplyaddress --set="${MOODLE_ADMIN_EMAIL:-admin@example.com}" || true
 
+# Enable email self-registration for local/dev (required for /login/signup.php).
+echo "Enabling email self-registration..."
+docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
+  php admin/cli/cfg.php --name=registerauth --set=email || true
+
+# Site home = public landing (not /my/ dashboard) while UI work is in progress.
+echo "Setting default home page to site front page..."
+docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
+  php admin/cli/cfg.php --name=defaulthomepage --set=0 || true
+
 echo "Install complete. Open ${MOODLE_WWWROOT:-http://localhost:8080}"
 echo "Admin credentials are in .env (MOODLE_ADMIN_USER / MOODLE_ADMIN_PASS)."

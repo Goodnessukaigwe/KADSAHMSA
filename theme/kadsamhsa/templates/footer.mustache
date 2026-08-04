@@ -1,0 +1,49 @@
+{{!
+    @template theme_kadsamhsa/footer
+
+    KADSAMHSA site footer.
+}}
+<footer id="page-footer" class="kadsamhsa-footer d-print-none">
+    <div class="kadsamhsa-container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="kadsamhsa-footer__brand">
+                    {{#logourl}}
+                        <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-footer__logo" width="72" height="54" />
+                    {{/logourl}}
+                    <span>{{{ sitename }}}</span>
+                </div>
+                <p class="kadsamhsa-footer__tagline">{{#str}}footertagline, theme_kadsamhsa{{/str}}</p>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="kadsamhsa-footer__heading">{{#str}}learn, theme_kadsamhsa{{/str}}</div>
+                <ul class="kadsamhsa-footer__links">
+                    <li><a href="{{{config.wwwroot}}}/theme/kadsamhsa/courses.php">{{#str}}catalogue, theme_kadsamhsa{{/str}}</a></li>
+                    <li><a href="{{{config.wwwroot}}}/login/signup.php">{{#str}}register, theme_kadsamhsa{{/str}}</a></li>
+                    <li><a href="{{{config.wwwroot}}}/my/">{{#str}}dashboard, theme_kadsamhsa{{/str}}</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="kadsamhsa-footer__heading">{{#str}}support, theme_kadsamhsa{{/str}}</div>
+                <ul class="kadsamhsa-footer__links">
+                    {{# output.supportemail }}
+                        <li>{{{ output.supportemail }}}</li>
+                    {{/ output.supportemail }}
+                </ul>
+            </div>
+        </div>
+        <div class="kadsamhsa-footer__bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                &copy; {{#year}}{{year}}{{/year}}{{^year}}2026{{/year}} {{{ sitename }}}. {{#str}}allrightsreserved, theme_kadsamhsa{{/str}}
+            </div>
+            <div class="d-none d-md-block">
+                {{{ output.standard_footer_html }}}
+            </div>
+        </div>
+    </div>
+    <div class="footer-content-debugging footer-dark bg-dark text-light">
+        <div class="container-fluid footer-dark-inner">
+            {{{ output.debug_footer_html }}}
+        </div>
+    </div>
+</footer>

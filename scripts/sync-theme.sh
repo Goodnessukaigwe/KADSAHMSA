@@ -26,6 +26,9 @@ rsync -a --delete \
 echo "Theme synced to ${DEST}"
 
 if [[ -f "${ENV_FILE}" ]] && docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" ps --status running 2>/dev/null | grep -q moodle-php; then
+  echo "Running Moodle upgrade (registers theme/lang changes)..."
+  docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
+    php admin/cli/upgrade.php --non-interactive || true
   echo "Purging Moodle caches..."
   docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
     php admin/cli/purge_caches.php || true

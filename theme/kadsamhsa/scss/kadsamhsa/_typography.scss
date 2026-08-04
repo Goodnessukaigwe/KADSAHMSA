@@ -1,0 +1,38 @@
+// KADSAMHSA typography — expressive display + clean body
+
+body {
+    font-family: var(--kadsamhsa-font-body);
+    color: var(--kadsamhsa-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.page-header-headings h1,
+.kadsamhsa-display {
+    font-family: var(--kadsamhsa-font-display);
+    font-weight: 600;
+    color: var(--kadsamhsa-text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.kadsamhsa-lead {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--kadsamhsa-text-muted);
+}
+
+.kadsamhsa-eyebrow {
+    font-family: var(--kadsamhsa-font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--kadsamhsa-accent);
+}
+
+.kadsamhsa-text-muted {
+    color: var(--kadsamhsa-text-muted) !important;
+}

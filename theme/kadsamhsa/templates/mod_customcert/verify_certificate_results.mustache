@@ -1,0 +1,24 @@
+{{!
+    @template mod_customcert/verify_certificate_results
+
+    KADSAMHSA-styled certificate verification results.
+}}
+<div class="kadsamhsa-verify">
+    {{#success}}
+        {{#issues}}
+            <div class="kadsamhsa-verify__result kadsamhsa-verify__result--valid" role="status" aria-live="polite">
+                <div class="kadsamhsa-verify__result-icon" aria-hidden="true">✓</div>
+                <div class="kadsamhsa-verify__result-status">{{#str}}certvalid, theme_kadsamhsa{{/str}}</div>
+                <div class="kadsamhsa-verify__result-details">
+                    {{> mod_customcert/verify_certificate_result }}
+                </div>
+            </div>
+        {{/issues}}
+    {{/success}}
+    {{^success}}
+        <div class="kadsamhsa-verify__result kadsamhsa-verify__result--invalid" role="alert">
+            <div class="kadsamhsa-verify__result-icon" aria-hidden="true">✗</div>
+            <div class="kadsamhsa-verify__result-status">{{#str}}certinvalid, theme_kadsamhsa{{/str}}</div>
+        </div>
+    {{/success}}
+</div>

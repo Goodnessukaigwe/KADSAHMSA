@@ -1,0 +1,91 @@
+// KADSAMHSA course player (incourse layout)
+
+body.kadsamhsa-player,
+body.pagelayout-incourse {
+    .activity-header {
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    #region-main {
+        background: var(--kadsamhsa-surface);
+        border-radius: var(--kadsamhsa-radius-lg);
+        border: 1px solid var(--kadsamhsa-border);
+        padding: var(--kadsamhsa-space-lg);
+
+        @media (min-width: 768px) {
+            padding: var(--kadsamhsa-space-xl);
+        }
+    }
+}
+
+.kadsamhsa-player-progress {
+    background: var(--kadsamhsa-bg);
+    border: 1px solid var(--kadsamhsa-border);
+    border-radius: var(--kadsamhsa-radius-md);
+    padding: var(--kadsamhsa-space-md) var(--kadsamhsa-space-lg);
+    margin-bottom: var(--kadsamhsa-space-lg);
+
+    &__bar {
+        height: 8px;
+        background: var(--kadsamhsa-border-light);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: var(--kadsamhsa-space-sm);
+    }
+
+    &__fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--kadsamhsa-primary), var(--kadsamhsa-success));
+        border-radius: 999px;
+        transition: width 0.4s ease;
+    }
+
+    &__label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}
+
+.kadsamhsa-player-nav {
+    .courseindex {
+        font-size: 0.875rem;
+    }
+}
+
+// Activity navigation (prev/next)
+.activity-navigation {
+    margin-top: var(--kadsamhsa-space-xl);
+    padding-top: var(--kadsamhsa-space-lg);
+    border-top: 1px solid var(--kadsamhsa-border);
+
+    .btn {
+        border-radius: var(--kadsamhsa-radius-md);
+    }
+}
+
+// Completion button styling
+.btn.completion-auto,
+.btn.completion-manual {
+    border-radius: var(--kadsamhsa-radius-md);
+    font-weight: 600;
+}
+
+// Continue learning CTA
+.kadsamhsa-continue-learning {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kadsamhsa-space-sm);
+    background: var(--kadsamhsa-primary);
+    color: #fff !important;
+    padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-lg);
+    border-radius: var(--kadsamhsa-radius-md);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+        background: var(--kadsamhsa-primary-hover);
+        color: #fff !important;
+    }
+}

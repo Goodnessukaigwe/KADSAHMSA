@@ -1,0 +1,67 @@
+{{!
+    @template theme_kadsamhsa/navbar
+
+    KADSAMHSA top navigation bar.
+}}
+<nav class="navbar fixed-top navbar-expand kadsamhsa-navbar" aria-label="{{#str}}sitemenubar, admin{{/str}}">
+    <div class="container-fluid kadsamhsa-container">
+        <button class="navbar-toggler aabtn d-block d-lg-none px-2 my-1" data-toggler="drawers" data-action="toggle" data-target="theme_boost-drawers-primary" aria-expanded="false" aria-controls="theme_boost-drawers-primary">
+            <span class="navbar-toggler-icon"></span>
+            <span class="sr-only">{{#str}}sidepanel, core{{/str}}</span>
+        </button>
+
+        <a href="{{{ config.homeurl }}}" class="navbar-brand d-flex align-items-center m-0 me-3 p-0 aabtn">
+            {{#logourl}}
+                <img src="{{{logourl}}}" class="logo kadsamhsa-navbar__logo me-2" alt="KADSAMHSA" width="40" height="30" loading="eager" />
+            {{/logourl}}
+            {{^logourl}}
+                {{# output.should_display_navbar_logo }}
+                    <img src="{{output.get_compact_logo_url}}" class="logo me-2" alt="{{sitename}}" width="40" height="40" loading="eager" />
+                {{/ output.should_display_navbar_logo }}
+            {{/logourl}}
+            <span class="d-none d-sm-inline">{{{ sitename }}}</span>
+        </a>
+
+        {{#primarymoremenu}}
+            <div class="primary-navigation d-none d-lg-flex flex-grow-1">
+                {{> core/moremenu}}
+            </div>
+        {{/primarymoremenu}}
+
+        <div class="d-none d-md-flex align-items-center gap-2 ms-auto">
+            <a href="{{{config.wwwroot}}}/theme/kadsamhsa/courses.php" class="kadsamhsa-nav-link">{{#str}}catalogue, theme_kadsamhsa{{/str}}</a>
+        </div>
+
+        <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
+            {{# output.search_box }}
+                <li class="nav-item d-none d-md-block me-2">
+                    {{{ output.search_box }}}
+                </li>
+            {{/ output.search_box }}
+            {{{ output.navbar_plugin_output }}}
+            <li class="nav-item d-flex align-items-center">
+                {{{ output.user_menu }}}
+            </li>
+        </ul>
+    </div>
+</nav>
+
+{{#mobileprimarynav}}
+    {{< theme_boost/drawer }}
+        {{$id}}theme_boost-drawers-primary{{/id}}
+        {{$drawerclasses}}drawer drawer-left kadsamhsa-mobile-nav{{/drawerclasses}}
+        {{$drawercontent}}
+            <div class="list-group list-group-flush">
+                {{#mobileprimarynav}}
+                    <a href="{{{url}}}" class="list-group-item list-group-item-action {{#isactive}}active{{/isactive}}">{{text}}</a>
+                {{/mobileprimarynav}}
+                <a href="{{{config.wwwroot}}}/theme/kadsamhsa/courses.php" class="list-group-item list-group-item-action">{{#str}}catalogue, theme_kadsamhsa{{/str}}</a>
+            </div>
+        {{/drawercontent}}
+        {{$drawerpreferencename}}drawer-open-nav{{/drawerpreferencename}}
+        {{$forceopen}}1{{/forceopen}}
+        {{$drawerstate}}show-drawer-left{{/drawerstate}}
+        {{$tooltipplacement}}right{{/tooltipplacement}}
+        {{$closebuttontext}}{{#str}}closebuttontext, core{{/str}}{{/closebuttontext}}
+    {{/ theme_boost/drawer}}
+{{/mobileprimarynav}}

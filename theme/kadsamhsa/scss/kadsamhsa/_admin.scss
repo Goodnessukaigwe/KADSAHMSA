@@ -1,0 +1,177 @@
+// KADSAMHSA admin UI streamlining (Gurucan-style)
+
+body.kadsamhsa-admin,
+body.pagelayout-admin {
+    // Sidebar navigation grouping
+    .drawer-left .list-group-item,
+    #nav-drawer .list-group-item {
+        border-radius: var(--kadsamhsa-radius-sm);
+        margin-bottom: 2px;
+        font-size: 0.875rem;
+        border: none;
+    }
+}
+
+.kadsamhsa-admin-sidebar {
+    background: var(--kadsamhsa-secondary);
+    color: rgba(255, 255, 255, 0.9);
+    width: var(--kadsamhsa-sidebar-width);
+    min-height: 100vh;
+    padding: var(--kadsamhsa-space-lg) 0;
+    position: fixed;
+    left: 0;
+    top: var(--kadsamhsa-header-height);
+    z-index: 100;
+    overflow-y: auto;
+
+    @media (max-width: 991.98px) {
+        transform: translateX(-100%);
+        transition: transform var(--kadsamhsa-transition);
+
+        &.open {
+            transform: translateX(0);
+        }
+    }
+
+    &__brand {
+        padding: 0 var(--kadsamhsa-space-lg) var(--kadsamhsa-space-lg);
+        font-family: var(--kadsamhsa-font-display);
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: var(--kadsamhsa-space-md);
+    }
+
+    &__group {
+        margin-bottom: var(--kadsamhsa-space-md);
+
+        &-label {
+            padding: var(--kadsamhsa-space-xs) var(--kadsamhsa-space-lg);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--kadsamhsa-accent);
+            opacity: 0.8;
+        }
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: var(--kadsamhsa-space-sm);
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-lg);
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus,
+        &.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        &.active {
+            border-left: 3px solid var(--kadsamhsa-accent);
+        }
+    }
+}
+
+// Admin settings page streamlining
+.pagelayout-admin {
+    #region-main {
+        background: var(--kadsamhsa-surface);
+        border-radius: var(--kadsamhsa-radius-lg);
+        border: 1px solid var(--kadsamhsa-border);
+    }
+
+    // Hide verbose admin elements
+    .adminsettings .form-shortname {
+        display: none;
+    }
+
+    .adminsettings h3 {
+        font-family: var(--kadsamhsa-font-display);
+        font-size: 1.125rem;
+        padding-bottom: var(--kadsamhsa-space-sm);
+        border-bottom: 2px solid var(--kadsamhsa-primary-light);
+        margin-top: var(--kadsamhsa-space-xl);
+    }
+}
+
+// Course builder simplification
+body.kadsamhsa-course-edit,
+.path-course-view.editing {
+    .section .section-action-menu {
+        opacity: 1;
+    }
+
+    .activity-item {
+        border-radius: var(--kadsamhsa-radius-sm);
+        border: 1px solid var(--kadsamhsa-border-light);
+        margin-bottom: var(--kadsamhsa-space-xs);
+    }
+
+    // Simplify activity chooser
+    .activitychooser {
+        border-radius: var(--kadsamhsa-radius-lg);
+    }
+
+    .modchoosercontainer {
+        .option {
+            border-radius: var(--kadsamhsa-radius-md);
+            border: 1px solid var(--kadsamhsa-border);
+            transition: border-color var(--kadsamhsa-transition);
+
+            &:hover {
+                border-color: var(--kadsamhsa-primary);
+            }
+        }
+    }
+
+    // Cleaner section headers
+    .course-content .section .sectionname {
+        font-family: var(--kadsamhsa-font-display);
+        font-weight: 600;
+    }
+}
+
+// Gurucan-style action bar for course editing
+.kadsamhsa-course-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kadsamhsa-space-sm);
+    padding: var(--kadsamhsa-space-md);
+    background: var(--kadsamhsa-bg);
+    border: 1px solid var(--kadsamhsa-border);
+    border-radius: var(--kadsamhsa-radius-md);
+    margin-bottom: var(--kadsamhsa-space-lg);
+
+    .btn {
+        border-radius: var(--kadsamhsa-radius-sm);
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary {
+        background: var(--kadsamhsa-primary);
+        border-color: var(--kadsamhsa-primary);
+    }
+}
+
+// Mobile admin
+@media (max-width: 767.98px) {
+    .pagelayout-admin {
+        #region-main {
+            padding: var(--kadsamhsa-space-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--kadsamhsa-space-md);
+        }
+    }
+}

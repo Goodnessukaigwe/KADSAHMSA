@@ -1,0 +1,83 @@
+{{!
+    @template theme_kadsamhsa/take_course
+
+    Course Details — outline + enrol sidebar (Figma).
+}}
+<div class="kadsamhsa-shome" data-region="kadsamhsa-take-course">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main kadsamhsa-take" id="kadsamhsa-shome-main">
+        <div class="kadsamhsa-take__layout">
+            <div class="kadsamhsa-take__primary">
+                <div class="kadsamhsa-take__tags">
+                    <span class="kadsamhsa-take__tag">{{levellabel}}</span>
+                    <span class="kadsamhsa-take__tag">{{pricelabel}}</span>
+                    <span class="kadsamhsa-take__tag{{#istextcourse}} kadsamhsa-take__tag--text{{/istextcourse}}">{{typelabel}}</span>
+                </div>
+
+                <div class="kadsamhsa-take__hero{{#istextcourse}} kadsamhsa-take__hero--text{{/istextcourse}}" aria-hidden="true">
+                    {{#imageurl}}
+                        <img src="{{{imageurl}}}" alt="" />
+                    {{/imageurl}}
+                    {{^imageurl}}
+                        <div class="kadsamhsa-take__hero-ph{{#istextcourse}} kadsamhsa-take__hero-ph--text{{/istextcourse}}"></div>
+                    {{/imageurl}}
+                    {{#isvideocourse}}
+                    <span class="kadsamhsa-take__play" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M9 7.5v9l8-4.5-8-4.5z" fill="currentColor"/></svg>
+                    </span>
+                    {{/isvideocourse}}
+                    {{#istextcourse}}
+                    <span class="kadsamhsa-take__readbadge" aria-hidden="true">{{#str}}coursetypetext, theme_kadsamhsa{{/str}}</span>
+                    {{/istextcourse}}
+                </div>
+
+                <h1 class="kadsamhsa-take__title">{{coursename}}</h1>
+                <p class="kadsamhsa-take__summary">{{summary}}</p>
+
+                <div class="kadsamhsa-take__stats">
+                    <div class="kadsamhsa-take__stat"><strong>{{statmodules}}</strong><span>{{#str}}coursestatmodules, theme_kadsamhsa{{/str}}</span></div>
+                    <div class="kadsamhsa-take__stat"><strong>{{statduration}}</strong><span>{{#str}}coursestatdurationlbl, theme_kadsamhsa{{/str}}</span></div>
+                    <div class="kadsamhsa-take__stat"><strong>{{statpass}}</strong><span>{{#str}}coursestatpasslbl, theme_kadsamhsa{{/str}}</span></div>
+                    <div class="kadsamhsa-take__stat"><strong>{{statenrolled}}</strong><span>{{#str}}coursestatenrolledlbl, theme_kadsamhsa{{/str}}</span></div>
+                </div>
+
+                <section class="kadsamhsa-take-outline" aria-labelledby="kadsamhsa-take-outline-title">
+                    <h2 id="kadsamhsa-take-outline-title" class="kadsamhsa-take-outline__heading">
+                        {{#str}}courseoutline, theme_kadsamhsa{{/str}}
+                    </h2>
+                    <div class="kadsamhsa-take-outline__list">
+                        {{#outline}}
+                        <a href="{{{url}}}" class="kadsamhsa-take-outline__item">
+                            <span class="kadsamhsa-take-outline__num" aria-hidden="true">{{number}}</span>
+                            <span class="kadsamhsa-take-outline__copy">
+                                <span class="kadsamhsa-take-outline__title">{{title}}</span>
+                                <span class="kadsamhsa-take-outline__meta">{{meta}}</span>
+                            </span>
+                            <span class="kadsamhsa-take-outline__progress">
+                                <span>{{completedlabel}}</span>
+                                <span class="kadsamhsa-take-outline__bar"><span style="width: {{progress}}%"></span></span>
+                            </span>
+                        </a>
+                        {{/outline}}
+                    </div>
+                </section>
+            </div>
+
+            <aside class="kadsamhsa-take-side" aria-label="{{#str}}coursesummary, theme_kadsamhsa{{/str}}">
+                <dl class="kadsamhsa-take-side__facts">
+                    <div><dt>{{#str}}dashprice, theme_kadsamhsa{{/str}}</dt><dd>{{pricelabel}}</dd></div>
+                    <div><dt>{{#str}}courselevellbl, theme_kadsamhsa{{/str}}</dt><dd>{{levellabel}}</dd></div>
+                    <div><dt>{{#str}}courseaccesslbl, theme_kadsamhsa{{/str}}</dt><dd>{{accesslabel}}</dd></div>
+                    <div><dt>{{#str}}coursecertlbl, theme_kadsamhsa{{/str}}</dt><dd>{{certlabel}}</dd></div>
+                </dl>
+                <a href="{{{ctaurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--light kadsamhsa-take-side__cta">
+                    <span>{{ctalabel}}</span>
+                    <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                </a>
+            </aside>
+        </div>
+    </main>
+</div>

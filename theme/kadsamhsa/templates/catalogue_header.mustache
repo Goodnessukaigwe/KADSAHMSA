@@ -1,0 +1,21 @@
+{{!
+    @template theme_kadsamhsa/catalogue_header
+
+    Course catalogue page header with search and filters.
+}}
+<div class="kadsamhsa-catalogue__header kadsamhsa-container">
+    <h1 class="kadsamhsa-catalogue__title">{{#str}}cataloguetitle, theme_kadsamhsa{{/str}}</h1>
+    <p class="kadsamhsa-lead">{{#str}}cataloguesubtitle, theme_kadsamhsa{{/str}}</p>
+</div>
+<div class="kadsamhsa-catalogue__toolbar kadsamhsa-container" data-region="kadsamhsa-catalogue-toolbar">
+    <div class="kadsamhsa-catalogue__search">
+        <label for="kadsamhsa-course-search" class="kadsamhsa-sr-only">{{#str}}searchcourses, theme_kadsamhsa{{/str}}</label>
+        <input type="search" id="kadsamhsa-course-search" placeholder="{{#str}}searchcourses, theme_kadsamhsa{{/str}}" aria-label="{{#str}}searchcourses, theme_kadsamhsa{{/str}}" />
+    </div>
+    <div class="kadsamhsa-catalogue__filters" role="group" aria-label="{{#str}}filtercourses, theme_kadsamhsa{{/str}}">
+        <button type="button" class="kadsamhsa-catalogue__filter-btn active" data-filter="all">{{#str}}filterall, theme_kadsamhsa{{/str}}</button>
+        <button type="button" class="kadsamhsa-catalogue__filter-btn" data-filter="free">{{#str}}filterfree, theme_kadsamhsa{{/str}}</button>
+        <button type="button" class="kadsamhsa-catalogue__filter-btn" data-filter="health">{{#str}}filterhealth, theme_kadsamhsa{{/str}}</button>
+        <button type="button" class="kadsamhsa-catalogue__filter-btn" data-filter="prevention">{{#str}}filterprevention, theme_kadsamhsa{{/str}}</button>
+    </div>
+</div>

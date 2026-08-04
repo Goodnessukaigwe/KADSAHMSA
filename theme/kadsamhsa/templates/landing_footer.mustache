@@ -1,0 +1,19 @@
+{{!
+    @template theme_kadsamhsa/landing_footer
+
+    Minimal black footer bar for the public landing page.
+}}
+<footer id="page-footer" class="kadsamhsa-footer kadsamhsa-footer--landing d-print-none">
+    <div class="kadsamhsa-container">
+        <div class="kadsamhsa-footer__bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                &copy; {{year}} {{{ sitename }}}. {{#str}}allrightsreserved, theme_kadsamhsa{{/str}}
+            </div>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{{catalogueurl}}}">{{#str}}landingnavcourses, theme_kadsamhsa{{/str}}</a>
+                <a href="{{{abouturl}}}">{{#str}}landingnavabout, theme_kadsamhsa{{/str}}</a>
+                <a href="#contact">{{#str}}landingnavcontact, theme_kadsamhsa{{/str}}</a>
+            </div>
+        </div>
+    </div>
+</footer>

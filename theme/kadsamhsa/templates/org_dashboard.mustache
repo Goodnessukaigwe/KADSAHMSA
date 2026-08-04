@@ -1,0 +1,83 @@
+{{!
+    @template theme_kadsamhsa/org_dashboard
+
+    Organization dashboard shell (Phase 1 UI only).
+}}
+<div class="kadsamhsa-org-dashboard">
+    <div class="kadsamhsa-org-dashboard__header">
+        <div class="kadsamhsa-container">
+            {{#logourl}}
+                <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-org-dashboard__logo" width="72" height="54" />
+            {{/logourl}}
+            <h1 class="kadsamhsa-org-dashboard__title">{{#str}}orgdashboardtitle, theme_kadsamhsa{{/str}}</h1>
+            <p class="kadsamhsa-org-dashboard__org-name">{{orgname}}</p>
+        </div>
+    </div>
+    <div class="kadsamhsa-container">
+        <div class="kadsamhsa-org-dashboard__stats">
+            <div class="kadsamhsa-org-dashboard__stat-card">
+                <div class="kadsamhsa-org-dashboard__stat-card-value">{{totalstaff}}</div>
+                <div class="kadsamhsa-org-dashboard__stat-card-label">{{#str}}totalstaff, theme_kadsamhsa{{/str}}</div>
+            </div>
+            <div class="kadsamhsa-org-dashboard__stat-card">
+                <div class="kadsamhsa-org-dashboard__stat-card-value">{{activelearners}}</div>
+                <div class="kadsamhsa-org-dashboard__stat-card-label">{{#str}}activelearners, theme_kadsamhsa{{/str}}</div>
+            </div>
+            <div class="kadsamhsa-org-dashboard__stat-card">
+                <div class="kadsamhsa-org-dashboard__stat-card-value">{{completions}}</div>
+                <div class="kadsamhsa-org-dashboard__stat-card-label">{{#str}}completions, theme_kadsamhsa{{/str}}</div>
+            </div>
+            <div class="kadsamhsa-org-dashboard__stat-card">
+                <div class="kadsamhsa-org-dashboard__stat-card-value">{{certificatesissued}}</div>
+                <div class="kadsamhsa-org-dashboard__stat-card-label">{{#str}}certsissued, theme_kadsamhsa{{/str}}</div>
+            </div>
+        </div>
+
+        <div class="kadsamhsa-org-dashboard__panel">
+            <div class="kadsamhsa-org-dashboard__panel-header">
+                <h3>{{#str}}staffprogress, theme_kadsamhsa{{/str}}</h3>
+            </div>
+            <div class="kadsamhsa-org-dashboard__panel-body">
+                {{#hasstaff}}
+                    <table class="kadsamhsa-org-dashboard__table">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{#str}}staffname, theme_kadsamhsa{{/str}}</th>
+                                <th scope="col">{{#str}}course, theme_kadsamhsa{{/str}}</th>
+                                <th scope="col">{{#str}}progress, theme_kadsamhsa{{/str}}</th>
+                                <th scope="col">{{#str}}status, theme_kadsamhsa{{/str}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#staff}}
+                                <tr>
+                                    <td>{{name}}</td>
+                                    <td>{{course}}</td>
+                                    <td>
+                                        <div class="progress-mini" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-mini-fill" style="width: {{progress}}%"></div>
+                                        </div>
+                                        {{progress}}%
+                                    </td>
+                                    <td>
+                                        {{#completed}}
+                                            <span class="badge-complete">{{#str}}completed, theme_kadsamhsa{{/str}}</span>
+                                        {{/completed}}
+                                        {{^completed}}
+                                            <span class="badge-complete badge-inprogress">{{#str}}inprogress, theme_kadsamhsa{{/str}}</span>
+                                        {{/completed}}
+                                    </td>
+                                </tr>
+                            {{/staff}}
+                        </tbody>
+                    </table>
+                {{/hasstaff}}
+                {{^hasstaff}}
+                    <div class="kadsamhsa-org-dashboard__placeholder">
+                        {{#str}}orgplaceholder, theme_kadsamhsa{{/str}}
+                    </div>
+                {{/hasstaff}}
+            </div>
+        </div>
+    </div>
+</div>

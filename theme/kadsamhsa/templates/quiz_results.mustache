@@ -1,0 +1,59 @@
+{{!
+    @template theme_kadsamhsa/quiz_results
+
+    Quiz results overview — sidebar Quiz destination (Figma).
+}}
+<div class="kadsamhsa-shome kadsamhsa-quizresults" data-region="kadsamhsa-quiz-results">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main" id="kadsamhsa-shome-main">
+        <div class="kadsamhsa-shome-main__inner">
+            <header class="kadsamhsa-mycourses-head">
+                <h1 class="kadsamhsa-mycourses-head__title">{{#str}}quizresultstitle, theme_kadsamhsa{{/str}}</h1>
+                <p class="kadsamhsa-mycourses-head__sub">{{#str}}quizresultssubtitle, theme_kadsamhsa{{/str}}</p>
+            </header>
+
+            <div class="kadsamhsa-mycourses-stats" aria-label="{{#str}}quizresultsstats, theme_kadsamhsa{{/str}}">
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{stattaken}}</strong>
+                    <span>{{#str}}quizstatstaken, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{statpassed}}</strong>
+                    <span>{{#str}}quizstatspassed, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{statretry}}</strong>
+                    <span>{{#str}}quizstatsretry, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-mycourses-stats__card">
+                    <strong>{{stataverage}}</strong>
+                    <span>{{#str}}quizstatsaverage, theme_kadsamhsa{{/str}}</span>
+                </div>
+            </div>
+
+            <div class="kadsamhsa-quizresults-table" role="table" aria-label="{{#str}}quizresultstitle, theme_kadsamhsa{{/str}}">
+                <div class="kadsamhsa-quizresults-table__head" role="row">
+                    <span role="columnheader">{{#str}}quizcolcourse, theme_kadsamhsa{{/str}}</span>
+                    <span role="columnheader">{{#str}}quizcolassessment, theme_kadsamhsa{{/str}}</span>
+                    <span role="columnheader">{{#str}}quizcolscore, theme_kadsamhsa{{/str}}</span>
+                    <span role="columnheader">{{#str}}quizcolattempts, theme_kadsamhsa{{/str}}</span>
+                    <span role="columnheader">{{#str}}quizcoldate, theme_kadsamhsa{{/str}}</span>
+                    <span role="columnheader" class="kadsamhsa-quizresults-table__statuscol">{{#str}}quizcolstatus, theme_kadsamhsa{{/str}}</span>
+                </div>
+                {{#rows}}
+                <a href="{{{url}}}" class="kadsamhsa-quizresults-table__row{{#isfail}} is-fail{{/isfail}}{{#ispass}} is-pass{{/ispass}}" role="row">
+                    <span role="cell" data-label="{{#str}}quizcolcourse, theme_kadsamhsa{{/str}}">{{course}}</span>
+                    <span role="cell" data-label="{{#str}}quizcolassessment, theme_kadsamhsa{{/str}}">{{assessment}}</span>
+                    <span role="cell" data-label="{{#str}}quizcolscore, theme_kadsamhsa{{/str}}">{{score}}</span>
+                    <span role="cell" data-label="{{#str}}quizcolattempts, theme_kadsamhsa{{/str}}">{{attempts}}</span>
+                    <span role="cell" data-label="{{#str}}quizcoldate, theme_kadsamhsa{{/str}}">{{date}}</span>
+                    <span role="cell" class="kadsamhsa-quizresults-table__statuscol">
+                        <span class="kadsamhsa-quizresults-badge{{#isfail}} kadsamhsa-quizresults-badge--fail{{/isfail}}{{#ispass}} kadsamhsa-quizresults-badge--pass{{/ispass}}">{{statuslabel}}</span>
+                    </span>
+                </a>
+                {{/rows}}
+            </div>
+        </div>
+    </main>
+</div>

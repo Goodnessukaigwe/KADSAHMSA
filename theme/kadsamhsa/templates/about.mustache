@@ -1,0 +1,117 @@
+{{!
+    @template theme_kadsamhsa/about
+
+    About Us page — Figma layout with image/logo placeholders.
+}}
+<div class="kadsamhsa-about">
+
+    <section class="kadsamhsa-about-hero" aria-labelledby="kadsamhsa-about-title">
+        <div class="kadsamhsa-container kadsamhsa-about-hero__grid">
+            <div class="kadsamhsa-about-hero__media" aria-hidden="true">
+                <div class="kadsamhsa-about-ph kadsamhsa-about-ph--hero">
+                    <span>{{#str}}signupmediaplaceholder, theme_kadsamhsa{{/str}}</span>
+                </div>
+            </div>
+
+            <div class="kadsamhsa-about-hero__copy">
+                <p class="kadsamhsa-about-hero__eyebrow">{{#str}}aboutbadge, theme_kadsamhsa{{/str}}</p>
+                <h1 id="kadsamhsa-about-title" class="kadsamhsa-about-hero__title">
+                    {{#str}}abouttitle, theme_kadsamhsa{{/str}}
+                </h1>
+                <p class="kadsamhsa-about-hero__lead">{{#str}}aboutlead, theme_kadsamhsa{{/str}}</p>
+
+                <div class="kadsamhsa-about-panels">
+                    <div class="kadsamhsa-about-panel">
+                        <h2 class="kadsamhsa-about-panel__label">{{#str}}aboutmissionlabel, theme_kadsamhsa{{/str}}</h2>
+                        <p class="kadsamhsa-about-panel__text">{{#str}}aboutmission, theme_kadsamhsa{{/str}}</p>
+                    </div>
+                    <div class="kadsamhsa-about-panel">
+                        <h2 class="kadsamhsa-about-panel__label">{{#str}}aboutvisionlabel, theme_kadsamhsa{{/str}}</h2>
+                        <p class="kadsamhsa-about-panel__text">{{#str}}aboutvision, theme_kadsamhsa{{/str}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="kadsamhsa-about-faq" aria-labelledby="kadsamhsa-about-faq-title">
+        <div class="kadsamhsa-container">
+            <h2 id="kadsamhsa-about-faq-title" class="kadsamhsa-about-faq__heading">
+                {{#str}}aboutfaqtitle, theme_kadsamhsa{{/str}}
+            </h2>
+
+            <div class="kadsamhsa-about-faq__grid">
+                <div class="kadsamhsa-about-faq__main">
+                    <span class="kadsamhsa-about-faq__pill">{{#str}}aboutfaqpill, theme_kadsamhsa{{/str}}</span>
+                    <div class="kadsamhsa-about-accordion">
+                        <details class="kadsamhsa-about-acc">
+                            <summary>{{#str}}aboutfaq1q, theme_kadsamhsa{{/str}}</summary>
+                            <div class="kadsamhsa-about-acc__body">{{#str}}aboutfaq1a, theme_kadsamhsa{{/str}}</div>
+                        </details>
+                        <details class="kadsamhsa-about-acc" open>
+                            <summary>{{#str}}aboutfaq2q, theme_kadsamhsa{{/str}}</summary>
+                            <div class="kadsamhsa-about-acc__body">{{#str}}aboutfaq2a, theme_kadsamhsa{{/str}}</div>
+                        </details>
+                        <details class="kadsamhsa-about-acc">
+                            <summary>{{#str}}aboutfaq3q, theme_kadsamhsa{{/str}}</summary>
+                            <div class="kadsamhsa-about-acc__body">{{#str}}aboutfaq3a, theme_kadsamhsa{{/str}}</div>
+                        </details>
+                        <details class="kadsamhsa-about-acc">
+                            <summary>{{#str}}aboutfaq4q, theme_kadsamhsa{{/str}}</summary>
+                            <div class="kadsamhsa-about-acc__body">{{#str}}aboutfaq4a, theme_kadsamhsa{{/str}}</div>
+                        </details>
+                        <details class="kadsamhsa-about-acc">
+                            <summary>{{#str}}aboutfaq5q, theme_kadsamhsa{{/str}}</summary>
+                            <div class="kadsamhsa-about-acc__body">{{#str}}aboutfaq5a, theme_kadsamhsa{{/str}}</div>
+                        </details>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="kadsamhsa-about-brand" aria-label="{{{ sitename }}}">
+        <div class="kadsamhsa-container kadsamhsa-about-brand__inner">
+            {{#logourl}}
+                <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-about-brand__logo" width="140" height="105" />
+            {{/logourl}}
+            {{^logourl}}
+                <div class="kadsamhsa-about-brand__logo-ph" aria-hidden="true"></div>
+            {{/logourl}}
+            <p class="kadsamhsa-about-brand__name">{{{ sitename }}}</p>
+            <div class="kadsamhsa-about-brand__contact">
+                <div class="kadsamhsa-about-brand__contact-item">
+                    <span class="kadsamhsa-about-brand__icon" aria-hidden="true">◉</span>
+                    <span>{{#str}}aboutlocation, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-about-brand__contact-item">
+                    <span class="kadsamhsa-about-brand__icon" aria-hidden="true">☎</span>
+                    <span>{{#str}}aboutphone, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-about-brand__contact-item">
+                    <span class="kadsamhsa-about-brand__icon" aria-hidden="true">✉</span>
+                    <a href="mailto:{{{contactemail}}}">{{{contactemail}}}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="kadsamhsa-about-footer">
+        <div class="kadsamhsa-container">
+            <div class="kadsamhsa-about-footer__cols">
+                <div>
+                    <h4>{{#str}}aboutfooterproduct, theme_kadsamhsa{{/str}}</h4>
+                    <ul>
+                        <li><a href="{{{catalogueurl}}}">{{#str}}catalogue, theme_kadsamhsa{{/str}}</a></li>
+                        <li><a href="{{{abouturl}}}">{{#str}}landingnavabout, theme_kadsamhsa{{/str}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="kadsamhsa-about-footer__bottom">
+                <span>&copy; {{year}} {{{ sitename }}}. {{#str}}allrightsreserved, theme_kadsamhsa{{/str}}</span>
+            </div>
+        </div>
+    </footer>
+
+</div>

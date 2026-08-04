@@ -1,0 +1,167 @@
+// KADSAMHSA signup — sync hidden Moodle fields for the 3-field Figma UI.
+define(['core/str'], function(Str) {
+    var strings = {};
+
+    /**
+     * Derive username from email local-part.
+     *
+     * @param {string} email
+     * @return {string}
+     */
+    function usernameFromEmail(email) {
+        var local = (email || '').split('@')[0] || '';
+        return local.replace(/[^a-z0-9._-]/gi, '').toLowerCase().substring(0, 100);
+    }
+
+    /**
+     * Derive lastname from full name (remainder after first word).
+     *
+     * @param {string} fullname
+     * @return {string}
+     */
+    function lastnameFromFullname(fullname) {
+        var parts = (fullname || '').trim().split(/\s+/);
+        if (parts.length <= 1) {
+            return parts[0] || '';
+        }
+        return parts.slice(1).join(' ');
+    }
+
+    /**
+     * Set input value and dispatch input event for Moodle validation.
+     *
+     * @param {HTMLInputElement|null} field
+     * @param {string} value
+     */
+    function setFieldValue(field, value) {
+        if (!field) {
+            return;
+        }
+        field.value = value;
+        field.dispatchEvent(new Event('input', {bubbles: true}));
+        field.dispatchEvent(new Event('change', {bubbles: true}));
+    }
+
+    /**
+     * Update visible field labels and placeholders from theme strings.
+     */
+    function applyLabels() {
+        var firstname = document.getElementById('id_firstname');
+        var email = document.getElementById('id_email');
+        var password = document.getElementById('id_password');
+
+        var labelMap = [
+            {field: firstname, label: strings.fullname, placeholder: strings.fullnameplaceholder},
+            {field: email, label: strings.email, placeholder: strings.emailplaceholder},
+            {field: password, label: strings.password, placeholder: strings.passwordplaceholder}
+        ];
+
+        labelMap.forEach(function(item) {
+            if (!item.field) {
+                return;
+            }
+            item.field.setAttribute('placeholder', item.placeholder);
+            var fitem = item.field.closest('.fitem');
+            if (!fitem) {
+                return;
+            }
+            var label = fitem.querySelector('label');
+            if (label) {
+                label.textContent = item.label;
+            }
+        });
+
+        var submit = document.querySelector('#fgroup_id_buttonar .btn-primary, #fgroup_id_buttonar input[type="submit"]');
+        if (submit) {
+            submit.value = strings.submit;
+            submit.textContent = strings.submit;
+        }
+    }
+
+    /**
+     * Sync hidden Moodle fields from visible inputs.
+     */
+    function syncHiddenFields() {
+        var firstname = document.getElementById('id_firstname');
+        var email = document.getElementById('id_email');
+        var username = document.getElementById('id_username');
+        var email2 = document.getElementById('id_email2');
+        var lastname = document.getElementById('id_lastname');
+
+        var fullname = firstname ? firstname.value.trim() : '';
+        var emailval = email ? email.value.trim() : '';
+
+        setFieldValue(username, usernameFromEmail(emailval));
+        setFieldValue(email2, emailval);
+        setFieldValue(lastname, lastnameFromFullname(fullname));
+    }
+
+    /**
+     * Wire mobile nav toggle.
+     */
+    function initNavToggle() {
+        var toggle = document.querySelector('[data-action="toggle-signup-nav"]');
+        var menu = document.getElementById('kadsamhsa-signup-nav-menu');
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.addEventListener('click', function() {
+            var expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            menu.classList.toggle('is-open', !expanded);
+        });
+    }
+
+    return {
+        init: function() {
+            if (!document.body.classList.contains('kadsamhsa-signup-page')) {
+                initNavToggle();
+                return;
+            }
+
+            var stringKeys = [
+                {key: 'signupfullname', component: 'theme_kadsamhsa'},
+                {key: 'signupemail', component: 'theme_kadsamhsa'},
+                {key: 'signuppassword', component: 'theme_kadsamhsa'},
+                {key: 'signupfullnameplaceholder', component: 'theme_kadsamhsa'},
+                {key: 'signupemailplaceholder', component: 'theme_kadsamhsa'},
+                {key: 'signuppasswordplaceholder', component: 'theme_kadsamhsa'},
+                {key: 'signupsubmit', component: 'theme_kadsamhsa'}
+            ];
+
+            Str.get_strings(stringKeys).then(function(results) {
+                strings = {
+                    fullname: results[0],
+                    email: results[1],
+                    password: results[2],
+                    fullnameplaceholder: results[3],
+                    emailplaceholder: results[4],
+                    passwordplaceholder: results[5],
+                    submit: results[6]
+                };
+                applyLabels();
+            }).catch(function() {
+                // Labels fall back to Moodle defaults.
+            });
+
+            ['id_firstname', 'id_email'].forEach(function(id) {
+                var field = document.getElementById(id);
+                if (field) {
+                    field.addEventListener('input', syncHiddenFields);
+                    field.addEventListener('blur', syncHiddenFields);
+                }
+            });
+
+            var form = document.querySelector('.kadsamhsa-signup__form form, .kadsamhsa-signup form.mform');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    syncHiddenFields();
+                });
+            }
+
+            syncHiddenFields();
+            initNavToggle();
+        }
+    };
+});

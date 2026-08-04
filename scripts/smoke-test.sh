@@ -149,7 +149,16 @@ else
   bad "could not set theme"
 fi
 
-# 11. Send test email to Mailpit
+# 11. Signup page (self-registration)
+SIGNUP_CODE="$(curl -s -o /tmp/kadsamhsa_signup.html -w '%{http_code}' "${MOODLE_URL:-http://localhost:8080}/login/signup.php" || true)"
+if [[ "${SIGNUP_CODE}" == "200" ]] && grep -q 'Create an account' /tmp/kadsamhsa_signup.html 2>/dev/null \
+  && ! grep -q 'Sorry, you may not use this page' /tmp/kadsamhsa_signup.html 2>/dev/null; then
+  ok "signup page available (registerauth=email)"
+else
+  bad "signup page blocked or missing (set registerauth=email)"
+fi
+
+# 12. Send test email to Mailpit
 if docker compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T -u www-data moodle-php \
   php -r "
 define('CLI_SCRIPT', true);

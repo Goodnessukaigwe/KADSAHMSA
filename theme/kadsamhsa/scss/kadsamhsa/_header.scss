@@ -1,0 +1,75 @@
+// KADSAMHSA header / navbar
+
+.kadsamhsa-navbar {
+    background: var(--kadsamhsa-surface) !important;
+    border-bottom: 1px solid var(--kadsamhsa-border);
+    box-shadow: var(--kadsamhsa-shadow-sm);
+    min-height: var(--kadsamhsa-header-height);
+    padding-block: 0;
+
+    .navbar-brand {
+        font-family: var(--kadsamhsa-font-display);
+        font-weight: 700;
+        font-size: 1.125rem;
+        color: var(--kadsamhsa-primary) !important;
+
+        .logo,
+        .kadsamhsa-navbar__logo {
+            max-height: 30px;
+            width: auto;
+            max-width: 48px;
+            object-fit: contain;
+        }
+    }
+
+    .kadsamhsa-nav-link {
+        font-weight: 500;
+        color: var(--kadsamhsa-text) !important;
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md) !important;
+        border-radius: var(--kadsamhsa-radius-sm);
+        transition: background var(--kadsamhsa-transition), color var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus {
+            background: var(--kadsamhsa-primary-light);
+            color: var(--kadsamhsa-primary) !important;
+        }
+
+        &.active {
+            color: var(--kadsamhsa-primary) !important;
+            font-weight: 600;
+        }
+    }
+
+    .kadsamhsa-btn-enrol {
+        background: var(--kadsamhsa-primary);
+        color: var(--kadsamhsa-text-inverse) !important;
+        border: none;
+        border-radius: var(--kadsamhsa-radius-md);
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-lg);
+        font-weight: 600;
+        transition: background var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus {
+            background: var(--kadsamhsa-primary-hover);
+            color: var(--kadsamhsa-text-inverse) !important;
+        }
+    }
+
+    .navbar-toggler {
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-sm);
+    }
+}
+
+// Override Boost fixed navbar offset
+body.kadsamhsa-theme {
+    #page {
+        margin-top: var(--kadsamhsa-header-height);
+    }
+}
+
+.primary-navigation .moremenu .nav-link {
+    font-weight: 500;
+}

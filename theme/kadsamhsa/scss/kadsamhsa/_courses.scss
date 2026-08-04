@@ -1,0 +1,482 @@
+// KADSAMHSA Courses page — Figma match (placeholders for images/logos)
+
+$c-text: #111111;
+$c-muted: #6b7280;
+$c-border: #e8e8e8;
+$c-soft: #f4f4f4;
+$c-panel: #111111;
+
+body.kadsamhsa-courses-page {
+    background: #fff !important;
+    background-image: none !important;
+
+    .kadsamhsa-auth-wrapper,
+    #page,
+    .kadsamhsa-auth-page {
+        background: #fff !important;
+        background-image: none !important;
+    }
+
+    .kadsamhsa-auth-page__content {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .kadsamhsa-auth-page__main-box,
+    .kadsamhsa-auth-page__main,
+    #region-main,
+    #region-main-box {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .kadsamhsa-signup-nav {
+        background: #fff;
+        border-bottom: 1px solid $c-border;
+    }
+}
+
+.kadsamhsa-courses {
+    background: #fff;
+    color: $c-text;
+    width: 100%;
+
+    .kadsamhsa-container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+.kadsamhsa-courses-hero {
+    padding: 3.5rem 0 2rem;
+    text-align: center;
+
+    &__title {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(2rem, 4.5vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.12;
+        margin: 0 auto 1rem;
+        max-width: 16ch;
+        color: $c-text;
+    }
+
+    &__subtitle {
+        margin: 0 auto;
+        max-width: 46ch;
+        font-size: 1rem;
+        line-height: 1.65;
+        color: $c-muted;
+    }
+
+    @media (min-width: 768px) {
+        padding: 4.5rem 0 2.5rem;
+    }
+}
+
+.kadsamhsa-courses-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.kadsamhsa-courses-tabs {
+    display: flex;
+    gap: 1.5rem;
+
+    &__btn {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        padding: 0.35rem 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $c-muted;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: $c-text;
+        }
+
+        &.is-active {
+            color: $c-text;
+            border-bottom-color: $c-text;
+        }
+    }
+}
+
+.kadsamhsa-courses-search {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+
+    &__icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $c-muted;
+        pointer-events: none;
+        display: inline-flex;
+    }
+
+    &__input {
+        width: 100%;
+        border: 1px solid $c-border;
+        border-radius: 999px;
+        padding: 0.7rem 1rem 0.7rem 2.4rem;
+        font-size: 0.875rem;
+        color: $c-text;
+        background: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &::placeholder {
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.75rem;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: #7eb8c9;
+            box-shadow: 0 0 0 3px rgba(126, 184, 201, 0.28);
+        }
+    }
+}
+
+.kadsamhsa-courses-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.75rem;
+    }
+}
+
+.kadsamhsa-ccard {
+    background: #fff;
+    border: 1px solid $c-border;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+    }
+
+    &[hidden] {
+        display: none !important;
+    }
+
+    &__media {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        background: $c-soft;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+    &__ph {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(145deg, #ececec 0%, #ddd 100%);
+        border-bottom: 1px solid $c-border;
+    }
+
+    &__badge {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.3rem 0.85rem;
+        border-radius: 999px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.88);
+        color: $c-text;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+
+        &--paid {
+            background: rgba(17, 17, 17, 0.88);
+            color: #fff;
+            border-color: transparent;
+        }
+    }
+
+    &__body {
+        padding: 1.15rem 1.15rem 1.35rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.55rem;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: $c-text;
+        min-height: 2.6em;
+    }
+
+    &__lessons {
+        margin: 0 0 0.5rem;
+        font-size: 0.8125rem;
+        color: $c-muted;
+    }
+
+    &__enrol {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+        width: 100%;
+        margin-top: auto;
+        padding: 11px 12px 11px 16px;
+        border-radius: 999px;
+        background: $c-panel;
+        color: #fff !important;
+        text-decoration: none;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: background 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: #2a2a2a;
+            color: #fff !important;
+            text-decoration: none;
+        }
+    }
+
+    &__enrol-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #fff;
+        color: #111;
+    }
+
+    &__more {
+        display: block;
+        text-align: center;
+        margin-top: 0.35rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $c-text;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+            text-decoration: underline;
+        }
+    }
+}
+
+.kadsamhsa-courses-empty {
+    text-align: center;
+    color: $c-muted;
+    padding: 2rem 0 3rem;
+}
+
+.kadsamhsa-courses-brand {
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+    border-top: 1px solid $c-border;
+
+    &__logo,
+    &__logo-ph {
+        display: block;
+        width: 140px;
+        height: auto;
+        max-height: 140px;
+        margin: 0 auto 1rem;
+        object-fit: contain;
+    }
+
+    &__logo-ph {
+        height: 140px;
+        border-radius: 28px;
+        border: 1.5px dashed #d0d0d0;
+        background: $c-soft;
+    }
+
+    &__name {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 1.35rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    &__social {
+        list-style: none;
+        margin: 0 0 2rem;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.85rem;
+    }
+
+    &__social-ph {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    &__contact {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        max-width: 720px;
+        margin: 0 auto;
+        border-top: 1px solid $c-border;
+        border-bottom: 1px solid $c-border;
+        padding: 1.1rem 0;
+    }
+
+    &__contact-item {
+        padding: 0.35rem 1.35rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $c-muted;
+
+        &:not(:last-child) {
+            border-right: 1px solid $c-border;
+        }
+
+        a {
+            color: $c-muted;
+            text-decoration: none;
+
+            &:hover {
+                color: $c-text;
+            }
+        }
+    }
+}
+
+.kadsamhsa-courses-footer {
+    background: #111;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 2.75rem 0 1.35rem;
+
+    &__cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        margin-bottom: 2rem;
+        max-width: 640px;
+
+        h4 {
+            margin: 0 0 1rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 0.7rem;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    }
+
+    &__bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        font-size: 0.8rem;
+
+        a {
+            color: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    }
+}

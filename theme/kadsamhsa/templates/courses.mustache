@@ -1,0 +1,123 @@
+{{!
+    @template theme_kadsamhsa/courses
+
+    Courses catalogue page — Figma match with image/logo placeholders.
+}}
+<div class="kadsamhsa-courses" data-region="kadsamhsa-courses">
+
+    <section class="kadsamhsa-courses-hero" aria-labelledby="kadsamhsa-courses-title">
+        <div class="kadsamhsa-container">
+            <h1 id="kadsamhsa-courses-title" class="kadsamhsa-courses-hero__title">
+                {{#str}}coursesherotitle, theme_kadsamhsa{{/str}}
+            </h1>
+            <p class="kadsamhsa-courses-hero__subtitle">
+                {{#str}}coursesherosubtitle, theme_kadsamhsa{{/str}}
+            </p>
+        </div>
+    </section>
+
+    <section class="kadsamhsa-courses-list" aria-label="{{#str}}coursespagetitle, theme_kadsamhsa{{/str}}">
+        <div class="kadsamhsa-container">
+            <div class="kadsamhsa-courses-toolbar">
+                <div class="kadsamhsa-courses-tabs" role="tablist" aria-label="{{#str}}coursesfilterlabel, theme_kadsamhsa{{/str}}">
+                    <button type="button" class="kadsamhsa-courses-tabs__btn is-active" role="tab" aria-selected="true" data-filter="free">
+                        {{#str}}coursesfilterfree, theme_kadsamhsa{{/str}}
+                    </button>
+                    <button type="button" class="kadsamhsa-courses-tabs__btn" role="tab" aria-selected="false" data-filter="paid">
+                        {{#str}}coursesfilterpaid, theme_kadsamhsa{{/str}}
+                    </button>
+                </div>
+                <div class="kadsamhsa-courses-search">
+                    <label for="kadsamhsa-courses-search" class="sr-only">{{#str}}coursessearch, theme_kadsamhsa{{/str}}</label>
+                    <span class="kadsamhsa-courses-search__icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <input
+                        type="search"
+                        id="kadsamhsa-courses-search"
+                        class="kadsamhsa-courses-search__input"
+                        placeholder="{{#str}}coursessearchplaceholder, theme_kadsamhsa{{/str}}"
+                        data-action="courses-search"
+                    />
+                </div>
+            </div>
+
+            <div class="kadsamhsa-courses-grid" data-region="courses-grid">
+                {{#courses}}
+                    <article class="kadsamhsa-ccard" data-price="{{pricetype}}" data-title="{{name}}">
+                        <div class="kadsamhsa-ccard__media">
+                            {{#imageurl}}
+                                <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                            {{/imageurl}}
+                            {{^imageurl}}
+                                <div class="kadsamhsa-ccard__ph" aria-hidden="true"></div>
+                            {{/imageurl}}
+                            <span class="kadsamhsa-ccard__badge kadsamhsa-ccard__badge--{{pricetype}}">{{badgelabel}}</span>
+                        </div>
+                        <div class="kadsamhsa-ccard__body">
+                            <h2 class="kadsamhsa-ccard__title">{{name}}</h2>
+                            <p class="kadsamhsa-ccard__lessons">{{lessons}}</p>
+                            <a href="{{{enrolurl}}}" class="kadsamhsa-ccard__enrol">
+                                <span>{{#str}}coursesenroll, theme_kadsamhsa{{/str}}</span>
+                                <span class="kadsamhsa-ccard__enrol-icon" aria-hidden="true">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </a>
+                            <a href="{{{url}}}" class="kadsamhsa-ccard__more">{{#str}}coursesreadmore, theme_kadsamhsa{{/str}}</a>
+                        </div>
+                    </article>
+                {{/courses}}
+            </div>
+
+            <p class="kadsamhsa-courses-empty" data-region="courses-empty" hidden>
+                {{#str}}coursesempty, theme_kadsamhsa{{/str}}
+            </p>
+        </div>
+    </section>
+
+    <section class="kadsamhsa-courses-brand" aria-label="{{{ sitename }}}">
+        <div class="kadsamhsa-container kadsamhsa-courses-brand__inner">
+            {{#logourl}}
+                <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-courses-brand__logo" width="140" height="105" />
+            {{/logourl}}
+            {{^logourl}}
+                <div class="kadsamhsa-courses-brand__logo-ph" aria-hidden="true"></div>
+            {{/logourl}}
+            <p class="kadsamhsa-courses-brand__name">{{{ sitename }}}</p>
+            <div class="kadsamhsa-courses-brand__contact">
+                <div class="kadsamhsa-courses-brand__contact-item">
+                    <span>{{#str}}aboutlocation, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-courses-brand__contact-item">
+                    <span>{{#str}}coursesphone, theme_kadsamhsa{{/str}}</span>
+                </div>
+                <div class="kadsamhsa-courses-brand__contact-item">
+                    <a href="mailto:{{{contactemail}}}">{{{contactemail}}}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="kadsamhsa-courses-footer">
+        <div class="kadsamhsa-container">
+            <div class="kadsamhsa-courses-footer__cols">
+                <div>
+                    <h4>{{#str}}aboutfooterproduct, theme_kadsamhsa{{/str}}</h4>
+                    <ul>
+                        <li><a href="{{{coursesurl}}}">{{#str}}catalogue, theme_kadsamhsa{{/str}}</a></li>
+                        <li><a href="{{{abouturl}}}">{{#str}}landingnavabout, theme_kadsamhsa{{/str}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="kadsamhsa-courses-footer__bottom">
+                <span>&copy; {{year}} {{{ sitename }}}. {{#str}}allrightsreserved, theme_kadsamhsa{{/str}}</span>
+            </div>
+        </div>
+    </footer>
+
+</div>

@@ -1,0 +1,34 @@
+{{!
+    @template theme_kadsamhsa/course_detail_hero
+
+    Course detail page hero with enrol CTA.
+}}
+<div class="kadsamhsa-course-hero">
+    <div class="kadsamhsa-container">
+        <div class="kadsamhsa-course-hero__grid">
+            <div>
+                <p class="kadsamhsa-eyebrow">{{#str}}onlinecourse, theme_kadsamhsa{{/str}}</p>
+                <h1 class="kadsamhsa-course-hero__title">{{coursename}}</h1>
+                {{#summary}}
+                    <p class="kadsamhsa-course-hero__summary">{{{summary}}}</p>
+                {{/summary}}
+                <ul class="kadsamhsa-course-hero__meta-list">
+                    {{#duration}}
+                        <li><span aria-hidden="true">⏱</span> {{duration}}</li>
+                    {{/duration}}
+                    {{#categoryname}}
+                        <li><span aria-hidden="true">📂</span> {{categoryname}}</li>
+                    {{/categoryname}}
+                    <li><span aria-hidden="true">🎓</span> {{#str}}certincluded, theme_kadsamhsa{{/str}}</li>
+                </ul>
+            </div>
+            <aside class="kadsamhsa-course-hero__sidebar">
+                {{#courseimage}}
+                    <img src="{{{courseimage}}}" alt="" class="img-fluid rounded mb-3 kadsamhsa-course-hero__image" loading="lazy" width="320" height="180" />
+                {{/courseimage}}
+                <a href="{{{enrolurl}}}" class="kadsamhsa-course-hero__enrol-btn">{{enrollabel}}</a>
+                <p class="kadsamhsa-course-hero__cert-note">{{#str}}certnotedetail, theme_kadsamhsa{{/str}}</p>
+            </aside>
+        </div>
+    </div>
+</div>

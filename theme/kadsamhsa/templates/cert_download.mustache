@@ -1,0 +1,16 @@
+{{!
+    @template theme_kadsamhsa/cert_download
+
+    Certificate download view.
+}}
+<div class="kadsamhsa-cert-download">
+    <div class="kadsamhsa-cert-download__icon" aria-hidden="true">🎓</div>
+    <h2 class="kadsamhsa-cert-download__title">{{certname}}</h2>
+    <p class="kadsamhsa-cert-download__desc">{{#str}}certdownloaddesc, theme_kadsamhsa{{/str}}</p>
+    <a href="{{{downloadurl}}}" class="kadsamhsa-cert-download__btn">
+        <span aria-hidden="true">⬇</span> {{#str}}downloadpdf, theme_kadsamhsa{{/str}}
+    </a>
+    <div class="kadsamhsa-cert-download__meta">
+        {{#str}}certdownloadmeta, theme_kadsamhsa{{/str}}
+    </div>
+</div>

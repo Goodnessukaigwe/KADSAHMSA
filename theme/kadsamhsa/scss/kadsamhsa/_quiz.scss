@@ -1,0 +1,106 @@
+// KADSAMHSA quiz / assessment UI
+
+body.kadsamhsa-quiz,
+body.path-mod-quiz {
+    #region-main {
+        background: var(--kadsamhsa-surface);
+        border-radius: var(--kadsamhsa-radius-lg);
+        border: 1px solid var(--kadsamhsa-border);
+    }
+}
+
+.kadsamhsa-quiz-header {
+    background: var(--kadsamhsa-bg);
+    border: 1px solid var(--kadsamhsa-border);
+    border-radius: var(--kadsamhsa-radius-md);
+    padding: var(--kadsamhsa-space-lg);
+    margin-bottom: var(--kadsamhsa-space-xl);
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kadsamhsa-space-lg);
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+    }
+}
+
+// Quiz attempt summary / results
+.quizreviewsummary,
+#mod_quiz-next-nav,
+.table-responsive {
+    border-radius: var(--kadsamhsa-radius-md);
+}
+
+.quizattemptsummaryresults,
+.gradesummary {
+    .cell {
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+    }
+}
+
+// Score display
+.kadsamhsa-quiz-score {
+    text-align: center;
+    padding: var(--kadsamhsa-space-2xl);
+    background: var(--kadsamhsa-bg);
+    border-radius: var(--kadsamhsa-radius-lg);
+    margin-bottom: var(--kadsamhsa-space-xl);
+
+    &__value {
+        font-family: var(--kadsamhsa-font-display);
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--kadsamhsa-primary);
+        line-height: 1;
+    }
+
+    &__label {
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+        margin-top: var(--kadsamhsa-space-sm);
+    }
+
+    &--pass .kadsamhsa-quiz-score__value {
+        color: var(--kadsamhsa-success);
+    }
+
+    &--fail .kadsamhsa-quiz-score__value {
+        color: var(--kadsamhsa-danger);
+    }
+}
+
+// Feedback blocks
+.que {
+    border: 1px solid var(--kadsamhsa-border);
+    border-radius: var(--kadsamhsa-radius-md);
+    margin-bottom: var(--kadsamhsa-space-lg);
+    padding: var(--kadsamhsa-space-lg);
+
+    .feedback {
+        border-radius: var(--kadsamhsa-radius-sm);
+        padding: var(--kadsamhsa-space-md);
+        margin-top: var(--kadsamhsa-space-md);
+    }
+
+    .correct {
+        background: rgba(26, 122, 69, 0.1);
+        border-left: 3px solid var(--kadsamhsa-success);
+    }
+
+    .incorrect {
+        background: rgba(196, 57, 43, 0.08);
+        border-left: 3px solid var(--kadsamhsa-danger);
+    }
+}
+
+// Retry button
+.quizattempt .singlebutton .btn,
+#mod_quiz-next-nav .mod_quiz-next-nav .btn {
+    border-radius: var(--kadsamhsa-radius-md);
+    font-weight: 600;
+}
+
+.path-mod-quiz .qnbutton {
+    border-radius: var(--kadsamhsa-radius-sm);
+}

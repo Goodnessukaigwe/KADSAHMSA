@@ -1,0 +1,103 @@
+{{!
+    @template theme_kadsamhsa/course_quiz
+
+    Module quiz — Figma quiz + result modal flow.
+}}
+<div class="kadsamhsa-shome kadsamhsa-quizui"
+     data-region="kadsamhsa-course-quiz"
+     data-passmark="{{passmark}}"
+     data-attempts="{{attemptsleft}}"
+     data-attempts-total="{{attemptstotal}}"
+     data-playurl="{{{playurl}}}"
+     data-detailurl="{{{detailurl}}}"
+     data-pass-headline="{{passheadline}}"
+     data-fail-headline="{{failheadline}}"
+     data-result-feedback="{{resultfeedback}}"
+     data-moveon-label="{{moveonlabel}}"
+     data-retake-label="{{retakelabel}}"
+     data-questions="{{questionsjson}}">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main kadsamhsa-quizui-main" id="kadsamhsa-shome-main">
+        <div class="kadsamhsa-quizui__layout">
+            <div class="kadsamhsa-quizui__primary">
+                <div class="kadsamhsa-quizui__top">
+                    <h1 class="kadsamhsa-quizui__title">{{quiztitle}}</h1>
+                    <span class="kadsamhsa-quizui__counter" data-region="quiz-counter">{{questioncounter}}</span>
+                </div>
+
+                <div class="kadsamhsa-quizui__progress" data-region="quiz-progress" aria-hidden="true">
+                    {{#progresssegments}}
+                    <span class="kadsamhsa-quizui__seg{{#active}} is-active{{/active}}" data-index="{{index}}"></span>
+                    {{/progresssegments}}
+                </div>
+
+                <h2 class="kadsamhsa-quizui__prompt" data-region="quiz-prompt">{{firstprompt}}</h2>
+
+                <div class="kadsamhsa-quizui__options" data-region="quiz-options" role="listbox" aria-label="{{#str}}quizoptionslabel, theme_kadsamhsa{{/str}}">
+                    {{#firstoptions}}
+                    <button type="button" class="kadsamhsa-quizui__option" role="option" data-action="quiz-pick" data-value="{{letter}}">
+                        <span class="kadsamhsa-quizui__letter">{{letter}}</span>
+                        <span class="kadsamhsa-quizui__optiontext">{{text}}</span>
+                    </button>
+                    {{/firstoptions}}
+                </div>
+
+                <div class="kadsamhsa-quizui__nav">
+                    <button type="button" class="kadsamhsa-quizui__navbtn" data-action="quiz-prev" disabled>
+                        {{#str}}quizprev, theme_kadsamhsa{{/str}}
+                    </button>
+                    <button type="button" class="kadsamhsa-quizui__navbtn kadsamhsa-quizui__navbtn--primary" data-action="quiz-next">
+                        {{#str}}quiznext, theme_kadsamhsa{{/str}}
+                    </button>
+                </div>
+            </div>
+
+            <aside class="kadsamhsa-quizui-rail">
+                <div class="kadsamhsa-quizui-rail__countdown">
+                    <span class="kadsamhsa-quizui-rail__label">{{#str}}quizcountdown, theme_kadsamhsa{{/str}}</span>
+                    <strong class="kadsamhsa-quizui-rail__time" data-region="quiz-timer" data-seconds="{{timelimit}}">{{timerdisplay}}</strong>
+                </div>
+
+                <div class="kadsamhsa-quizui-rail__all">
+                    <div class="kadsamhsa-quizui-rail__allhead">
+                        <h2>{{#str}}quizallquestions, theme_kadsamhsa{{/str}}</h2>
+                        <span class="kadsamhsa-quizui-rail__filter" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </span>
+                    </div>
+                    <div class="kadsamhsa-quizui-rail__grid" data-region="quiz-grid">
+                        {{#progresssegments}}
+                        <button type="button" class="kadsamhsa-quizui-rail__q{{#active}} is-current{{/active}}" data-action="quiz-jump" data-index="{{index}}" aria-label="{{#str}}quizjumpto, theme_kadsamhsa, {{number}}{{/str}}">{{number}}</button>
+                        {{/progresssegments}}
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div class="kadsamhsa-quizui-modal" data-region="quiz-result" hidden>
+        <div class="kadsamhsa-quizui-modal__backdrop" data-action="quiz-close-result"></div>
+        <div class="kadsamhsa-quizui-modal__card" role="dialog" aria-modal="true" aria-labelledby="kadsamhsa-quiz-result-title">
+            <div class="kadsamhsa-quizui-modal__meta">
+                <span>{{#str}}quizresultlabel, theme_kadsamhsa{{/str}}</span>
+                <span data-region="result-attempts">{{attemptslabel}}</span>
+            </div>
+            <div class="kadsamhsa-quizui-modal__score">
+                <span class="kadsamhsa-quizui-modal__score-main" data-region="result-score-main">89</span>
+                <span class="kadsamhsa-quizui-modal__score-total" data-region="result-score-total">/100</span>
+            </div>
+            <div class="kadsamhsa-quizui-modal__bar" aria-hidden="true">
+                <span data-region="result-bar"></span>
+            </div>
+            <h2 class="kadsamhsa-quizui-modal__headline" id="kadsamhsa-quiz-result-title" data-region="result-headline">{{passheadline}}</h2>
+            <p class="kadsamhsa-quizui-modal__feedback" data-region="result-feedback">{{resultfeedback}}</p>
+            <div class="kadsamhsa-quizui-modal__actions">
+                <a href="{{{detailurl}}}" class="kadsamhsa-quizui-modal__btn" data-region="result-secondary">{{#str}}quizreviewmodules, theme_kadsamhsa{{/str}}</a>
+                <button type="button" class="kadsamhsa-quizui-modal__btn kadsamhsa-quizui-modal__btn--primary" data-action="quiz-primary" data-region="result-primary">
+                    {{moveonlabel}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

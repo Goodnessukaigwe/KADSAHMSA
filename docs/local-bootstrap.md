@@ -62,12 +62,46 @@ Manual one-shot:
 ./scripts/sync-theme.sh
 ```
 
+`sync-theme.sh` runs `admin/cli/upgrade.php` (so new lang strings and theme version bumps are registered) then purges caches.
+
 Activate: **Site administration → Appearance → Theme selector** → choose **KADSAMHSA**, or:
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file .env exec -u www-data moodle-php \
   php admin/cli/cfg.php --name=theme --set=kadsamhsa
 ```
+
+If footer or nav shows `[[string]]` placeholders, sync the theme and purge caches again (see above).
+
+## Self-registration (signup)
+
+Fresh installs via `./scripts/install-moodle.sh` set **`registerauth=email`** so `/login/signup.php` works with the Email authentication plugin.
+
+For an existing local site:
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env exec -u www-data moodle-php \
+  php admin/cli/cfg.php --name=registerauth --set=email
+```
+
+Confirm in **Site administration → Plugins → Authentication → Manage authentication** that **Email-based self-registration** is enabled and listed in the auth sequence.
+
+Verify: open http://localhost:8080/login/signup.php — you should see **Create an account**, not *Sorry, you may not use this page.*
+
+## Default home page (landing, not /my/)
+
+Local installs set **`defaulthomepage=0`** (Site) so http://localhost:8080/ stays on the public landing page instead of redirecting logged-in users to `/my/`.
+
+If you get bounced to `/my/` again:
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file .env exec -u www-data moodle-php \
+  php admin/cli/cfg.php --name=defaulthomepage --set=0
+docker compose -f docker/docker-compose.yml --env-file .env exec -u www-data moodle-php \
+  php admin/cli/purge_caches.php
+```
+
+Then hard-refresh http://localhost:8080/ (or log out once and reopen).
 
 ## Plugin sync
 

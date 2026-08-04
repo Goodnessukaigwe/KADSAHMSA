@@ -1,0 +1,154 @@
+// KADSAMHSA public certificate verification page
+
+body.kadsamhsa-verify,
+body.path-mod-customcert.pagelayout-standard {
+    background: var(--kadsamhsa-bg);
+}
+
+.kadsamhsa-verify {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--kadsamhsa-space-xl) var(--kadsamhsa-space-md);
+
+    &__header {
+        text-align: center;
+        margin-bottom: var(--kadsamhsa-space-2xl);
+    }
+
+    &__title {
+        font-family: var(--kadsamhsa-font-display);
+        font-size: 1.75rem;
+        margin-bottom: var(--kadsamhsa-space-sm);
+    }
+
+    &__subtitle {
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    &__form-card {
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-lg);
+        box-shadow: var(--kadsamhsa-shadow-md);
+        padding: var(--kadsamhsa-space-2xl);
+        margin-bottom: var(--kadsamhsa-space-xl);
+    }
+
+    &__input-group {
+        margin-bottom: var(--kadsamhsa-space-lg);
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--kadsamhsa-space-sm);
+            font-size: 0.875rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: var(--kadsamhsa-space-md);
+            border: 1px solid var(--kadsamhsa-border);
+            border-radius: var(--kadsamhsa-radius-md);
+            font-family: var(--kadsamhsa-font-mono);
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+
+            &:focus {
+                border-color: var(--kadsamhsa-primary);
+                box-shadow: 0 0 0 3px rgba(11, 77, 44, 0.15);
+                outline: none;
+            }
+        }
+    }
+
+    &__submit {
+        width: 100%;
+        background: var(--kadsamhsa-primary);
+        color: #fff;
+        border: none;
+        padding: var(--kadsamhsa-space-md);
+        border-radius: var(--kadsamhsa-radius-md);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus {
+            background: var(--kadsamhsa-primary-hover);
+        }
+    }
+
+    &__result {
+        border-radius: var(--kadsamhsa-radius-lg);
+        padding: var(--kadsamhsa-space-xl);
+        text-align: center;
+
+        &--valid {
+            background: rgba(26, 122, 69, 0.08);
+            border: 2px solid var(--kadsamhsa-success);
+        }
+
+        &--invalid {
+            background: rgba(196, 57, 43, 0.06);
+            border: 2px solid var(--kadsamhsa-danger);
+        }
+
+        &-icon {
+            font-size: 3rem;
+            margin-bottom: var(--kadsamhsa-space-md);
+        }
+
+        &-status {
+            font-family: var(--kadsamhsa-font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--kadsamhsa-space-lg);
+        }
+
+        &-details {
+            text-align: left;
+            background: var(--kadsamhsa-surface);
+            border-radius: var(--kadsamhsa-radius-md);
+            padding: var(--kadsamhsa-space-lg);
+
+            dl {
+                margin: 0;
+
+                dt {
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                    color: var(--kadsamhsa-text-muted);
+                    margin-bottom: 2px;
+                }
+
+                dd {
+                    font-weight: 500;
+                    margin-bottom: var(--kadsamhsa-space-md);
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Override customcert verify form
+.path-mod-customcert {
+    #id_verifyform,
+    .mform {
+        .form-control {
+            border-radius: var(--kadsamhsa-radius-md);
+        }
+
+        .btn-primary {
+            border-radius: var(--kadsamhsa-radius-md);
+            font-weight: 600;
+            background: var(--kadsamhsa-primary);
+            border-color: var(--kadsamhsa-primary);
+        }
+    }
+}

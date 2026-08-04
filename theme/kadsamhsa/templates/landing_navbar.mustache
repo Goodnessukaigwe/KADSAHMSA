@@ -1,0 +1,68 @@
+{{!
+    @template theme_kadsamhsa/landing_navbar
+
+    Marketing navigation for the public landing page.
+}}
+<header class="kadsamhsa-landing-nav" role="banner">
+    <div class="kadsamhsa-landing-nav__inner kadsamhsa-container">
+        <a href="{{{config.homeurl}}}" class="kadsamhsa-landing-nav__logo" aria-label="{{{ sitename }}}">
+            {{#logourl}}
+                <img src="{{{logourl}}}" alt="KADSAMHSA" class="kadsamhsa-landing-nav__logo-img" width="88" height="56" />
+            {{/logourl}}
+            {{^logourl}}
+                <span class="kadsamhsa-landing-nav__logo-placeholder" aria-hidden="true"></span>
+            {{/logourl}}
+        </a>
+
+        <button
+            type="button"
+            class="kadsamhsa-landing-nav__toggle d-lg-none"
+            aria-expanded="false"
+            aria-controls="kadsamhsa-landing-nav-menu"
+            data-action="toggle-landing-nav"
+        >
+            <span class="kadsamhsa-landing-nav__toggle-bar" aria-hidden="true"></span>
+            <span class="kadsamhsa-landing-nav__toggle-bar" aria-hidden="true"></span>
+            <span class="kadsamhsa-landing-nav__toggle-bar" aria-hidden="true"></span>
+            <span class="sr-only">{{#str}}togglenavigation, theme_kadsamhsa{{/str}}</span>
+        </button>
+
+        <nav id="kadsamhsa-landing-nav-menu" class="kadsamhsa-landing-nav__menu" aria-label="{{#str}}signupnavlabel, theme_kadsamhsa{{/str}}">
+            <ul class="kadsamhsa-landing-nav__links">
+                <li>
+                    <a href="{{{config.homeurl}}}" class="kadsamhsa-landing-nav__link is-active">
+                        {{#str}}landingnavhome, theme_kadsamhsa{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{{abouturl}}}" class="kadsamhsa-landing-nav__link">
+                        {{#str}}landingnavabout, theme_kadsamhsa{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{{catalogueurl}}}" class="kadsamhsa-landing-nav__link">
+                        {{#str}}landingnavcourses, theme_kadsamhsa{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a href="#contact" class="kadsamhsa-landing-nav__link">
+                        {{#str}}landingnavcontact, theme_kadsamhsa{{/str}}
+                    </a>
+                </li>
+            </ul>
+
+            <div class="kadsamhsa-landing-nav__actions">
+                {{#isloggedin}}
+                    <a href="{{{dashboardurl}}}" class="kadsamhsa-landing-nav__cta">
+                        {{#str}}dashboard, theme_kadsamhsa{{/str}}
+                    </a>
+                {{/isloggedin}}
+                {{^isloggedin}}
+                    <a href="{{{loginurl}}}" class="kadsamhsa-landing-nav__cta">
+                        {{#str}}landingnavlogin, theme_kadsamhsa{{/str}}
+                    </a>
+                {{/isloggedin}}
+            </div>
+        </nav>
+    </div>
+</header>

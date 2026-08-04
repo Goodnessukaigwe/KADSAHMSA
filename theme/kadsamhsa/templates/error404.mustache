@@ -1,0 +1,71 @@
+{{!
+    @template theme_kadsamhsa/error404
+
+    404 error page — Figma match (logo placeholder).
+}}
+<div class="kadsamhsa-error404">
+
+    <section class="kadsamhsa-error404-main" aria-labelledby="kadsamhsa-error404-heading">
+        <div class="kadsamhsa-container">
+            <div class="kadsamhsa-error404-card">
+                <div class="kadsamhsa-error404-card__copy">
+                    <span class="kadsamhsa-error404-card__badge">{{#str}}error404badge, theme_kadsamhsa{{/str}}</span>
+                    <h1 id="kadsamhsa-error404-heading" class="kadsamhsa-error404-card__title">
+                        {{#str}}error404heading, theme_kadsamhsa{{/str}}
+                    </h1>
+                    <p class="kadsamhsa-error404-card__text">
+                        {{#str}}error404body, theme_kadsamhsa{{/str}}
+                    </p>
+                    <a href="{{{homeurl}}}" class="kadsamhsa-error404-card__cta">
+                        <span>{{#str}}error404cta, theme_kadsamhsa{{/str}}</span>
+                        <span class="kadsamhsa-error404-card__cta-icon" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+                <div class="kadsamhsa-error404-card__code" aria-hidden="true">404</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="kadsamhsa-error404-newsletter" aria-labelledby="kadsamhsa-error404-news-title">
+        <div class="kadsamhsa-container kadsamhsa-error404-newsletter__grid">
+            <div class="kadsamhsa-error404-newsletter__copy">
+                <h2 id="kadsamhsa-error404-news-title">{{#str}}error404newstitle, theme_kadsamhsa{{/str}}</h2>
+                <ul class="kadsamhsa-error404-newsletter__list">
+                    <li>
+                        <span class="kadsamhsa-error404-newsletter__check" aria-hidden="true"></span>
+                        <span>{{#str}}error404news1, theme_kadsamhsa{{/str}}</span>
+                    </li>
+                    <li>
+                        <span class="kadsamhsa-error404-newsletter__check" aria-hidden="true"></span>
+                        <span>{{#str}}error404news2, theme_kadsamhsa{{/str}}</span>
+                    </li>
+                </ul>
+            </div>
+            <form class="kadsamhsa-error404-newsletter__form" action="{{{homeurl}}}" method="get" aria-label="{{#str}}error404newstitle, theme_kadsamhsa{{/str}}">
+                <label for="kadsamhsa-error404-email">{{#str}}error404emaillabel, theme_kadsamhsa{{/str}}</label>
+                <div class="kadsamhsa-error404-newsletter__row">
+                    <input
+                        type="email"
+                        id="kadsamhsa-error404-email"
+                        name="email"
+                        placeholder="{{#str}}error404emailplaceholder, theme_kadsamhsa{{/str}}"
+                        autocomplete="email"
+                    />
+                    <button type="submit" class="kadsamhsa-error404-newsletter__submit">
+                        <span>{{#str}}error404subscribe, theme_kadsamhsa{{/str}}</span>
+                        <span class="kadsamhsa-error404-newsletter__submit-icon" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+</div>

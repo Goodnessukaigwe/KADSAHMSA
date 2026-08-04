@@ -1,0 +1,191 @@
+{{!
+    @template theme_kadsamhsa/learner_dashboard
+
+    Student home after login — Figma match (logo/images as placeholders).
+}}
+<div class="kadsamhsa-shome" data-region="kadsamhsa-student-home">
+    {{> theme_kadsamhsa/student_chrome }}
+
+    <main class="kadsamhsa-shome-main" id="kadsamhsa-shome-main">
+        <div class="kadsamhsa-shome-main__inner">
+
+            {{#showonboarding}}
+            <div
+                class="kadsamhsa-shome-modal"
+                data-region="dash-onboarding"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="kadsamhsa-shome-modal-title"
+                aria-hidden="true"
+            >
+                <div class="kadsamhsa-shome-modal__card">
+                    <div class="kadsamhsa-shome-modal__head">
+                        <h2 id="kadsamhsa-shome-modal-title">{{#str}}dashmodaltitle, theme_kadsamhsa{{/str}}</h2>
+                        <span class="kadsamhsa-shome-modal__step">{{#str}}dashmodalstep, theme_kadsamhsa{{/str}}</span>
+                    </div>
+                    <div class="kadsamhsa-shome-modal__progress" aria-hidden="true">
+                        <span class="is-active"></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <p class="kadsamhsa-shome-modal__body">{{#str}}dashmodalbody, theme_kadsamhsa{{/str}}</p>
+                    <button type="button" class="kadsamhsa-shome-modal__btn" data-action="dismiss-onboarding">
+                        {{#str}}dashmodalcta, theme_kadsamhsa{{/str}}
+                    </button>
+                </div>
+            </div>
+            {{/showonboarding}}
+
+            {{#hasstarted}}
+            <section class="kadsamhsa-shome-hero kadsamhsa-shome-hero--returning" aria-labelledby="kadsamhsa-shome-hero-title">
+                <h1 id="kadsamhsa-shome-hero-title" class="kadsamhsa-shome-hero__title kadsamhsa-shome-hero__title--wide">
+                    {{#str}}dashwelcomeback, theme_kadsamhsa, {{firstname}}{{/str}}
+                </h1>
+                <p class="kadsamhsa-shome-hero__subtitle">{{#str}}dashcontinuesubtitle, theme_kadsamhsa{{/str}}</p>
+
+                {{#continuecourse}}
+                <article class="kadsamhsa-shome-featured kadsamhsa-shome-featured--continue">
+                    <div class="kadsamhsa-shome-featured__media" aria-hidden="true">
+                        {{#imageurl}}
+                            <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                        {{/imageurl}}
+                        {{^imageurl}}
+                            <div class="kadsamhsa-shome-featured__ph"></div>
+                        {{/imageurl}}
+                    </div>
+                    <div class="kadsamhsa-shome-featured__copy">
+                        <h2 class="kadsamhsa-shome-featured__name">{{name}}</h2>
+                        <ul class="kadsamhsa-shome-featured__meta">
+                            <li>{{#str}}dashprice, theme_kadsamhsa{{/str}}: {{pricelabel}}</li>
+                            <li>{{#str}}dashmodulelabel, theme_kadsamhsa{{/str}}: {{moduleslabel}}</li>
+                            <li>{{#str}}dashdurationlabel, theme_kadsamhsa{{/str}}: {{durationlabel}}</li>
+                        </ul>
+                        <div class="kadsamhsa-shome-featured__progress" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{#str}}courseprogress, theme_kadsamhsa{{/str}}">
+                            <span class="kadsamhsa-shome-featured__progress-fill" style="width: {{progress}}%"></span>
+                        </div>
+                        <div class="kadsamhsa-shome-featured__actions">
+                            <a href="{{{continueurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--light">
+                                <span>{{#str}}dashcontinuecta, theme_kadsamhsa{{/str}}</span>
+                                <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {{/continuecourse}}
+            </section>
+
+            {{#hasalsostarted}}
+            <section class="kadsamhsa-shome-started" aria-labelledby="kadsamhsa-shome-started-title">
+                <h2 id="kadsamhsa-shome-started-title" class="kadsamhsa-shome-started__title">
+                    {{#str}}dashalsostarted, theme_kadsamhsa{{/str}}
+                </h2>
+                <div class="kadsamhsa-shome-started__list">
+                    {{#alsostarted}}
+                    <article class="kadsamhsa-shome-started-card">
+                        <div class="kadsamhsa-shome-started-card__media" aria-hidden="true">
+                            {{#imageurl}}
+                                <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                            {{/imageurl}}
+                            {{^imageurl}}
+                                <div class="kadsamhsa-shome-started-card__ph"></div>
+                            {{/imageurl}}
+                        </div>
+                        <div class="kadsamhsa-shome-started-card__body">
+                            <h3 class="kadsamhsa-shome-started-card__title">{{name}}</h3>
+                            <p class="kadsamhsa-shome-started-card__module">{{moduleline}}</p>
+                            <div class="kadsamhsa-shome-started-card__progress" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{#str}}courseprogress, theme_kadsamhsa{{/str}}">
+                                <span class="kadsamhsa-shome-started-card__progress-fill" style="width: {{progress}}%"></span>
+                            </div>
+                        </div>
+                        <a href="{{{continueurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--dark kadsamhsa-shome-started-card__cta">
+                            <span>{{#str}}dashcontinueshort, theme_kadsamhsa{{/str}}</span>
+                            <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                        </a>
+                    </article>
+                    {{/alsostarted}}
+                </div>
+            </section>
+            {{/hasalsostarted}}
+            {{/hasstarted}}
+
+            {{^hasstarted}}
+            <section class="kadsamhsa-shome-hero" aria-labelledby="kadsamhsa-shome-hero-title">
+                <p class="kadsamhsa-shome-hero__eyebrow">{{#str}}dashheroeyebrow, theme_kadsamhsa{{/str}}</p>
+                <h1 id="kadsamhsa-shome-hero-title" class="kadsamhsa-shome-hero__title">
+                    {{#str}}dashherotitle, theme_kadsamhsa{{/str}}
+                </h1>
+
+                {{#featured}}
+                <article class="kadsamhsa-shome-featured">
+                    <div class="kadsamhsa-shome-featured__media" aria-hidden="true">
+                        {{#imageurl}}
+                            <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                        {{/imageurl}}
+                        {{^imageurl}}
+                            <div class="kadsamhsa-shome-featured__ph"></div>
+                        {{/imageurl}}
+                    </div>
+                    <div class="kadsamhsa-shome-featured__copy">
+                        <h2 class="kadsamhsa-shome-featured__name">{{name}}</h2>
+                        <p class="kadsamhsa-shome-featured__price">{{#str}}dashprice, theme_kadsamhsa{{/str}}: {{pricelabel}}</p>
+                        <p class="kadsamhsa-shome-featured__summary">{{summary}}</p>
+                        <div class="kadsamhsa-shome-featured__actions">
+                            <a href="{{{enrolurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--light">
+                                <span>{{#str}}dashenroll, theme_kadsamhsa{{/str}}</span>
+                                <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                            </a>
+                            <a href="{{{url}}}" class="kadsamhsa-shome-featured__more">{{#str}}dashreadmore, theme_kadsamhsa{{/str}}</a>
+                        </div>
+                    </div>
+                </article>
+                {{/featured}}
+            </section>
+            {{/hasstarted}}
+
+            <section class="kadsamhsa-shome-explore" aria-labelledby="kadsamhsa-shome-explore-title">
+                <h2 id="kadsamhsa-shome-explore-title" class="kadsamhsa-shome-explore__title">
+                    {{#str}}dashexplore, theme_kadsamhsa{{/str}}
+                </h2>
+                <div class="kadsamhsa-shome-grid" data-region="dash-course-grid">
+                    {{#explorecourses}}
+                    <article class="kadsamhsa-shome-card" data-title="{{name}}">
+                        <div class="kadsamhsa-shome-card__media">
+                            {{#imageurl}}
+                                <img src="{{{imageurl}}}" alt="" loading="lazy" />
+                            {{/imageurl}}
+                            {{^imageurl}}
+                                <div class="kadsamhsa-shome-card__ph" aria-hidden="true"></div>
+                            {{/imageurl}}
+                            <span class="kadsamhsa-shome-card__badge">{{badgelabel}}</span>
+                        </div>
+                        <div class="kadsamhsa-shome-card__body">
+                            <h3 class="kadsamhsa-shome-card__title">{{name}}</h3>
+                            <p class="kadsamhsa-shome-card__lessons">{{lessons}}</p>
+                            <div class="kadsamhsa-shome-card__actions">
+                                <a href="{{{enrolurl}}}" class="kadsamhsa-shome-btn kadsamhsa-shome-btn--dark">
+                                    <span>{{#str}}dashenroll, theme_kadsamhsa{{/str}}</span>
+                                    <span class="kadsamhsa-shome-btn__icon" aria-hidden="true">
+                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </span>
+                                </a>
+                                <a href="{{{url}}}" class="kadsamhsa-shome-card__more">{{#str}}dashreadmore, theme_kadsamhsa{{/str}}</a>
+                            </div>
+                        </div>
+                    </article>
+                    {{/explorecourses}}
+                </div>
+                <p class="kadsamhsa-shome-empty" data-region="dash-empty" hidden>
+                    {{#str}}dashemptysearch, theme_kadsamhsa{{/str}}
+                </p>
+            </section>
+
+        </div>
+    </main>
+
+</div>

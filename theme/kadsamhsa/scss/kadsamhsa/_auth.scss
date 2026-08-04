@@ -1,0 +1,716 @@
+// KADSAMHSA auth — Figma signup (placeholders + focus) + shared login chrome
+
+$auth-bg: #ffffff;
+$auth-text: #111111;
+$auth-text-muted: #6b7280;
+$auth-border: #e5e7eb;
+$auth-input-focus: #7eb8c9;
+$auth-input-focus-glow: rgba(126, 184, 201, 0.35);
+$auth-pill: #111111;
+$auth-pill-hover: #2a2a2a;
+$auth-btn-muted: #e8e8e8;
+$auth-btn-muted-text: #3f3f46;
+$auth-btn-muted-hover: #dcdcdc;
+$auth-placeholder: #9ca3af;
+
+@mixin auth-page-bg {
+    background-color: $auth-bg;
+    background-image: none;
+}
+
+// ---------------------------------------------------------------------------
+// Shared login layout shell
+// ---------------------------------------------------------------------------
+
+body.kadsamhsa-login,
+body.pagelayout-login {
+    @include auth-page-bg;
+
+    #page {
+        margin-top: 0;
+        background: transparent;
+    }
+
+    // Hide stock Boost navbar — marketing nav replaces it.
+    .navbar,
+    .navbar.fixed-top {
+        display: none !important;
+    }
+
+    #page-footer,
+    footer {
+        display: none !important;
+    }
+}
+
+.kadsamhsa-auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    &--signup {
+        @include auth-page-bg;
+    }
+}
+
+.kadsamhsa-auth-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+        flex: 1;
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 4rem;
+
+        // About page is full-bleed within the marketing chrome.
+        body.kadsamhsa-about-page & {
+            max-width: none;
+            padding: 0;
+        }
+    }
+
+    &__main-box,
+    &__main {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Marketing navbar
+// ---------------------------------------------------------------------------
+
+.kadsamhsa-signup-nav {
+    position: relative;
+    z-index: var(--kadsamhsa-z-header, 1030);
+    background: transparent;
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 88px;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    &__logo {
+        flex-shrink: 0;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    &__logo-img {
+        display: block;
+        width: auto;
+        height: 48px;
+        max-width: 140px;
+        object-fit: contain;
+    }
+
+    // Fallback when logo URL is unavailable.
+    &__logo-placeholder {
+        display: block;
+        width: 88px;
+        height: 64px;
+        border: 1.5px dashed #d1d5db;
+        border-radius: 10px;
+        background: #f3f4f6;
+    }
+
+    &__toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 1px solid $auth-border;
+        border-radius: 8px;
+        background: $auth-bg;
+        cursor: pointer;
+
+        &-bar {
+            display: block;
+            width: 18px;
+            height: 2px;
+            margin: 0 auto;
+            background: $auth-text;
+            border-radius: 1px;
+        }
+    }
+
+    &__menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.25rem 1.5rem;
+        background: $auth-bg;
+        border-bottom: 1px solid $auth-border;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+
+        &.is-open {
+            display: flex;
+        }
+    }
+
+    &__links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__link {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: $auth-text;
+        padding-bottom: 6px;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.2s ease, color 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: $auth-text;
+            border-bottom-color: rgba(0, 0, 0, 0.25);
+        }
+
+        &.is-active {
+            color: $auth-text;
+            border-bottom-color: $auth-text;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__login {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: $auth-text;
+        transition: opacity 0.2s ease;
+
+        &:hover,
+        &:focus-visible {
+            opacity: 0.7;
+            color: $auth-text;
+        }
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 10px 12px 10px 22px;
+        border-radius: 999px;
+        background: $auth-pill;
+        color: #ffffff !important;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background 0.2s ease, transform 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            background: $auth-pill-hover;
+            color: #ffffff !important;
+            text-decoration: none;
+        }
+    }
+
+    &__cta-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #ffffff;
+        color: $auth-text;
+
+        svg {
+            display: block;
+        }
+    }
+
+    @media (min-width: 992px) {
+        &__toggle {
+            display: none;
+        }
+
+        &__menu {
+            display: flex;
+            position: static;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            padding: 0 0 0 3rem;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+
+        &__links {
+            flex-direction: row;
+            gap: 2rem;
+            margin: 0 auto;
+        }
+
+        &__actions {
+            flex-direction: row;
+            align-items: center;
+            gap: 1.5rem;
+            margin-left: auto;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Signup two-column shell
+// ---------------------------------------------------------------------------
+
+.kadsamhsa-signup {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+
+    &__media {
+        order: 2;
+        width: 100%;
+        aspect-ratio: 1 / 1.05;
+        max-height: 360px;
+        border-radius: 32px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    &__media-img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    &__media-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: $auth-text-muted;
+    }
+
+    &__form-col {
+        order: 1;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    &__title {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(1.875rem, 3.5vw, 2.375rem);
+        font-weight: 700;
+        color: $auth-text;
+        text-align: center;
+        margin: 0 0 2rem;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+    }
+
+    &__login-prompt {
+        margin: 1.5rem 0 0;
+        text-align: center;
+        font-size: 0.9375rem;
+        color: $auth-text;
+
+        a {
+            color: $auth-text;
+            font-weight: 700;
+            text-decoration: none;
+
+            &:hover,
+            &:focus-visible {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    @media (min-width: 900px) {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: 4rem;
+        align-items: center;
+        padding-top: 1rem;
+
+        &__media {
+            order: 1;
+            max-height: none;
+            min-height: 520px;
+            aspect-ratio: 1 / 1.08;
+        }
+
+        &__form-col {
+            order: 2;
+            margin: 0;
+            max-width: 400px;
+            justify-self: start;
+        }
+
+        &__title {
+            text-align: left;
+            margin-bottom: 2.25rem;
+        }
+
+        &__login-prompt {
+            text-align: center;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Signup mform — force vertical Figma fields + order
+// ---------------------------------------------------------------------------
+
+body.kadsamhsa-signup-page {
+    .login-heading,
+    h1.login-heading,
+    .signupform > h1 {
+        display: none !important;
+    }
+
+    // Hide synced / optional Moodle fields.
+    #fitem_id_username,
+    #fitem_id_email2,
+    #fitem_id_lastname,
+    #fitem_id_city,
+    #fitem_id_country,
+    #fitem_id_passwordpolicyinfo {
+        display: none !important;
+    }
+
+    // Hide cancel — Login link lives under the form.
+    #fgroup_id_buttonar .btn-secondary,
+    #fgroup_id_buttonar input[name="cancel"],
+    .fdescription.required {
+        display: none !important;
+    }
+
+    .mform,
+    .kadsamhsa-signup__form .mform {
+        margin: 0;
+    }
+
+    // Field order: Full name → Email → Password → submit (Moodle order differs).
+    .kadsamhsa-signup__form .mform,
+    .kadsamhsa-signup__form .mform > fieldset,
+    .kadsamhsa-signup__form .mform .fcontainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #fitem_id_firstname {
+        order: 1;
+    }
+
+    #fitem_id_email {
+        order: 2;
+    }
+
+    #fitem_id_password {
+        order: 3;
+    }
+
+    #fitem_id_recaptcha_element,
+    [id^="fitem_id_policy"] {
+        order: 8;
+    }
+
+    #fgroup_id_buttonar {
+        order: 10;
+    }
+
+    .kadsamhsa-signup__form {
+        .fitem {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+            margin-bottom: 1.25rem !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+
+            > .col-form-label,
+            > .col-md-3,
+            > .col-md-9,
+            > [class*="col-"] {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            > .col-form-label {
+                padding-bottom: 0.4rem !important;
+            }
+        }
+
+        .col-form-label,
+        .fitemtitle label,
+        label {
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            color: $auth-text-muted !important;
+            margin-bottom: 0;
+        }
+
+        .felement {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .form-control {
+            width: 100% !important;
+            border: 1px solid $auth-border !important;
+            border-radius: 12px !important;
+            padding: 14px 16px !important;
+            min-height: 52px;
+            font-size: 0.9375rem !important;
+            color: $auth-text !important;
+            background: $auth-bg !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+
+            &::placeholder {
+                color: $auth-placeholder !important;
+            }
+
+            &:focus,
+            &:focus-visible {
+                border-color: $auth-input-focus !important;
+                box-shadow: 0 0 0 3px $auth-input-focus-glow !important;
+                outline: none !important;
+            }
+        }
+
+        // Figma form CTA: muted gray full-width (nav CTA stays black pill).
+        #fgroup_id_buttonar {
+            margin-top: 1.75rem !important;
+            margin-bottom: 0 !important;
+
+            .form-group,
+            .felement,
+            .d-flex {
+                width: 100% !important;
+                display: block !important;
+            }
+
+            .col-md-3 {
+                display: none !important;
+            }
+
+            .col-md-9,
+            .col-md-auto {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .btn-primary,
+            input[type="submit"] {
+                width: 100% !important;
+                padding: 16px 24px !important;
+                border: 0 !important;
+                border-radius: 12px !important;
+                background: $auth-btn-muted !important;
+                color: $auth-btn-muted-text !important;
+                font-size: 0.8125rem !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.08em !important;
+                text-transform: uppercase !important;
+                box-shadow: none !important;
+                transition: background 0.2s ease, transform 0.15s ease !important;
+
+                &:hover,
+                &:focus-visible {
+                    background: $auth-btn-muted-hover !important;
+                    color: $auth-text !important;
+                    border: 0 !important;
+                    box-shadow: none !important;
+                }
+
+                &:active {
+                    transform: scale(0.995);
+                }
+            }
+        }
+
+        #fitem_id_recaptcha_element,
+        [id^="fitem_id_policy"],
+        .fitem .form-check {
+            margin-top: 0.75rem;
+            font-size: 0.8125rem;
+            color: $auth-text-muted;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Login index — same two-column shell + field chrome as signup
+// ---------------------------------------------------------------------------
+
+body.kadsamhsa-login-page {
+    .login-heading,
+    h1.login-heading {
+        display: none !important;
+    }
+
+    .kadsamhsa-login-form {
+        margin: 0;
+    }
+
+    .kadsamhsa-login-form__field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.25rem;
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: $auth-text-muted;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            border: 1px solid $auth-border;
+            border-radius: 12px;
+            padding: 14px 16px;
+            min-height: 52px;
+            font-size: 0.9375rem;
+            color: $auth-text;
+            background: $auth-bg;
+            box-shadow: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+            &::placeholder {
+                color: $auth-placeholder;
+            }
+
+            &:focus,
+            &:focus-visible {
+                border-color: $auth-input-focus;
+                box-shadow: 0 0 0 3px $auth-input-focus-glow;
+                outline: none;
+            }
+        }
+    }
+
+    .kadsamhsa-login-form__forgot {
+        margin: -0.35rem 0 1.5rem;
+        text-align: right;
+
+        a {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: $auth-text-muted;
+            text-decoration: none;
+
+            &:hover,
+            &:focus-visible {
+                color: $auth-text;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .kadsamhsa-login-form__submit {
+        margin-top: 0.25rem;
+
+        .btn-primary,
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px 24px;
+            border: 0;
+            border-radius: 12px;
+            background: $auth-btn-muted;
+            color: $auth-btn-muted-text;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: none;
+            transition: background 0.2s ease, transform 0.15s ease;
+
+            &:hover,
+            &:focus-visible {
+                background: $auth-btn-muted-hover;
+                color: $auth-text;
+                border: 0;
+                box-shadow: none;
+            }
+
+            &:active {
+                transform: scale(0.995);
+            }
+        }
+    }
+
+    .kadsamhsa-login-form__idps {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+
+        .login-identityprovider-btn {
+            width: 100%;
+            border: 1px solid $auth-border;
+            border-radius: 12px;
+            background: #fff;
+            color: $auth-text;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+    }
+
+    .alert {
+        border-radius: 12px;
+        margin-bottom: 1.25rem;
+    }
+}

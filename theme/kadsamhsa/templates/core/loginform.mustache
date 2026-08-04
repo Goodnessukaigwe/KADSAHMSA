@@ -1,0 +1,151 @@
+{{!
+    @template core/loginform
+
+    KADSAMHSA login form — same two-column shell as signup (Figma).
+}}
+<div class="kadsamhsa-signup kadsamhsa-login-shell">
+    <div class="kadsamhsa-signup__media" aria-hidden="true">
+        {{#signinimageurl}}
+            <img src="{{{signinimageurl}}}" alt="" class="kadsamhsa-signup__media-img">
+        {{/signinimageurl}}
+        {{^signinimageurl}}
+            <span class="kadsamhsa-signup__media-label">{{#str}}signupmediaplaceholder, theme_kadsamhsa{{/str}}</span>
+        {{/signinimageurl}}
+    </div>
+
+    <div class="kadsamhsa-signup__form-col">
+        <h1 class="kadsamhsa-signup__title">{{#str}}logintitle, theme_kadsamhsa{{/str}}</h1>
+
+        {{#maintenance}}
+            <div class="alert alert-danger login-maintenance">
+                {{{maintenance}}}
+            </div>
+        {{/maintenance}}
+        {{#error}}
+            <div class="alert alert-danger" id="loginerrormessage" role="alert">{{error}}</div>
+        {{/error}}
+        {{#info}}
+            <div class="alert alert-info" id="logininfomessage" role="status">{{info}}</div>
+        {{/info}}
+
+        <div class="kadsamhsa-signup__form">
+            {{#showloginform}}
+                <form class="login-form kadsamhsa-login-form" action="{{loginurl}}" method="post" id="login">
+                    <input id="anchor" type="hidden" name="anchor" value="">
+                    <script>document.getElementById('anchor').value = location.hash;</script>
+                    <input type="hidden" name="logintoken" value="{{logintoken}}">
+
+                    <div class="kadsamhsa-login-form__field login-form-username">
+                        <label for="username">
+                            {{#canloginbyemail}}
+                                {{#str}}loginemail, theme_kadsamhsa{{/str}}
+                            {{/canloginbyemail}}
+                            {{^canloginbyemail}}
+                                {{#str}}loginusername, theme_kadsamhsa{{/str}}
+                            {{/canloginbyemail}}
+                        </label>
+                        <input type="text" name="username" id="username"
+                            class="form-control"
+                            value="{{username}}"
+                            placeholder="{{#canloginbyemail}}{{#str}}loginemailplaceholder, theme_kadsamhsa{{/str}}{{/canloginbyemail}}{{^canloginbyemail}}{{#str}}loginusernameplaceholder, theme_kadsamhsa{{/str}}{{/canloginbyemail}}"
+                            autocomplete="username">
+                    </div>
+
+                    <div class="kadsamhsa-login-form__field login-form-password">
+                        <label for="password">{{#str}}loginpassword, theme_kadsamhsa{{/str}}</label>
+                        <input type="password" name="password" id="password" value=""
+                            class="form-control"
+                            placeholder="{{#str}}loginpasswordplaceholder, theme_kadsamhsa{{/str}}"
+                            autocomplete="current-password">
+                    </div>
+
+                    {{#recaptcha}}
+                        <div class="kadsamhsa-login-form__field login-form-recaptcha">
+                            {{{recaptcha}}}
+                        </div>
+                    {{/recaptcha}}
+
+                    <div class="kadsamhsa-login-form__forgot">
+                        <a href="{{forgotpasswordurl}}">{{#str}}loginforgotpassword, theme_kadsamhsa{{/str}}</a>
+                    </div>
+
+                    <div class="kadsamhsa-login-form__submit login-form-submit">
+                        <button class="btn btn-primary" type="submit" id="loginbtn">
+                            {{#str}}loginsubmit, theme_kadsamhsa{{/str}}
+                        </button>
+                    </div>
+                </form>
+            {{/showloginform}}
+
+            {{#hasidentityproviders}}
+                <div class="kadsamhsa-login-form__idps">
+                    {{#identityproviders}}
+                        <a class="btn login-identityprovider-btn" href="{{url}}">
+                            {{#iconurl}}
+                                <img src="{{iconurl}}" alt="" width="24" height="24"/>
+                            {{/iconurl}}
+                            {{name}}
+                        </a>
+                    {{/identityproviders}}
+                </div>
+            {{/hasidentityproviders}}
+        </div>
+
+        {{#cansignup}}
+            <p class="kadsamhsa-signup__login-prompt">
+                {{#str}}loginnocaccount, theme_kadsamhsa{{/str}}
+                <a href="{{signupurl}}">{{#str}}loginsignuplink, theme_kadsamhsa{{/str}}</a>
+            </p>
+        {{/cansignup}}
+    </div>
+</div>
+
+{{#js}}
+    {{^error}}
+        {{#autofocusform}}
+            require(['core_form/events'], function(FormEvent) {
+                function autoFocus() {
+                    const userNameField = document.getElementById('username');
+                    const passwordField = document.getElementById('password');
+                    if (userNameField && userNameField.value.length == 0) {
+                        userNameField.focus();
+                    } else if (passwordField) {
+                        passwordField.focus();
+                    }
+                }
+                autoFocus();
+                window.addEventListener(FormEvent.eventTypes.fieldStructureChanged, autoFocus);
+            });
+        {{/autofocusform}}
+    {{/error}}
+    require(['core/pending'], function(Pending) {
+        const errorMessageDiv = document.getElementById('loginerrormessage');
+        const infoMessageDiv = document.getElementById('logininfomessage');
+        const errorMessage = errorMessageDiv?.textContent.trim();
+        const infoMessage = infoMessageDiv?.textContent.trim();
+        if (errorMessage || infoMessage) {
+            const pendingJS = new Pending('login-move-focus');
+            const usernameField = document.getElementById('username');
+            setTimeout(function() {
+                if (errorMessage && usernameField) {
+                    usernameField.focus();
+                }
+                if (errorMessage) {
+                    errorMessageDiv.innerHTML += "&nbsp;";
+                }
+                if (infoMessage) {
+                    infoMessageDiv.innerHTML += "&nbsp;";
+                }
+                pendingJS.resolve();
+            }, 500);
+        }
+    });
+    {{#togglepassword}}
+        require(['core/togglesensitive'], function(ToggleSensitive) {
+            ToggleSensitive.init("password", {{smallscreensonly}});
+        });
+    {{/togglepassword}}
+    require(['core_form/submit'], function(Submit) {
+        Submit.init("loginbtn");
+    });
+{{/js}}
