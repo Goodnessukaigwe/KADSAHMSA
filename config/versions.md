@@ -10,7 +10,8 @@
 | Certificates | `mod_customcert` **4.4.10** | [mdjnelson/moodle-mod_customcert](https://github.com/mdjnelson/moodle-mod_customcert) branch `MOODLE_404_STABLE` |
 | Payments | `enrol_paystack` **1.4.1** (tag `v1.2.2`) | [PaystackHQ/plugin-moodle-enrol](https://github.com/PaystackHQ/plugin-moodle-enrol) |
 | Orgs | Moodle cohorts + `local_orgs` **0.1.0** | Scaffold only in Phase 0 (not IOMAD) |
-| Local email | **Mailpit** | SMTP `:1025`, UI `:8025` |
+| Local email | **Mailpit** | SMTP `:1025`, UI `:8025` (local only — production uses a real SMTP relay) |
+| Edge proxy (prod) | **Caddy 2.8** | Automatic Let's Encrypt TLS, HTTP→HTTPS redirect, HSTS |
 
 ## Plugin sources (Phase 0)
 
@@ -44,8 +45,8 @@
 | Env | Stack | Notes |
 |-----|--------|--------|
 | Local | Docker Compose (`docker/`) | Moodle `http://localhost:8080`, Mailpit `http://localhost:8025` |
-| Staging | TBD Phase 5 | Same version pins as production |
-| Production | TBD Phase 6 | KADSAMHSA domain |
+| Staging | Same as production, separate host/domain | Same version pins as production |
+| Production | Docker Compose (`docker/docker-compose.prod.yml`) + Caddy TLS | KADSAMHSA domain; runbook in `docs/deploy-vps.md` |
 
 ## Theme convention
 

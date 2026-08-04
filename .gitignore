@@ -27,3 +27,6 @@ Thumbs.db
 # Composer / Node (if used later for tooling)
 vendor/
 node_modules/
+.env.production
+.env.*.local
+backups/
