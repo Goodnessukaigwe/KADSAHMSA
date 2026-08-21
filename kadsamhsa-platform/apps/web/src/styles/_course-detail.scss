@@ -1,0 +1,149 @@
+// KADSAMHSA course detail page
+
+.kadsamhsa-course-hero {
+    background: var(--kadsamhsa-surface);
+    border-bottom: 1px solid var(--kadsamhsa-border);
+    padding-block: var(--kadsamhsa-space-2xl);
+
+    &__grid {
+        display: grid;
+        gap: var(--kadsamhsa-space-xl);
+
+        @media (min-width: 768px) {
+            grid-template-columns: 1fr 320px;
+            align-items: start;
+        }
+    }
+
+    &__title {
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        margin-bottom: var(--kadsamhsa-space-md);
+    }
+
+    &__summary {
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        color: var(--kadsamhsa-text-muted);
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    &__meta-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kadsamhsa-space-md);
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--kadsamhsa-space-lg);
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: var(--kadsamhsa-space-xs);
+            font-size: 0.875rem;
+            color: var(--kadsamhsa-text-muted);
+        }
+    }
+
+    &__sidebar {
+        background: var(--kadsamhsa-bg);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-lg);
+        padding: var(--kadsamhsa-space-lg);
+    }
+
+    &__image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        display: block;
+    }
+
+    &__enrol-btn {
+        display: block;
+        width: 100%;
+        background: var(--kadsamhsa-primary);
+        color: #fff !important;
+        border: none;
+        padding: var(--kadsamhsa-space-md);
+        border-radius: var(--kadsamhsa-radius-md);
+        font-weight: 600;
+        font-size: 1rem;
+        text-align: center;
+        text-decoration: none;
+        transition: background var(--kadsamhsa-transition);
+
+        &:hover,
+        &:focus {
+            background: var(--kadsamhsa-primary-hover);
+            color: #fff !important;
+        }
+    }
+
+    &__cert-note {
+        margin-top: var(--kadsamhsa-space-md);
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+        background: var(--kadsamhsa-primary-light);
+        border-radius: var(--kadsamhsa-radius-sm);
+        font-size: 0.8125rem;
+        color: var(--kadsamhsa-primary);
+    }
+}
+
+.kadsamhsa-course-section {
+    padding-block: var(--kadsamhsa-space-xl);
+
+    &__heading {
+        font-size: 1.25rem;
+        margin-bottom: var(--kadsamhsa-space-lg);
+        padding-bottom: var(--kadsamhsa-space-sm);
+        border-bottom: 2px solid var(--kadsamhsa-primary-light);
+    }
+}
+
+.kadsamhsa-objectives {
+    list-style: none;
+    padding: 0;
+
+    li {
+        padding: var(--kadsamhsa-space-sm) 0 var(--kadsamhsa-space-sm) 1.75rem;
+        position: relative;
+        border-bottom: 1px solid var(--kadsamhsa-border-light);
+
+        &::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--kadsamhsa-success);
+            font-weight: 700;
+        }
+    }
+}
+
+.kadsamhsa-module-outline {
+    .section {
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-md);
+        margin-bottom: var(--kadsamhsa-space-md);
+        overflow: hidden;
+
+        .sectionname {
+            background: var(--kadsamhsa-bg);
+            padding: var(--kadsamhsa-space-md) var(--kadsamhsa-space-lg);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .activity {
+            padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-lg);
+            border-top: 1px solid var(--kadsamhsa-border-light);
+            font-size: 0.875rem;
+        }
+    }
+}
+
+body.kadsamhsa-course-detail {
+    #page-header .card {
+        display: none;
+    }
+}

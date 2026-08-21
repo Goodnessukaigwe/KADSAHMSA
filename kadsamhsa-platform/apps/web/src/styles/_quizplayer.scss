@@ -1,0 +1,564 @@
+// KADSAMHSA learner quiz player. The original theme had no quiz styling, so
+// this is built from the tokens in _tokens.scss rather than ported.
+
+.kadsamhsa-quiz {
+    padding-block: var(--kadsamhsa-space-2xl) var(--kadsamhsa-space-3xl);
+    background: var(--kadsamhsa-surface);
+
+    &__inner {
+        width: 100%;
+        max-width: var(--kadsamhsa-container-narrow);
+        margin-inline: auto;
+        padding-inline: var(--kadsamhsa-space-md);
+
+        @media (min-width: 768px) {
+            padding-inline: var(--kadsamhsa-space-xl);
+        }
+    }
+
+    &__eyebrow {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--kadsamhsa-text-muted);
+        margin: 0 0 var(--kadsamhsa-space-xs);
+    }
+
+    &__title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        margin: 0 0 var(--kadsamhsa-space-md);
+    }
+
+    &__state {
+        color: var(--kadsamhsa-text-muted);
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+        margin-bottom: var(--kadsamhsa-space-sm);
+    }
+
+    &__meta-item {
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    // ---- Countdown ----
+
+    &__countdown {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--kadsamhsa-space-sm);
+        margin-inline-start: auto;
+        padding: var(--kadsamhsa-space-xs) var(--kadsamhsa-space-md);
+        background: var(--kadsamhsa-primary-light);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: 999px;
+
+        &.is-urgent {
+            background: #fdecea;
+            border-color: var(--kadsamhsa-danger);
+        }
+    }
+
+    &__countdown-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    &__countdown-value {
+        font-family: var(--kadsamhsa-font-mono);
+        font-size: 1rem;
+        font-weight: 700;
+        // Tabular figures stop the pill twitching as the digits change.
+        font-variant-numeric: tabular-nums;
+        color: var(--kadsamhsa-primary);
+
+        .kadsamhsa-quiz__countdown.is-urgent & {
+            color: var(--kadsamhsa-danger);
+        }
+    }
+
+    // Announced only — the visible digits above are the sighted equivalent.
+    &__countdown-live {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    &__progress {
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+        margin: 0 0 var(--kadsamhsa-space-sm);
+    }
+
+    // ---- Question number strip ----
+
+    &__strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kadsamhsa-space-xs);
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    &__chip {
+        position: relative;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
+        padding: 0 0.4rem;
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--kadsamhsa-text-muted);
+        background: var(--kadsamhsa-bg);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-sm);
+        cursor: pointer;
+        transition: background var(--kadsamhsa-transition),
+            border-color var(--kadsamhsa-transition);
+
+        &:hover {
+            border-color: var(--kadsamhsa-primary);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--kadsamhsa-primary);
+            outline-offset: 2px;
+        }
+
+        // Answered carries a tick as well as the fill, so the state survives
+        // greyscale printing and colour-blindness.
+        &.is-answered {
+            background: var(--kadsamhsa-primary-light);
+            border-color: var(--kadsamhsa-primary);
+            color: var(--kadsamhsa-primary);
+        }
+
+        &.is-current {
+            background: var(--kadsamhsa-primary);
+            border-color: var(--kadsamhsa-primary);
+            color: var(--kadsamhsa-text-inverse);
+        }
+    }
+
+    &__chip-mark {
+        position: absolute;
+        top: -0.3rem;
+        inset-inline-end: -0.3rem;
+        display: grid;
+        place-items: center;
+        width: 1rem;
+        height: 1rem;
+        font-size: 0.625rem;
+        line-height: 1;
+        color: var(--kadsamhsa-text-inverse);
+        background: var(--kadsamhsa-success);
+        border-radius: 50%;
+    }
+
+    // ---- Question card ----
+
+    &__card {
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-lg);
+        box-shadow: var(--kadsamhsa-shadow-sm);
+        padding: var(--kadsamhsa-space-lg);
+
+        @media (min-width: 768px) {
+            padding: var(--kadsamhsa-space-xl);
+        }
+    }
+
+    &__fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+    }
+
+    &__legend {
+        // A legend is not a grid/flex container in every engine, so lay the
+        // heading and hint out as plain blocks with explicit spacing.
+        display: block;
+        width: 100%;
+        padding: 0;
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    &__counter {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--kadsamhsa-text-muted);
+        margin-bottom: var(--kadsamhsa-space-xs);
+    }
+
+    &__prompt {
+        font-size: 1.25rem;
+        line-height: 1.45;
+        margin: 0 0 var(--kadsamhsa-space-xs);
+    }
+
+    &__hint {
+        display: block;
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    // ---- Options ----
+
+    &__options {
+        display: grid;
+        gap: var(--kadsamhsa-space-sm);
+    }
+
+    &__option {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--kadsamhsa-space-sm);
+        padding: var(--kadsamhsa-space-md);
+        background: var(--kadsamhsa-bg);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-md);
+        cursor: pointer;
+        transition: background var(--kadsamhsa-transition),
+            border-color var(--kadsamhsa-transition);
+
+        &:hover {
+            border-color: var(--kadsamhsa-primary);
+        }
+
+        // The whole row is the label, so the focus ring has to be drawn here
+        // rather than on the visually small input.
+        &:focus-within {
+            outline: 2px solid var(--kadsamhsa-primary);
+            outline-offset: 2px;
+        }
+
+        &.is-selected {
+            background: var(--kadsamhsa-primary-light);
+            border-color: var(--kadsamhsa-primary);
+        }
+
+        input {
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            accent-color: var(--kadsamhsa-primary);
+        }
+    }
+
+    &__option-label {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    // ---- Matching ----
+
+    &__matches {
+        list-style: none;
+        display: grid;
+        gap: var(--kadsamhsa-space-md);
+        margin: 0;
+        padding: 0;
+    }
+
+    &__match {
+        display: grid;
+        gap: var(--kadsamhsa-space-xs);
+        padding: var(--kadsamhsa-space-md);
+        background: var(--kadsamhsa-bg);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-md);
+
+        @media (min-width: 640px) {
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: var(--kadsamhsa-space-md);
+        }
+    }
+
+    &__match-term {
+        font-weight: 600;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+    }
+
+    &__match-select {
+        width: 100%;
+        padding: 0.625rem 0.75rem;
+        font: inherit;
+        font-size: 0.9375rem;
+        color: var(--kadsamhsa-text);
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-sm);
+
+        &:focus-visible {
+            outline: 2px solid var(--kadsamhsa-primary);
+            outline-offset: 1px;
+            border-color: var(--kadsamhsa-primary);
+        }
+    }
+
+    // ---- Actions ----
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kadsamhsa-space-sm);
+        margin-top: var(--kadsamhsa-space-lg);
+    }
+
+    &__actions-note {
+        margin-top: var(--kadsamhsa-space-sm);
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-warning);
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--kadsamhsa-space-xs);
+        padding: 0.75rem var(--kadsamhsa-space-lg);
+        font: inherit;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        border-radius: var(--kadsamhsa-radius-md);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: background var(--kadsamhsa-transition),
+            border-color var(--kadsamhsa-transition);
+
+        &:focus-visible {
+            outline: 2px solid var(--kadsamhsa-primary);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        &--primary {
+            background: var(--kadsamhsa-primary);
+            color: var(--kadsamhsa-text-inverse) !important;
+
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
+                background: var(--kadsamhsa-primary-hover);
+                color: var(--kadsamhsa-text-inverse) !important;
+            }
+        }
+
+        &--ghost {
+            background: var(--kadsamhsa-surface);
+            border-color: var(--kadsamhsa-border);
+            color: var(--kadsamhsa-text) !important;
+
+            &:hover:not(:disabled),
+            &:focus:not(:disabled) {
+                border-color: var(--kadsamhsa-primary);
+                color: var(--kadsamhsa-primary) !important;
+            }
+        }
+
+        // Pushed away from Previous/Next so submitting is never a misfire.
+        &--submit {
+            margin-inline-start: auto;
+        }
+    }
+
+    &__error {
+        margin-top: var(--kadsamhsa-space-md);
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-danger);
+        background: #fdecea;
+        border-inline-start: 4px solid var(--kadsamhsa-danger);
+        border-radius: var(--kadsamhsa-radius-sm);
+    }
+
+    // ---- Results ----
+
+    // Pass and fail are distinguished by the badge wording and the ✓ / ✗ glyph;
+    // the tint and border are reinforcement only, never the sole signal.
+    &__verdict {
+        padding: var(--kadsamhsa-space-lg);
+        border-radius: var(--kadsamhsa-radius-lg);
+        border: 1px solid var(--kadsamhsa-border);
+        border-inline-start-width: 4px;
+        background: var(--kadsamhsa-bg);
+        margin-bottom: var(--kadsamhsa-space-xl);
+
+        &.is-passed {
+            border-color: var(--kadsamhsa-success);
+            background: var(--kadsamhsa-primary-light);
+        }
+
+        &.is-failed {
+            border-color: var(--kadsamhsa-danger);
+            background: #fdecea;
+        }
+    }
+
+    &__verdict-badge {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin: 0 0 var(--kadsamhsa-space-xs);
+
+        .kadsamhsa-quiz__verdict.is-passed & {
+            color: var(--kadsamhsa-success);
+        }
+
+        .kadsamhsa-quiz__verdict.is-failed & {
+            color: var(--kadsamhsa-danger);
+        }
+    }
+
+    &__verdict-score {
+        font-family: var(--kadsamhsa-font-display);
+        font-size: clamp(2.25rem, 8vw, 3rem);
+        font-weight: 700;
+        line-height: 1;
+        margin: 0 0 var(--kadsamhsa-space-sm);
+    }
+
+    &__verdict-detail {
+        margin: 0 0 var(--kadsamhsa-space-xs);
+        font-size: 1rem;
+    }
+
+    &__verdict-meta {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    &__certificate {
+        padding: var(--kadsamhsa-space-lg);
+        margin-bottom: var(--kadsamhsa-space-xl);
+        background: var(--kadsamhsa-primary-light);
+        border: 1px solid var(--kadsamhsa-primary);
+        border-radius: var(--kadsamhsa-radius-lg);
+
+        p {
+            margin: 0 0 var(--kadsamhsa-space-md);
+            line-height: 1.6;
+        }
+    }
+
+    &__certificate-title {
+        margin: 0 0 var(--kadsamhsa-space-sm);
+        font-size: 1.25rem;
+        color: var(--kadsamhsa-primary);
+    }
+
+    &__certificate-id {
+        font-family: var(--kadsamhsa-font-mono);
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        // Long IDs must stay selectable on a narrow phone.
+        overflow-wrap: anywhere;
+        padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+        background: var(--kadsamhsa-surface);
+        border: 1px dashed var(--kadsamhsa-primary);
+        border-radius: var(--kadsamhsa-radius-sm);
+    }
+
+    &__review-title {
+        font-size: 1.25rem;
+        margin: 0 0 var(--kadsamhsa-space-md);
+    }
+
+    &__review {
+        list-style: none;
+        display: grid;
+        gap: var(--kadsamhsa-space-md);
+        margin: 0;
+        padding: 0;
+    }
+
+    &__review-item {
+        padding: var(--kadsamhsa-space-lg);
+        background: var(--kadsamhsa-surface);
+        border: 1px solid var(--kadsamhsa-border);
+        border-inline-start-width: 4px;
+        border-radius: var(--kadsamhsa-radius-md);
+
+        &.is-correct {
+            border-inline-start-color: var(--kadsamhsa-success);
+        }
+
+        &.is-incorrect {
+            border-inline-start-color: var(--kadsamhsa-danger);
+        }
+    }
+
+    &__review-status {
+        margin: 0 0 var(--kadsamhsa-space-xs);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+
+        .kadsamhsa-quiz__review-item.is-correct & {
+            color: var(--kadsamhsa-success);
+        }
+
+        .kadsamhsa-quiz__review-item.is-incorrect & {
+            color: var(--kadsamhsa-danger);
+        }
+    }
+
+    &__review-prompt {
+        margin: 0 0 var(--kadsamhsa-space-sm);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    &__review-feedback {
+        margin: 0 0 var(--kadsamhsa-space-xs);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--kadsamhsa-text-muted);
+    }
+
+    &__review-answer {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--kadsamhsa-text);
+    }
+
+    &__results-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--kadsamhsa-space-sm);
+        margin-top: var(--kadsamhsa-space-xl);
+    }
+}

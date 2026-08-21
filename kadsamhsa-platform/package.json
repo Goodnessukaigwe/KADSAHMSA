@@ -1,0 +1,23 @@
+{
+  "name": "kadsamhsa-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @kadsamhsa/web",
+    "dev:api": "npm run dev --workspace @kadsamhsa/api",
+    "dev:worker": "npm run dev --workspace @kadsamhsa/worker",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "migrate": "npm run migrate --workspace @kadsamhsa/api",
+    "seed": "npm run seed --workspace @kadsamhsa/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
