@@ -1,0 +1,838 @@
+// KADSAMHSA landing page — Figma black/white marketing layout
+
+$landing-text: #111111;
+$landing-muted: #6b7280;
+$landing-border: #e5e7eb;
+$landing-bg: #ffffff;
+$landing-soft: #f5f5f5;
+$landing-pill: #111111;
+
+// Shared media placeholders (size only — no photos).
+.kadsamhsa-media-ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $landing-soft;
+    border: 1.5px dashed #d1d5db;
+    color: $landing-muted;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    overflow: hidden;
+
+    &--hero {
+        aspect-ratio: 16 / 10;
+        border-radius: 16px;
+        min-height: 140px;
+    }
+
+    &--about {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 28px;
+        min-height: 320px;
+    }
+
+    &--faq {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        border-radius: 24px;
+        min-height: 360px;
+    }
+}
+
+.kadsamhsa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+
+    &--pill {
+        padding: 12px 14px 12px 22px;
+        border-radius: 999px;
+        background: $landing-pill;
+        color: #fff !important;
+
+        &:hover,
+        &:focus-visible {
+            background: #2a2a2a;
+            color: #fff !important;
+            text-decoration: none;
+        }
+    }
+
+    &--invert {
+        background: #fff !important;
+        color: $landing-text !important;
+
+        &:hover,
+        &:focus-visible {
+            background: #f3f4f6 !important;
+            color: $landing-text !important;
+        }
+    }
+
+    &--block {
+        width: 100%;
+        padding: 14px 20px;
+    }
+
+    &__arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #fff;
+        color: $landing-text;
+    }
+}
+
+.kadsamhsa-landing-sectionhead {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+
+    h2 {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 700;
+        color: $landing-text;
+        margin: 0 0 0.75rem;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        margin: 0;
+        color: $landing-muted;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Frontpage chrome overrides
+// ---------------------------------------------------------------------------
+
+body.kadsamhsa-frontpage {
+    background: $landing-bg;
+
+    #page-header,
+    .secondary-navigation,
+    .drawer-toggles {
+        display: none !important;
+    }
+
+    // Hide stock Moodle site-home chrome; landing renders above #page.
+    #page .main-inner {
+        display: none !important;
+    }
+
+    #page {
+        margin-top: 0;
+        background: transparent;
+        padding: 0;
+    }
+
+    // Replace stock navbar with marketing nav.
+    .navbar.fixed-top {
+        display: none !important;
+    }
+
+    .kadsamhsa-footer:not(.kadsamhsa-footer--landing) {
+        display: none !important;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Landing navbar
+// ---------------------------------------------------------------------------
+
+.kadsamhsa-landing-nav {
+    position: sticky;
+    top: 0;
+    z-index: var(--kadsamhsa-z-header, 1030);
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid $landing-border;
+    backdrop-filter: blur(8px);
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 80px;
+    }
+
+    &__logo {
+        text-decoration: none;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    &__logo-img {
+        display: block;
+        width: 88px;
+        height: auto;
+        max-height: 56px;
+        object-fit: contain;
+    }
+
+    &__logo-placeholder {
+        display: block;
+        width: 88px;
+        height: 56px;
+        border: 1.5px dashed #d1d5db;
+        border-radius: 10px;
+        background: $landing-soft;
+    }
+
+    &__toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        border: 1px solid $landing-border;
+        border-radius: 8px;
+        background: #fff;
+        padding: 0;
+        cursor: pointer;
+
+        &-bar {
+            display: block;
+            width: 18px;
+            height: 2px;
+            margin: 0 auto;
+            background: $landing-text;
+        }
+    }
+
+    &__menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: 1.25rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid $landing-border;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+
+        &.is-open {
+            display: flex;
+        }
+    }
+
+    &__links {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    // Used by both <a> (nav links) and <button> (sign out), so the UA button
+    // chrome — grey background, all-side border, own padding and font — has to
+    // be reset here or the button renders as a raw form control.
+    &__link {
+        appearance: none;
+        background: none;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        padding: 0 0 4px;
+        font-family: inherit;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        line-height: inherit;
+        color: $landing-text;
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible,
+        &.is-active {
+            border-bottom-color: $landing-text;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: progress;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+    }
+
+    &__cta {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 22px;
+        border-radius: 999px;
+        background: $landing-pill;
+        color: #fff !important;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+            background: #2a2a2a;
+            color: #fff !important;
+        }
+    }
+
+    @media (min-width: 992px) {
+        &__toggle {
+            display: none;
+        }
+
+        &__menu {
+            display: flex;
+            position: static;
+            flex-direction: row;
+            align-items: center;
+            flex: 1;
+            padding: 0 0 0 2rem;
+            border: 0;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        &__links {
+            flex-direction: row;
+            gap: 1.75rem;
+            margin: 0 auto;
+        }
+
+        &__actions {
+            margin-left: auto;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Sections
+// ---------------------------------------------------------------------------
+
+.kadsamhsa-landing {
+    background: $landing-bg;
+    color: $landing-text;
+}
+
+.kadsamhsa-landing-hero {
+    padding: 4rem 0 3rem;
+    text-align: center;
+
+    &__inner {
+        max-width: 920px;
+    }
+
+    &__title {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+        margin: 0 auto 1.25rem;
+        max-width: 18ch;
+        color: $landing-text;
+    }
+
+    &__subtitle {
+        margin: 0 auto 2rem;
+        max-width: 42ch;
+        font-size: 1.0625rem;
+        line-height: 1.65;
+        color: $landing-muted;
+    }
+
+    &__gallery {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+        padding: 5.5rem 0 4rem;
+
+        &__gallery {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+    }
+}
+
+.kadsamhsa-landing-about {
+    padding: 4rem 0;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    &__title {
+        font-family: var(--kadsamhsa-font-body, "Outfit", sans-serif);
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 700;
+        line-height: 1.25;
+        margin: 0 0 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    &__text {
+        color: $landing-muted;
+        line-height: 1.7;
+        margin: 0 0 1.5rem;
+        max-width: 40ch;
+    }
+
+    @media (min-width: 900px) {
+        padding: 5rem 0;
+
+        &__grid {
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 4rem;
+        }
+    }
+}
+
+.kadsamhsa-landing-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 2rem;
+
+    &__item {
+        background: $landing-soft;
+        border-radius: 14px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+    }
+
+    &__number {
+        font-weight: 700;
+        font-size: 1.125rem;
+        color: $landing-text;
+        margin-bottom: 0.25rem;
+    }
+
+    &__label {
+        font-size: 0.75rem;
+        color: $landing-muted;
+        line-height: 1.35;
+    }
+}
+
+.kadsamhsa-landing-courses {
+    padding: 4rem 0;
+    background: $landing-bg;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        &__grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+.kadsamhsa-course-card {
+    background: #fff;
+    border: 1px solid $landing-border;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    &__media {
+        aspect-ratio: 16 / 10;
+        border: 0;
+        border-radius: 0;
+        border-bottom: 1px solid $landing-border;
+        overflow: hidden;
+        background: #ececec;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .kadsamhsa-media-ph {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &__body {
+        padding: 1.25rem 1.25rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.75rem;
+    }
+
+    &__title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin: 0;
+        color: $landing-text;
+    }
+
+    &__meta {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        font-size: 0.75rem;
+        color: $landing-muted;
+    }
+
+    &__desc {
+        margin: 0 0 auto;
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: $landing-muted;
+    }
+}
+
+.kadsamhsa-landing-plans {
+    padding: 4rem 0;
+    background: $landing-soft;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    @media (min-width: 900px) {
+        &__grid {
+            grid-template-columns: repeat(3, 1fr);
+            align-items: stretch;
+        }
+    }
+}
+
+.kadsamhsa-plan-card {
+    background: #fff;
+    border: 1px solid $landing-border;
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__name {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 700;
+    }
+
+    &__price {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    &__features {
+        list-style: none;
+        margin: 0 0 auto;
+        padding: 0;
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.65rem;
+            font-size: 0.875rem;
+            color: $landing-muted;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0.4rem;
+                width: 0.65rem;
+                height: 0.65rem;
+                border-radius: 50%;
+                background: $landing-text;
+            }
+        }
+    }
+
+    &--featured {
+        background: $landing-text;
+        border-color: $landing-text;
+        color: #fff;
+
+        .kadsamhsa-plan-card__name,
+        .kadsamhsa-plan-card__price {
+            color: #fff;
+        }
+
+        .kadsamhsa-plan-card__features li {
+            color: rgba(255, 255, 255, 0.85);
+
+            &::before {
+                background: #fff;
+            }
+        }
+    }
+}
+
+.kadsamhsa-landing-faq {
+    padding: 4rem 0;
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    &__copy h2 {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 700;
+        margin: 0 0 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    &__aside {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    &__contact-card {
+        background: $landing-soft;
+        border-radius: 20px;
+        padding: 1.5rem;
+
+        p {
+            margin: 0 0 1rem;
+            color: $landing-muted;
+            font-size: 0.9375rem;
+            line-height: 1.55;
+        }
+    }
+
+    @media (min-width: 900px) {
+        &__grid {
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3.5rem;
+        }
+    }
+}
+
+.kadsamhsa-faq-item {
+    border: 1px solid $landing-border;
+    border-radius: 14px;
+    background: #fff;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+
+    summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::after {
+            content: "+";
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: $landing-muted;
+        }
+    }
+
+    &[open] summary {
+        background: #2a2a2a;
+        color: #fff;
+
+        &::after {
+            content: "–";
+            color: #fff;
+        }
+    }
+
+    &__body {
+        padding: 1rem 1.25rem 1.25rem;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: $landing-muted;
+        background: #2a2a2a;
+        color: rgba(255, 255, 255, 0.88);
+    }
+
+    &[open] .kadsamhsa-faq-item__body {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+.kadsamhsa-landing-brand {
+    padding: 4rem 0 3rem;
+    text-align: center;
+    border-top: 1px solid $landing-border;
+
+    &__logo,
+    &__logo-ph {
+        display: block;
+        width: 120px;
+        height: auto;
+        max-height: 120px;
+        margin: 0 auto 1rem;
+        object-fit: contain;
+    }
+
+    &__logo-ph {
+        height: 120px;
+        border-radius: 24px;
+        border: 1.5px dashed #d1d5db;
+        background: $landing-soft;
+    }
+
+    &__name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 0 1.25rem;
+        letter-spacing: 0.04em;
+    }
+
+    &__social {
+        list-style: none;
+        margin: 0 0 2rem;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    &__social-ph {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid $landing-border;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: $landing-muted;
+    }
+
+    &__contact {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+
+        strong {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+            color: $landing-text;
+        }
+
+        span,
+        a {
+            font-size: 0.875rem;
+            color: $landing-muted;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: $landing-text;
+            text-decoration: underline;
+        }
+
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+// Landing footer bar (black)
+.kadsamhsa-footer--landing {
+    background: #111 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding-block: 1.25rem !important;
+    margin-top: 0 !important;
+
+    a {
+        color: rgba(255, 255, 255, 0.9) !important;
+
+        &:hover {
+            color: #fff !important;
+        }
+    }
+
+    .kadsamhsa-footer__brand,
+    .kadsamhsa-footer__heading,
+    .kadsamhsa-footer__tagline {
+        display: none;
+    }
+
+    .row {
+        display: none;
+    }
+
+    .kadsamhsa-footer__bottom {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        opacity: 1;
+        font-size: 0.8125rem;
+    }
+
+    .footer-content-debugging {
+        display: none;
+    }
+}

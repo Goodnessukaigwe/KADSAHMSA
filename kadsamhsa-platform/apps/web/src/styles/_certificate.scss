@@ -1,0 +1,150 @@
+// Learner certificate view (wireframe screen 8).
+//
+// The print rules are the download mechanism: "Download PDF" calls
+// window.print(), so everything except the certificate sheet is hidden and the
+// sheet is laid out to fill a landscape page.
+
+.kadsamhsa-cert {
+    padding-block: var(--kadsamhsa-space-2xl) var(--kadsamhsa-space-3xl);
+    background: var(--kadsamhsa-bg);
+
+    &__revoked {
+        max-width: 900px;
+        margin: 0 auto var(--kadsamhsa-space-lg);
+        padding: var(--kadsamhsa-space-md) var(--kadsamhsa-space-lg);
+        border-left: 4px solid var(--kadsamhsa-danger);
+        border-radius: var(--kadsamhsa-radius-md);
+        background: #fff;
+        color: var(--kadsamhsa-text);
+    }
+
+    &__sheet {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: clamp(1.75rem, 5vw, 3.5rem);
+        text-align: center;
+        background-color: #fff;
+        background-size: cover;
+        background-position: center;
+        border: 1px solid var(--kadsamhsa-border);
+        border-radius: var(--kadsamhsa-radius-lg);
+        box-shadow: var(--kadsamhsa-shadow-md);
+    }
+
+    &__logo {
+        width: 120px;
+        height: auto;
+        margin-bottom: var(--kadsamhsa-space-lg);
+    }
+
+    &__title {
+        margin: 0 0 var(--kadsamhsa-space-lg);
+        font-family: var(--kadsamhsa-font-display);
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+
+    &__body {
+        max-width: 44ch;
+        margin: 0 auto var(--kadsamhsa-space-lg);
+        color: var(--kadsamhsa-text-muted);
+        line-height: 1.7;
+    }
+
+    &__name {
+        margin: 0 0 0.35rem;
+        font-family: var(--kadsamhsa-font-display);
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 700;
+        color: var(--kadsamhsa-primary);
+    }
+
+    &__course {
+        margin: 0 0 var(--kadsamhsa-space-2xl);
+        font-size: 1.0625rem;
+        font-weight: 600;
+    }
+
+    &__signatories {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--kadsamhsa-space-2xl);
+        margin-bottom: var(--kadsamhsa-space-xl);
+    }
+
+    &__signatory {
+        display: grid;
+        gap: 0.15rem;
+        min-width: 11rem;
+        font-size: 0.875rem;
+
+        span:last-child {
+            color: var(--kadsamhsa-text-muted);
+        }
+    }
+
+    &__sig-line {
+        display: block;
+        height: 1px;
+        margin-bottom: 0.5rem;
+        background: var(--kadsamhsa-border);
+    }
+
+    &__meta,
+    &__verify {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--kadsamhsa-text-muted);
+        word-break: break-word;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: var(--kadsamhsa-space-md);
+        margin-top: var(--kadsamhsa-space-xl);
+    }
+
+    &__back {
+        font-size: 0.875rem;
+    }
+}
+
+@media print {
+    // Everything that is not the certificate itself, including the app chrome.
+    .kadsamhsa-landing-nav,
+    .kadsamhsa-footer,
+    .kadsamhsa-skip-link,
+    .kadsamhsa-cert__actions,
+    .kadsamhsa-cert__revoked {
+        display: none !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 12mm;
+    }
+
+    body,
+    .kadsamhsa-cert {
+        background: #fff !important;
+        padding: 0 !important;
+    }
+
+    .kadsamhsa-cert__sheet {
+        max-width: none;
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+        // Background images are dropped by default in print; the certificate
+        // template's background is decorative, so losing it is acceptable —
+        // the text, IDs and signatories all still print.
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}

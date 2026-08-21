@@ -1,0 +1,160 @@
+# KADSAMHSA LMS — PRODUCTION stack
+#
+#   docker compose -f docker/docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# Differences vs docker-compose.yml (local):
+#   - Caddy edge proxy terminates TLS (automatic Let's Encrypt) on :80/:443
+#   - No Mailpit; mail goes to a real SMTP relay configured in .env.production
+#   - No published DB / PHP-FPM ports — only Caddy is reachable from the internet
+#   - Tuned MariaDB + PHP-FPM, log rotation, healthchecks, restart: always
+#   - Separate named volumes (kadsamhsa_prod_*) so prod never collides with local
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: kadsamhsa-caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      MOODLE_DOMAIN: ${MOODLE_DOMAIN:?set MOODLE_DOMAIN in .env.production}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env.production}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    depends_on:
+      - moodle-web
+    networks:
+      - moodle
+    logging: *default-logging
+
+  db:
+    image: mariadb:10.11
+    container_name: kadsamhsa-db
+    restart: always
+    command: >-
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-file-per-table=1
+      --innodb-buffer-pool-size=${DB_BUFFER_POOL_SIZE:-1G}
+      --innodb-flush-log-at-trx-commit=2
+      --max-allowed-packet=64M
+      --max-connections=${DB_MAX_CONNECTIONS:-200}
+      --skip-name-resolve
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-moodle}
+      MYSQL_USER: ${MYSQL_USER:-moodle}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD}
+    volumes:
+      - moodle_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - moodle
+    logging: *default-logging
+
+  moodle-php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    image: kadsamhsa-php:prod
+    container_name: kadsamhsa-php
+    restart: always
+    # php-fpm master must run as root; pool workers use www-data
+    volumes:
+      - ../moodle:/var/www/html
+      - moodledata:/var/www/moodledata
+      - ./php/php.prod.ini:/usr/local/etc/php/conf.d/zz-moodle-prod.ini:ro
+      - ./php/www.prod.conf:/usr/local/etc/php-fpm.d/zzz-moodle-prod.conf:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "php -v > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - moodle
+    logging: *default-logging
+
+  moodle-web:
+    image: nginx:1.27-alpine
+    container_name: kadsamhsa-web
+    restart: always
+    # No published ports — Caddy is the only public entrypoint.
+    volumes:
+      - ../moodle:/var/www/html:ro
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - moodle-php
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - moodle
+    logging: *default-logging
+
+  cron:
+    image: kadsamhsa-php:prod
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: kadsamhsa-cron
+    restart: always
+    user: "33:33"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Moodle cron sidecar starting (every 60s)..."
+        while true; do
+          php /var/www/html/admin/cli/cron.php || true
+          sleep 60
+        done
+    volumes:
+      - ../moodle:/var/www/html
+      - moodledata:/var/www/moodledata
+      - ./php/php.prod.ini:/usr/local/etc/php/conf.d/zz-moodle-prod.ini:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      moodle-php:
+        condition: service_started
+    networks:
+      - moodle
+    logging: *default-logging
+
+volumes:
+  moodle_db:
+    name: kadsamhsa_prod_moodle_db
+  moodledata:
+    name: kadsamhsa_prod_moodledata
+  caddy_data:
+    name: kadsamhsa_prod_caddy_data
+  caddy_config:
+    name: kadsamhsa_prod_caddy_config
+  caddy_logs:
+    name: kadsamhsa_prod_caddy_logs
+
+networks:
+  moodle:
+    name: kadsamhsa_prod_moodle

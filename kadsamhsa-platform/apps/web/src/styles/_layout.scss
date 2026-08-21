@@ -1,0 +1,54 @@
+// KADSAMHSA base layout utilities
+
+.kadsamhsa-container {
+    width: 100%;
+    max-width: var(--kadsamhsa-container-max);
+    margin-inline: auto;
+    padding-inline: var(--kadsamhsa-space-md);
+
+    @media (min-width: 768px) {
+        padding-inline: var(--kadsamhsa-space-xl);
+    }
+}
+
+.kadsamhsa-container--narrow {
+    max-width: var(--kadsamhsa-container-narrow);
+}
+
+.kadsamhsa-section {
+    padding-block: var(--kadsamhsa-space-2xl);
+
+    @media (min-width: 768px) {
+        padding-block: var(--kadsamhsa-space-3xl);
+    }
+}
+
+.kadsamhsa-skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--kadsamhsa-space-md);
+    z-index: 9999;
+    padding: var(--kadsamhsa-space-sm) var(--kadsamhsa-space-md);
+    background: var(--kadsamhsa-primary);
+    color: var(--kadsamhsa-text-inverse);
+    border-radius: var(--kadsamhsa-radius-sm);
+    text-decoration: none;
+
+    &:focus {
+        top: var(--kadsamhsa-space-md);
+    }
+}
+
+// Low-bandwidth: respect reduced motion
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+// Lazy-load image placeholder
+img[loading="lazy"] {
+    background: var(--kadsamhsa-border-light);
+}

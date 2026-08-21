@@ -10,14 +10,15 @@ Build phases: [PHASES.md](PHASES.md) · Product requirements: [KADSAMHSA_LMS_PRD
 
 ```
 KADSAHMSA/
-├── docker/                 # compose + nginx/php configs
+├── docker/                 # compose (local + prod) + caddy/nginx/php configs
 ├── moodle/                 # Moodle 4.5 core (gitignored; clone via script)
 ├── theme/kadsamhsa/        # working copy → sync to moodle/theme/kadsamhsa/
 ├── plugins/                # customcert, enrol_paystack, local_orgs
 ├── content/dptc/           # DPTC source materials (Phase 4)
 ├── config/                 # .env.example, versions.md
-├── docs/                   # runbooks (see docs/local-bootstrap.md)
+├── docs/                   # runbooks (local-bootstrap.md, deploy-vps.md)
 └── scripts/                # clone, install, sync, cron helpers
+    └── prod/               # production deploy, backup, restore, smoke test
 ```
 
 **Theme convention:** develop in `theme/kadsamhsa/`, then run `scripts/sync-theme.sh` to deploy into `moodle/theme/kadsamhsa/`.
@@ -51,3 +52,33 @@ docker compose -f docker/docker-compose.yml --env-file .env up -d --build
 Admin credentials live only in `.env` (`MOODLE_ADMIN_USER` / `MOODLE_ADMIN_PASS`).
 
 Full bootstrap notes and smoke checklist: [docs/local-bootstrap.md](docs/local-bootstrap.md).
+
+## Production deployment
+
+The production stack adds a **Caddy** edge proxy with automatic Let's Encrypt TLS,
+drops Mailpit for a real SMTP relay, publishes no ports except 80/443, and runs
+tuned MariaDB and PHP-FPM.
+
+```bash
+# On a fresh Ubuntu 24.04 VPS, once DNS points at it:
+sudo bash scripts/prod/server-setup.sh          # docker, ufw, fail2ban, deploy user
+cp config/.env.production.example .env.production && chmod 600 .env.production
+$EDITOR .env.production                          # domain + secrets, no CHANGE_ME left
+./scripts/prod/deploy.sh --first-run             # install + TLS + theme + plugins
+./scripts/prod/smoke-test-prod.sh                # verify
+```
+
+Subsequent releases are `git pull && ./scripts/prod/deploy.sh` (takes a backup,
+enters maintenance mode, upgrades, purges caches, exits maintenance mode).
+
+Full runbook — sizing, DNS, backups, upgrades, rollback, troubleshooting:
+**[docs/deploy-vps.md](docs/deploy-vps.md)**
+
+| File | Purpose |
+|------|---------|
+| `docker/docker-compose.prod.yml` | Production stack (caddy, db, moodle-php, moodle-web, cron) |
+| `docker/caddy/Caddyfile` | TLS termination, HSTS + security headers, 128 MB body limit |
+| `docker/nginx/prod.conf` | App vhost behind the proxy; hardened paths |
+| `docker/php/php.prod.ini` · `www.prod.conf` | Production PHP and FPM pool tuning |
+| `config/.env.production.example` | Every production setting, all secrets as placeholders |
+| `scripts/prod/*.sh` | server-setup · deploy · install · backup · restore · smoke-test |
