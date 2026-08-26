@@ -1,7 +1,10 @@
 # KADSAMHSA
 ## Learning Management System (LMS) Platform
-### Product Requirements Document (PRD)
+### Product Requirements Document (PRD) — v2
 
+> **This document supersedes [prototype/KADSAMHSA_LMS_PRD_v1.md](prototype/KADSAMHSA_LMS_PRD_v1.md) §8 and the `prototype/kadsamhsa-platform` Fastify / Vite monorepo direction.** Product scope in §§1–7 and §9 is unchanged. Reviewers can diff by section number against v1.
+
+**Version:** 2.0 · **Date:** 24 August 2026  
 **Audience:** KADSAMHSA management · Design & development vendor (contract basis)
 
 ---
@@ -15,7 +18,7 @@
 5. Launch Content: The DPTC Course
 6. Users and User Stories
 7. Functional Requirements
-8. Build Approach: Customized Open-Source LMS
+8. Build Approach: Next.js + Supabase Application
 9. Non-Functional Requirements
 10. Deliverables, Phases, and Acceptance (Contract Basis)
 11. Success Metrics
@@ -28,9 +31,9 @@
 
 KADSAMHSA will launch an online Learning Management System (LMS) that allows individuals and partner organizations to enrol in courses, complete assessments, and earn verifiable certificates. Two reference products define the experience: the learner-facing site should follow the WHO Academy platform (https://whoacademy.org/coursewares), with a clean, card-based course catalogue, guided course pages, learner dashboards, and automatic certification, while the admin backend should work like Gurucan: a simple sidebar-driven back office where a non-technical administrator creates courses from content blocks, sets prices and offers, and manages users, without any technical skill.
 
-Scope of this contract: a responsive web application only. No native mobile apps, and no other channels, are included; the web app must simply work well on phones. The platform will be delivered as a customized open-source LMS (recommendation: Moodle with a custom theme, see Section 8) rather than a fully bespoke build, to reduce cost, delivery time, and long-term maintenance burden.
+Scope of this contract: a responsive web application only. No native mobile apps, and no other channels, are included; the web app must simply work well on phones. The platform will be delivered as a single Next.js application with a Supabase backend (see Section 8), rather than a Moodle customization or a split SPA/API monorepo. One TypeScript codebase is easier to hire for and still supports 5,000+ users.
 
-Guiding principle of self-management: this platform is being built specifically so that KADSAMHSA does not depend on anyone for day-to-day operation. After handover, KADSAMHSA staff must be able to run everything themselves through the admin backend: create and publish courses, manage users and organizations, set prices, and issue certificates. Every design and platform decision in this document should be tested against that principle. The vendor's role after launch is limited to hosting, maintenance, and support under an SLA, never routine operations.
+Guiding principle of self-management: this platform is being built specifically so that KADSAMHSA does not depend on anyone for day-to-day operation. After handover, KADSAMHSA staff must be able to run everything themselves through the admin backend: create and publish courses, manage users and organizations, set prices, and issue certificates. Every design and platform decision in this document should be tested against that principle. The vendor's role after launch is limited to hosting, maintenance, and support under an SLA, never routine operations. Staff publish courses in-app; no engineer is required for content work.
 
 The launch course is 'Sensitization on Drug Use, Drug Dependence and Drug Prevention, Treatment and Care (DPTC)', an existing UNODC/EU-supported training curriculum for law enforcement operatives and the general public in Nigeria, currently held as 14 PowerPoint modules and a 236-page trainer resource manual (see Section 5).
 
@@ -93,7 +96,7 @@ The admin back office should follow the Gurucan model (KADSAMHSA has hands-on ex
 
 Gurucan capabilities deliberately excluded from this scope (consistent with Section 3.2 non-goals): native mobile apps / white-label apps, webinars and live sessions, and community chat. The deliverable is a web application only.
 
-Deliverable for the designer: a lightweight design system (colors, typography, components) plus high-fidelity designs for the screens listed in Section 6 (learner screens per the WHO Academy reference, admin screens per the Gurucan reference), applied as a custom theme on the chosen LMS (Section 8).
+Deliverable for the designer: a lightweight design system (colors, typography, components) plus high-fidelity designs for the screens listed in Section 6 (learner screens per the WHO Academy reference, admin screens per the Gurucan reference), implemented as the app UI (Section 8).
 
 ---
 
@@ -224,25 +227,115 @@ P0 = must have for launch. P1 = should have (fast follow). P2 = future considera
 
 ---
 
-## 8. Build Approach: Customized Open-Source LMS
+## 8. Build Approach: Next.js + Supabase Application
 
-Per KADSAMHSA's direction, the platform will be a customized open-source LMS with a bespoke theme matching the WHO Academy reference, not a from-scratch build. This gives proven course/quiz/certificate machinery, no licence fees, and a large plugin ecosystem, while the custom theme delivers the desired look.
+Product scope is unchanged. The **build approach** is.
 
-### 8.1 Candidate platforms
+v1 §8 recommended Moodle LTS with a custom theme. A later attempt (`kadsamhsa-platform/`) proposed a React 19 + Vite SPA, Fastify API, Redis, S3, and a background worker. Both are deprecated for this product.
 
-| Option | Strengths | Considerations |
-|---|---|---|
-| Moodle (recommended) | Mature; strong quiz engine; cohort/organization support (IOMAD or cohorts); certificate plugins with verification; Paystack/Flutterwave plugins exist; huge Nigerian/African hosting & talent pool; low running cost. | Default UI is dated and requires serious custom theming to reach WHO Academy quality. |
-| Open edX (via Tutor) | Modern learner experience closest to WHO Academy (which is itself built on an LXP model); strong at self-paced video courses. | Heavier infrastructure (higher hosting cost); fewer local payment integrations; smaller local support pool. |
-| WordPress + LearnDash/Tutor LMS | Cheapest to theme beautifully; easy admin for non-technical staff; admin flow closest to Gurucan. | LearnDash is paid; org/B2B group features and reporting weaker at scale; plugin sprawl risk. |
-| Gurucan (hosted SaaS benchmark) | KADSAMHSA already knows the workflow (used at Colab); fastest possible launch; zero maintenance. | Not open-source: recurring subscription, data and platform not owned, limited org-level dashboards/reporting and certificate verification; customization capped. Kept here as the admin-UX benchmark rather than the recommended platform. |
+| Attempt | Why it is hard for this team |
+|---|---|
+| Moodle 4.5 + PHP + Mustache theme (v1 §8) | PHP/Mustache/plugin internals; theming fights the LMS; most JS/React developers cannot ship features without Moodle expertise. |
+| `kadsamhsa-platform` (React 19 + Vite + Fastify + Redis + worker monorepo) | Three runtimes, custom auth, custom migrations, Redis, S3, and a worker — a lot of ops before a course player exists. |
 
-**Recommendation:** Moodle LTS with a custom theme, certificate plugin (e.g. Custom Certificate with verification), organization/cohort management, and a Paystack payment plugin. The vendor may propose an alternative in their bid, but must then demonstrate equivalence on every P0 requirement and on total 3-year running cost. Whatever the platform, the admin experience must be simplified to the Gurucan standard described in Section 4.2; if stock admin screens are too complex, the vendor must theme or streamline them.
+**Locked stack for v2:** Next.js 15 (App Router) + TypeScript, Supabase (Postgres + Auth + Storage + RLS), Tailwind CSS + shadcn/ui, Paystack, Resend (or similar) for email, Inngest (or Supabase cron) for background jobs, Vercel (or similar) for app hosting. No Redis and no separate worker process on day one. Scope remains **web-only, mobile-responsive**; no native apps.
 
-### 8.2 Vendor obligations regardless of platform
+```
+Browser
+  └─ Next.js 15 (App Router) + TypeScript
+       ├─ Public: catalogue, course pages, cert verify (SSR for SEO)
+       ├─ Learner / org / admin portals (same app, role layouts)
+       └─ Route Handlers: Paystack webhooks, PDF issue, CSV export
 
-- All software used must be open-source or licence costs disclosed and approved in the contract.
-- KADSAMHSA owns the theme code, configuration, content, and data; full handover on exit (see Section 10).
+Supabase
+  ├─ Postgres          courses, quizzes, enrolments, orgs, certificates
+  ├─ Auth              email/password now; phone later (F3 P1)
+  ├─ Storage           PPTX/PDF/video/images + generated cert PDFs
+  └─ Row Level Security  learner vs org vs staff data isolation
+
+Paystack               card / transfer / USSD (locked for this build)
+Resend (or similar)    transactional email
+Inngest (or Supabase cron)  cert PDF, emails, report exports — no Redis/worker yet
+Tailwind + shadcn/ui   WHO Academy / Gurucan look without Mustache
+Vercel (or similar)    app hosting; Supabase hosts data — VPS optional later
+```
+
+**Why this over “Next.js + a custom Fastify API”:** auth, file uploads, and Postgres come from one dashboard. Developers work in React/TypeScript only. The scale path is vertical (Supabase plan, Vercel) then split a worker only if PDF/email volume needs it.
+
+**Explicitly out of the new stack:** Moodle, PHP, Mustache, MariaDB-as-app-DB, Vite SPA + separate Fastify, Redis as a day-one dependency.
+
+The existing Moodle tree in this repository and `kadsamhsa-platform/` are legacy references until a later rebuild. They are not the target runtime.
+
+### 8.1 Self-management (unchanged principle)
+
+KADSAMHSA staff publish courses, manage users and organizations, set prices, and issue certificates **in the app**. Routine operations must not require an engineer or a vendor ticket. After handover, the vendor's role is hosting, maintenance, and SLA support only (see Section 1 and Section 10).
+
+### 8.2 Dual-check permissions
+
+Every protected action enforces **both**:
+
+1. **Supabase Row Level Security (RLS)** — learners see only their own enrolments and progress; org admins see only their organization's members; staff roles see what their role allows.
+2. **Server-side permission checks** on Next.js Server Actions and Route Handlers — the same dual-check idea as `kadsamhsa-platform` (`packages/domain` permissions): the client hides controls; the server refuses unauthorized requests. **Only the server check is load-bearing.**
+
+Administrative changes and payment/certificate transitions are written as immutable audit events.
+
+### 8.3 Certificate verification (public, non-guessable)
+
+Certificate verification IDs stay **public** and **non-guessable**. The public verify page still exposes only validity, learner name, course title, and issue date — nothing else. Revocation changes public status without exposing additional personal data. PDFs are stored privately in Supabase Storage; the verify URL is not a direct file listing.
+
+Issuance remains idempotent: once every required learning item is complete and the final assessment reaches the configured pass mark (default 70%), one verification ID and one PDF are created. Re-running the check for an already-certified enrolment is a no-op.
+
+### 8.4 Domain model (carried forward)
+
+Product logic is not reinvented — only the runtime is. The domain model from `kadsamhsa-platform/docs/ARCHITECTURE.md` is the starting schema for Supabase Postgres:
+
+| Area | Main records |
+|---|---|
+| Identity | `users`, `password_credentials` (or Supabase Auth identities), `sessions`, `roles`, `user_roles`, `consents` |
+| Catalogue | `courses`, `course_categories`, `course_tags`, `modules`, `lessons`, `content_blocks`, `assets` |
+| Learning | `enrolments`, `lesson_progress`, `course_progress`, `quiz_attempts`, `quiz_answers`, `question_banks`, `questions` |
+| Commerce | `offers`, `offer_courses`, `orders`, `payments`, `payment_events`, `coupons`, `organisation_seats` |
+| Organisations | `organisations`, `organisation_memberships`, `organisation_invites`, `bulk_imports` |
+| Certification | `certificate_templates`, `certificates`, `certificate_revocations` |
+| Operations | `notifications`, `email_deliveries`, `report_exports`, `audit_events` |
+
+Roles map to the same capabilities as Section 6.1: Learner, Organisation admin, Content admin, Super admin, Public verifier.
+
+### 8.5 Proposed repo layout (when coding starts)
+
+A **single Next.js app**. Do not split into `apps/web` + `apps/api` + `packages/*` until it actually hurts. The Moodle tree stays where it is; the new app is a later pass (not this document).
+
+```
+kadsamhsa-web/                 # created in a later pass; not this repo's Moodle tree
+├── app/
+│   ├── (public)/              # landing, catalogue, course detail, cert verify
+│   ├── (auth)/                # login, register, password reset
+│   ├── (learner)/             # dashboard, player, certificates
+│   ├── (org)/                 # org dashboard, bulk enrol, reports
+│   ├── (admin)/               # course builder, users, offers, settings
+│   └── api/                   # Route Handlers: Paystack webhooks, PDF issue, CSV export
+├── components/                # shadcn/ui + domain components
+├── lib/
+│   ├── supabase/              # server + browser clients
+│   ├── permissions.ts         # role checks (shared; server is load-bearing)
+│   └── domain/                # enrolment, quiz, cert rules
+├── supabase/
+│   ├── migrations/
+│   └── policies/              # RLS
+└── public/
+```
+
+### 8.6 Environment and secrets
+
+- **Never** put Paystack secret keys, Supabase service-role keys, storage secrets, Resend (or SMTP) credentials, or webhook secrets in `NEXT_PUBLIC_*`. Those values are shipped to every visitor's browser.
+- `NEXT_PUBLIC_*` may hold only publishable values (e.g. Supabase URL + anon key, Paystack public key).
+- Server-only env (Route Handlers, Server Actions, Inngest/cron): `PAYSTACK_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` (or equivalent), webhook signing secrets.
+- The browser never reaches Postgres directly for privileged work and never holds a payment or storage secret. Paystack payment status changes only from a verified gateway event or an audited staff action.
+
+### 8.7 Vendor obligations
+
+- Licence costs for any non-open-source SaaS (Vercel, Supabase, Resend, Inngest, Paystack fees) must be disclosed and approved in the contract.
+- KADSAMHSA owns the application source, configuration, content, and data; full handover on exit (see Section 10).
 - The admin experience must be usable by non-technical staff after the included training; routine course publishing must require no vendor input.
 
 ---
@@ -263,23 +356,28 @@ Per KADSAMHSA's direction, the platform will be a customized open-source LMS wit
 
 ## 10. Deliverables, Phases, and Acceptance (Contract Basis)
 
-The contract should be structured around these phases, each with defined deliverables and acceptance before payment milestones.
+The contract should be structured around these Next.js delivery phases, each with defined deliverables and acceptance before payment milestones. Requirement IDs are those in Section 7.
 
-| Phase | Deliverables | Acceptance criteria |
-|---|---|---|
-| 1. Discovery & UX design | Sitemap and user flows; wireframes; high-fidelity designs (desktop + mobile) for: landing, catalogue, course detail, registration/login, course player, quiz, certificate, learner dashboard, org dashboard, admin course builder, verification page; clickable prototype; mini design system. | KADSAMHSA signs off designs against Section 4 reference and Section 6 stories. |
-| 2. Platform build & theming | Installed and configured LMS; custom theme implementing approved designs; payments, certificates, org features, notifications configured; staging environment. | Every P0 requirement in Section 7 demonstrated on staging. |
-| 3. DPTC course production | Full DPTC course built per Section 5: 13 modules + intro, quizzes, final assessment, certificate template, trainer manual attached. | KADSAMHSA reviews and approves the complete course as a learner. |
-| 4. Testing, UAT & launch | Cross-device and low-bandwidth testing; security checklist; UAT with KADSAMHSA staff and a pilot org; bug fixes; production launch on KADSAMHSA domain. | UAT sign-off; zero open critical/major defects at launch. |
-| 5. Training & handover | Admin training (content admin + super admin) with recorded sessions; admin manual; all credentials, source code/theme, and documentation handed over. | KADSAMHSA staff publish a test course unassisted. |
-| 6. Support & maintenance | Defined warranty period (suggest 3 months post-launch, defects fixed free), then optional annual support/hosting SLA priced separately. | SLA response times met; monthly uptime/backup reports. |
+| Phase | Deliverables | Acceptance criteria | Maps to |
+|---|---|---|---|
+| 1. Foundation | Sitemap and user flows; wireframes; high-fidelity designs (desktop + mobile) for: landing, catalogue, course detail, registration/login, course player, quiz, certificate, learner dashboard, org dashboard, admin course builder, verification page; clickable prototype; mini design system (Tailwind + shadcn/ui tokens). Next.js 15 App Router + TypeScript app scaffold; Supabase project (Postgres, Auth, Storage, RLS skeleton); dual-check permissions module; env/secrets layout; staging on Vercel (or similar). | KADSAMHSA signs off designs against Section 4 and Section 6 stories. Staging app boots with Auth (email/password), RLS enabled, and no secrets in `NEXT_PUBLIC_*`. | Design system; F3 (email auth scaffolding); F11 (responsive shell) |
+| 2. Learner | Public catalogue and course pages (SSR); course player; learner dashboard; registration/login/password reset; progress persist and resume. | F1, F2, F3 (email; phone remains P1), F4, F8, F11 demonstrated on staging for a sample course. | F1, F2, F3, F4, F8, F11 |
+| 3. Assessment & certificates | Quiz taking (scoring, pass mark, retries, feedback); auto PDF certificate; public verify page; transactional emails for completion and certificate issued. | F5, F6, F7 (ID entry; QR remains P1), F10 (completion + cert emails). §7.3 acceptance example met: unique non-guessable ID; verify page shows only validity, name, course, date. | F5, F6, F7, F10; A3 (take path); A4 (issue path) |
+| 4. Admin builder & Paystack | Gurucan-style course builder and content blocks; quiz builder; certificate template editor; catalogue/offers; Paystack checkout (card, transfer, USSD); payment receipts. | A1, A2, A3, A4, A5, F9, F10 (welcome, enrolment, receipt). Content admin publishes a course unassisted on staging. Paystack secrets server-only; webhook signature verified. | A1–A5, F9, F10 |
+| 5. Organizations | Org accounts; CRM-style user management; CSV / invite bulk enrolment; seat allocation; org dashboard; CSV reports. | A6, A7, A8. Org admin sees only their staff; RLS + server checks refuse cross-org access. | A6, A7, A8 |
+| 6. DPTC content | Full DPTC course built per Section 5: 13 modules + intro, quizzes, final assessment, certificate template, trainer manual attached. | KADSAMHSA reviews and approves the complete course as a learner. | Section 5; uses F4–F7, A1–A4 |
+| 7. UAT & launch | Cross-device and low-bandwidth testing; security checklist; UAT with KADSAMHSA staff and a pilot org; bug fixes; production launch on KADSAMHSA domain. | UAT sign-off; every P0 requirement in Section 7 on production; zero open critical/major defects at launch. | F1–F11 P0, A1–A8 P0; Section 9 |
+| 8. Handover | Admin training (content admin + super admin) with recorded sessions; admin manual; all credentials, source, Supabase project access, and documentation handed over. | KADSAMHSA staff publish a test course unassisted (self-management principle). | A1–A5 operational |
+| 9. Support & maintenance | Defined warranty period (suggest 3 months post-launch, defects fixed free), then optional annual support/hosting SLA priced separately. | SLA response times met; monthly uptime/backup reports. | Section 9 |
+
+P1 items (F3 phone, F7 QR, F12, A9–A13) are fast-follow after P0 launch unless KADSAMHSA pulls a subset into a phase in writing. P2 items (F13, F14, A14–A16) are out of this contract unless quoted separately.
 
 **Contract guidance:**
 
-- Fixed price per phase against the acceptance criteria above; suggested payment schedule 20/25/20/20/15 across phases 1–5.
+- Fixed price per phase against the acceptance criteria above; suggested payment grouping 15 / 20 / 15 / 20 / 15 / 10 / 5 across phases 1–8 (Foundation; Learner; Assessment & certificates; Admin builder & Paystack; Organizations; DPTC; UAT & launch; Handover), or an equivalent split agreed in the contract. Phase 9 is a separate SLA.
 - Change control: any scope addition beyond Section 7 P0/P1 is quoted separately in writing.
-- IP: all designs, theme code, configuration, and content are the property of KADSAMHSA on payment.
-- Hosting, domain, and third-party costs (if any) itemized separately from the build fee.
+- IP: all designs, application source, configuration, and content are the property of KADSAMHSA on payment.
+- Hosting, domain, and third-party costs (Vercel, Supabase, Resend, Inngest, Paystack fees) itemized separately from the build fee.
 
 ---
 
@@ -299,15 +397,15 @@ The contract should be structured around these phases, each with defined deliver
 
 ## 12. Open Questions
 
-- Branding: does KADSAMHSA have a brand guide (logo files, colors, fonts)? (KADSAMHSA, blocking for Phase 1)
-- Domain and hosting: existing domain to use, and who pays/holds the hosting account? (KADSAMHSA, blocking for Phase 2)
-- Payments: which gateway account (Paystack vs Flutterwave) and which courses are paid at launch, at what price? DPTC assumed free. (KADSAMHSA, needed by Phase 2)
-- Assessments: who authors the quiz question banks: KADSAMHSA subject experts or the vendor drafting for approval? (KADSAMHSA, needed by Phase 3)
-- Certificate signatories and wording; any co-branding obligations to UNODC/EU on the DPTC materials? Rights to publish these materials online should be confirmed. (KADSAMHSA/legal, blocking for Phase 3)
+- Branding: does KADSAMHSA have a brand guide (logo files, colors, fonts)? (KADSAMHSA, blocking for Phase 1 Foundation)
+- Domain and hosting: existing domain to use, and who pays/holds the Vercel (or similar) and Supabase accounts? (KADSAMHSA, blocking for Phase 1 / Phase 7)
+- Payments: which Paystack account, and which courses are paid at launch, at what price? DPTC assumed free. (KADSAMHSA, needed by Phase 4 Admin builder & Paystack)
+- Assessments: who authors the quiz question banks: KADSAMHSA subject experts or the vendor drafting for approval? (KADSAMHSA, needed by Phase 3 / Phase 6)
+- Certificate signatories and wording; any co-branding obligations to UNODC/EU on the DPTC materials? Rights to publish these materials online should be confirmed. (KADSAMHSA/legal, blocking for Phase 3 / Phase 6)
 - Data protection: confirm NDPA compliance owner and privacy policy text. (KADSAMHSA/legal, needed by launch)
 
 ---
 
 ## 13. Timeline Considerations
 
-Indicative schedule (to be confirmed in vendor proposal): Phase 1: 3–4 weeks; Phase 2: 5–7 weeks; Phase 3: 3–4 weeks (can overlap Phase 2); Phase 4: 2–3 weeks; Phase 5: 1–2 weeks. Total roughly 3.5–4.5 months from contract signature to launch, assuming prompt reviews and that branding assets and quiz content are available on schedule.
+Indicative schedule (to be confirmed in vendor proposal), mapped to Section 10: Phase 1 Foundation (incl. UX): 3–4 weeks; Phase 2 Learner: 3–4 weeks; Phase 3 Assessment & certificates: 2–3 weeks; Phase 4 Admin builder & Paystack: 3–4 weeks; Phase 5 Organizations: 2–3 weeks; Phase 6 DPTC content: 3–4 weeks (can overlap Phases 4–5); Phase 7 UAT & launch: 2–3 weeks; Phase 8 Handover: 1–2 weeks. Total roughly 3.5–4.5 months from contract signature to launch, assuming prompt reviews and that branding assets and quiz content are available on schedule.

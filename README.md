@@ -1,84 +1,61 @@
 # KADSAMHSA LMS
 
-Moodle-based Learning Management System for KADSAMHSA (Drug Prevention Training & Certification and related courses).
+Online learning platform for KADSAMHSA: self-paced courses, assessments, and verifiable certificates.
 
-**Locked stack:** Moodle **4.5 LTS** · PHP **8.2** · MariaDB **10.11** · nginx + PHP-FPM · theme `kadsamhsa` · Mailpit (local email)
+**Active build:** Next.js 15 (App Router) + TypeScript · Supabase (Postgres + Auth + Storage + RLS) · Tailwind + shadcn/ui · Paystack · Resend · Vercel
 
-Build phases: [PHASES.md](PHASES.md) · Product requirements: [KADSAMHSA_LMS_PRD_v1.md](KADSAMHSA_LMS_PRD_v1.md) · Version pins: [config/versions.md](config/versions.md)
+Product requirements: [(New)KADSAMHSA_LMS_PRD_v2.md](./(New)KADSAMHSA_LMS_PRD_v2.md) · Build checklist: [PHASES_v2.md](PHASES_v2.md)
+
+The Moodle theme demo and the old Fastify/Vite monorepo are archived under [`prototype/`](prototype/) (read-only reference). Do not extend them as the production path.
+
+## Quick start
+
+Node 22 (see `.nvmrc`).
+
+```bash
+nvm use
+cp .env.example .env.local
+# Fill NEXT_PUBLIC_SUPABASE_* when you have a Supabase project (Phase 1).
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Local app (Turbopack) |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
 
 ## Directory map
 
 ```
 KADSAHMSA/
-├── docker/                 # compose (local + prod) + caddy/nginx/php configs
-├── moodle/                 # Moodle 4.5 core (gitignored; clone via script)
-├── theme/kadsamhsa/        # working copy → sync to moodle/theme/kadsamhsa/
-├── plugins/                # customcert, enrol_paystack, local_orgs
-├── content/dptc/           # DPTC source materials (Phase 4)
-├── config/                 # .env.example, versions.md
-├── docs/                   # runbooks (local-bootstrap.md, deploy-vps.md)
-└── scripts/                # clone, install, sync, cron helpers
-    └── prod/               # production deploy, backup, restore, smoke test
+├── app/                         # Next.js App Router
+│   ├── (public)/                # landing, catalogue, course detail, cert verify
+│   ├── (auth)/                  # login, register, password reset
+│   ├── (learner)/               # dashboard, player, certificates
+│   ├── (org)/                   # org dashboard
+│   ├── (admin)/                 # course builder shell
+│   └── api/                     # Route Handlers (Paystack, certs, health)
+├── components/                  # shadcn/ui + domain components
+├── lib/
+│   ├── supabase/                # browser, server, and service-role clients
+│   ├── permissions.ts           # role checks (server is load-bearing)
+│   └── domain/                  # enrolment / quiz / cert rules
+├── supabase/
+│   ├── migrations/
+│   └── policies/                # RLS
+├── public/                      # brand assets seeded from the Moodle prototype
+├── content/dptc/                # DPTC source PPT/PDF
+├── docs/                        # runbooks and handover stubs
+└── prototype/                   # archived Moodle / Docker / old monorepo
 ```
 
-**Theme convention:** develop in `theme/kadsamhsa/`, then run `scripts/sync-theme.sh` to deploy into `moodle/theme/kadsamhsa/`.
+**Secrets:** never put Paystack secret, Supabase service-role, Resend, or webhook secrets in `NEXT_PUBLIC_*`. See `.env.example`.
 
-## Quick start (local)
+## Prototype (Moodle demo)
 
-```bash
-# 1. Env (never commit .env)
-cp config/.env.example .env
-
-# 2. Moodle core + third-party plugins into plugins/
-./scripts/clone-moodle.sh
-./scripts/fetch-plugins.sh
-
-# 3. Start stack
-docker compose -f docker/docker-compose.yml --env-file .env up -d --build
-
-# 4. Install Moodle (once)
-./scripts/install-moodle.sh
-
-# 5. Deploy theme + plugins
-./scripts/sync-theme.sh
-./scripts/sync-plugins.sh
-```
-
-| Service | URL |
-|---------|-----|
-| Moodle | http://localhost:8080 |
-| Mailpit UI | http://localhost:8025 |
-
-Admin credentials live only in `.env` (`MOODLE_ADMIN_USER` / `MOODLE_ADMIN_PASS`).
-
-Full bootstrap notes and smoke checklist: [docs/local-bootstrap.md](docs/local-bootstrap.md).
-
-## Production deployment
-
-The production stack adds a **Caddy** edge proxy with automatic Let's Encrypt TLS,
-drops Mailpit for a real SMTP relay, publishes no ports except 80/443, and runs
-tuned MariaDB and PHP-FPM.
-
-```bash
-# On a fresh Ubuntu 24.04 VPS, once DNS points at it:
-sudo bash scripts/prod/server-setup.sh          # docker, ufw, fail2ban, deploy user
-cp config/.env.production.example .env.production && chmod 600 .env.production
-$EDITOR .env.production                          # domain + secrets, no CHANGE_ME left
-./scripts/prod/deploy.sh --first-run             # install + TLS + theme + plugins
-./scripts/prod/smoke-test-prod.sh                # verify
-```
-
-Subsequent releases are `git pull && ./scripts/prod/deploy.sh` (takes a backup,
-enters maintenance mode, upgrades, purges caches, exits maintenance mode).
-
-Full runbook — sizing, DNS, backups, upgrades, rollback, troubleshooting:
-**[docs/deploy-vps.md](docs/deploy-vps.md)**
-
-| File | Purpose |
-|------|---------|
-| `docker/docker-compose.prod.yml` | Production stack (caddy, db, moodle-php, moodle-web, cron) |
-| `docker/caddy/Caddyfile` | TLS termination, HSTS + security headers, 128 MB body limit |
-| `docker/nginx/prod.conf` | App vhost behind the proxy; hardened paths |
-| `docker/php/php.prod.ini` · `www.prod.conf` | Production PHP and FPM pool tuning |
-| `config/.env.production.example` | Every production setting, all secrets as placeholders |
-| `scripts/prod/*.sh` | server-setup · deploy · install · backup · restore · smoke-test |
+UX reference only. To run the old local Moodle stack, see [prototype/README.md](prototype/README.md).

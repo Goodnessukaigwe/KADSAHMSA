@@ -1,19 +1,35 @@
 # Secrets — never commit
 .env
+.env.local
+.env.*.local
+.env.production
 *.pem
 *.key
 credentials.json
 secrets/
 
-# Moodle core (cloned locally via scripts/clone-moodle.sh)
-moodle/
+# Dependencies
+node_modules/
+vendor/
 
-# Moodle data (local path if used outside Docker volume)
+# Next.js
+.next/
+out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing / coverage
+coverage/
+
+# Archived Moodle core (clone locally if you need the prototype)
+prototype/moodle/
+prototype/.env
+moodle/
 moodledata/
 moodledata_*/
-
-# Docker leftovers
 docker/data/
+backups/
 *.log
 
 # OS / editor
@@ -23,10 +39,3 @@ Thumbs.db
 .vscode/
 *.swp
 *~
-
-# Composer / Node (if used later for tooling)
-vendor/
-node_modules/
-.env.production
-.env.*.local
-backups/
