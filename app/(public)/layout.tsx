@@ -1,3 +1,4 @@
+import { PublicFooter } from "@/components/shells/public-footer";
 import { PublicHeader } from "@/components/shells/public-header";
 
 export default function PublicLayout({
@@ -6,9 +7,18 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div id="top" className="flex min-h-screen flex-col bg-white text-neutral-950">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-md focus:bg-neutral-950 focus:px-3 focus:py-2 focus:text-white"
+      >
+        Skip to main content
+      </a>
       <PublicHeader />
-      <div className="flex-1">{children}</div>
+      <div id="main" className="flex-1">
+        {children}
+      </div>
+      <PublicFooter />
     </div>
   );
 }

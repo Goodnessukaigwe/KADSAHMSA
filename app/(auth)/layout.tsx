@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PublicHeader } from "@/components/shells/public-header";
 
 export default function AuthLayout({
   children,
@@ -6,13 +6,15 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
-      <Link href="/" className="mb-8 flex items-center gap-2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="KADSAMHSA" className="h-8 w-auto" />
-        <span className="font-heading font-semibold">KADSAMHSA</span>
-      </Link>
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-sm">
+    <div className="flex min-h-screen flex-col bg-white font-sans text-neutral-950">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-md focus:bg-neutral-950 focus:px-3 focus:py-2 focus:text-white"
+      >
+        Skip to main content
+      </a>
+      <PublicHeader />
+      <div id="main" className="landing-grid flex-1">
         {children}
       </div>
     </div>

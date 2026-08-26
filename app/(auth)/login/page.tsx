@@ -1,15 +1,13 @@
-import { PhaseStub } from "@/components/phase-stub";
+import { AuthSplit } from "@/components/auth/auth-split";
+import { LoginForm } from "@/components/auth/login-form";
+import { authCopy } from "@/lib/content/auth";
 
 export const metadata = { title: "Log in" };
 
 export default function LoginPage() {
   return (
-    <PhaseStub
-      compact
-      eyebrow="F3 · Auth"
-      title="Log in"
-      description="Email and password login will be wired to Supabase Auth in Phase 1–2. Phone registration is P1."
-      requirement="F3 — Register / login / password reset (email)"
-    />
+    <AuthSplit image={authCopy.stallImage} imageAlt={authCopy.login.imageAlt}>
+      <LoginForm />
+    </AuthSplit>
   );
 }
