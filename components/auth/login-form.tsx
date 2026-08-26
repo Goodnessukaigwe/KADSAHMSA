@@ -5,7 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authCopy } from "@/lib/content/auth";
-import { saveLearner } from "@/lib/learner-session";
+import {
+  displayNameFromEmail,
+  markReturningLearner,
+  recallLearnerName,
+  saveLearner,
+} from "@/lib/learner-session";
 import { createBrowserClientOrNull } from "@/lib/supabase/browser";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +34,9 @@ export function LoginForm() {
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
+      let name =
+        recallLearnerName(normalizedEmail) || displayNameFromEmail(normalizedEmail);
+
       const supabase = createBrowserClientOrNull();
       if (supabase) {
         try {
@@ -38,14 +46,15 @@ export function LoginForm() {
               password,
             });
           if (!signInError && data.user) {
-            const metaName =
+            name =
               (data.user.user_metadata?.full_name as string | undefined) ||
-              data.user.email?.split("@")[0] ||
-              "Learner";
+              recallLearnerName(data.user.email || normalizedEmail) ||
+              name;
             saveLearner({
-              name: metaName,
+              name,
               email: data.user.email || normalizedEmail,
             });
+            markReturningLearner();
             router.push("/my");
             router.refresh();
             return;
@@ -55,10 +64,8 @@ export function LoginForm() {
         }
       }
 
-      saveLearner({
-        name: normalizedEmail.split("@")[0] || "Learner",
-        email: normalizedEmail,
-      });
+      saveLearner({ name, email: normalizedEmail });
+      markReturningLearner();
       router.push("/my");
       router.refresh();
     } catch {
@@ -88,17 +95,9 @@ export function LoginForm() {
         className="mt-2 h-12 rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-950 outline-none placeholder:text-neutral-400 focus:border-neutral-400"
       />
 
-      <div className="mt-5 flex items-center justify-between">
-        <label className="text-[13px] text-neutral-500" htmlFor="password">
-          {copy.password}
-        </label>
-        <Link
-          href="/reset-password"
-          className="text-[12px] font-semibold text-neutral-400 hover:text-neutral-700"
-        >
-          {copy.forgot}
-        </Link>
-      </div>
+      <label className="mt-5 text-[13px] text-neutral-500" htmlFor="password">
+        {copy.password}
+      </label>
       <input
         id="password"
         name="password"
@@ -111,6 +110,14 @@ export function LoginForm() {
         placeholder={copy.passwordPlaceholder}
         className="mt-2 h-12 rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-950 outline-none placeholder:text-neutral-400 focus:border-neutral-400"
       />
+      <div className="mt-2 flex justify-end">
+        <Link
+          href="/reset-password"
+          className="text-[12px] text-neutral-500 hover:text-neutral-800"
+        >
+          {copy.forgot}
+        </Link>
+      </div>
 
       {error ? (
         <p className="mt-4 text-sm text-red-600" role="alert">

@@ -133,7 +133,7 @@ export function StudentChrome({ children }: { children: React.ReactNode }) {
                   type="search"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="search course..."
+                  placeholder="Search course..."
                   className="h-10 w-full rounded-full bg-neutral-950 pr-4 pl-10 text-sm text-white outline-none placeholder:text-white/45"
                 />
               </div>
@@ -231,7 +231,7 @@ export function StudentChrome({ children }: { children: React.ReactNode }) {
                   type="search"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="search course..."
+                  placeholder="Search course..."
                   className="h-10 w-full rounded-full bg-neutral-950 pr-4 pl-10 text-sm text-white outline-none placeholder:text-white/45"
                 />
               </div>

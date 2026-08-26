@@ -18,7 +18,7 @@ export const authCopy = {
     email: "Email Address",
     emailPlaceholder: "Enter your email address",
     password: "Password",
-    passwordPlaceholder: "Enter your password",
+    passwordPlaceholder: "Enter password",
     submit: "Log in",
     forgot: "Forgot password?",
     noAccount: "Don’t have an account?",
