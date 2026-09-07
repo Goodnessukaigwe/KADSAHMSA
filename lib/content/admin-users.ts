@@ -236,7 +236,7 @@ const seed: AdminAccount[] = [
 ];
 
 let accounts: AdminAccount[] = seed.map((row) => ({ ...row }));
-let individualsTotal = 1140;
+const individualsTotal = 1140;
 let organisationsTotal = 1000;
 
 export function listAdminAccounts() {

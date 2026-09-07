@@ -9,8 +9,7 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { adminCourses, type AdminCourse } from "@/lib/content/admin";
 import { cn } from "@/lib/utils";
 
-const TABS = ["all", "published", "drafts"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = "all" | "published" | "drafts";
 
 export function AdminCourses() {
   const [tab, setTab] = useState<Tab>("all");

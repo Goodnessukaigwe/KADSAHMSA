@@ -29,8 +29,10 @@ export function ModuleQuiz({ courseSlug }: { courseSlug: string }) {
     setState(getQuizState() ?? defaultQuizState(module1Quiz.length, quizMeta.seconds));
   }, []);
 
+  const submitted = state?.submitted ?? false;
+
   useEffect(() => {
-    if (!state || state.submitted) return;
+    if (submitted) return;
     const id = window.setInterval(() => {
       setState((current) => {
         if (!current || current.submitted) return current;
@@ -44,7 +46,7 @@ export function ModuleQuiz({ courseSlug }: { courseSlug: string }) {
       });
     }, 1000);
     return () => window.clearInterval(id);
-  }, [state?.submitted]);
+  }, [submitted]);
 
   function update(next: QuizAttemptState) {
     saveQuizState(next);

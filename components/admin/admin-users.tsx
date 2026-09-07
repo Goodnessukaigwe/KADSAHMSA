@@ -15,8 +15,7 @@ import {
 } from "@/lib/content/admin-users";
 import { cn } from "@/lib/utils";
 
-const TABS = ["all", "pending", "individuals", "organisations"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = "all" | "pending" | "individuals" | "organisations";
 
 const PAGE_SIZE = 6;
 
