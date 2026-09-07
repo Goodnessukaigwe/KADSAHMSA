@@ -14,6 +14,10 @@ export const catalogueHero = {
     "Explore expert-led courses on drug prevention, treatment, care, and professional skill development.",
 } as const;
 
+export function getCatalogueCourse(slug: string) {
+  return catalogueCourses.find((course) => course.slug === slug) ?? null;
+}
+
 export const catalogueCourses: CatalogueCourse[] = [
   {
     slug: "dptc",

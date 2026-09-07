@@ -26,5 +26,20 @@ export const authCopy = {
     imageAlt:
       "A miniature Japanese noodle stall at night, lit by lanterns — a welcome back into the learning space",
   },
+  reset: {
+    title: "Reset your password",
+    hint: "Enter the email on your account. We will send a reset link if it is registered.",
+    email: "Email Address",
+    emailPlaceholder: "Enter your email address",
+    submit: "Send reset link",
+    sent: "If that email is registered, we sent a reset link. Check your inbox.",
+    updateTitle: "Choose a new password",
+    newPassword: "New password",
+    newPasswordPlaceholder: "Enter a new password",
+    updateSubmit: "Save new password",
+    backToLogin: "Back to log in",
+    imageAlt:
+      "A miniature Japanese noodle stall at night, lit by lanterns — a pause before you return to learning",
+  },
   stallImage: "/landing/about-stall.webp",
 } as const;

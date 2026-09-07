@@ -32,9 +32,9 @@ export const dashboardCopy = {
     returningTitle:
       "Sensitization On Drug Use, Dependence & Prevention (DPTC)",
     price: "Free",
-    module: "3 of 14",
+    module: "13 Modules",
     duration: "40 Min",
-    percent: 58,
+    percent: 64,
     description:
       "A UNODC/EU-supported course for law enforcement and the public. Learn to recognize dependence, understand treatment, and respond with dignity.",
     image: "/landing/dash-balloons.webp",
@@ -67,8 +67,8 @@ export const returningStartedCourses: StartedCourse[] = [
     slug: "dptc",
     title: "DPTC Sensitization Course",
     moduleLabel:
-      "Module 8 of 14: Interventions and Responses to Drug Problems in the Family",
-    percent: 55,
+      "Module 9 of 13: Interventions and Responses to Drug Problems in the Family",
+    percent: 64,
     thumbnail: "/landing/hero-phoenix.webp",
   },
   {
@@ -78,14 +78,14 @@ export const returningStartedCourses: StartedCourse[] = [
     percent: 40,
     thumbnail: "/landing/hero-crystal.webp",
   },
-  {
-    slug: "community-first-response",
-    title: "Community-Based Substance Abuse First Response",
-    moduleLabel: "Module 3 of 5: Community screening and first response",
-    percent: 28,
-    thumbnail: "/landing/dash-kimono.webp",
-  },
 ];
+
+export const returningCompletedCourse = {
+  slug: "community-first-response",
+  title: "Community-Based Substance Abuse First Response",
+  moduleLabel: "5 of 5 modules complete",
+  thumbnail: "/landing/dash-kimono.webp",
+} as const;
 
 export function dashboardExploreCourses() {
   return EXPLORE_SLUGS.map((slug) => {

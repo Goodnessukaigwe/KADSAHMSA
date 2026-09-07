@@ -15,12 +15,28 @@ Node 22 (see `.nvmrc`).
 ```bash
 nvm use
 cp .env.example .env.local
-# Fill NEXT_PUBLIC_SUPABASE_* when you have a Supabase project (Phase 1).
+# Fill NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY.
 npm install
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+In the Supabase dashboard: Authentication → URL configuration. Set Site URL to `http://localhost:3000` and add redirect URLs `http://localhost:3000/auth/callback` and `http://localhost:3000/auth/confirm`. For local Phase 1, disable **Confirm email** (or leave it on and use the confirmation link).
+
+### Database migrations
+
+Apply SQL in `supabase/migrations/` to your project:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <your-project-ref>
+npx supabase db push
+```
+
+Or paste the migration files into the SQL editor in order (identity → courses → enrolments → certificates bucket).
+
+After the first signup, grant yourself admin (replace the email) using [`supabase/snippets/grant-super-admin.sql`](supabase/snippets/grant-super-admin.sql). Without that row, `/admin` redirects learners to `/my`.
 
 | Script | Purpose |
 |--------|---------|

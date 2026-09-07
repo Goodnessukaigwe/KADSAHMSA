@@ -1,6 +1,24 @@
-import { PhaseStub } from "@/components/phase-stub";
+import { notFound } from "next/navigation";
 
-export const metadata = { title: "Course" };
+import { CourseDetail } from "@/components/courses/course-detail";
+import { getCatalogueCourse } from "@/lib/content/catalogue";
+import { getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
+import { getAuthUser } from "@/lib/permissions";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const course = getCatalogueCourse(slug);
+  return {
+    title: course?.title ?? "Course",
+    description: course
+      ? `${course.title} — KADSAMHSA LMS.`
+      : "Course detail",
+  };
+}
 
 export default async function CourseDetailPage({
   params,
@@ -8,13 +26,20 @@ export default async function CourseDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  if (!getCatalogueCourse(slug)) {
+    notFound();
+  }
+
+  const user = await getAuthUser();
+  const enrolled = await isEnrolledIn(slug);
+  const progress = await getMyProgress(slug);
 
   return (
-    <PhaseStub
-      eyebrow="F2 · Course detail"
-      title={slug.replace(/-/g, " ")}
-      description="Overview, objectives, outline, duration, certificate info, and Enrol CTA will land here in Phase 2."
-      requirement="F2 — Course detail page"
+    <CourseDetail
+      slug={slug}
+      signedIn={Boolean(user)}
+      enrolled={enrolled}
+      progress={progress}
     />
   );
 }

@@ -5,22 +5,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authCopy } from "@/lib/content/auth";
-import {
-  displayNameFromEmail,
-  markReturningLearner,
-  recallLearnerName,
-  saveLearner,
-} from "@/lib/learner-session";
-import { createBrowserClientOrNull } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const copy = authCopy.login;
 
-export function LoginForm() {
+function safeNext(path: string | undefined) {
+  if (path && path.startsWith("/") && !path.startsWith("//")) {
+    return path;
+  }
+  return "/my";
+}
+
+export function LoginForm({
+  initialError = null,
+  nextPath,
+}: {
+  initialError?: string | null;
+  nextPath?: string;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(initialError);
   const [pending, setPending] = useState(false);
 
   const valid = email.includes("@") && email.trim().length > 5 && password.length >= 8;
@@ -34,42 +41,30 @@ export function LoginForm() {
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
-      let name =
-        recallLearnerName(normalizedEmail) || displayNameFromEmail(normalizedEmail);
+      const supabase = createClient();
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      });
 
-      const supabase = createBrowserClientOrNull();
-      if (supabase) {
-        try {
-          const { data, error: signInError } =
-            await supabase.auth.signInWithPassword({
-              email: normalizedEmail,
-              password,
-            });
-          if (!signInError && data.user) {
-            name =
-              (data.user.user_metadata?.full_name as string | undefined) ||
-              recallLearnerName(data.user.email || normalizedEmail) ||
-              name;
-            saveLearner({
-              name,
-              email: data.user.email || normalizedEmail,
-            });
-            markReturningLearner();
-            router.push("/my");
-            router.refresh();
-            return;
-          }
-        } catch {
-          // Fall through to a local session.
-        }
+      if (signInError || !data.user) {
+        setError(
+          signInError?.message === "Invalid login credentials"
+            ? "Wrong email or password."
+            : signInError?.message || "Could not log in. Try again."
+        );
+        setPending(false);
+        return;
       }
 
-      saveLearner({ name, email: normalizedEmail });
-      markReturningLearner();
-      router.push("/my");
+      router.push(safeNext(nextPath));
       router.refresh();
-    } catch {
-      setError("Could not log in. Try again.");
+    } catch (cause) {
+      setError(
+        cause instanceof Error && /Missing NEXT_PUBLIC_SUPABASE/.test(cause.message)
+          ? "Authentication is not configured. Add Supabase keys to .env.local."
+          : "Could not log in. Try again."
+      );
       setPending(false);
     }
   }

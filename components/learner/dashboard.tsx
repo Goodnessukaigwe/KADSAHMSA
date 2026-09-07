@@ -13,56 +13,53 @@ import {
   dashboardCopy,
   dashboardExploreCourses,
   returningGreeting,
-  returningStartedCourses,
 } from "@/lib/content/dashboard";
-import {
-  enrollCourse,
-  firstNameOf,
-  getEnrolled,
-  getLearner,
-  isOnboardingDone,
-  isReturningLearner,
-} from "@/lib/learner-session";
+import { enrolInCourse } from "@/lib/learning/actions";
+import { continueHref, emptyProgress } from "@/lib/learning/progress";
+import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
+import { firstNameOf, isOnboardingDone } from "@/lib/learner-session";
 
-export function LearnerDashboard() {
-  const [returning, setReturning] = useState(false);
-  const [ready, setReady] = useState(false);
-  const [firstName, setFirstName] = useState("Learner");
-
-  useEffect(() => {
-    setReturning(isReturningLearner());
-    setFirstName(firstNameOf(getLearner()?.name || "Learner"));
-    setReady(true);
-  }, []);
-
-  if (!ready) {
-    return <div className="min-h-[40vh]" />;
+export function LearnerDashboard({
+  firstName,
+  snapshot,
+}: {
+  firstName: string;
+  snapshot: LearningSnapshot;
+}) {
+  if (snapshot.enrolments.length > 0) {
+    return (
+      <EnrolledHome firstName={firstNameOf(firstName)} snapshot={snapshot} />
+    );
   }
 
-  return returning ? (
-    <ReturningHome firstName={firstName} />
-  ) : (
-    <NewLearnerHome />
-  );
+  return <NewLearnerHome />;
 }
 
 function NewLearnerHome() {
   const router = useRouter();
   const { query } = useCourseSearch();
-  const [enrolled, setEnrolled] = useState<string[]>([]);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
 
   useEffect(() => {
-    setEnrolled(getEnrolled());
     setShowOnboarding(!isOnboardingDone());
   }, []);
 
   const explore = useFilteredExplore(query);
 
-  function enroll(slug: string) {
-    enrollCourse(slug);
-    setEnrolled(getEnrolled());
-    router.push(`/learn/${slug}`);
+  async function enroll(slug: string) {
+    if (pending) return;
+    setError(null);
+    setPending(slug);
+    const result = await enrolInCourse(slug);
+    if (!result.ok) {
+      setError(result.error);
+      setPending(null);
+      return;
+    }
+    router.push(continueHref(slug, emptyProgress()));
+    router.refresh();
   }
 
   return (
@@ -81,6 +78,12 @@ function NewLearnerHome() {
       >
         {dashboardCopy.greeting}
       </h1>
+
+      {error ? (
+        <p className="mt-4 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      ) : null}
 
       <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
         <div className="relative min-h-[220px] lg:min-h-[280px]">
@@ -109,12 +112,12 @@ function NewLearnerHome() {
               size="sm"
               onClick={() => enroll(dashboardCopy.featured.slug)}
             >
-              {enrolled.includes(dashboardCopy.featured.slug)
-                ? dashboardCopy.continue
+              {pending === dashboardCopy.featured.slug
+                ? "Enrolling…"
                 : dashboardCopy.enroll}
             </SplitCta>
             <Link
-              href={`/courses/${dashboardCopy.featured.slug}`}
+              href={`/learn/${dashboardCopy.featured.slug}`}
               className="text-[11px] font-bold tracking-[0.14em] text-white uppercase hover:underline"
             >
               {dashboardCopy.readMore}
@@ -123,19 +126,50 @@ function NewLearnerHome() {
         </div>
       </article>
 
-      <ExploreSection courses={explore} enrolled={enrolled} onEnroll={enroll} />
+      <ExploreSection
+        courses={explore}
+        enrolled={[]}
+        pending={pending}
+        onEnroll={enroll}
+      />
     </div>
   );
 }
 
-function ReturningHome({ firstName }: { firstName: string }) {
+function EnrolledHome({
+  firstName,
+  snapshot,
+}: {
+  firstName: string;
+  snapshot: LearningSnapshot;
+}) {
   const router = useRouter();
   const { query } = useCourseSearch();
   const explore = useFilteredExplore(query);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
 
-  function continueCourse(slug: string) {
-    enrollCourse(slug);
-    router.push(`/learn/${slug}`);
+  const dptc = snapshot.enrolments.find((course) => course.slug === "dptc");
+  const started = snapshot.inProgress.filter(
+    (course) => course.slug !== dashboardCopy.featured.slug
+  );
+
+  async function enrollOrContinue(slug: string, existing?: EnrolmentRecord) {
+    if (pending) return;
+    if (existing) {
+      router.push(existing.href);
+      return;
+    }
+    setError(null);
+    setPending(slug);
+    const result = await enrolInCourse(slug);
+    if (!result.ok) {
+      setError(result.error);
+      setPending(null);
+      return;
+    }
+    router.push(continueHref(slug, emptyProgress()));
+    router.refresh();
   }
 
   return (
@@ -146,6 +180,12 @@ function ReturningHome({ firstName }: { firstName: string }) {
       <p className="mt-1 text-sm text-neutral-400">
         {dashboardCopy.returningEyebrow}
       </p>
+
+      {error ? (
+        <p className="mt-4 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      ) : null}
 
       <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
         <div className="relative min-h-[220px] lg:min-h-[280px]">
@@ -187,67 +227,75 @@ function ReturningHome({ firstName }: { firstName: string }) {
           <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/20">
             <div
               className="h-full rounded-full bg-white"
-              style={{ width: `${dashboardCopy.featured.percent}%` }}
+              style={{ width: `${dptc?.percent ?? 0}%` }}
             />
           </div>
           <div className="mt-6">
             <SplitCta
               variant="light"
-              onClick={() => continueCourse(dashboardCopy.featured.slug)}
+              onClick={() => enrollOrContinue(dashboardCopy.featured.slug, dptc)}
             >
-              {dashboardCopy.continueFeatured}
+              {dptc ? dashboardCopy.continueFeatured : dashboardCopy.enroll}
             </SplitCta>
           </div>
         </div>
       </article>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
-          {dashboardCopy.startedTitle}
-        </h2>
-        <div className="mt-4 flex flex-col gap-3">
-          {returningStartedCourses.map((course) => (
-            <article
-              key={course.slug}
-              className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center"
-            >
-              <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-16 sm:w-20">
-                <Image
-                  src={course.thumbnail}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="font-bold">{course.title}</h3>
-                <p className="mt-0.5 text-[13px] text-neutral-500">
-                  {course.moduleLabel}
-                </p>
-                <div className="mt-2 h-1.5 max-w-md overflow-hidden rounded-full bg-neutral-200">
-                  <div
-                    className="h-full rounded-full bg-neutral-950"
-                    style={{ width: `${course.percent}%` }}
+      {started.length > 0 ? (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+            {dashboardCopy.startedTitle}
+          </h2>
+          <div className="mt-4 flex flex-col gap-3">
+            {started.map((course) => (
+              <article
+                key={course.slug}
+                className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center"
+              >
+                <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-16 sm:w-20">
+                  <Image
+                    src={course.image}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="80px"
                   />
                 </div>
-              </div>
-              <SplitCta
-                size="sm"
-                className="shrink-0"
-                onClick={() => continueCourse(course.slug)}
-              >
-                {dashboardCopy.continueShort}
-              </SplitCta>
-            </article>
-          ))}
-        </div>
-      </section>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold">{course.title}</h3>
+                  <p className="mt-0.5 text-[13px] text-neutral-500">
+                    {course.moduleLabel}
+                  </p>
+                  <div className="mt-2 h-1.5 max-w-md overflow-hidden rounded-full bg-neutral-200">
+                    <div
+                      className="h-full rounded-full bg-neutral-950"
+                      style={{ width: `${course.percent}%` }}
+                    />
+                  </div>
+                </div>
+                <SplitCta
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => enrollOrContinue(course.slug, course)}
+                >
+                  {dashboardCopy.continueShort}
+                </SplitCta>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <ExploreSection
         courses={explore}
-        enrolled={returningStartedCourses.map((course) => course.slug)}
-        onEnroll={continueCourse}
+        enrolled={snapshot.enrolledSlugs}
+        pending={pending}
+        onEnroll={(slug) =>
+          enrollOrContinue(
+            slug,
+            snapshot.enrolments.find((course) => course.slug === slug)
+          )
+        }
       />
     </div>
   );
@@ -267,10 +315,12 @@ function useFilteredExplore(query: string) {
 function ExploreSection({
   courses,
   enrolled,
+  pending,
   onEnroll,
 }: {
   courses: CatalogueCourse[];
   enrolled: string[];
+  pending: string | null;
   onEnroll: (slug: string) => void;
 }) {
   return (
@@ -310,12 +360,14 @@ function ExploreSection({
                   className="min-w-0 flex-1"
                   onClick={() => onEnroll(course.slug)}
                 >
-                  {enrolled.includes(course.slug)
-                    ? dashboardCopy.continue
-                    : dashboardCopy.enroll}
+                  {pending === course.slug
+                    ? "Enrolling…"
+                    : enrolled.includes(course.slug)
+                      ? dashboardCopy.continue
+                      : dashboardCopy.enroll}
                 </SplitCta>
                 <Link
-                  href={`/courses/${course.slug}`}
+                  href={`/learn/${course.slug}`}
                   className="shrink-0 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase hover:underline"
                 >
                   {dashboardCopy.readMore}

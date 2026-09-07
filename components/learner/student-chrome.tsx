@@ -22,18 +22,13 @@ import {
 } from "lucide-react";
 
 import { site } from "@/lib/content/landing";
-import {
-  clearLearner,
-  firstNameOf,
-  getLearner,
-  type Learner,
-} from "@/lib/learner-session";
-import { createBrowserClientOrNull } from "@/lib/supabase/browser";
+import { clearLearner, firstNameOf } from "@/lib/learner-session";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/my", label: "Homepage", icon: Home },
-  { href: "/my#explore", label: "Courses", icon: PlaySquare },
+  { href: "/my/courses", label: "Courses", icon: PlaySquare },
   { href: "/quiz", label: "Quiz", icon: GraduationCap },
   { href: "/help", label: "Help Center", icon: Headphones },
 ] as const;
@@ -47,23 +42,24 @@ export function useCourseSearch() {
   return useContext(CourseSearchContext);
 }
 
-export function StudentChrome({ children }: { children: React.ReactNode }) {
+export function StudentChrome({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: { name: string; email: string };
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [learner, setLearner] = useState<Learner | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    setLearner(getLearner());
-  }, []);
 
   useEffect(() => {
     setNavOpen(false);
   }, [pathname]);
 
-  const firstName = firstNameOf(learner?.name || "Learner");
+  const firstName = firstNameOf(user.name || "Learner");
   const initial = firstName.charAt(0).toUpperCase();
 
   const searchValue = useMemo(
@@ -73,9 +69,9 @@ export function StudentChrome({ children }: { children: React.ReactNode }) {
 
   async function logout() {
     try {
-      await createBrowserClientOrNull()?.auth.signOut();
+      await createClient().auth.signOut();
     } catch {
-      // Local session still clears below.
+      // Still clear leftover client keys below.
     }
     clearLearner();
     router.push("/");
@@ -182,7 +178,9 @@ export function StudentChrome({ children }: { children: React.ReactNode }) {
                 {initial}
               </span>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{firstName}</p>
+                <p className="truncate text-sm font-semibold" title={user.email}>
+                  {firstName}
+                </p>
                 <button
                   type="button"
                   onClick={logout}
@@ -197,9 +195,16 @@ export function StudentChrome({ children }: { children: React.ReactNode }) {
               {NAV.map((item) => {
                 const Icon = item.icon;
                 const active =
-                  item.href === "/my"
-                    ? pathname === "/my"
-                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  item.label === "Quiz"
+                    ? pathname === "/quiz" || pathname.includes("/quiz")
+                    : item.label === "Courses"
+                      ? pathname.startsWith("/my/courses") ||
+                        (pathname.startsWith("/learn") &&
+                          !pathname.includes("/quiz"))
+                      : item.href === "/my"
+                        ? pathname === "/my"
+                        : pathname === item.href ||
+                          pathname.startsWith(`${item.href}/`);
                 return (
                   <Link
                     key={item.label}

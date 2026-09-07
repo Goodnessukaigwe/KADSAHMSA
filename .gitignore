@@ -39,3 +39,7 @@ Thumbs.db
 .vscode/
 *.swp
 *~
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/

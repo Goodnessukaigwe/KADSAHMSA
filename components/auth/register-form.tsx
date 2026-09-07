@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authCopy } from "@/lib/content/auth";
-import { saveLearner } from "@/lib/learner-session";
-import { createBrowserClientOrNull } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const copy = authCopy.register;
@@ -17,6 +16,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   const valid =
@@ -29,38 +29,53 @@ export function RegisterForm() {
     event.preventDefault();
     if (!valid || pending) return;
     setError(null);
+    setInfo(null);
     setPending(true);
 
     const fullName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
-      const supabase = createBrowserClientOrNull();
-      if (supabase) {
-        try {
-          const { error: signUpError } = await supabase.auth.signUp({
-            email: normalizedEmail,
-            password,
-            options: { data: { full_name: fullName } },
-          });
-          if (
-            signUpError &&
-            /already|registered|exists/i.test(signUpError.message)
-          ) {
-            setError("That email already has an account. Log in instead.");
-            setPending(false);
-            return;
-          }
-        } catch {
-          // Local session still takes the learner to the dashboard.
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/my`,
+        },
+      });
+
+      if (signUpError) {
+        if (/already|registered|exists/i.test(signUpError.message)) {
+          setError("That email already has an account. Log in instead.");
+        } else {
+          setError(signUpError.message);
         }
+        setPending(false);
+        return;
       }
 
-      saveLearner({ name: fullName, email: normalizedEmail });
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        setError("That email already has an account. Log in instead.");
+        setPending(false);
+        return;
+      }
+
+      if (!data.session) {
+        setInfo("Check your inbox to confirm your email, then log in.");
+        setPending(false);
+        return;
+      }
+
       router.push("/my");
       router.refresh();
-    } catch {
-      setError("Could not create your account. Try again.");
+    } catch (cause) {
+      setError(
+        cause instanceof Error && /Missing NEXT_PUBLIC_SUPABASE/.test(cause.message)
+          ? "Authentication is not configured. Add Supabase keys to .env.local."
+          : "Could not create your account. Try again."
+      );
       setPending(false);
     }
   }
@@ -121,6 +136,11 @@ export function RegisterForm() {
       {error ? (
         <p className="mt-4 text-sm text-red-600" role="alert">
           {error}
+        </p>
+      ) : null}
+      {info ? (
+        <p className="mt-4 text-sm text-neutral-600" role="status">
+          {info}
         </p>
       ) : null}
 

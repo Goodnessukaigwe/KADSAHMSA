@@ -4,10 +4,22 @@ import { authCopy } from "@/lib/content/auth";
 
 export const metadata = { title: "Log in" };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; next?: string }>;
+}) {
+  const params = await searchParams;
   return (
     <AuthSplit image={authCopy.stallImage} imageAlt={authCopy.login.imageAlt}>
-      <LoginForm />
+      <LoginForm
+        initialError={
+          params.error === "callback"
+            ? "Could not complete sign-in. Try again."
+            : null
+        }
+        nextPath={params.next}
+      />
     </AuthSplit>
   );
 }

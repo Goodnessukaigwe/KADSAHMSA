@@ -1,20 +1,19 @@
-import { PhaseStub } from "@/components/phase-stub";
+import { CourseOverview } from "@/components/learner/course-overview";
+import { getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
 
-export const metadata = { title: "Course player" };
+export const metadata = { title: "Course" };
 
-export default async function CoursePlayerPage({
+export default async function CourseOverviewPage({
   params,
 }: {
   params: Promise<{ courseSlug: string }>;
 }) {
   const { courseSlug } = await params;
-
+  const [enrolled, progress] = await Promise.all([
+    isEnrolledIn(courseSlug),
+    getMyProgress(courseSlug),
+  ]);
   return (
-    <PhaseStub
-      eyebrow="F4 · Course player"
-      title={courseSlug.replace(/-/g, " ")}
-      description="Module/lesson navigation, content blocks, mark complete, progress, and resume. Built in Phase 2."
-      requirement="F4 — Course player"
-    />
+    <CourseOverview slug={courseSlug} enrolled={enrolled} progress={progress} />
   );
 }
