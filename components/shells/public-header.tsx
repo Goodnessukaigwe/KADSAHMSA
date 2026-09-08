@@ -29,7 +29,7 @@ export function PublicHeader() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/kadsamhsa.svg" alt="" className="h-10 w-10 object-contain" />
-          <span className="text-sm font-bold tracking-[0.14em] text-neutral-950 uppercase">
+          <span className="text-sm font-bold tracking-[0.08em] text-neutral-950 uppercase sm:tracking-[0.14em]">
             {site.name}
           </span>
         </Link>

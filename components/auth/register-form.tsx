@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { registerAccount } from "@/lib/auth/actions";
+import { homeAfterSignIn } from "@/lib/auth/home";
 import { authCopy } from "@/lib/content/auth";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -15,60 +17,53 @@ export function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   const valid =
     name.trim().length >= 2 &&
     email.includes("@") &&
     email.trim().length > 5 &&
-    password.length >= 8;
+    password.length >= 8 &&
+    acceptedPrivacy;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!valid || pending) return;
     setError(null);
-    setInfo(null);
     setPending(true);
 
     const fullName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
+      const created = await registerAccount(
+        fullName,
+        normalizedEmail,
+        password,
+        acceptedPrivacy
+      );
+      if (!created.ok) {
+        setError(created.error);
+        setPending(false);
+        return;
+      }
+
       const supabase = createClient();
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { data: session, error: signInError } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
         password,
-        options: {
-          data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/my`,
-        },
       });
 
-      if (signUpError) {
-        if (/already|registered|exists/i.test(signUpError.message)) {
-          setError("That email already has an account. Log in instead.");
-        } else {
-          setError(signUpError.message);
-        }
+      if (signInError || !session.user) {
+        setError(signInError?.message || "Account created. Log in to continue.");
         setPending(false);
         return;
       }
 
-      if (data.user && data.user.identities && data.user.identities.length === 0) {
-        setError("That email already has an account. Log in instead.");
-        setPending(false);
-        return;
-      }
-
-      if (!data.session) {
-        setInfo("Check your inbox to confirm your email, then log in.");
-        setPending(false);
-        return;
-      }
-
-      router.push("/my");
+      const home = await homeAfterSignIn(supabase, session.user.id);
+      router.push(home);
       router.refresh();
     } catch (cause) {
       setError(
@@ -133,14 +128,28 @@ export function RegisterForm() {
         className="mt-2 h-12 rounded-xl border border-neutral-200 bg-white px-4 text-sm text-neutral-950 outline-none placeholder:text-neutral-400 focus:border-neutral-400"
       />
 
+      <label className="mt-6 flex items-start gap-3 text-sm leading-relaxed text-neutral-600">
+        <input
+          id="privacy-consent"
+          name="privacyConsent"
+          type="checkbox"
+          required
+          checked={acceptedPrivacy}
+          onChange={(event) => setAcceptedPrivacy(event.target.checked)}
+          className="mt-1 size-4 shrink-0 rounded border-neutral-300"
+        />
+        <span>
+          {copy.consentBefore}{" "}
+          <Link href="/privacy" className="font-bold text-neutral-950 underline underline-offset-2">
+            {copy.consentLink}
+          </Link>{" "}
+          {copy.consentAfter}
+        </span>
+      </label>
+
       {error ? (
         <p className="mt-4 text-sm text-red-600" role="alert">
           {error}
-        </p>
-      ) : null}
-      {info ? (
-        <p className="mt-4 text-sm text-neutral-600" role="status">
-          {info}
         </p>
       ) : null}
 

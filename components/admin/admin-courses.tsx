@@ -1,21 +1,27 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
-import { adminCourses, type AdminCourse } from "@/lib/content/admin";
+import { createDraftCourse } from "@/lib/courses/actions";
+import type { AdminCourseRow } from "@/lib/courses/types";
 import { cn } from "@/lib/utils";
 
 type Tab = "all" | "published" | "drafts";
 
-export function AdminCourses() {
+export function AdminCourses({ courses }: { courses: AdminCourseRow[] }) {
   const [tab, setTab] = useState<Tab>("all");
-  const courses = useMemo(() => adminCourses(), []);
-  const published = courses.filter((course) => course.status === "published");
-  const drafts = courses.filter((course) => course.status === "draft");
+  const published = useMemo(
+    () => courses.filter((course) => course.status === "published"),
+    [courses]
+  );
+  const drafts = useMemo(
+    () => courses.filter((course) => course.status === "draft"),
+    [courses]
+  );
   const visible =
     tab === "published" ? published : tab === "drafts" ? drafts : courses;
 
@@ -30,9 +36,11 @@ export function AdminCourses() {
             Publish, preview, and edit the KADSAMHSA catalogue.
           </p>
         </div>
-        <SplitCta href="/admin/courses/new" icon="plus" size="sm">
-          Create new course
-        </SplitCta>
+        <form action={createDraftCourse}>
+          <SplitCta icon="plus" size="sm" type="submit">
+            Create new course
+          </SplitCta>
+        </form>
       </div>
 
       <div className="mt-8 flex flex-wrap gap-5" role="tablist">
@@ -61,25 +69,27 @@ export function AdminCourses() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-        {visible.map((course) => (
-          <CourseCard key={course.slug} course={course} />
-        ))}
-      </div>
+      {visible.length === 0 ? (
+        <p className="mt-10 text-sm text-neutral-400">No courses in this view.</p>
+      ) : (
+        <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+          {visible.map((course) => (
+            <CourseCard key={course.slug} course={course} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function CourseCard({ course }: { course: AdminCourse }) {
+function CourseCard({ course }: { course: AdminCourseRow }) {
   const draft = course.status === "draft";
   return (
     <article className="flex flex-col">
       <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-        <Image
+        <CourseCover
           src={course.image}
-          alt=""
-          fill
-          className="object-cover"
+          title={course.title}
           sizes="(max-width: 640px) 100vw, 33vw"
         />
         <span
@@ -95,7 +105,11 @@ function CourseCard({ course }: { course: AdminCourse }) {
         {course.title}
       </h2>
       <div className="mt-1 flex items-center justify-between text-sm text-neutral-400">
-        <p>{draft ? "Not published" : `${course.enrolled.toLocaleString()} enrolled`}</p>
+        <p>
+          {draft
+            ? "Not published"
+            : `${course.enrolled.toLocaleString()} enrolled`}
+        </p>
         <p>{course.price}</p>
       </div>
       <div className="mt-4 flex items-center gap-2">

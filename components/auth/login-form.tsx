@@ -4,17 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { homeAfterSignIn } from "@/lib/auth/home";
 import { authCopy } from "@/lib/content/auth";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const copy = authCopy.login;
 
-function safeNext(path: string | undefined) {
+function safeNext(path: string | undefined, fallback: string) {
   if (path && path.startsWith("/") && !path.startsWith("//")) {
     return path;
   }
-  return "/my";
+  return fallback;
 }
 
 export function LoginForm({
@@ -57,7 +58,8 @@ export function LoginForm({
         return;
       }
 
-      router.push(safeNext(nextPath));
+      const home = await homeAfterSignIn(supabase, data.user.id);
+      router.push(safeNext(nextPath, home));
       router.refresh();
     } catch (cause) {
       setError(

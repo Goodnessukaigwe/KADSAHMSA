@@ -1,32 +1,24 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { SplitCta } from "@/components/landing/split-cta";
-import {
-  quizResultsCopy,
-  returningQuizResults,
-  returningQuizStats,
-} from "@/lib/content/quiz-results";
-import { isReturningLearner } from "@/lib/learner-session";
-import { cn } from "@/lib/utils";
+import { quizResultsCopy } from "@/lib/content/quiz-results";
+import type { QuizResultsView } from "@/lib/quiz/queries";
 
-export function QuizResults() {
-  const [returning, setReturning] = useState(false);
-  const [ready, setReady] = useState(false);
+function formatWhen(iso: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(iso));
+}
 
-  useEffect(() => {
-    setReturning(isReturningLearner());
-    setReady(true);
-  }, []);
-
-  if (!ready) return <div className="min-h-[40vh]" />;
-
-  const stats = returning
-    ? returningQuizStats
-    : { taken: 0, passed: 0, retry: 0, average: 0 };
-  const rows = returning ? returningQuizResults : [];
+export function QuizResults({ view }: { view: QuizResultsView }) {
+  const stats = [
+    [String(view.taken), "Quizzes taken"],
+    [String(view.passed), "Passed"],
+    [String(view.retry), "Need a retry"],
+    [`${view.average}%`, "Average score"],
+  ] as const;
 
   return (
     <div className="pb-16">
@@ -36,12 +28,7 @@ export function QuizResults() {
       <p className="mt-2 text-sm text-neutral-400">{quizResultsCopy.subtitle}</p>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          [String(stats.taken), "Quizzes taken"],
-          [String(stats.passed), "Passed"],
-          [String(stats.retry), "Need a retry"],
-          [`${stats.average}%`, "Average score"],
-        ].map(([value, label]) => (
+        {stats.map(([value, label]) => (
           <div key={label} className="rounded-2xl bg-white px-5 py-4">
             <p className="text-2xl font-bold">
               {value}{" "}
@@ -53,66 +40,55 @@ export function QuizResults() {
         ))}
       </div>
 
-      {rows.length === 0 ? (
+      {view.attempts.length === 0 ? (
         <div className="mt-10 max-w-lg rounded-[28px] bg-white px-8 py-12">
           <h2 className="text-xl font-bold">No quizzes yet</h2>
           <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-            Start with the Module 1 quiz after the DPTC introduction. The pass
-            mark is 70%.
+            Start with a course quiz from My courses. The pass mark is 70%. A
+            certificate is issued only after every live lesson and a pass on the
+            final assessment.
           </p>
           <div className="mt-6">
-            <SplitCta href="/learn/dptc/quiz" size="sm">
-              Start module 1 quiz
+            <SplitCta href="/my/courses" size="sm">
+              Go to My courses
             </SplitCta>
           </div>
         </div>
       ) : (
-        <div className="mt-8 overflow-hidden rounded-[24px] bg-white">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-neutral-100 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
-                  <th className="px-5 py-4 font-bold">Course</th>
-                  <th className="px-5 py-4 font-bold">Assessment</th>
-                  <th className="px-5 py-4 font-bold">Score</th>
-                  <th className="px-5 py-4 font-bold">Attempts</th>
-                  <th className="px-5 py-4 font-bold">Date</th>
-                  <th className="px-5 py-4 font-bold">
-                    <span className="sr-only">Status</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.id} className="border-b border-neutral-100 last:border-0">
-                    <td className="px-5 py-4 font-medium">{row.course}</td>
-                    <td className="px-5 py-4 text-neutral-600">
-                      <Link href={row.href} className="hover:text-neutral-950 hover:underline">
-                        {row.assessment}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4 tabular-nums">{row.score}%</td>
-                    <td className="px-5 py-4 tabular-nums text-neutral-500">
-                      {row.attemptsUsed} of {row.maxAttempts}
-                    </td>
-                    <td className="px-5 py-4 text-neutral-500">{row.date}</td>
-                    <td className="px-5 py-4 text-right">
-                      <span
-                        className={cn(
-                          "inline-flex rounded-full px-3 py-1 text-[11px] font-bold tracking-[0.12em] uppercase",
-                          row.status === "Active"
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-red-50 text-red-600"
-                        )}
-                      >
-                        {row.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="mt-10 space-y-3">
+          {view.attempts.map((attempt) => (
+            <article
+              key={attempt.id}
+              className="flex flex-col gap-3 rounded-[24px] bg-white p-5 sm:flex-row sm:items-center"
+            >
+              <div className="min-w-0 flex-1">
+                <h2 className="font-bold">{attempt.quizTitle}</h2>
+                <p className="mt-1 text-sm text-neutral-500">
+                  Attempt {attempt.attemptNo} · {formatWhen(attempt.submittedAt)}
+                </p>
+              </div>
+              <p className="text-lg font-bold tabular-nums">{attempt.scorePercent}%</p>
+              <span
+                className={
+                  attempt.passed
+                    ? "inline-flex rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-[0.12em] text-emerald-700 uppercase"
+                    : "inline-flex rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold tracking-[0.12em] text-red-700 uppercase"
+                }
+              >
+                {attempt.passed ? "Passed" : "Retry"}
+              </span>
+              <Link
+                href={
+                  attempt.quizSlug === "final"
+                    ? `/learn/${attempt.courseSlug || "dptc"}/final`
+                    : `/learn/${attempt.courseSlug || "dptc"}/quiz`
+                }
+                className="text-sm font-semibold text-neutral-600 hover:text-neutral-950"
+              >
+                Open quiz
+              </Link>
+            </article>
+          ))}
         </div>
       )}
     </div>

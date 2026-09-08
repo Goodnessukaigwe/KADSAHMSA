@@ -1,36 +1,34 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
-import {
-  catalogueCourses,
-  catalogueHero,
-  type CataloguePrice,
-} from "@/lib/content/catalogue";
+import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
+import type { CatalogueCourse } from "@/lib/courses/types";
 import { cn } from "@/lib/utils";
 
-export function CourseCatalogue() {
-  const [priceType, setPriceType] = useState<CataloguePrice>("free");
+type Tab = "free" | "paid";
+
+export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
+  const [tab, setTab] = useState<Tab>("free");
   const [query, setQuery] = useState("");
+  const searching = query.trim().length > 0;
 
   const visible = useMemo(() => {
+    if (tab === "paid") return [];
+    if (!searching) return courses;
     const q = query.trim().toLowerCase();
-    return catalogueCourses.filter((course) => {
-      if (course.priceType !== priceType) return false;
-      if (!q) return true;
-      return course.title.toLowerCase().includes(q);
-    });
-  }, [priceType, query]);
+    return courses.filter((course) => course.title.toLowerCase().includes(q));
+  }, [courses, tab, query, searching]);
 
   return (
-    <div className="bg-white font-sans text-neutral-950">
+    <div className="overflow-x-clip bg-white font-sans text-neutral-950">
       <section className="px-4 pt-14 pb-8 text-center sm:px-6 sm:pt-20 sm:pb-10">
         <div className="mx-auto max-w-[1120px]">
-          <h1 className="mx-auto max-w-[16ch] text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl">
+          <h1 className="mx-auto max-w-[16ch] text-[1.75rem] leading-[1.15] font-bold tracking-tight break-words sm:text-4xl lg:text-5xl">
             {catalogueHero.title}
           </h1>
           <p className="mx-auto mt-4 max-w-[46ch] text-[15px] leading-relaxed text-neutral-500">
@@ -53,14 +51,14 @@ export function CourseCatalogue() {
                   key={value}
                   type="button"
                   role="tab"
-                  aria-selected={priceType === value}
+                  aria-selected={tab === value}
                   className={cn(
                     "border-b-2 pb-1.5 text-[11px] font-bold tracking-[0.14em] uppercase",
-                    priceType === value
+                    tab === value
                       ? "border-neutral-950 text-neutral-950"
                       : "border-transparent text-neutral-400 hover:text-neutral-700"
                   )}
-                  onClick={() => setPriceType(value)}
+                  onClick={() => setTab(value)}
                 >
                   {label}
                 </button>
@@ -85,41 +83,44 @@ export function CourseCatalogue() {
 
           {visible.length === 0 ? (
             <p className="py-16 text-center text-sm text-neutral-500">
-              No courses match your filters.
+              {tab === "paid"
+                ? "Paid courses are not on this platform yet. Everything published here is free."
+                : searching
+                  ? "No published courses match your search."
+                  : emptyCatalogueCopy}
             </p>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {visible.map((course) => (
-                <article key={course.slug} className="flex flex-col">
+              {visible.map((course, index) => (
+                <article key={course.slug} className="flex min-w-0 flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-                    <Image
+                    <CourseCover
                       src={course.image}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      title={course.title}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+                      priority={index === 0}
                     />
                     <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                      {course.priceType === "free" ? "Free" : "Paid"}
+                      Free
                     </span>
                   </div>
-                  <h2 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">
+                  <h2 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold break-words">
                     {course.title}
                   </h2>
                   <p className="mt-1 text-sm text-neutral-400">
                     {course.lessons} {course.lessons === 1 ? "lesson" : "lessons"}
                   </p>
-                  <div className="mt-4 flex items-center gap-2">
+                  <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
                     <SplitCta
                       href={`/courses/${course.slug}`}
                       size="sm"
-                      className="min-w-0 flex-1"
+                      className="min-w-0 w-full sm:flex-1"
                     >
-                      Enroll for this course
+                      View course
                     </SplitCta>
                     <Link
                       href={`/courses/${course.slug}`}
-                      className="inline-flex h-9 shrink-0 items-center rounded-full bg-[#f4f4f4] px-4 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase"
+                      className="inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-[#f4f4f4] px-4 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase"
                     >
                       Read more
                     </Link>

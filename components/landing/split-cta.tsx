@@ -27,7 +27,7 @@ export function SplitCta({
   const Icon = icon === "plus" ? Plus : ArrowRight;
   const classNameMerged = cn("group inline-flex items-stretch gap-1", className);
   const labelClass = cn(
-    "inline-flex flex-1 items-center justify-center rounded-full font-semibold tracking-wide whitespace-nowrap",
+    "inline-flex min-w-0 flex-1 items-center justify-center rounded-full font-semibold tracking-wide whitespace-nowrap",
     size === "sm" ? "px-4 py-2 text-xs" : "px-5 py-3 text-sm",
     variant === "dark" ? "bg-neutral-950 text-white" : "bg-white text-neutral-950"
   );

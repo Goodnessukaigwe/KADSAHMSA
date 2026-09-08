@@ -14,107 +14,25 @@ export const catalogueHero = {
     "Explore expert-led courses on drug prevention, treatment, care, and professional skill development.",
 } as const;
 
-export function getCatalogueCourse(slug: string) {
-  return catalogueCourses.find((course) => course.slug === slug) ?? null;
+export const emptyCatalogueCopy = "No published courses yet.";
+
+export function isStockLandingCover(path: string) {
+  return path.trim().startsWith("/landing/");
 }
 
-export const catalogueCourses: CatalogueCourse[] = [
-  {
-    slug: "dptc",
-    title: "Sensitization on Drug Use, Dependence & Prevention (DPTC)",
-    lessons: 14,
-    priceType: "free",
-    image: "/landing/hero-phoenix.webp",
-  },
-  {
-    slug: "community-first-response",
-    title: "Community-Based Substance Abuse First Response",
-    lessons: 5,
-    priceType: "free",
-    image: "/landing/hero-cabin.webp",
-  },
-  {
-    slug: "human-rights-law-enforcement",
-    title: "Human Rights Frameworks in Law Enforcement & Care",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/hero-crystal.webp",
-  },
-  {
-    slug: "biological-drivers",
-    title: "Biological Drivers of Substance Dependence",
-    lessons: 3,
-    priceType: "free",
-    image: "/landing/about-apple.webp",
-  },
-  {
-    slug: "family-interventions",
-    title: "Family Interventions in Drug Treatment",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/about-stall.webp",
-  },
-  {
-    slug: "advocacy-programmes",
-    title: "Advocacy for Drug Prevention Programmes",
-    lessons: 3,
-    priceType: "free",
-    image: "/landing/team-training.webp",
-  },
-  {
-    slug: "special-populations",
-    title: "Special Populations in Drug Care",
-    lessons: 5,
-    priceType: "free",
-    image: "/landing/course-island.webp",
-  },
-  {
-    slug: "drug-screening",
-    title: "Drug Screening: Steps to Take",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/course-lantern-path.webp",
-  },
-  {
-    slug: "drug-use-nigeria",
-    title: "The Drug Use Situation in Nigeria",
-    lessons: 3,
-    priceType: "free",
-    image: "/landing/course-savannah.webp",
-  },
-  {
-    slug: "demand-harm-reduction",
-    title: "Demand and Harm Reduction",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/course-cave.webp",
-  },
-  {
-    slug: "types-of-treatment",
-    title: "Types of Drug Treatment",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/course-book.webp",
-  },
-  {
-    slug: "law-enforcement-issues",
-    title: "Specific Issues for Law Enforcement",
-    lessons: 4,
-    priceType: "free",
-    image: "/landing/course-city.webp",
-  },
-  {
-    slug: "trainer-resource-pack",
-    title: "DPTC Trainer Resource Pack",
-    lessons: 8,
-    priceType: "paid",
-    image: "/landing/course-book.webp",
-  },
-  {
-    slug: "organisation-cohort",
-    title: "Organisation Cohort: Facilitator Certification",
-    lessons: 10,
-    priceType: "paid",
-    image: "/landing/team-training.webp",
-  },
-];
+export function courseInitials(title: string) {
+  const parts = title
+    .replace(/[^a-zA-Z0-9 ]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (parts.length === 0) return "C";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+}
+
+export function coverForSlug(_slug: string, coverPath?: string | null) {
+  const trimmed = coverPath?.trim() ?? "";
+  if (!trimmed || isStockLandingCover(trimmed)) return "";
+  return trimmed;
+}

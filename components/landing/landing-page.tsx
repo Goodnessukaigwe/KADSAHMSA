@@ -5,15 +5,16 @@ import { ArrowRight, Check } from "lucide-react";
 import { FaqList } from "@/components/landing/faq-list";
 import { SplitCta } from "@/components/landing/split-cta";
 import { TeamCta } from "@/components/landing/team-cta";
+import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import {
   about,
-  courses,
   faqs,
   featured,
   hero,
   plans,
   stats,
 } from "@/lib/content/landing";
+import type { CatalogueCourse } from "@/lib/courses/types";
 
 const HERO_IMAGES = [
   { src: "/landing/hero-cabin.webp", alt: "A training retreat cabin at dusk" },
@@ -21,12 +22,16 @@ const HERO_IMAGES = [
   { src: "/landing/hero-crystal.webp", alt: "A glowing structure in a forest clearing" },
 ] as const;
 
-export function LandingPage() {
+export function LandingPage({
+  publishedCourses = [],
+}: {
+  publishedCourses?: CatalogueCourse[];
+}) {
   return (
-    <div className="bg-white font-sans text-neutral-950">
+    <div className="overflow-x-clip bg-white font-sans text-neutral-950">
       <Hero />
       <About />
-      <FeaturedCourses />
+      <FeaturedCourses courses={publishedCourses} />
       <Plans />
       <Faq />
     </div>
@@ -44,7 +49,7 @@ function Hero() {
             {hero.badge}
           </span>
         </div>
-        <h1 className="mx-auto mt-6 max-w-3xl text-4xl leading-[1.08] font-bold tracking-tight text-neutral-950 sm:text-5xl lg:text-[56px]">
+        <h1 className="mx-auto mt-6 max-w-3xl text-[1.75rem] leading-[1.12] font-bold tracking-tight break-words text-neutral-950 sm:text-5xl lg:text-[56px]">
           {hero.title}
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-neutral-500">
@@ -102,7 +107,7 @@ function About() {
                 <div className="text-2xl font-bold tracking-tight sm:text-3xl">
                   {item.value}
                 </div>
-                <div className="mt-1 text-[11px] leading-snug text-neutral-500 sm:text-xs">
+                <div className="mt-1 text-[11px] leading-snug break-words text-neutral-500 sm:text-xs">
                   {item.label}
                 </div>
               </div>
@@ -133,7 +138,7 @@ function About() {
   );
 }
 
-function FeaturedCourses() {
+function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
   return (
     <section id="courses" className="scroll-mt-24 bg-[#f7f7f7] px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-[1120px]">
@@ -146,55 +151,67 @@ function FeaturedCourses() {
           </p>
         </header>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {courses.map((course) => (
-            <article
-              key={course.title}
-              className="relative rounded-2xl bg-white px-5 pt-10 pb-5 shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
-            >
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-950 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase">
-                {course.tag}
-              </span>
-              <h3 className="min-h-[3.5rem] text-[17px] leading-snug font-bold">
-                {course.title}
-              </h3>
-              <dl className="mt-5 grid grid-cols-3 divide-x divide-neutral-200 text-center">
-                <div className="px-1">
-                  <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
-                    Price
-                  </dt>
-                  <dd className="mt-1 text-sm font-semibold">{course.price}</dd>
-                </div>
-                <div className="px-1">
-                  <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
-                    Method
-                  </dt>
-                  <dd className="mt-1 text-sm font-semibold">{course.method}</dd>
-                </div>
-                <div className="px-1">
-                  <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
-                    Duration
-                  </dt>
-                  <dd className="mt-1 text-sm font-semibold">{course.duration}</dd>
-                </div>
-              </dl>
-              <p className="mt-5 min-h-[4.5rem] text-sm leading-relaxed text-neutral-500">
-                {course.summary}
-              </p>
-              <div className="mt-6 flex items-center justify-between gap-3">
-                <SplitCta href={course.href} icon="plus" className="min-w-0">
-                  {course.cta}
-                </SplitCta>
-                <Link
-                  href={course.href}
-                  className="shrink-0 text-[11px] font-semibold tracking-[0.14em] text-neutral-800 uppercase"
+        {courses.length === 0 ? (
+          <p className="mt-12 text-center text-sm text-neutral-500">
+            {emptyCatalogueCopy}
+          </p>
+        ) : (
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {courses.map((course) => {
+              const href = `/courses/${course.slug}`;
+              const duration =
+                course.durationLabel ||
+                `${course.lessons} ${course.lessons === 1 ? "lesson" : "lessons"}`;
+              return (
+                <article
+                  key={course.slug}
+                  className="relative rounded-2xl bg-white px-5 pt-10 pb-5 shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
                 >
-                  Learn more
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-950 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase">
+                    Free
+                  </span>
+                  <h3 className="min-h-[3.5rem] text-[17px] leading-snug font-bold">
+                    {course.title}
+                  </h3>
+                  <dl className="mt-5 grid grid-cols-3 divide-x divide-neutral-200 text-center">
+                    <div className="px-1">
+                      <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
+                        Price
+                      </dt>
+                      <dd className="mt-1 text-sm font-semibold">Free</dd>
+                    </div>
+                    <div className="px-1">
+                      <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
+                        Method
+                      </dt>
+                      <dd className="mt-1 text-sm font-semibold">Self-paced</dd>
+                    </div>
+                    <div className="px-1">
+                      <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
+                        Duration
+                      </dt>
+                      <dd className="mt-1 text-sm font-semibold">{duration}</dd>
+                    </div>
+                  </dl>
+                  <p className="mt-5 min-h-[4.5rem] text-sm leading-relaxed text-neutral-500">
+                    {course.summary || "A published KADSAMHSA course."}
+                  </p>
+                  <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <SplitCta href={href} icon="plus" className="min-w-0 w-full sm:w-auto">
+                      View course
+                    </SplitCta>
+                    <Link
+                      href={href}
+                      className="inline-flex h-9 shrink-0 items-center justify-center text-[11px] font-semibold tracking-[0.14em] text-neutral-800 uppercase"
+                    >
+                      Learn more
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

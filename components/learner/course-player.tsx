@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, Tag, Clock, Layers, Award } from "lucide-react";
+import { Tag, Clock, Layers, Award } from "lucide-react";
 
+import { LessonMedia } from "@/components/learner/lesson-media";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { SimulatedVideo } from "@/components/learner/simulated-video";
+import type { LessonAsset } from "@/lib/courses/types";
 import {
   adjacentHrefs,
   dptcCourse,
@@ -23,10 +25,16 @@ const facts = [
 
 export function CoursePlayer({
   slug,
+  title,
+  poster,
   initialSeconds,
+  assets = [],
 }: {
   slug: string;
+  title?: string;
+  poster?: string | null;
   initialSeconds: number;
+  assets?: LessonAsset[];
 }) {
   const [seconds, setSeconds] = useState(initialSeconds);
   const introModule = dptcModules[0];
@@ -57,26 +65,19 @@ export function CoursePlayer({
   }
 
   return (
-    <div className="grid gap-8 pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
-      <div>
+    <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
+      <div className="min-w-0">
         <SimulatedVideo
-          poster={dptcCourse.playerPoster}
+          poster={poster}
+          title={title || introModule.title}
           duration={introDurationSeconds}
           current={seconds}
           onSeek={seek}
         />
-        <div className="mt-6 flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        <div className="mt-6">
+          <h1 className="text-2xl font-bold tracking-tight break-words sm:text-3xl">
             {introModule.title}
           </h1>
-          <a
-            href={dptcCourse.hero}
-            download
-            className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-600 hover:text-neutral-950"
-          >
-            <Download className="size-4" />
-            Download as PDF
-          </a>
         </div>
         <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-neutral-500">
           {dptcCourse.description} This opening session maps the 13 modules,
@@ -99,6 +100,7 @@ export function CoursePlayer({
             </div>
           ))}
         </div>
+        <LessonMedia assets={assets} />
       </div>
 
       <PlayerRail

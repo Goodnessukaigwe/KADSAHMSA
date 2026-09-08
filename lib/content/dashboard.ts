@@ -1,46 +1,12 @@
-import { catalogueCourses } from "@/lib/content/catalogue";
-
-const EXPLORE_SLUGS = [
-  "community-first-response",
-  "human-rights-law-enforcement",
-  "biological-drivers",
-] as const;
-
-const EXPLORE_IMAGES: Record<(typeof EXPLORE_SLUGS)[number], string> = {
-  "community-first-response": "/landing/dash-kimono.webp",
-  "human-rights-law-enforcement": "/landing/hero-phoenix.webp",
-  "biological-drivers": "/landing/hero-cabin.webp",
-};
-
-export type StartedCourse = {
-  slug: string;
-  title: string;
-  moduleLabel: string;
-  percent: number;
-  thumbnail: string;
-};
-
 export const dashboardCopy = {
   greetingEyebrow: "New here?",
-  greeting: "Start with the DPTC Sensitization Course",
+  greeting: "Start with a published course",
   returningEyebrow: "Continue your learning journey",
   startedTitle: "You also started these courses",
   exploreTitle: "Explore more courses",
-  featured: {
-    slug: "dptc",
-    title: "Sensitization On (DPTC)",
-    returningTitle:
-      "Sensitization On Drug Use, Dependence & Prevention (DPTC)",
-    price: "Free",
-    module: "13 Modules",
-    duration: "40 Min",
-    percent: 64,
-    description:
-      "A UNODC/EU-supported course for law enforcement and the public. Learn to recognize dependence, understand treatment, and respond with dignity.",
-    image: "/landing/dash-balloons.webp",
-    imageAlt: "Hot air balloons over a valley at sunrise",
-  },
-  enroll: "Enroll for this course",
+  enroll: "Request enrolment",
+  requested: "Requested",
+  requestHint: "An administrator will enrol you. You can start when they do.",
   continue: "Continue this course",
   continueFeatured: "Continue with this course",
   continueShort: "Continue",
@@ -49,11 +15,11 @@ export const dashboardCopy = {
   onboarding: [
     {
       title: "Select A Course",
-      body: "Choose a course you want to start with or start with the recommended course",
+      body: "Choose a published course from the catalogue when staff have added one.",
     },
     {
-      title: "Enroll To Begin",
-      body: "Enroll in the recommended DPTC course, or pick another free course below. Your place is saved to this account.",
+      title: "Request Enrolment",
+      body: "Ask for a seat on a published course. An administrator enrols you before lessons open.",
     },
     {
       title: "You Are Set",
@@ -61,41 +27,6 @@ export const dashboardCopy = {
     },
   ],
 } as const;
-
-export const returningStartedCourses: StartedCourse[] = [
-  {
-    slug: "dptc",
-    title: "DPTC Sensitization Course",
-    moduleLabel:
-      "Module 9 of 13: Interventions and Responses to Drug Problems in the Family",
-    percent: 64,
-    thumbnail: "/landing/hero-phoenix.webp",
-  },
-  {
-    slug: "human-rights-law-enforcement",
-    title: "Human Rights Frameworks in Law Enforcement & Care",
-    moduleLabel: "Module 2 of 4: Human Rights and Drug Users",
-    percent: 40,
-    thumbnail: "/landing/hero-crystal.webp",
-  },
-];
-
-export const returningCompletedCourse = {
-  slug: "community-first-response",
-  title: "Community-Based Substance Abuse First Response",
-  moduleLabel: "5 of 5 modules complete",
-  thumbnail: "/landing/dash-kimono.webp",
-} as const;
-
-export function dashboardExploreCourses() {
-  return EXPLORE_SLUGS.map((slug) => {
-    const course = catalogueCourses.find((item) => item.slug === slug);
-    if (!course) {
-      throw new Error(`Missing catalogue course: ${slug}`);
-    }
-    return { ...course, image: EXPLORE_IMAGES[slug] };
-  });
-}
 
 export function returningGreeting(name: string) {
   return `Welcome back, ${name}`;

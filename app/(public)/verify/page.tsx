@@ -1,14 +1,12 @@
-import { PhaseStub } from "@/components/phase-stub";
+import { VerifyCertificate } from "@/components/public/verify-certificate";
 
 export const metadata = { title: "Verify certificate" };
 
-export default function VerifyPage() {
-  return (
-    <PhaseStub
-      eyebrow="F7 · Public verify"
-      title="Verify a certificate"
-      description="Anyone can check a certificate ID here. QR codes are P1. Built in Phase 3."
-      requirement="F7 — Public certificate verification page (ID entry)"
-    />
-  );
+export default async function VerifyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string }>;
+}) {
+  const { id } = await searchParams;
+  return <VerifyCertificate initialId={id?.trim() ?? ""} />;
 }

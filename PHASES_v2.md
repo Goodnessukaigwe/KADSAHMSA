@@ -2,9 +2,11 @@
 
 > **Active contract / product baseline:** [(New)KADSAMHSA_LMS_PRD_v2.md](./(New)KADSAMHSA_LMS_PRD_v2.md)  
 > **Supersedes:** [prototype/PHASES.md](prototype/PHASES.md) (Moodle LTS checklist) and [prototype/KADSAMHSA_LMS_PRD_v1.md](prototype/KADSAMHSA_LMS_PRD_v1.md) §8 stack  
-> **Locked stack:** Next.js 15 (App Router) + TypeScript · Supabase (Postgres + Auth + Storage + RLS) · Tailwind + shadcn/ui · Paystack · Resend · Inngest (or Supabase cron) · Vercel (or similar)  
+> **Locked stack:** Next.js 15 (App Router) + TypeScript · Supabase (Postgres + Auth + Storage + RLS) · Tailwind + shadcn/ui · Paystack (deferred to the last product phase) · Resend · Inngest (or Supabase cron) · Vercel (or similar)  
 > **End-state:** Staging UAT → production on KADSAMHSA domain → DPTC course live → training & handover  
 > **Self-management principle:** KADSAMHSA staff run courses, users, orgs, pricing, and certificates in-app after handover — no engineer for routine ops
+
+**Build order vs PRD:** The PRD (v2 §10 / §13) is **unchanged**. This file only sequences engineering: **Paystack is last** (Phase 9 here) so the admin builder, organizations, DPTC content, UAT, and handover can ship without checkout. PRD still names Paystack in its Phase 4; that is not a contract change.
 
 ---
 
@@ -62,7 +64,7 @@ KADSAHMSA/
 - [ ] Branding assets (logo SVG/PNG, colors, fonts) or brand guide
 - [ ] Production domain name confirmed
 - [ ] Vercel (or similar) + Supabase account owner (KADSAMHSA vs vendor)
-- [x] Payment gateway: **Paystack** locked
+- [x] Payment gateway: **Paystack** locked (build deferred to Phase 9)
 - [ ] Launch pricing (DPTC assumed free; paid courses TBD)
 - [ ] Quiz question bank authorship (KADSAMHSA SMEs vs vendor draft)
 - [ ] Certificate signatories, wording, logos; UNODC/EU co-branding / online rights
@@ -74,9 +76,9 @@ KADSAHMSA/
 ## Tech stack lock-in (PRD §8)
 
 - [x] Next.js **15** App Router + TypeScript
-- [ ] Supabase: Postgres + Auth + Storage + **RLS**
+- [x] Supabase: Postgres + Auth + Storage + **RLS**
 - [x] Tailwind CSS + **shadcn/ui**
-- [ ] Paystack (card / transfer / USSD)
+- [ ] Paystack (card / transfer / USSD) — **deferred to Phase 9** (last product phase)
 - [ ] Resend (or similar) for transactional email
 - [ ] Inngest **or** Supabase cron for cert PDF / email / exports (no Redis day one)
 - [ ] Hosting: Vercel (or similar) for app; Supabase for data
@@ -93,6 +95,8 @@ KADSAHMSA/
 ## Phase 0 — Prototype archive + Next.js bootstrap
 
 > **Goal:** Clear the root for the real product app without losing the Moodle/Figma demo work.
+
+**Status:** shipped.
 
 ### 0.1 Pack legacy into `prototype/`
 
@@ -141,20 +145,22 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 **PRD §10 Phase 1 · ~3–4 weeks**
 
+**Status:** engineering scaffold shipped locally. Formal design sign-off and hosted staging are still open.
+
 ### Design
 
 - [ ] Sitemap and user flows (learner, org, admin)
 - [ ] Wireframes then hi-fi (desktop + mobile) for: landing, catalogue, course detail, auth, player, quiz, certificate, learner dashboard, org dashboard, admin course builder, verification page
 - [ ] Clickable prototype
-- [ ] Mini design system (Tailwind + shadcn tokens; WHO Academy learner / Gurucan admin)
+- [x] Mini design system in use (Tailwind + shadcn tokens; WHO Academy learner / Gurucan admin as reference)
 
 ### Engineering
 
 - [ ] Staging on Vercel (or similar)
-- [ ] Supabase project: Postgres, Auth (email/password), Storage, RLS skeleton
-- [ ] Dual-check permissions module (`lib/permissions.ts` + RLS policies)
-- [ ] Env/secrets layout validated (no secrets in `NEXT_PUBLIC_*`)
-- [ ] Role layouts: public / auth / learner / org / admin shells
+- [x] Supabase project: Postgres, Auth (email/password), Storage, RLS skeleton
+- [x] Dual-check permissions module (`lib/permissions.ts` + RLS policies)
+- [x] Env/secrets layout validated (no secrets in `NEXT_PUBLIC_*`)
+- [x] Role layouts: public / auth / learner / org / admin shells
 
 **Acceptance:** KADSAMHSA signs off designs vs PRD §4 and §6. Staging boots with Auth + RLS; no secrets in client env.
 
@@ -166,12 +172,14 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 **PRD §10 Phase 2 · ~3–4 weeks**
 
-- [ ] F1 — Public landing + catalogue (SSR), search/filters, cards
-- [ ] F2 — Course detail (overview, objectives, outline, duration, cert info, Enrol CTA)
-- [ ] F3 — Register / login / password reset (email; phone = P1 later)
-- [ ] F4 — Course player: module/lesson nav, content blocks, mark complete, progress, resume
-- [ ] F8 — Learner dashboard: my courses, progress, certificates entry, payment history shell
-- [ ] F11 — Mobile + low-bandwidth basics on catalogue and lesson pages
+**Status:** shipped on the current build (free enrolment / staff enrol; no checkout).
+
+- [x] F1 — Public landing + catalogue (SSR), search/filters, cards
+- [x] F2 — Course detail (overview, objectives, outline, duration, cert info, Enrol CTA)
+- [x] F3 — Register / login / password reset (email; phone = P1 later)
+- [x] F4 — Course player: module/lesson nav, content blocks, mark complete, progress, resume (text lessons; media uploads in Phase 6)
+- [x] F8 — Learner dashboard: my courses, progress, certificates entry, payment history **shell** (live receipts wait for Phase 9)
+- [x] F11 — Mobile + low-bandwidth basics on catalogue and lesson pages
 
 **Acceptance:** F1, F2, F3 (email), F4, F8, F11 on staging with a sample course.
 
@@ -181,30 +189,51 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 **PRD §10 Phase 3 · ~2–3 weeks**
 
-- [ ] F5 — Module quizzes + final assessment (score, pass mark default 70%, retries, feedback)
-- [ ] F6 — Auto PDF certificate (name, course, date, unique non-guessable ID, logos/signatories)
-- [ ] F7 — Public verify page (ID entry; QR = P1)
-- [ ] F10 — Emails: completion + certificate issued
-- [ ] §7.3 rules: idempotent issue; revoke support; verify exposes only validity, name, course, date
-- [ ] Private Storage for PDFs; verify URL is not a file listing
+**Status:** DPTC path shipped (module quiz, final, PDF, verify, revoke). Transactional email skipped. Any-course quiz/cert is Phase 4b.
+
+- [x] F5 — Module quizzes + final assessment (score, pass mark default 70%, retries, feedback) — DPTC banks in TypeScript
+- [x] F6 — Auto PDF certificate (name, course, date, unique non-guessable ID, logos/signatories)
+- [x] F7 — Public verify page (ID entry; QR = P1)
+- [ ] F10 — Emails: completion + certificate issued (skipped; Resend not wired)
+- [x] §7.3 rules: idempotent issue; revoke support; verify exposes only validity, name, course, date
+- [x] Private Storage for PDFs; verify URL is not a file listing
 
 **Acceptance:** §7.3 example met (complete modules + ≥70% final → PDF + ID within ~1 minute; verify returns valid).
 
 ---
 
-## Phase 4 — Admin builder & Paystack
+## Phase 4 — Admin builder
 
-**PRD §10 Phase 4 · ~3–4 weeks**
+**PRD §10 Phase 4 · ~3–4 weeks** (PRD also lists Paystack here; **this build defers Paystack to Phase 9**)
 
-- [ ] A1 — Gurucan-style course builder (Save / Preview / Publish / Delete; shareable URL)
-- [ ] A2 — Content blocks: PPTX/PDF, video (upload or YouTube/Vimeo), image, audio, rich text, downloads
-- [ ] A3 — Quiz builder: MCQ, T/F, matching; banks; randomization; pass mark / attempts / time
+**Status:** A1 persist and staff enrol-by-email / user-detail enrol are shipped. A2 lesson media is in Phase 6. Full quiz-builder types, cert template editor, and catalogue/offers metadata are leftover.
+
+- [x] A1 — Gurucan-style course builder persist (Save / Preview / Publish / Delete; shareable URL)
+- [x] Staff enrol a registered learner (user detail + enrol-by-email on the builder)
+- [x] A2 — Content blocks: PPTX/PDF, video (upload or YouTube/Vimeo), image, audio, rich text, downloads (Phase 6)
+- [ ] A3 — Quiz builder: MCQ, T/F, matching; banks; randomization; pass mark / attempts / time (thin MCQ-only final is Phase 4b)
 - [ ] A4 — Certificate template editor per course
-- [ ] A5 — Catalogue categories/tags/featured; Offers (free/paid; seat bundles)
-- [ ] F9 — Paystack checkout (card, transfer, USSD); webhook signature verified; secrets server-only
-- [ ] F10 — Welcome, enrolment, payment receipt emails
+- [ ] A5 — Catalogue categories/tags/featured; free offers (paid offers wait for Phase 9)
 
-**Acceptance:** Content admin publishes a course unassisted on staging. Paystack webhook verified.
+F9 Paystack and payment-receipt emails are **not** in this phase.
+
+**Acceptance:** Content admin publishes a course unassisted on staging. **No webhook.**
+
+---
+
+## Phase 4b — Course roster + any-course assessment
+
+> Leftover from Phase 4. No Paystack. No org bulk CSV (Phase 5).
+
+**Status:** shipped. Apply [`supabase/apply-phase4b.sql`](supabase/apply-phase4b.sql) if the SQL editor has not run it yet.
+
+- [x] Per-course **Learners** roster on `/admin/courses/[slug]`: all registered learners; **Enrol** or **Enrolled** + progress
+- [x] Manual enrol from that roster (reuse staff enrol; keep enrol-by-email as a second path)
+- [x] Final quiz + certificate for **any published course** (not only DPTC): all live lessons complete and final ≥70% → one PDF, unique `KAD-` id, idempotent on `enrolment_id`
+- [x] Builder: thin MCQ final bank (pass mark 70, max 3 attempts). DPTC Module 1 + final banks stay in TypeScript; other courses use DB questions
+- [x] Player links to `/final` when a final quiz exists; honest copy and no cert when it does not
+
+**Acceptance:** Staff enrol a registered user onto a course from the roster; that learner completes live lessons, passes the final, and receives one verifiable certificate. DPTC Module 1 / final / existing `KAD-` ids still work.
 
 ---
 
@@ -212,10 +241,12 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 **PRD §10 Phase 5 · ~2–3 weeks**
 
-- [ ] A6 — CRM-style users; roles; org approve/view
-- [ ] A7 — Org bulk enrol (CSV + invite link/code); seat allocation
-- [ ] A8 — Reports (enrolments, progress, completions, quizzes, certs, revenue) + CSV export
-- [ ] Org dashboard for org admins (staff progress only)
+**Status:** shipped locally. Paste [`supabase/apply-phase5.sql`](supabase/apply-phase5.sql) in the SQL editor after 4b. Seat limit is a staff-set integer (not paid seats). No Paystack, no emails.
+
+- [x] A6 — CRM-style users; roles; org approve/view
+- [x] A7 — Org bulk enrol (CSV + invite link/code); seat allocation
+- [x] A8 — Reports (enrolments, progress, completions, quizzes, certs) + CSV export. **Revenue is omitted until Phase 9 Paystack exists.**
+- [x] Org dashboard for org admins (staff progress only)
 
 **Acceptance:** Org admin sees only their staff; RLS + server checks refuse cross-org access.
 
@@ -225,14 +256,15 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 **PRD §10 Phase 6 · ~3–4 weeks (can overlap 4–5)**
 
-Build the launch course per PRD §5:
+**Status:** A2 lesson media shipped locally. Paste [`supabase/apply-phase6.sql`](supabase/apply-phase6.sql) in the SQL editor after Phase 5. **DPTC slide/quiz-bank authoring is deferred** — staff attach files and YouTube/Vimeo URLs through the course builder when assets are ready. Do not invent Module 2–12 questions.
 
-- [ ] Intro module + modules 1–12 (slides as lesson content)
-- [ ] Module quizzes + final assessment (from approved question banks)
+- [x] A2 — Lesson media: PDF/PPTX, video (file or YouTube/Vimeo), image, audio — private `course-media` bucket, signed playback for enrolled learners or staff
+- [ ] Intro module + modules 1–12 (slides as lesson content) — **deferred**; staff upload through the builder
+- [ ] Module quizzes + final assessment (from approved question banks) — Module 1 + final stay in TypeScript; do not invent banks 2–12
 - [ ] Certificate template for DPTC
-- [ ] Trainer Resource Manual (236 pp. PDF) as downloadable resource (not a separate course)
+- [ ] Trainer Resource Manual (236 pp. PDF) as downloadable resource — attach via the builder when you have the file (not a separate course)
 
-**Acceptance:** KADSAMHSA reviews full course as a learner and approves.
+**Acceptance:** Staff attach media on a lesson; enrolled learners play or download via signed URLs; unenrolled cannot. DPTC text + Module 1 / final still work. Full DPTC slide review waits until remaining assets are authored.
 
 ---
 
@@ -240,13 +272,15 @@ Build the launch course per PRD §5:
 
 **PRD §10 Phase 7 · ~2–3 weeks**
 
-- [ ] Cross-device + low-bandwidth testing
-- [ ] Security checklist (HTTPS, OWASP intent, NDPA consent/privacy)
+**Status:** harden slice shipped locally (privacy draft, consent, headers, 375px pass, runbooks). Paste [`supabase/apply-phase7.sql`](supabase/apply-phase7.sql) after Phase 6. Privacy text is a **draft until legal signs off**. Production DNS and staff/pilot UAT remain open.
+
+- [x] Cross-device + low-bandwidth testing
+- [x] Security checklist (HTTPS, OWASP intent, NDPA consent/privacy)
 - [ ] UAT with KADSAMHSA staff + pilot org
 - [ ] Bug fixes; production on KADSAMHSA domain
-- [ ] Backups + restore drill documented
+- [x] Backups + restore drill documented
 
-**Acceptance:** UAT sign-off; every **P0** in PRD §7 on production; zero open critical/major defects.
+**Acceptance:** UAT sign-off; every **P0** in PRD §7 on production **except F9 / paid checkout** (Phase 9); zero open critical/major defects.
 
 ---
 
@@ -261,9 +295,22 @@ Build the launch course per PRD §5:
 
 ---
 
-## Phase 9 — Support & maintenance
+## Phase 9 — Paystack
 
-**PRD §10 Phase 9 · separate SLA**
+**Last product phase.** PRD §10 lists this work under its Phase 4; this file sequences it after handover so the rest of the product can ship without checkout.
+
+- [ ] F9 — Paystack checkout (card, transfer, USSD); webhook signature verified; secrets server-only
+- [ ] A5 — Paid offers (and seat bundles that depend on checkout)
+- [ ] Learner payment history (replace the Phase 2 shell)
+- [ ] F10 — Payment receipt emails
+
+**Acceptance:** Paid enrolment on staging: checkout → verified webhook → enrolment + receipt. Secrets never in `NEXT_PUBLIC_*`.
+
+---
+
+## Phase 10 — Support & maintenance
+
+**PRD §10 Phase 9 · separate SLA** (renumbered here because Paystack is the last product phase)
 
 - [ ] Warranty period (suggest 3 months post-launch)
 - [ ] Optional annual support / hosting SLA
@@ -273,14 +320,16 @@ Build the launch course per PRD §5:
 
 ## P0 requirement index (quick map)
 
-| ID | Area | Phase |
-|----|------|-------|
+| ID | Area | Phase (this file) |
+|----|------|-------------------|
 | F1–F4, F8, F11 | Learner public + player + dashboard | 2 |
 | F5–F7, F10 (cert emails) | Quiz + cert + verify | 3 |
-| F9, F10 (welcome/enrol/receipt), A1–A5 | Admin builder + Paystack | 4 |
-| A6–A8 | Orgs + CRM + reports | 5 |
+| A1–A4, A5 (catalogue / free offers) | Admin builder | 4 |
+| Per-course roster; any-course quiz/cert | Course roster + assessment | 4b |
+| A6–A8 (no revenue until Paystack) | Orgs + CRM + reports | 5 |
 | Section 5 | DPTC content | 6 |
-| All P0 | Production | 7 |
+| All P0 except F9 / paid checkout | Production | 7 |
+| F9, A5 paid offers, payment history, receipt emails | Paystack | 9 |
 
 **P1 (fast follow unless pulled in writing):** F3 phone, F7 QR, F12 ratings, A9–A13  
 **P2 (out of contract unless quoted):** F13–F14, A14–A16
@@ -316,9 +365,15 @@ Same learner story as the Moodle prototype, re-implemented in Next.js:
 5. Module quiz → result  
 6. Final assessment → certificate → public verify  
 
+Staff path (Phase 4 / 4b): publish a course → enrol a registered learner from the course roster → learner completes lessons and final → cert verifies.
+
+Paid checkout is **not** on this path until Phase 9.
+
 ---
 
 ## Indicative timeline (PRD §13)
+
+PRD §13 durations are unchanged. This table is the **engineering sequence** (Paystack last, not in Phase 4).
 
 | Phase | Weeks (indicative) |
 |-------|--------------------|
@@ -326,22 +381,21 @@ Same learner story as the Moodle prototype, re-implemented in Next.js:
 | 1 Foundation | 3–4 |
 | 2 Learner | 3–4 |
 | 3 Assessment & certificates | 2–3 |
-| 4 Admin builder & Paystack | 3–4 |
+| 4 Admin builder | 3–4 |
+| 4b Course roster + any-course assessment | leftover slice of Phase 4 |
 | 5 Organizations | 2–3 |
 | 6 DPTC content | 3–4 (overlap OK) |
 | 7 UAT & launch | 2–3 |
 | 8 Handover | 1–2 |
+| 9 Paystack (last product phase) | from PRD Phase 4 remainder |
+| 10 Support & maintenance | separate SLA |
 
-**Total (phases 1–8):** roughly **3.5–4.5 months** from contract signature, assuming prompt reviews and assets on schedule. Phase 0 is engineering prep before or at kickoff.
+**Total (PRD phases 1–8):** roughly **3.5–4.5 months** from contract signature, assuming prompt reviews and assets on schedule. Phase 0 is engineering prep before or at kickoff. Phase 9 Paystack is sequenced after handover in **this** file; it does not rewrite the PRD.
 
 ---
 
 ## Next concrete engineering step
 
-When ready to start coding (not only this doc):
+**Phase 7 remainder:** apply [`supabase/apply-phase7.sql`](supabase/apply-phase7.sql) if `consents` is missing, then [`supabase/apply-enrol-requests.sql`](supabase/apply-enrol-requests.sql) so learners request a seat and leftover verify courses stay unpublished. Legal still owes NDPA policy sign-off. Staff + pilot org walk [`docs/uat-script.md`](docs/uat-script.md) before checking UAT. Production on the KADSAMHSA domain waits on DNS.
 
-1. Execute **Phase 0.1** — move Moodle/Docker/theme into `prototype/`  
-2. Execute **Phase 0.2** — `create-next-app` at root + Supabase/shadcn dependencies  
-3. Begin **Phase 1** foundation scaffold against signed designs  
-
-Until then, this file + PRD v2 are the planning baseline; do not extend the Moodle theme as the production path.
+Do not start Paystack, a tutor role, or remaining F10 emails in this slice. Phase 8 is handover (admin manual, recorded training).

@@ -132,12 +132,12 @@ export function PublicFooter() {
           </div>
         </div>
         <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-4 px-4 py-5 sm:px-6">
+          <div className="mx-auto flex max-w-[1120px] flex-col items-start gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-xs text-white/55">
               © {site.year} {site.name}. All rights reserved.
             </p>
-            <div className="flex items-center gap-5">
-              <Link href="/about" className="text-xs text-white/55 hover:text-white">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+              <Link href="/privacy" className="text-xs text-white/55 hover:text-white">
                 Privacy
               </Link>
               <Link href="/about" className="text-xs text-white/55 hover:text-white">

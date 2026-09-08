@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   BarChart3,
   Bell,
+  Building2,
+  FileSpreadsheet,
   GraduationCap,
   Menu,
   Search,
@@ -23,6 +25,8 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/courses", label: "Courses", icon: GraduationCap },
   { href: "/admin/users", label: "Users Metric", icon: Users },
+  { href: "/admin/organizations", label: "Organisations", icon: Building2 },
+  { href: "/admin/reports", label: "Reports", icon: FileSpreadsheet },
 ] as const;
 
 export function AdminChrome({
@@ -74,7 +78,7 @@ export function AdminChrome({
           <Link href="/admin" className="flex items-center gap-2.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
-            <span className="text-sm font-bold tracking-[0.14em] uppercase">
+            <span className="text-sm font-bold tracking-[0.08em] uppercase sm:tracking-[0.14em]">
               {site.name}
             </span>
           </Link>

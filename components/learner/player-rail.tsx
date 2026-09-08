@@ -11,7 +11,7 @@ type PlayerRailProps = {
   highlights?: { time: string; label: string; seconds: number }[];
   activeSeconds?: number;
   onHighlight?: (seconds: number) => void;
-  quizHref: string;
+  quizHref?: string;
   toc?: { title: string; items: { id: string; label: string }[] };
   previousHref?: string;
   nextHref?: string;
@@ -33,7 +33,7 @@ export function PlayerRail({
   toc,
 }: PlayerRailProps) {
   return (
-    <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
+    <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
@@ -104,9 +104,11 @@ export function PlayerRail({
         </div>
       ) : null}
 
-      <SplitCta href={quizHref} className="w-full">
-        Take quiz
-      </SplitCta>
+      {quizHref ? (
+        <SplitCta href={quizHref} className="w-full">
+          Take quiz
+        </SplitCta>
+      ) : null}
 
       <div>
         <p className="text-sm font-semibold">Rating</p>
@@ -118,17 +120,17 @@ export function PlayerRail({
         <p className="mt-1 text-xs text-neutral-400">1,234 reviews · 5 stars</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid min-w-0 grid-cols-2 gap-2">
         {previousHref ? (
           <Link
             href={previousHref}
             data-nav="previous"
-            className="flex h-11 items-center justify-center rounded-full bg-neutral-200 text-[11px] font-bold tracking-[0.12em] text-neutral-700 uppercase"
+            className="flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-200 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-700 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]"
           >
             {previousLabel}
           </Link>
         ) : (
-          <span className="flex h-11 items-center justify-center rounded-full bg-neutral-100 text-[11px] font-bold tracking-[0.12em] text-neutral-400 uppercase">
+          <span className="flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-100 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-400 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]">
             {previousLabel}
           </span>
         )}
@@ -137,7 +139,7 @@ export function PlayerRail({
             href={nextHref}
             data-nav="next"
             className={cn(
-              "flex h-11 items-center justify-center rounded-full text-[11px] font-bold tracking-[0.12em] uppercase",
+              "flex h-11 min-w-0 items-center justify-center rounded-full px-2 text-center text-[10px] font-bold tracking-[0.08em] uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]",
               nextPrimary
                 ? "bg-neutral-950 text-white"
                 : "bg-neutral-200 text-neutral-700"
@@ -146,7 +148,7 @@ export function PlayerRail({
             {nextLabel}
           </Link>
         ) : (
-          <span className="flex h-11 items-center justify-center rounded-full bg-neutral-200 text-[11px] font-bold tracking-[0.12em] text-neutral-400 uppercase">
+          <span className="flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-200 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-400 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]">
             {nextLabel}
           </span>
         )}

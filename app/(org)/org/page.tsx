@@ -1,14 +1,24 @@
-import { PhaseStub } from "@/components/phase-stub";
+import { OrgDashboard } from "@/components/org/org-dashboard";
+import { getOrgDashboard, listReportRows } from "@/lib/org/queries";
 
 export const metadata = { title: "Organisation" };
 
-export default function OrgDashboardPage() {
+export default async function OrgDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ org?: string }>;
+}) {
+  const { org: orgId } = await searchParams;
+  const dashboard = await getOrgDashboard(orgId);
+  const reports = dashboard.org ? await listReportRows(dashboard.org.id) : [];
   return (
-    <PhaseStub
-      eyebrow="A6–A8 · Organisations"
-      title="Organisation dashboard"
-      description="Staff progress, bulk enrolment, and CSV reports. Org admins see only their own staff. Built in Phase 5."
-      requirement="A6, A7, A8 — Org management, bulk enrol, reports"
+    <OrgDashboard
+      org={dashboard.org}
+      members={dashboard.members}
+      invites={dashboard.invites}
+      courses={dashboard.courses}
+      staffOrgs={dashboard.staffOrgs}
+      reports={reports}
     />
   );
 }

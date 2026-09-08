@@ -93,6 +93,44 @@ export async function requireStaff(): Promise<{ user: User; roles: Role[] }> {
   return requireRole("content_admin", "super_admin");
 }
 
+export async function requireOrgAccess(): Promise<{ user: User; roles: Role[] }> {
+  return requireRole("org_admin", "content_admin", "super_admin");
+}
+
+export async function requireOrgAdmin(organisationId: string): Promise<{
+  user: User;
+  roles: Role[];
+  organisationId: string;
+}> {
+  const user = await requireUser();
+  const roles = await getUserRoles(user.id);
+  if (!/^[0-9a-f-]{36}$/i.test(organisationId)) {
+    redirect("/my");
+  }
+
+  if (isStaff(roles)) {
+    return { user, roles, organisationId };
+  }
+
+  if (!hasRole(roles, "org_admin")) {
+    redirect("/my");
+  }
+
+  const supabase = await createClient();
+  const { data: membership } = await supabase
+    .from("organisation_memberships")
+    .select("role")
+    .eq("organisation_id", organisationId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (membership?.role !== "admin") {
+    redirect("/my");
+  }
+
+  return { user, roles, organisationId };
+}
+
 export async function isStaffUser(): Promise<boolean> {
   const user = await getAuthUser();
   if (!user) return false;

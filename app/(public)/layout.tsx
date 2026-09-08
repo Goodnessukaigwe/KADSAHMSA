@@ -7,7 +7,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div id="top" className="flex min-h-screen flex-col bg-white text-neutral-950">
+    <div id="top" className="flex min-h-screen flex-col overflow-x-clip bg-white text-neutral-950">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-md focus:bg-neutral-950 focus:px-3 focus:py-2 focus:text-white"

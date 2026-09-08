@@ -1,11 +1,13 @@
 import { CourseCatalogue } from "@/components/courses/course-catalogue";
+import { listPublishedCourses } from "@/lib/courses/queries";
 
 export const metadata = {
   title: "Courses",
   description:
-    "Browse KADSAMHSA courses on drug prevention, treatment, and care — including the free DPTC sensitisation curriculum.",
+    "Browse published KADSAMHSA courses on drug prevention, treatment, and care.",
 };
 
-export default function CataloguePage() {
-  return <CourseCatalogue />;
+export default async function CataloguePage() {
+  const courses = await listPublishedCourses();
+  return <CourseCatalogue courses={courses} />;
 }

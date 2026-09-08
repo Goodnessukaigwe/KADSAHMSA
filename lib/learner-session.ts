@@ -13,6 +13,7 @@ export const NAMES_KEY = "kadsamhsa.learner.names";
 export const RETURNING_KEY = "kadsamhsa.returning";
 export const PROGRESS_KEY = "kadsamhsa.progress";
 export const QUIZ_KEY = "kadsamhsa.quiz.dptc.m1";
+export const QUIZ_KEY_PREFIX = "kadsamhsa.quiz.dptc.";
 export const CERTS_KEY = "kadsamhsa.certificates";
 export const PLAYER_KEY = "kadsamhsa.player";
 export const TIME_KEY = "kadsamhsa.time";
@@ -246,7 +247,13 @@ export type QuizAttemptState = {
   attemptsUsed: number;
   submitted: boolean;
   score: number | null;
+  correctIndexes?: number[];
+  verificationId?: string;
 };
+
+export function quizStorageKey(courseSlug: string, quizSlug: string) {
+  return `${QUIZ_KEY_PREFIX}${courseSlug}.${quizSlug}`;
+}
 
 export function defaultQuizState(questionCount: number, seconds: number): QuizAttemptState {
   return {
@@ -259,14 +266,26 @@ export function defaultQuizState(questionCount: number, seconds: number): QuizAt
   };
 }
 
-export function getQuizState(): QuizAttemptState | null {
-  return readJson<QuizAttemptState>(QUIZ_KEY, sessionStore());
+export function getQuizState(courseSlug = "dptc", quizSlug = "module-1"): QuizAttemptState | null {
+  return (
+    readJson<QuizAttemptState>(quizStorageKey(courseSlug, quizSlug), sessionStore()) ??
+    (courseSlug === "dptc"
+      ? readJson<QuizAttemptState>(`${QUIZ_KEY_PREFIX}${quizSlug}`, sessionStore()) ??
+        (quizSlug === "module-1" ? readJson<QuizAttemptState>(QUIZ_KEY, sessionStore()) : null)
+      : null)
+  );
 }
 
-export function saveQuizState(state: QuizAttemptState) {
-  sessionStore()?.setItem(QUIZ_KEY, JSON.stringify(state));
+export function saveQuizState(
+  state: QuizAttemptState,
+  courseSlug = "dptc",
+  quizSlug = "module-1"
+) {
+  sessionStore()?.setItem(quizStorageKey(courseSlug, quizSlug), JSON.stringify(state));
 }
 
-export function clearQuizState() {
-  sessionStore()?.removeItem(QUIZ_KEY);
+export function clearQuizState(courseSlug = "dptc", quizSlug = "module-1") {
+  const store = sessionStore();
+  store?.removeItem(quizStorageKey(courseSlug, quizSlug));
+  if (courseSlug === "dptc" && quizSlug === "module-1") store?.removeItem(QUIZ_KEY);
 }

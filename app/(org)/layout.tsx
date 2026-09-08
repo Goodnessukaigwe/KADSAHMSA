@@ -1,14 +1,19 @@
-export default function OrgLayout({
+import { OrgChrome } from "@/components/org/org-chrome";
+import { isStaff, requireOrgAccess, requireSessionProfile } from "@/lib/permissions";
+
+export default async function OrgLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { roles } = await requireOrgAccess();
+  const profile = await requireSessionProfile();
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b border-border bg-card px-4 py-3 text-sm font-medium">
-        Organisation
-      </div>
+    <OrgChrome
+      user={{ name: profile.name, email: profile.email }}
+      isStaff={isStaff(roles)}
+    >
       {children}
-    </div>
+    </OrgChrome>
   );
 }

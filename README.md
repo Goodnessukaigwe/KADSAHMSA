@@ -22,7 +22,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-In the Supabase dashboard: Authentication → URL configuration. Set Site URL to `http://localhost:3000` and add redirect URLs `http://localhost:3000/auth/callback` and `http://localhost:3000/auth/confirm`. For local Phase 1, disable **Confirm email** (or leave it on and use the confirmation link).
+In the Supabase dashboard: Authentication → URL configuration. Set Site URL to `http://localhost:3000` and add redirect URLs `http://localhost:3000/auth/callback` and `http://localhost:3000/auth/confirm`. Signup confirms the account on the server and does not send a confirmation email.
 
 ### Database migrations
 
@@ -34,7 +34,7 @@ npx supabase link --project-ref <your-project-ref>
 npx supabase db push
 ```
 
-Or paste the migration files into the SQL editor in order (identity → courses → enrolments → certificates bucket).
+Or paste the SQL editor scripts in order: [`supabase/apply-all.sql`](supabase/apply-all.sql) (identity → courses → enrolments → certificates bucket), then [`supabase/apply-phase3.sql`](supabase/apply-phase3.sql) (quizzes, attempts, certificates, verify RPC), then [`supabase/apply-phase4.sql`](supabase/apply-phase4.sql) (course fields, lessons, DPTC seed, draft catalogue slugs), then [`supabase/apply-phase4b.sql`](supabase/apply-phase4b.sql) (any-course final quiz + `quiz_questions`), then [`supabase/apply-phase5.sql`](supabase/apply-phase5.sql) (organisations, memberships, invites, org-scoped RLS), then [`supabase/apply-phase6.sql`](supabase/apply-phase6.sql) (private `course-media` bucket + `lesson_assets`), then [`supabase/apply-phase7.sql`](supabase/apply-phase7.sql) (`consents` for NDPA signup records), then [`supabase/apply-production-cleanup.sql`](supabase/apply-production-cleanup.sql) (unpublish seed courses that have enrolments or certificates; delete empty seed/draft leftovers), then [`supabase/apply-enrol-requests.sql`](supabase/apply-enrol-requests.sql) (`enrolment_requests`, drop learner self-enrol, unpublish leftover `p4-verify-*` / `p4b-verify-*` / `p6-media-*` / `cleanup-verify-*` rows). Existing `KAD-` certificate rows and `/verify` keep working.
 
 After the first signup, grant yourself admin (replace the email) using [`supabase/snippets/grant-super-admin.sql`](supabase/snippets/grant-super-admin.sql). Without that row, `/admin` redirects learners to `/my`.
 

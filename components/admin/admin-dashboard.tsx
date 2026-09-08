@@ -1,8 +1,14 @@
 import Link from "next/link";
 
-import { adminDashboardStats, recentEnrolments } from "@/lib/content/admin";
+import type { DashboardStat, RecentEnrolment } from "@/lib/courses/types";
 
-export function AdminDashboard() {
+export function AdminDashboard({
+  stats,
+  recent,
+}: {
+  stats: DashboardStat[];
+  recent: RecentEnrolment[];
+}) {
   return (
     <div className="pb-16">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -13,7 +19,7 @@ export function AdminDashboard() {
       </p>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {adminDashboardStats.map((stat) => (
+        {stats.map((stat) => (
           <div key={stat.label} className="rounded-2xl bg-white px-5 py-5">
             <p className="text-3xl font-bold">{stat.value}</p>
             <p className="mt-1 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
@@ -36,23 +42,29 @@ export function AdminDashboard() {
           </Link>
         </div>
         <div className="mt-4 overflow-hidden rounded-[24px] bg-white">
-          <ul>
-            {recentEnrolments.map((row, index) => (
-              <li
-                key={`${row.name}-${index}`}
-                className="flex items-center gap-4 border-b border-neutral-100 px-5 py-4 last:border-0"
-              >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-sm font-bold">
-                  {row.name.charAt(0)}
-                </span>
-                <p className="min-w-0 flex-1 font-semibold">{row.name}</p>
-                <p className="hidden text-sm text-neutral-500 sm:block">
-                  {row.course}
-                </p>
-                <p className="text-[13px] text-neutral-400">{row.when}</p>
-              </li>
-            ))}
-          </ul>
+          {recent.length === 0 ? (
+            <p className="px-5 py-10 text-sm text-neutral-400">
+              No enrolments yet.
+            </p>
+          ) : (
+            <ul>
+              {recent.map((row, index) => (
+                <li
+                  key={`${row.name}-${row.course}-${index}`}
+                  className="flex items-center gap-4 border-b border-neutral-100 px-5 py-4 last:border-0"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-sm font-bold">
+                    {row.name.charAt(0)}
+                  </span>
+                  <p className="min-w-0 flex-1 font-semibold">{row.name}</p>
+                  <p className="hidden text-sm text-neutral-500 sm:block">
+                    {row.course}
+                  </p>
+                  <p className="text-[13px] text-neutral-400">{row.when}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
     </div>

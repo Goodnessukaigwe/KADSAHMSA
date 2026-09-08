@@ -1,12 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { applySecurityHeaders } from "@/lib/security-headers";
+
 const PROTECTED_PREFIXES = [
   "/my",
   "/learn",
   "/certificates",
   "/admin",
   "/org",
+  "/join",
   "/quiz",
   "/help",
 ];
@@ -31,6 +34,11 @@ function safeNextPath(pathname: string, search: string) {
   return "/my";
 }
 
+function secured(response: NextResponse) {
+  applySecurityHeaders(response.headers);
+  return response;
+}
+
 export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -42,9 +50,9 @@ export async function updateSession(request: NextRequest) {
       login.pathname = "/login";
       login.search = "";
       login.searchParams.set("next", safeNextPath(pathname, search));
-      return NextResponse.redirect(login);
+      return secured(NextResponse.redirect(login));
     }
-    return NextResponse.next({ request });
+    return secured(NextResponse.next({ request }));
   }
 
   let supabaseResponse = NextResponse.next({ request });
@@ -75,14 +83,23 @@ export async function updateSession(request: NextRequest) {
     login.pathname = "/login";
     login.search = "";
     login.searchParams.set("next", safeNextPath(pathname, search));
-    return NextResponse.redirect(login);
+    return secured(NextResponse.redirect(login));
   }
 
   if (user && AUTH_PAGES.includes(pathname)) {
+    const { data: roleRows } = await supabase
+      .from("user_roles")
+      .select("role_id")
+      .eq("user_id", user.id);
+    const roles = (roleRows ?? []).map((row) => row.role_id);
     const home = request.nextUrl.clone();
-    home.pathname = "/my";
+    home.pathname = isStaff(roles)
+      ? "/admin"
+      : roles.some((role) => role === "org_admin")
+        ? "/org"
+        : "/my";
     home.search = "";
-    return NextResponse.redirect(home);
+    return secured(NextResponse.redirect(home));
   }
 
   if (user && (pathname === "/admin" || pathname.startsWith("/admin/"))) {
@@ -95,9 +112,25 @@ export async function updateSession(request: NextRequest) {
       const learnerHome = request.nextUrl.clone();
       learnerHome.pathname = "/my";
       learnerHome.search = "";
-      return NextResponse.redirect(learnerHome);
+      return secured(NextResponse.redirect(learnerHome));
     }
   }
 
-  return supabaseResponse;
+  if (user && (pathname === "/org" || pathname.startsWith("/org/"))) {
+    const { data: roleRows } = await supabase
+      .from("user_roles")
+      .select("role_id")
+      .eq("user_id", user.id);
+    const roles = (roleRows ?? []).map((row) => row.role_id);
+    const canOpenOrg =
+      isStaff(roles) || roles.some((role) => role === "org_admin");
+    if (!canOpenOrg) {
+      const learnerHome = request.nextUrl.clone();
+      learnerHome.pathname = "/my";
+      learnerHome.search = "";
+      return secured(NextResponse.redirect(learnerHome));
+    }
+  }
+
+  return secured(supabaseResponse);
 }

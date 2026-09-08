@@ -1,36 +1,46 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ListFilter } from "lucide-react";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
 import { useCourseSearch } from "@/components/learner/student-chrome";
 import { ProgressTrack } from "@/components/learner/simulated-video";
-import { catalogueCourses, type CatalogueCourse } from "@/lib/content/catalogue";
-import { enrolInCourse } from "@/lib/learning/actions";
-import { continueHref, emptyProgress } from "@/lib/learning/progress";
+import { emptyCatalogueCopy } from "@/lib/content/catalogue";
+import type { CatalogueCourse } from "@/lib/courses/types";
+import { dashboardCopy } from "@/lib/content/dashboard";
+import { requestEnrolment } from "@/lib/learning/actions";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
-import { getCertificates } from "@/lib/learner-session";
 import { cn } from "@/lib/utils";
 
 type Tab = "all" | "progress" | "completed" | "not-started";
 
-export function MyCourses({ snapshot }: { snapshot: LearningSnapshot }) {
+export function MyCourses({
+  snapshot,
+  certificateCount = 0,
+  catalogue = [],
+  requestedSlugs = [],
+}: {
+  snapshot: LearningSnapshot;
+  certificateCount?: number;
+  catalogue?: CatalogueCourse[];
+  requestedSlugs?: string[];
+}) {
   const router = useRouter();
   const { query } = useCourseSearch();
   const [tab, setTab] = useState<Tab>("all");
-  const [certs, setCerts] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
+  const [asked, setAsked] = useState<string[]>(requestedSlugs);
 
   useEffect(() => {
-    setCerts(getCertificates().length);
-  }, []);
+    setAsked(requestedSlugs);
+  }, [requestedSlugs]);
 
-  const free = catalogueCourses.filter((course) => course.priceType === "free");
+  const free = catalogue;
   const inProgress = snapshot.inProgress;
   const completed = snapshot.completed;
   const enrolledSlugs = new Set(snapshot.enrolledSlugs);
@@ -54,25 +64,25 @@ export function MyCourses({ snapshot }: { snapshot: LearningSnapshot }) {
   const inProgressCount = inProgress.length;
   const completedCount = completed.length;
   const notStartedCount = notStartedList.length;
-  const dptc = snapshot.enrolments.find((course) => course.slug === "dptc");
-  const dptcPercent = dptc?.percent ?? 0;
+  const enrolledCount = snapshot.enrolments.length;
 
   async function enroll(slug: string) {
     if (pending) return;
-    setError(null);
-    setPending(slug);
     const existing = snapshot.enrolments.find((course) => course.slug === slug);
     if (existing) {
       router.push(existing.href);
       return;
     }
-    const result = await enrolInCourse(slug);
+    if (asked.includes(slug)) return;
+    setError(null);
+    setPending(slug);
+    const result = await requestEnrolment(slug);
+    setPending(null);
     if (!result.ok) {
       setError(result.error);
-      setPending(null);
       return;
     }
-    router.push(continueHref(slug, emptyProgress()));
+    setAsked((current) => (current.includes(slug) ? current : [...current, slug]));
     router.refresh();
   }
 
@@ -84,7 +94,7 @@ export function MyCourses({ snapshot }: { snapshot: LearningSnapshot }) {
     <div className="pb-12">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">My courses</h1>
       <p className="mt-2 text-sm text-neutral-400">
-        Everything you’ve enrolled in, and everything you haven’t started yet.
+        Courses you are enrolled in, plus published courses you can request.
       </p>
 
       {error ? (
@@ -92,17 +102,19 @@ export function MyCourses({ snapshot }: { snapshot: LearningSnapshot }) {
           {error}
         </p>
       ) : null}
+      {asked.length > 0 ? (
+        <p className="mt-4 text-sm text-neutral-500">{dashboardCopy.requestHint}</p>
+      ) : null}
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard value={String(inProgressCount)} label="In progress" href="/my/courses" />
-        <StatCard value={String(certs)} label="Certificates" href="/certificates" />
+        <StatCard value={String(certificateCount)} label="Certificates" href="/certificates" />
         <StatCard
-          value={`${dptcPercent}%`}
-          label="DPTC progress"
-          href="/learn/dptc"
-          bar={dptcPercent}
+          value={String(enrolledCount)}
+          label="Enrolled"
+          href="/my/courses"
         />
-        <StatCard value="0" label="Time learning" href="/my/courses" />
+        <StatCard value="0" label="Payments" href="/my/payments" />
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
@@ -178,13 +190,16 @@ export function MyCourses({ snapshot }: { snapshot: LearningSnapshot }) {
             </Link>
           </div>
           {visibleNotStarted.length === 0 ? (
-            <p className="mt-8 text-sm text-neutral-500">No courses in this view.</p>
+            <p className="mt-8 text-sm text-neutral-500">
+              {catalogue.length === 0 ? emptyCatalogueCopy : "No courses in this view."}
+            </p>
           ) : (
             <CatalogueGrid
               courses={
                 tab === "all" ? visibleNotStarted.slice(0, 3) : visibleNotStarted
               }
               pending={pending}
+              requested={asked}
               onEnroll={enroll}
             />
           )}
@@ -273,7 +288,7 @@ function ProgressRow({
   return (
     <article className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center">
       <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-[72px] sm:w-[88px]">
-        <Image src={course.image} alt="" fill className="object-cover" sizes="88px" />
+        <CourseCover src={course.image} title={course.title} sizes="88px" />
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="font-bold">{course.title}</h3>
@@ -295,7 +310,7 @@ function CompletedRow({
   return (
     <article className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center">
       <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-[72px] sm:w-[88px]">
-        <Image src={course.image} alt="" fill className="object-cover" sizes="88px" />
+        <CourseCover src={course.image} title={course.title} sizes="88px" />
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="font-bold">{course.title}</h3>
@@ -335,22 +350,22 @@ function CompletedSection({
 function CatalogueGrid({
   courses,
   pending,
+  requested,
   onEnroll,
 }: {
   courses: CatalogueCourse[];
   pending: string | null;
+  requested: string[];
   onEnroll: (slug: string) => void;
 }) {
   return (
     <div className="mt-5 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
       {courses.map((course) => (
-        <article key={course.slug} className="flex flex-col">
+        <article key={course.slug} className="flex min-w-0 flex-col">
           <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-            <Image
+            <CourseCover
               src={course.image}
-              alt=""
-              fill
-              className="object-cover"
+              title={course.title}
               sizes="(max-width: 640px) 100vw, 33vw"
             />
             <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase backdrop-blur-sm">
@@ -361,17 +376,21 @@ function CatalogueGrid({
             {course.title}
           </h3>
           <p className="mt-1 text-sm text-neutral-400">{course.lessons} lessons</p>
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
             <SplitCta
               size="sm"
-              className="min-w-0 flex-1"
+              className="min-w-0 w-full sm:flex-1"
               onClick={() => onEnroll(course.slug)}
             >
-              {pending === course.slug ? "Enrolling…" : "Enroll for this course"}
+              {pending === course.slug
+                ? "Requesting…"
+                : requested.includes(course.slug)
+                  ? dashboardCopy.requested
+                  : dashboardCopy.enroll}
             </SplitCta>
             <Link
-              href={`/learn/${course.slug}`}
-              className="inline-flex h-9 shrink-0 items-center rounded-full bg-white px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
+              href={`/courses/${course.slug}`}
+              className="inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-white px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
             >
               Read more
             </Link>

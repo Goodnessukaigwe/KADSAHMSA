@@ -1,5 +1,5 @@
-import { catalogueCourses } from "@/lib/content/catalogue";
 import { dptcModules, moduleHref } from "@/lib/content/dptc";
+import { coverForSlug } from "@/lib/courses/media";
 
 export type CourseProgress = {
   currentModule: number;
@@ -11,9 +11,10 @@ export function emptyProgress(): CourseProgress {
   return { currentModule: 1, completed: [], playerSeconds: 0 };
 }
 
-export function moduleCountFor(slug: string) {
+export function moduleCountFor(slug: string, liveCount?: number) {
+  if (liveCount != null && liveCount > 0) return liveCount;
   if (slug === "dptc") return dptcModules.length;
-  return catalogueCourses.find((course) => course.slug === slug)?.lessons ?? 1;
+  return 0;
 }
 
 export function progressPercent(progress: CourseProgress, totalModules: number) {
@@ -23,8 +24,14 @@ export function progressPercent(progress: CourseProgress, totalModules: number) 
   return Math.min(100, Math.round(((done + partial) / totalModules) * 100));
 }
 
-export function isCourseComplete(slug: string, progress: CourseProgress) {
-  return progress.completed.length >= moduleCountFor(slug);
+export function isCourseComplete(
+  slug: string,
+  progress: CourseProgress,
+  liveCount?: number
+) {
+  const total = moduleCountFor(slug, liveCount);
+  if (total <= 0) return false;
+  return progress.completed.length >= total;
 }
 
 export function continueHref(
@@ -42,8 +49,12 @@ export function continueHref(
   return `/learn/${slug}`;
 }
 
-export function moduleLabelFor(slug: string, progress: CourseProgress) {
-  const total = moduleCountFor(slug);
+export function moduleLabelFor(
+  slug: string,
+  progress: CourseProgress,
+  liveCount?: number
+) {
+  const total = moduleCountFor(slug, liveCount);
   if (slug === "dptc") {
     const mod =
       dptcModules.find((item) => item.index === progress.currentModule) ??
@@ -53,9 +64,6 @@ export function moduleLabelFor(slug: string, progress: CourseProgress) {
   return `Module ${Math.min(progress.currentModule, total)} of ${total}`;
 }
 
-export function thumbnailFor(slug: string) {
-  return (
-    catalogueCourses.find((course) => course.slug === slug)?.image ??
-    "/landing/hero-phoenix.webp"
-  );
+export function thumbnailFor(slug: string, coverPath?: string | null) {
+  return coverForSlug(slug, coverPath);
 }

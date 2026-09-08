@@ -1,6 +1,12 @@
+import { issueOwnDptcCertificate } from "@/lib/certificates/actions";
+
 export async function POST() {
-  return Response.json(
-    { error: "Certificate issuance is not implemented yet (Phase 3)." },
-    { status: 501 }
-  );
+  const result = await issueOwnDptcCertificate();
+  if (!result.ok) {
+    return Response.json({ error: result.error }, { status: 400 });
+  }
+  return Response.json({
+    verificationId: result.verificationId,
+    existing: result.existing,
+  });
 }

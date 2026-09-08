@@ -1,64 +1,83 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
 import { OnboardingModal } from "@/components/learner/onboarding-modal";
 import { useCourseSearch } from "@/components/learner/student-chrome";
-import { catalogueCourses, type CatalogueCourse } from "@/lib/content/catalogue";
-import {
-  dashboardCopy,
-  dashboardExploreCourses,
-  returningGreeting,
-} from "@/lib/content/dashboard";
-import { enrolInCourse } from "@/lib/learning/actions";
-import { continueHref, emptyProgress } from "@/lib/learning/progress";
+import { emptyCatalogueCopy } from "@/lib/content/catalogue";
+import type { CatalogueCourse } from "@/lib/courses/types";
+import { dashboardCopy, returningGreeting } from "@/lib/content/dashboard";
+import { requestEnrolment } from "@/lib/learning/actions";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { firstNameOf, isOnboardingDone } from "@/lib/learner-session";
 
 export function LearnerDashboard({
   firstName,
   snapshot,
+  catalogue = [],
+  requestedSlugs = [],
 }: {
   firstName: string;
   snapshot: LearningSnapshot;
+  catalogue?: CatalogueCourse[];
+  requestedSlugs?: string[];
 }) {
   if (snapshot.enrolments.length > 0) {
     return (
-      <EnrolledHome firstName={firstNameOf(firstName)} snapshot={snapshot} />
+      <EnrolledHome
+        firstName={firstNameOf(firstName)}
+        snapshot={snapshot}
+        catalogue={catalogue}
+        requestedSlugs={requestedSlugs}
+      />
     );
   }
 
-  return <NewLearnerHome />;
+  return <NewLearnerHome catalogue={catalogue} requestedSlugs={requestedSlugs} />;
 }
 
-function NewLearnerHome() {
+function NewLearnerHome({
+  catalogue,
+  requestedSlugs,
+}: {
+  catalogue: CatalogueCourse[];
+  requestedSlugs: string[];
+}) {
   const router = useRouter();
   const { query } = useCourseSearch();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
+  const [asked, setAsked] = useState<string[]>(requestedSlugs);
 
   useEffect(() => {
     setShowOnboarding(!isOnboardingDone());
   }, []);
+  useEffect(() => {
+    setAsked(requestedSlugs);
+  }, [requestedSlugs]);
 
-  const explore = useFilteredExplore(query);
+  const explore = useFilteredExplore(query, catalogue);
+  const featured = !query.trim() ? catalogue[0] : null;
+  const exploreList = featured
+    ? explore.filter((course) => course.slug !== featured.slug)
+    : explore;
 
   async function enroll(slug: string) {
-    if (pending) return;
+    if (pending || asked.includes(slug)) return;
     setError(null);
     setPending(slug);
-    const result = await enrolInCourse(slug);
+    const result = await requestEnrolment(slug);
+    setPending(null);
     if (!result.ok) {
       setError(result.error);
-      setPending(null);
       return;
     }
-    router.push(continueHref(slug, emptyProgress()));
+    setAsked((current) => (current.includes(slug) ? current : [...current, slug]));
     router.refresh();
   }
 
@@ -85,50 +104,56 @@ function NewLearnerHome() {
         </p>
       ) : null}
 
-      <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="relative min-h-[220px] lg:min-h-[280px]">
-          <Image
-            src={dashboardCopy.featured.image}
-            alt={dashboardCopy.featured.imageAlt}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-          />
-        </div>
-        <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
-          <h2 className="text-xl font-bold sm:text-2xl">
-            {dashboardCopy.featured.title}
-          </h2>
-          <p className="mt-2 text-sm text-white/70">
-            Price {dashboardCopy.featured.price}
-          </p>
-          <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-white/75">
-            {dashboardCopy.featured.description}
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <SplitCta
-              variant="light"
-              size="sm"
-              onClick={() => enroll(dashboardCopy.featured.slug)}
-            >
-              {pending === dashboardCopy.featured.slug
-                ? "Enrolling…"
-                : dashboardCopy.enroll}
-            </SplitCta>
-            <Link
-              href={`/learn/${dashboardCopy.featured.slug}`}
-              className="text-[11px] font-bold tracking-[0.14em] text-white uppercase hover:underline"
-            >
-              {dashboardCopy.readMore}
-            </Link>
+      {featured ? (
+        <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="relative min-h-[220px] lg:min-h-[280px]">
+            <CourseCover
+              src={featured.image}
+              title={featured.title}
+              priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
+            />
           </div>
-        </div>
-      </article>
+          <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
+            <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
+            <p className="mt-2 text-sm text-white/70">Price Free</p>
+            {featured.summary ? (
+              <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-white/75">
+                {featured.summary}
+              </p>
+            ) : null}
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <SplitCta
+                variant="light"
+                size="sm"
+                onClick={() => enroll(featured.slug)}
+              >
+                {pending === featured.slug
+                  ? "Requesting…"
+                  : asked.includes(featured.slug)
+                    ? dashboardCopy.requested
+                    : dashboardCopy.enroll}
+              </SplitCta>
+              <Link
+                href={`/courses/${featured.slug}`}
+                className="text-[11px] font-bold tracking-[0.14em] text-white uppercase hover:underline"
+              >
+                {dashboardCopy.readMore}
+              </Link>
+            </div>
+          </div>
+        </article>
+      ) : null}
+
+      {asked.length > 0 ? (
+        <p className="mt-4 text-sm text-neutral-500">{dashboardCopy.requestHint}</p>
+      ) : null}
 
       <ExploreSection
-        courses={explore}
+        courses={exploreList}
+        catalogueEmpty={catalogue.length === 0}
         enrolled={[]}
+        requested={asked}
         pending={pending}
         onEnroll={enroll}
       />
@@ -139,19 +164,28 @@ function NewLearnerHome() {
 function EnrolledHome({
   firstName,
   snapshot,
+  catalogue,
+  requestedSlugs,
 }: {
   firstName: string;
   snapshot: LearningSnapshot;
+  catalogue: CatalogueCourse[];
+  requestedSlugs: string[];
 }) {
   const router = useRouter();
   const { query } = useCourseSearch();
-  const explore = useFilteredExplore(query);
+  const explore = useFilteredExplore(query, catalogue);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
+  const [asked, setAsked] = useState<string[]>(requestedSlugs);
 
-  const dptc = snapshot.enrolments.find((course) => course.slug === "dptc");
+  useEffect(() => {
+    setAsked(requestedSlugs);
+  }, [requestedSlugs]);
+
+  const featured = snapshot.inProgress[0] ?? null;
   const started = snapshot.inProgress.filter(
-    (course) => course.slug !== dashboardCopy.featured.slug
+    (course) => course.slug !== featured?.slug
   );
 
   async function enrollOrContinue(slug: string, existing?: EnrolmentRecord) {
@@ -160,15 +194,16 @@ function EnrolledHome({
       router.push(existing.href);
       return;
     }
+    if (asked.includes(slug)) return;
     setError(null);
     setPending(slug);
-    const result = await enrolInCourse(slug);
+    const result = await requestEnrolment(slug);
+    setPending(null);
     if (!result.ok) {
       setError(result.error);
-      setPending(null);
       return;
     }
-    router.push(continueHref(slug, emptyProgress()));
+    setAsked((current) => (current.includes(slug) ? current : [...current, slug]));
     router.refresh();
   }
 
@@ -187,59 +222,36 @@ function EnrolledHome({
         </p>
       ) : null}
 
-      <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="relative min-h-[220px] lg:min-h-[280px]">
-          <Image
-            src={dashboardCopy.featured.image}
-            alt={dashboardCopy.featured.imageAlt}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-          />
-        </div>
-        <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
-          <h2 className="text-xl font-bold sm:text-2xl">
-            {dashboardCopy.featured.returningTitle}
-          </h2>
-          <div className="mt-5 grid grid-cols-3 gap-3 text-sm">
-            <div>
-              <p className="text-[11px] tracking-wide text-white/45 uppercase">
-                Price
-              </p>
-              <p className="mt-1 font-semibold">{dashboardCopy.featured.price}</p>
-            </div>
-            <div>
-              <p className="text-[11px] tracking-wide text-white/45 uppercase">
-                Module
-              </p>
-              <p className="mt-1 font-semibold">{dashboardCopy.featured.module}</p>
-            </div>
-            <div>
-              <p className="text-[11px] tracking-wide text-white/45 uppercase">
-                Duration
-              </p>
-              <p className="mt-1 font-semibold">
-                {dashboardCopy.featured.duration}
-              </p>
-            </div>
-          </div>
-          <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/20">
-            <div
-              className="h-full rounded-full bg-white"
-              style={{ width: `${dptc?.percent ?? 0}%` }}
+      {featured ? (
+        <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="relative min-h-[220px] lg:min-h-[280px]">
+            <CourseCover
+              src={featured.image}
+              title={featured.title}
+              priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
             />
           </div>
-          <div className="mt-6">
-            <SplitCta
-              variant="light"
-              onClick={() => enrollOrContinue(dashboardCopy.featured.slug, dptc)}
-            >
-              {dptc ? dashboardCopy.continueFeatured : dashboardCopy.enroll}
-            </SplitCta>
+          <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
+            <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
+            <p className="mt-2 text-sm text-white/70">{featured.moduleLabel}</p>
+            <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/20">
+              <div
+                className="h-full rounded-full bg-white"
+                style={{ width: `${featured.percent}%` }}
+              />
+            </div>
+            <div className="mt-6">
+              <SplitCta
+                variant="light"
+                onClick={() => enrollOrContinue(featured.slug, featured)}
+              >
+                {dashboardCopy.continueFeatured}
+              </SplitCta>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      ) : null}
 
       {started.length > 0 ? (
         <section className="mt-10">
@@ -253,13 +265,7 @@ function EnrolledHome({
                 className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center"
               >
                 <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-16 sm:w-20">
-                  <Image
-                    src={course.image}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="80px"
-                  />
+                  <CourseCover src={course.image} title={course.title} sizes="80px" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold">{course.title}</h3>
@@ -288,7 +294,9 @@ function EnrolledHome({
 
       <ExploreSection
         courses={explore}
+        catalogueEmpty={catalogue.length === 0}
         enrolled={snapshot.enrolledSlugs}
+        requested={asked}
         pending={pending}
         onEnroll={(slug) =>
           enrollOrContinue(
@@ -301,25 +309,26 @@ function EnrolledHome({
   );
 }
 
-function useFilteredExplore(query: string) {
+function useFilteredExplore(query: string, catalogue: CatalogueCourse[]) {
   return useMemo(() => {
     const q = query.trim().toLowerCase();
-    const source = q
-      ? catalogueCourses.filter((course) => course.priceType === "free")
-      : dashboardExploreCourses();
-    if (!q) return source;
-    return source.filter((course) => course.title.toLowerCase().includes(q));
-  }, [query]);
+    if (!q) return catalogue;
+    return catalogue.filter((course) => course.title.toLowerCase().includes(q));
+  }, [query, catalogue]);
 }
 
 function ExploreSection({
   courses,
+  catalogueEmpty,
   enrolled,
+  requested,
   pending,
   onEnroll,
 }: {
   courses: CatalogueCourse[];
+  catalogueEmpty: boolean;
   enrolled: string[];
+  requested: string[];
   pending: string | null;
   onEnroll: (slug: string) => void;
 }) {
@@ -330,18 +339,16 @@ function ExploreSection({
       </h2>
       {courses.length === 0 ? (
         <p className="mt-8 text-sm text-neutral-500">
-          No courses match your search.
+          {catalogueEmpty ? emptyCatalogueCopy : "No courses match your search."}
         </p>
       ) : (
         <div className="mt-6 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
           {courses.map((course) => (
             <article key={course.slug} className="flex flex-col">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-                <Image
+                <CourseCover
                   src={course.image}
-                  alt=""
-                  fill
-                  className="object-cover"
+                  title={course.title}
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 />
                 <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
@@ -361,13 +368,21 @@ function ExploreSection({
                   onClick={() => onEnroll(course.slug)}
                 >
                   {pending === course.slug
-                    ? "Enrolling…"
+                    ? enrolled.includes(course.slug)
+                      ? "Opening…"
+                      : "Requesting…"
                     : enrolled.includes(course.slug)
                       ? dashboardCopy.continue
-                      : dashboardCopy.enroll}
+                      : requested.includes(course.slug)
+                        ? dashboardCopy.requested
+                        : dashboardCopy.enroll}
                 </SplitCta>
                 <Link
-                  href={`/learn/${course.slug}`}
+                  href={
+                    enrolled.includes(course.slug)
+                      ? `/learn/${course.slug}`
+                      : `/courses/${course.slug}`
+                  }
                   className="shrink-0 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase hover:underline"
                 >
                   {dashboardCopy.readMore}

@@ -1,34 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
-import { getCatalogueCourse } from "@/lib/content/catalogue";
-import { dptcCourse, dptcModules } from "@/lib/content/dptc";
-import { enrolInCourse } from "@/lib/learning/actions";
-import { continueHref, emptyProgress, type CourseProgress } from "@/lib/learning/progress";
+import type { PublishedCourse } from "@/lib/courses/types";
+import { lessonPlayerHref } from "@/lib/courses/paths";
+import { dptcCourse } from "@/lib/content/dptc";
+import { DEFAULT_PASS_MARK } from "@/lib/domain";
+import { dashboardCopy } from "@/lib/content/dashboard";
+import { requestEnrolment } from "@/lib/learning/actions";
+import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
-  slug,
+  course,
   signedIn,
   enrolled,
+  requested,
   progress,
 }: {
-  slug: string;
+  course: PublishedCourse;
   signedIn: boolean;
   enrolled: boolean;
+  requested: boolean;
   progress: CourseProgress;
 }) {
   const router = useRouter();
-  const course = getCatalogueCourse(slug)!;
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [asked, setAsked] = useState(requested);
   const isDptc = course.slug === dptcCourse.slug;
-  const continueTo = continueHref(course.slug, enrolled ? progress : emptyProgress());
+  const waiting = asked || requested;
+  const firstHref =
+    course.outline[0]
+      ? lessonPlayerHref(course.slug, course.outline[0].slug)
+      : `/learn/${course.slug}`;
 
   async function enroll() {
     if (!signedIn) {
@@ -37,18 +45,20 @@ export function CourseDetail({
     }
     if (pending) return;
     if (enrolled) {
-      router.push(continueTo);
+      router.push(firstHref);
       return;
     }
+    if (waiting) return;
     setError(null);
     setPending(true);
-    const result = await enrolInCourse(course.slug);
+    const result = await requestEnrolment(course.slug);
     if (!result.ok) {
       setError(result.error);
       setPending(false);
       return;
     }
-    router.push(continueHref(course.slug, emptyProgress()));
+    setAsked(true);
+    setPending(false);
     router.refresh();
   }
 
@@ -60,28 +70,27 @@ export function CourseDetail({
             {isDptc ? dptcCourse.level : "Introductory"}
           </span>
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
-            {course.priceType === "free" ? "Free" : "Paid"}
+            Free
           </span>
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
-          <Image
-            src={isDptc ? dptcCourse.hero : course.image}
-            alt=""
-            fill
+          <CourseCover
+            src={course.image}
+            title={course.title}
             priority
-            className="object-cover"
             sizes="(max-width: 1024px) 100vw, 800px"
           />
         </div>
 
         <h1 className="mt-6 max-w-3xl text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
-          {isDptc ? dptcCourse.title : course.title}
+          {course.title}
         </h1>
         <p className="mt-4 max-w-3xl text-[15px] leading-relaxed text-neutral-500">
-          {isDptc
-            ? dptcCourse.description
-            : `${course.title} sits in the KADSAMHSA catalogue alongside the UNODC/EU DPTC curriculum. Start with DPTC — the launch course — then return here for this pathway.`}
+          {course.summary ||
+            (isDptc
+              ? dptcCourse.description
+              : "A KADSAMHSA course. Request enrolment to read the published lessons.")}
         </p>
 
         {error ? (
@@ -91,19 +100,13 @@ export function CourseDetail({
         ) : null}
 
         <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {(isDptc
-            ? [
-                [String(dptcModules.length), "Modules"],
-                [dptcCourse.durationHours, "Duration"],
-                [`${dptcCourse.passMark}%`, "Pass mark"],
-                [dptcCourse.enrolledCount, "Enrolled"],
-              ]
-            : [
-                [String(course.lessons), "Lessons"],
-                ["Self-paced", "Duration"],
-                [`${dptcCourse.passMark}%`, "Pass mark"],
-                [course.priceType === "free" ? "Free" : "Paid", "Access"],
-              ]
+          {(
+            [
+              [String(course.lessons || course.outline.length), isDptc ? "Modules" : "Lessons"],
+              [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
+              [course.hasFinalQuiz ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
+              ["Free", "Access"],
+            ] as const
           ).map(([value, label]) => (
             <div key={label} className="rounded-2xl bg-[#f7f7f7] px-5 py-4">
               <p className="text-2xl font-bold">{value}</p>
@@ -114,55 +117,55 @@ export function CourseDetail({
           ))}
         </div>
 
-        {isDptc ? (
+        {course.outline.length > 0 ? (
           <section className="mt-10">
             <h2 className="text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">
               Course outline
             </h2>
             <div className="mt-4 space-y-2">
-              {dptcModules.map((module) => (
-                <button
-                  key={module.slug}
-                  type="button"
-                  onClick={enroll}
-                  className="flex w-full items-center gap-4 rounded-2xl bg-[#f7f7f7] px-4 py-4 text-left"
-                >
-                  <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
-                    {module.index}.
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold">{module.title}</h3>
-                    <p className="mt-0.5 text-[13px] text-neutral-400">
-                      {module.slides} slides · {module.minutes} min read · {module.quizzes} quiz
-                    </p>
-                  </div>
-                  <div className="hidden w-36 shrink-0 sm:block">
-                    <p className="mb-1 text-right text-[11px] text-neutral-400">
-                      Completed: 0/{module.slides}
-                    </p>
-                    <ProgressTrack value={0} />
-                  </div>
-                </button>
-              ))}
+              {course.outline.map((lesson) => {
+                const finished = progress.completed.includes(lesson.position);
+                return (
+                  <button
+                    key={lesson.slug}
+                    type="button"
+                    onClick={enroll}
+                    className="flex w-full items-center gap-4 rounded-2xl bg-[#f7f7f7] px-4 py-4 text-left"
+                  >
+                    <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
+                      {lesson.position}.
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold">{lesson.title}</h3>
+                      <p className="mt-0.5 text-[13px] text-neutral-400">
+                        {lesson.durationLabel || "Self-paced"}
+                        {isDptc && lesson.position === 1 ? " · quiz after this module" : ""}
+                      </p>
+                    </div>
+                    <div className="hidden w-36 shrink-0 sm:block">
+                      <p className="mb-1 text-right text-[11px] text-neutral-400">
+                        {finished ? "Completed" : enrolled ? "In progress" : "Not started"}
+                      </p>
+                      <ProgressTrack value={finished ? 100 : 0} />
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </section>
         ) : (
           <p className="mt-10 text-sm text-neutral-500">
-            Looking for the live curriculum?{" "}
-            <Link href="/courses/dptc" className="font-semibold text-neutral-950 underline">
-              Open the DPTC course
-            </Link>
-            .
+            Lessons will appear here once staff publish them.
           </p>
         )}
 
         <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
           <dl className="space-y-4 text-sm">
             {[
-              ["Price", course.priceType === "free" ? "Free" : "Paid"],
+              ["Price", "Free"],
               ["Level", isDptc ? dptcCourse.level : "Introductory"],
               ["Access", isDptc ? dptcCourse.access : "Self-paced"],
-              ["Certificate", isDptc ? dptcCourse.certificate : "On completion"],
+              ["Certificate", course.hasFinalQuiz ? "Included" : "None"],
             ].map(([label, value]) => (
               <div key={label} className="flex items-baseline justify-between gap-3">
                 <dt className="text-[11px] tracking-[0.14em] text-white/45 uppercase">
@@ -175,11 +178,18 @@ export function CourseDetail({
           <div className="mt-8">
             <SplitCta variant="light" className="w-full" onClick={enroll}>
               {pending
-                ? "Enrolling…"
+                ? "Requesting…"
                 : signedIn && enrolled
                   ? "Continue this course"
-                  : "Enroll for this course"}
+                  : signedIn && waiting
+                    ? dashboardCopy.requested
+                    : dashboardCopy.enroll}
             </SplitCta>
+            {signedIn && !enrolled ? (
+              <p className="mt-3 text-center text-[12px] leading-relaxed text-white/60">
+                {dashboardCopy.requestHint}
+              </p>
+            ) : null}
           </div>
         </aside>
       </div>

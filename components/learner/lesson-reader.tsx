@@ -1,51 +1,34 @@
 "use client";
 
 import { useEffect } from "react";
-import { Download } from "lucide-react";
 
+import { LessonMedia } from "@/components/learner/lesson-media";
 import { PlayerRail } from "@/components/learner/player-rail";
-import {
-  adjacentHrefs,
-  dptcCourse,
-  getDptcModule,
-  getLesson,
-} from "@/lib/content/dptc";
+import type { PlayerLesson } from "@/lib/courses/types";
 import { markModuleComplete } from "@/lib/learning/actions";
 
 export function LessonReader({
   courseSlug,
-  lessonSlug,
+  lesson,
 }: {
   courseSlug: string;
-  lessonSlug: string;
+  lesson: PlayerLesson;
 }) {
-  const lesson = getLesson(lessonSlug);
-  const lessonModule = getDptcModule(lesson.slug);
-  const nav = adjacentHrefs(courseSlug, lesson.slug);
-
   useEffect(() => {
-    void markModuleComplete(dptcCourse.slug, lessonModule.index);
-  }, [lessonModule.index]);
+    void markModuleComplete(courseSlug, lesson.moduleIndex);
+  }, [courseSlug, lesson.moduleIndex]);
 
   return (
-    <div className="grid gap-8 pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
-      <article>
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-neutral-950 px-5 py-3 text-white">
-          <p className="text-[11px] font-bold tracking-[0.14em] uppercase">
+    <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
+      <article className="min-w-0">
+        <div className="flex flex-col gap-3 rounded-2xl bg-neutral-950 px-4 py-3 text-white sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-5">
+          <p className="text-[11px] font-bold tracking-[0.14em] uppercase break-words">
             {lesson.kicker}
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <p className="text-[11px] tracking-[0.12em] uppercase text-white/70">
               {lesson.readTime}
             </p>
-            <a
-              href={dptcCourse.hero}
-              download
-              className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase"
-            >
-              <Download className="size-3.5" />
-              Download as PDF
-            </a>
           </div>
         </div>
 
@@ -54,39 +37,53 @@ export function LessonReader({
         </h1>
 
         <div className="mt-8 max-w-3xl space-y-8 text-[15px] leading-relaxed text-neutral-700">
-          <section id={lesson.sections[0].id}>
-            <p>{lesson.sections[0].body}</p>
-          </section>
+          {lesson.introduction ? (
+            <section id="intro">
+              <p>{lesson.introduction}</p>
+            </section>
+          ) : null}
 
-          <aside className="rounded-2xl bg-neutral-100 px-5 py-4 text-sm text-neutral-700">
-            <p className="font-semibold">{lesson.keyTerm.title}</p>
-            <p className="mt-1">{lesson.keyTerm.body}</p>
-          </aside>
+          {lesson.notes ? (
+            <aside className="rounded-2xl bg-neutral-100 px-5 py-4 text-sm text-neutral-700">
+              <p className="font-semibold">Key term</p>
+              <p className="mt-1">{lesson.notes}</p>
+            </aside>
+          ) : null}
 
-          {lesson.sections.slice(1).map((section) => (
-            <section key={section.id} id={section.id}>
-              <h2 className="text-lg font-bold text-neutral-950">
-                {section.title}
-              </h2>
-              <p className="mt-2">{section.body}</p>
+          {lesson.mainBlocks.map((block, index) => (
+            <section key={`${block.heading ?? "block"}-${index}`} id={`block-${index}`}>
+              {block.heading ? (
+                <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
+              ) : null}
+              <p className={block.heading ? "mt-2" : undefined}>{block.body}</p>
             </section>
           ))}
         </div>
+
+        <LessonMedia assets={lesson.assets ?? []} />
       </article>
 
       <PlayerRail
         toc={{
           title: "In this lesson",
-          items: lesson.sections.map((section) => ({
-            id: section.id,
-            label: section.title,
-          })),
+          items: [
+            ...(lesson.introduction
+              ? [{ id: "intro", label: "Introduction" }]
+              : []),
+            ...lesson.mainBlocks.map((block, index) => ({
+              id: `block-${index}`,
+              label: block.heading ?? `Section ${index + 1}`,
+            })),
+            ...(lesson.assets?.length
+              ? [{ id: "lesson-media", label: "Lesson media" }]
+              : []),
+          ],
         }}
-        quizHref={`/learn/${courseSlug}/quiz`}
-        previousHref={nav.previousHref}
-        previousLabel={nav.previousLabel}
-        nextHref={nav.nextHref}
-        nextLabel={nav.nextLabel}
+        quizHref={lesson.quizHref}
+        previousHref={lesson.previousHref}
+        previousLabel={lesson.previousLabel}
+        nextHref={lesson.nextHref}
+        nextLabel={lesson.nextLabel}
         nextPrimary
       />
     </div>

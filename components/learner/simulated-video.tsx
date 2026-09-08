@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Maximize, Pause, Play, Settings, Volume2 } from "lucide-react";
 
+import { CourseCover } from "@/components/courses/course-cover";
 import { formatClock } from "@/lib/content/dptc";
 import { cn } from "@/lib/utils";
 
 type SimulatedVideoProps = {
-  poster: string;
+  poster?: string | null;
+  title: string;
   duration: number;
   current: number;
   onSeek: (seconds: number) => void;
@@ -16,6 +17,7 @@ type SimulatedVideoProps = {
 
 export function SimulatedVideo({
   poster,
+  title,
   duration,
   current,
   onSeek,
@@ -37,8 +39,12 @@ export function SimulatedVideo({
 
   return (
     <div className="overflow-hidden rounded-[22px] bg-black">
-      <div className="relative aspect-video">
-        <Image src={poster} alt="" fill className="object-cover" sizes="70vw" />
+      <div className="relative aspect-video min-w-0">
+        <CourseCover
+          src={poster}
+          title={title}
+          sizes="(max-width: 1024px) 100vw, 70vw"
+        />
         {!playing ? (
           <button
             type="button"
@@ -51,11 +57,12 @@ export function SimulatedVideo({
             </span>
           </button>
         ) : null}
-        <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-black/80 to-transparent px-4 py-3 text-white">
+        <div className="absolute inset-x-0 bottom-0 flex min-w-0 items-center gap-2 bg-gradient-to-t from-black/80 to-transparent px-3 py-3 text-white sm:gap-3 sm:px-4">
           <button
             type="button"
             onClick={() => setPlaying((value) => !value)}
             aria-label={playing ? "Pause" : "Play"}
+            className="shrink-0"
           >
             {playing ? (
               <Pause className="size-4 fill-current" />
@@ -63,11 +70,11 @@ export function SimulatedVideo({
               <Play className="size-4 fill-current" />
             )}
           </button>
-          <Volume2 className="size-4" />
-          <span className="text-[11px] tabular-nums">
+          <Volume2 className="hidden size-4 shrink-0 sm:block" />
+          <span className="shrink-0 text-[11px] tabular-nums">
             {formatClock(current)}/{formatClock(duration)}
           </span>
-          <div className="relative h-1 flex-1 rounded-full bg-white/25">
+          <div className="relative h-1 min-w-0 flex-1 rounded-full bg-white/25">
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-red-500"
               style={{ width: `${progress * 100}%` }}
@@ -82,17 +89,25 @@ export function SimulatedVideo({
               aria-label="Seek"
             />
           </div>
-          <span className="text-[11px]">360P</span>
-          <span className="text-[11px]">1x</span>
-          <Settings className="size-3.5" />
-          <Maximize className="size-3.5" />
+          <span className="hidden text-[11px] sm:inline">360P</span>
+          <span className="hidden text-[11px] sm:inline">1x</span>
+          <Settings className="hidden size-3.5 shrink-0 sm:block" />
+          <Maximize className="hidden size-3.5 shrink-0 sm:block" />
         </div>
       </div>
     </div>
   );
 }
 
-export function PlayPoster({ src, onPlay }: { src: string; onPlay?: () => void }) {
+export function PlayPoster({
+  src,
+  title,
+  onPlay,
+}: {
+  src?: string | null;
+  title: string;
+  onPlay?: () => void;
+}) {
   return (
     <button
       type="button"
@@ -100,7 +115,11 @@ export function PlayPoster({ src, onPlay }: { src: string; onPlay?: () => void }
       className="relative block w-full overflow-hidden rounded-[22px]"
     >
       <span className="relative block aspect-video">
-        <Image src={src} alt="" fill className="object-cover" sizes="70vw" />
+        <CourseCover
+          src={src}
+          title={title}
+          sizes="(max-width: 1024px) 100vw, 70vw"
+        />
         <span className="absolute inset-0 flex items-center justify-center">
           <span className="flex size-16 items-center justify-center rounded-full bg-white/90 text-neutral-950 shadow-lg">
             <Play className="ml-0.5 size-7 fill-current" />

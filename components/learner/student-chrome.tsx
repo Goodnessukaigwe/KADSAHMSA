@@ -109,7 +109,7 @@ export function StudentChrome({
               <Link href="/my" className="flex items-center gap-2.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
-                <span className="text-sm font-bold tracking-[0.14em] uppercase">
+                <span className="text-sm font-bold tracking-[0.08em] uppercase sm:tracking-[0.14em]">
                   {site.name}
                 </span>
               </Link>
@@ -181,13 +181,21 @@ export function StudentChrome({
                 <p className="truncate text-sm font-semibold" title={user.email}>
                   {firstName}
                 </p>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="text-xs text-white/55 hover:text-white"
-                >
-                  Log out
-                </button>
+                <div className="flex flex-col items-start gap-0.5">
+                  <Link
+                    href="/reset-password"
+                    className="text-xs text-white/55 hover:text-white"
+                  >
+                    Change password
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="text-xs text-white/55 hover:text-white"
+                  >
+                    Log out
+                  </button>
+                </div>
               </div>
             </div>
 

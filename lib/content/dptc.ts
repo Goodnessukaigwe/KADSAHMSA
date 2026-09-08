@@ -269,6 +269,136 @@ export const quizMeta = {
   passMark: DEFAULT_PASS_MARK,
 } as const;
 
+export const finalQuiz: QuizQuestion[] = [
+  {
+    id: "f1",
+    prompt: "Use and dependence are not the same. Dependence is best described as:",
+    options: [
+      "Any first-time use of a controlled substance.",
+      "A pattern of compulsion, tolerance, and withdrawal that needs a clinical and social response.",
+      "A moral failure that only punishment can correct.",
+      "Intoxication that lasts more than one hour.",
+    ],
+    correctIndex: 1,
+  },
+  {
+    id: "f2",
+    prompt: "Why does stigma at the first contact make DPTC work harder?",
+    options: [
+      "It makes household surveys more accurate.",
+      "It is required by the NDLEA Act.",
+      "Shame and harsh language keep people from screening and treatment, so they present late.",
+      "It only affects people who traffic drugs.",
+    ],
+    correctIndex: 2,
+  },
+  {
+    id: "f3",
+    prompt: "A balanced drug-control approach uses which three legs together?",
+    options: [
+      "Arrest, detention, and public naming.",
+      "Supply reduction, demand reduction, and harm reduction.",
+      "Seizures, fines, and school parades only.",
+      "Counselling, herbal medicine, and prayer only.",
+    ],
+    correctIndex: 1,
+  },
+  {
+    id: "f4",
+    prompt: "What is screening in DPTC practice?",
+    options: [
+      "A full medical diagnosis that replaces a clinic.",
+      "A brief, structured check for possible drug use or dependence — not a trap and not a diagnosis.",
+      "A urine test announced to the whole station.",
+      "An immediate arrest for personal possession.",
+    ],
+    correctIndex: 1,
+  },
+  {
+    id: "f5",
+    prompt: "Medically assisted treatment for opioid dependence means:",
+    options: [
+      "Prescribed medicines with psychosocial support.",
+      "A single dose of naloxone and no follow-up.",
+      "Forced detox in a cell without a clinician.",
+      "Any herbal tonic sold as a cure.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "f6",
+    prompt: "The first family conversation about suspected dependence should:",
+    options: [
+      "Happen in public so neighbours can shame the person into stopping.",
+      "Threaten immediate arrest if they do not confess.",
+      "Take place calmly, in private, and encourage professional help.",
+      "Wait until a court orders the family to act.",
+    ],
+    correctIndex: 2,
+  },
+  {
+    id: "f7",
+    prompt: "Women who use drugs often need a different path because they:",
+    options: [
+      "Never become dependent.",
+      "Often use in private, face custody loss, and avoid male-dominated facilities.",
+      "Are excluded from DPTC by UNODC policy.",
+      "Only need longer lectures than men.",
+    ],
+    correctIndex: 1,
+  },
+  {
+    id: "f8",
+    prompt: "Withdrawal in a police cell is:",
+    options: [
+      "A useful interrogation tool.",
+      "A medical emergency. Denial of treatment is abuse, not investigation.",
+      "Proof the person is trafficking.",
+      "Something officers should ignore until court.",
+    ],
+    correctIndex: 1,
+  },
+  {
+    id: "f9",
+    prompt: "Where the law allows diversion or caution for personal use, DPTC asks officers to:",
+    options: [
+      "Use it, record the referral, and treat a path to care as a professional outcome.",
+      "Ignore it and charge every case as trafficking.",
+      "Publish the person’s name as a deterrent.",
+      "Wait for a federal circular before referring anyone.",
+    ],
+    correctIndex: 0,
+  },
+  {
+    id: "f10",
+    prompt: "Advocacy in this curriculum means:",
+    options: [
+      "A slogan on a banner at a one-day rally.",
+      "Planned work — with data and a specific ask — to change a practice, budget, or by-law so prevention and treatment can run.",
+      "Replacing enforcement with social media posts.",
+      "Asking UNODC to write Kaduna’s laws.",
+    ],
+    correctIndex: 1,
+  },
+];
+
+export const finalQuizMeta = {
+  title: "DPTC final assessment",
+  seconds: 30 * 60,
+  maxAttempts: 3,
+  passMark: DEFAULT_PASS_MARK,
+} as const;
+
+export type PublicQuizQuestion = {
+  id: string;
+  prompt: string;
+  options: string[];
+};
+
+export function toPublicQuestions(questions: QuizQuestion[]): PublicQuizQuestion[] {
+  return questions.map(({ id, prompt, options }) => ({ id, prompt, options }));
+}
+
 export function getDptcModule(slug: string) {
   return dptcModules.find((item) => item.slug === slug) ?? dptcModules[0];
 }
@@ -612,8 +742,8 @@ export function adjacentHrefs(courseSlug: string, moduleSlug: string) {
   const { previous, next, position, total } = moduleNav(moduleSlug);
   return {
     previousHref: previous ? moduleHref(courseSlug, previous.slug) : undefined,
-    nextHref: next ? moduleHref(courseSlug, next.slug) : `/learn/${courseSlug}/quiz`,
-    nextLabel: next ? `Next (${position + 1}/${total})` : "Next (quiz)",
+    nextHref: next ? moduleHref(courseSlug, next.slug) : `/learn/${courseSlug}/final`,
+    nextLabel: next ? `Next (${position + 1}/${total})` : "Final assessment",
     previousLabel: "Previous module",
     position,
     total,

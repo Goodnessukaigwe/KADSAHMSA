@@ -31,51 +31,15 @@ export const about = {
 } as const;
 
 export const stats = [
-  { value: "2,140+", label: "Professionals reached" },
-  { value: "14", label: "DPTC modules" },
-  { value: "100%", label: "Certificates verifiable" },
+  { value: "Self-paced", label: "Learn on any device" },
+  { value: "14", label: "DPTC modules in the curriculum" },
+  { value: "Verify", label: "Certificates anyone can check" },
 ] as const;
 
 export const featured = {
   title: "Featured Courses",
-  subtitle: "Start with DPTC sensitisation or explore specialised pathways from the same curriculum.",
+  subtitle: "Published courses appear here when staff add a live lesson or media.",
 } as const;
-
-export const courses = [
-  {
-    tag: "Free",
-    title: "Sensitization on Drug Use, Dependence & Prevention (DPTC)",
-    price: "Free",
-    method: "Self-paced",
-    duration: "14 modules",
-    summary:
-      "The launch course: drug use in Nigeria, demand and harm reduction, treatment, special populations, and a certificate-qualifying final assessment.",
-    href: "/courses/dptc",
-    cta: "Enroll for free",
-  },
-  {
-    tag: "Module 10",
-    title: "Human Rights and Drug Users",
-    price: "Free",
-    method: "Self-paced",
-    duration: "4 weeks",
-    summary:
-      "Rights-based practice for community and justice settings, including the death-penalty supplement for drug offences.",
-    href: "/courses/dptc",
-    cta: "Enroll for free",
-  },
-  {
-    tag: "Module 6",
-    title: "Drug Screening: Steps to Take",
-    price: "Free",
-    method: "Self-paced",
-    duration: "4 weeks",
-    summary:
-      "Practical screening steps for frontline workers, with a module quiz and progression into treatment types and family interventions.",
-    href: "/courses/dptc",
-    cta: "Enroll for course",
-  },
-] as const;
 
 export const plans = {
   title: "Simple, Flexible Plans",
@@ -83,7 +47,7 @@ export const plans = {
   highlights: [
     {
       title: "Flexible payments",
-      body: "Free DPTC enrolment today. Paid courses checkout with Paystack — card, transfer, or USSD.",
+      body: "Published courses are free to request. An administrator enrols you when a seat is ready.",
     },
     {
       title: "Complete feedback delivery",
@@ -102,7 +66,7 @@ export const plans = {
     href: "/register",
     features: [
       "Browse the public catalogue",
-      "Enrol in the DPTC launch course",
+      "Request enrolment in a published course",
       "Resume on any device, including phones",
       "Module quizzes and final assessment",
       "Verifiable PDF certificate",
@@ -165,6 +129,7 @@ export const footer = {
     links: [
       { href: "/courses", label: "Course catalogue" },
       { href: "/verify", label: "Certificate verification" },
+      { href: "/privacy", label: "Privacy notice" },
       { href: "/about", label: "About us" },
     ],
   },
@@ -172,7 +137,7 @@ export const footer = {
     title: "Resources",
     links: [
       { href: "https://www.unodc.org", label: "UNODC framework" },
-      { href: "/courses/dptc", label: "Trainer resources" },
+      { href: "/courses", label: "Trainer resources" },
       { href: "/about#faq", label: "FAQs" },
     ],
   },
