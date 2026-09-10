@@ -6,7 +6,7 @@ export const metadata = { title: "Create an account" };
 
 export default function RegisterPage() {
   return (
-    <AuthSplit image={authCopy.stallImage} imageAlt={authCopy.register.imageAlt}>
+    <AuthSplit image={authCopy.registerImage} imageAlt={authCopy.register.imageAlt}>
       <RegisterForm />
     </AuthSplit>
   );

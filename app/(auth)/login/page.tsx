@@ -11,7 +11,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   return (
-    <AuthSplit image={authCopy.stallImage} imageAlt={authCopy.login.imageAlt}>
+    <AuthSplit image={authCopy.loginImage} imageAlt={authCopy.login.imageAlt}>
       <LoginForm
         initialError={
           params.error === "callback"

@@ -19,8 +19,8 @@ function Hero() {
       <div className="mx-auto grid max-w-[1120px] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div className="relative aspect-square overflow-hidden rounded-[28px]">
           <Image
-            src="/landing/about-apple.webp"
-            alt="A world of learning growing from a single curriculum"
+            src="/Rigasa/IMG_5748.jpg"
+            alt="KADSAMHSA community gathering in Rigasa"
             fill
             priority
             className="object-cover"

@@ -17,9 +17,9 @@ import {
 import type { CatalogueCourse } from "@/lib/courses/types";
 
 const HERO_IMAGES = [
-  { src: "/landing/hero-cabin.webp", alt: "A training retreat cabin at dusk" },
-  { src: "/landing/hero-phoenix.webp", alt: "A phoenix rising, a symbol of recovery" },
-  { src: "/landing/hero-crystal.webp", alt: "A glowing structure in a forest clearing" },
+  { src: "/Panel%20Discussion/IMG_1570.jpg", alt: "KADSAMHSA panel discussion" },
+  { src: "/Panel%20Discussion/IMG_1584.jpg", alt: "KADSAMHSA community discussion" },
+  { src: "/Panel%20Discussion/IMG_1608.jpg", alt: "KADSAMHSA training event" },
 ] as const;
 
 export function LandingPage({
@@ -118,8 +118,8 @@ function About() {
         <div className="relative">
           <div className="relative aspect-[3/4] overflow-hidden rounded-2xl sm:aspect-[4/5] lg:aspect-auto lg:min-h-[560px]">
             <Image
-              src="/landing/about-stall.webp"
-              alt="Evening gathering under lantern light"
+              src="/Rigasa/IMG_5737.jpg"
+              alt="KADSAMHSA community gathering in Rigasa"
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 45vw"

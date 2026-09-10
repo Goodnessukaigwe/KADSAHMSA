@@ -12,8 +12,8 @@ export function TeamCta() {
   return (
     <div className="relative overflow-hidden rounded-2xl">
       <Image
-        src="/landing/team-training.webp"
-        alt="KADSAMHSA staff reviewing a training plan"
+        src="/Panel%20Discussion/IMG_1642.jpg"
+        alt="KADSAMHSA staff at a panel discussion"
         width={1536}
         height={1024}
         className="h-full min-h-[420px] w-full object-cover"

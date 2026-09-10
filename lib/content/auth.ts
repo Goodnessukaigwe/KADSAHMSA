@@ -15,7 +15,7 @@ export const authCopy = {
     haveAccount: "Already have an account?",
     loginLink: "Login",
     imageAlt:
-      "A miniature Japanese noodle stall at night, lit by lanterns — a welcome into the learning space",
+      "KADSAMHSA training session with participants learning together",
   },
   login: {
     title: "Welcome back",
@@ -28,7 +28,7 @@ export const authCopy = {
     noAccount: "Don’t have an account?",
     registerLink: "Sign up",
     imageAlt:
-      "A miniature Japanese noodle stall at night, lit by lanterns — a welcome back into the learning space",
+      "KADSAMHSA training session with participants gathered together",
   },
   reset: {
     title: "Forgot password?",
@@ -43,5 +43,7 @@ export const authCopy = {
     imageAlt:
       "A miniature Japanese noodle stall at night, lit by lanterns — a pause before you return to learning",
   },
-  stallImage: "/landing/about-stall.webp",
+  loginImage: "/Training/IMG_7634.jpg",
+  registerImage: "/Training/IMG_7634.jpg",
+  resetImage: "/Training/IMG_7625.jpg",
 } as const;

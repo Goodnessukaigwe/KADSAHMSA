@@ -8,8 +8,8 @@ export function OrgCta() {
     <div className="flex h-full min-h-[420px] flex-col overflow-hidden rounded-2xl bg-[#2c2c2c]">
       <div className="relative min-h-[220px] flex-1">
         <Image
-          src="/landing/team-training.webp"
-          alt="KADSAMHSA staff reviewing a training plan"
+          src="/Panel%20Discussion/IMG_1651.jpg"
+          alt="KADSAMHSA staff at a panel discussion"
           fill
           className="object-cover"
           sizes="(max-width: 1024px) 100vw, 40vw"
