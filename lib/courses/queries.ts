@@ -469,7 +469,10 @@ export async function listAdminCourses(): Promise<AdminCourseRow[]> {
     .order("created_at", { ascending: true });
   if (error || !data) return [];
 
-  const { data: enrolRows } = await supabase.from("enrolments").select("course_id");
+  const { data: enrolRows } = await supabase
+    .from("enrolments")
+    .select("course_id")
+    .eq("status", "active");
   const enrolled = new Map<string, number>();
   for (const row of enrolRows ?? []) {
     enrolled.set(row.course_id, (enrolled.get(row.course_id) ?? 0) + 1);
@@ -561,7 +564,8 @@ export async function getAdminCourse(slug: string): Promise<AdminCourseDetail | 
     supabase
       .from("enrolments")
       .select("id", { count: "exact", head: true })
-      .eq("course_id", course.id),
+      .eq("course_id", course.id)
+      .eq("status", "active"),
   ]);
 
   return {
@@ -674,7 +678,7 @@ export async function listCourseLearners(slug: string): Promise<CourseLearnerRow
     liveCount,
   ] = await Promise.all([
     admin.from("profiles").select("id, full_name").order("full_name", { ascending: true }),
-    admin.from("enrolments").select("user_id").eq("course_id", course.id),
+    admin.from("enrolments").select("user_id").eq("course_id", course.id).eq("status", "active"),
     admin
       .from("course_progress")
       .select("user_id, completed_indexes")
@@ -756,11 +760,12 @@ export async function getAdminDashboard(): Promise<{
       .from("certificates")
       .select("id", { count: "exact", head: true })
       .eq("status", "valid"),
-    supabase.from("enrolments").select("user_id, course_id"),
+    supabase.from("enrolments").select("user_id, course_id").eq("status", "active"),
     supabase.from("course_progress").select("user_id, course_id, completed_indexes"),
     supabase
       .from("enrolments")
       .select("created_at, user_id, course_id")
+      .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(8),
   ]);

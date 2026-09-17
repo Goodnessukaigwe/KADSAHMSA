@@ -190,6 +190,7 @@ async function loadLearningMaps(userIds: string[]) {
       supabase
         .from("enrolments")
         .select("user_id, course_id, created_at")
+        .eq("status", "active")
         .in("user_id", userIds),
       supabase
         .from("course_progress")
@@ -427,6 +428,7 @@ export async function listReportRows(organisationId?: string): Promise<ReportRow
   let enrolmentQuery = supabase
     .from("enrolments")
     .select("user_id, course_id, created_at")
+    .eq("status", "active")
     .order("created_at", { ascending: false });
   if (memberUserIds) {
     if (memberUserIds.length === 0) return [];

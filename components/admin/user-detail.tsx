@@ -11,7 +11,7 @@ import type {
   StaffLearnerLearning,
   StaffLearnerRow,
 } from "@/lib/certificates/queries";
-import { staffEnrolLearner } from "@/lib/courses/actions";
+import { staffEnrolLearner, staffUnenrolLearner } from "@/lib/courses/actions";
 import type { AssignableCourse } from "@/lib/courses/types";
 import { assignLearnerToOrg, setLearnerStaffRoles } from "@/lib/org/actions";
 import type { LearnerOrgMembership, OrgOption } from "@/lib/org/types";
@@ -45,6 +45,9 @@ export function UserDetail({
   const [enrolSlug, setEnrolSlug] = useState(courses[0]?.slug ?? "");
   const [enrolMessage, setEnrolMessage] = useState<string | null>(null);
   const [enrolling, setEnrolling] = useState(false);
+  const [unenrolSlug, setUnenrolSlug] = useState<string | null>(null);
+  const [unenrolError, setUnenrolError] = useState<string | null>(null);
+  const [unenrolling, setUnenrolling] = useState(false);
   const [orgId, setOrgId] = useState(organisations[0]?.id ?? "");
   const [orgMessage, setOrgMessage] = useState<string | null>(null);
   const [assigning, setAssigning] = useState(false);
@@ -315,6 +318,68 @@ export function UserDetail({
         <p className="mt-1 text-sm text-neutral-400">
           Enrolment, quiz attempts, and certificates on this account.
         </p>
+        {unenrolError ? (
+          <p className="mt-3 text-sm text-red-600" role="alert">
+            {unenrolError}
+          </p>
+        ) : null}
+        {learning.enrolments.length > 0 ? (
+          <ul className="mt-5 space-y-4">
+            {learning.enrolments.map((item) => (
+              <li
+                key={item.slug}
+                className="flex flex-col gap-3 border-b border-neutral-100 pb-4 last:border-0 last:pb-0 sm:flex-row sm:items-center"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">{item.title}</p>
+                  {unenrolSlug === item.slug ? (
+                    <p className="mt-0.5 text-sm text-neutral-400">
+                      They lose course access. Progress, quizzes, and certificates stay.
+                    </p>
+                  ) : null}
+                </div>
+                {unenrolSlug === item.slug ? (
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setUnenrolSlug(null)}
+                      className="h-9 rounded-full px-3 text-[11px] font-bold tracking-[0.12em] uppercase"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      disabled={unenrolling}
+                      onClick={async () => {
+                        setUnenrolling(true);
+                        setUnenrolError(null);
+                        const result = await staffUnenrolLearner(learner.id, item.slug);
+                        setUnenrolling(false);
+                        if (!result.ok) {
+                          setUnenrolError(result.error);
+                          return;
+                        }
+                        setUnenrolSlug(null);
+                        router.refresh();
+                      }}
+                      className="h-9 rounded-full bg-red-600 px-4 text-[11px] font-bold tracking-[0.12em] text-white uppercase disabled:opacity-60"
+                    >
+                      {unenrolling ? "Unenrolling…" : "Confirm unenrol"}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setUnenrolSlug(item.slug)}
+                    className="h-9 rounded-full bg-red-50 px-4 text-[11px] font-bold tracking-[0.12em] text-red-700 uppercase"
+                  >
+                    Unenrol
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         {learning.activity.length === 0 ? (
           <p className="mt-6 text-sm text-neutral-400">
             No learning activity recorded yet.

@@ -195,7 +195,7 @@ export async function getStaffLearnerLearning(
   ] = await Promise.all([
     supabase
       .from("enrolments")
-      .select("id, course_id, created_at")
+      .select("id, course_id, created_at, status, unenrolled_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false }),
     supabase
@@ -247,6 +247,7 @@ export async function getStaffLearnerLearning(
   const liveCounts = await liveLessonCountByCourseId();
 
   const enrolments: StaffEnrolmentProgress[] = (enrolmentRows ?? []).flatMap((row) => {
+    if (row.status !== "active") return [];
     const course = courseById.get(row.course_id);
     if (!course) return [];
     const total = moduleCountFor(course.slug, liveCounts.get(row.course_id));
@@ -278,6 +279,14 @@ export async function getStaffLearnerLearning(
       label: course ? `Enrolled in ${course.title}` : "Enrolled in a course",
       tone: "event",
     });
+    if (row.unenrolled_at) {
+      events.push({
+        id: `unenrol-${row.id}`,
+        at: row.unenrolled_at,
+        label: course ? `Unenrolled from ${course.title}` : "Unenrolled from a course",
+        tone: "event",
+      });
+    }
   }
 
   for (const row of attemptRows ?? []) {

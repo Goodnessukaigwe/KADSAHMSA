@@ -36,6 +36,7 @@ export async function issueCertificateIfEligible(
     .select("id")
     .eq("user_id", userId)
     .eq("course_id", course.id)
+    .eq("status", "active")
     .maybeSingle();
   if (!enrolment) {
     return { ok: false, error: "Enrol in this course before a certificate can be issued." };

@@ -74,7 +74,8 @@ export async function listMyEnrolments(): Promise<EnrolmentRecord[]> {
   const { data: enrolmentRows, error: enrolmentError } = await supabase
     .from("enrolments")
     .select("course_id")
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .eq("status", "active");
 
   if (enrolmentError || !enrolmentRows?.length) return [];
 
@@ -167,6 +168,7 @@ export async function isEnrolledIn(slug: string): Promise<boolean> {
     .select("id")
     .eq("user_id", user.id)
     .eq("course_id", courseId)
+    .eq("status", "active")
     .maybeSingle();
 
   return Boolean(data);

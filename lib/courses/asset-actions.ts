@@ -417,6 +417,7 @@ export async function getLessonAssetSignedUrl(assetId: string): Promise<SignedAs
       .select("id")
       .eq("user_id", user.id)
       .eq("course_id", courseId)
+      .eq("status", "active")
       .maybeSingle();
     if (!enrolment) {
       return { ok: false, error: "Enrol in this course to open lesson media." };

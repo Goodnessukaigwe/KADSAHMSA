@@ -1,4 +1,5 @@
 export type CourseStatus = "draft" | "published";
+export type EnrolmentStatus = "active" | "unenrolled";
 
 export type Database = {
   public: {
@@ -240,18 +241,24 @@ export type Database = {
           user_id: string;
           course_id: string;
           created_at: string;
+          status: EnrolmentStatus;
+          unenrolled_at: string | null;
         };
         Insert: {
           id?: string;
           user_id: string;
           course_id: string;
           created_at?: string;
+          status?: EnrolmentStatus;
+          unenrolled_at?: string | null;
         };
         Update: {
           id?: string;
           user_id?: string;
           course_id?: string;
           created_at?: string;
+          status?: EnrolmentStatus;
+          unenrolled_at?: string | null;
         };
         Relationships: [];
       };

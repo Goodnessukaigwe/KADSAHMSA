@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { findUserIdByEmail } from "@/lib/auth/admin-users";
 import { removeLessonMediaObjects } from "@/lib/courses/asset-actions";
-import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
+import { enrolLearnerWithAdmin, unenrolLearnerWithAdmin } from "@/lib/courses/enrol";
 import { COURSE_MEDIA_BUCKET, isPublicCoverPath, isStockLandingCover } from "@/lib/courses/media";
 import { getAdminCourse, listBuilderLessons, resolveCoverSrc } from "@/lib/courses/queries";
 import {
@@ -401,34 +401,78 @@ export async function deleteCourse(slug: string): Promise<ActionResult> {
     .maybeSingle();
   if (!course) return fail("That course was not found.");
 
-  const { count } = await supabase
-    .from("enrolments")
-    .select("id", { count: "exact", head: true })
-    .eq("course_id", course.id);
-  if ((count ?? 0) > 0) {
-    return fail(
-      "This course still has enrolments. Remove those first — delete will not cascade."
-    );
-  }
-
   const { data: lessonRows } = await supabase
     .from("course_lessons")
     .select("id")
     .eq("course_id", course.id);
   await removeLessonMediaObjects((lessonRows ?? []).map((row) => row.id));
+
+  const admin = createAdminClient();
   if (course.cover_path && !isPublicCoverPath(course.cover_path)) {
     try {
-      const admin = createAdminClient();
       await admin.storage.from(COURSE_MEDIA_BUCKET).remove([course.cover_path]);
     } catch {
       /* cover cleanup is best-effort */
     }
   }
 
-  const { error } = await supabase.from("courses").delete().eq("id", course.id);
+  const { data: certRows } = await admin
+    .from("certificates")
+    .select("storage_path")
+    .eq("course_id", course.id);
+  const certPaths = (certRows ?? [])
+    .map((row) => row.storage_path)
+    .filter((path): path is string => Boolean(path));
+  if (certPaths.length) {
+    try {
+      await admin.storage.from("certificates").remove(certPaths);
+    } catch {
+      /* certificate file cleanup is best-effort */
+    }
+  }
+
+  const { data: quizRows } = await admin
+    .from("quizzes")
+    .select("id")
+    .eq("course_id", course.id);
+  const quizIds = (quizRows ?? []).map((row) => row.id);
+  if (quizIds.length) {
+    const { error } = await admin.from("quiz_attempts").delete().in("quiz_id", quizIds);
+    if (error) return fail(error.message || "Could not delete quiz attempts.");
+  }
+
+  const { error: certError } = await admin
+    .from("certificates")
+    .delete()
+    .eq("course_id", course.id);
+  if (certError) return fail(certError.message || "Could not delete certificates.");
+
+  const { error: progressError } = await admin
+    .from("course_progress")
+    .delete()
+    .eq("course_id", course.id);
+  if (progressError) return fail(progressError.message || "Could not delete course progress.");
+
+  const { error: requestError } = await admin
+    .from("enrolment_requests")
+    .delete()
+    .eq("course_id", course.id);
+  if (requestError) {
+    return fail(requestError.message || "Could not delete enrolment requests.");
+  }
+
+  const { error: enrolError } = await admin
+    .from("enrolments")
+    .delete()
+    .eq("course_id", course.id);
+  if (enrolError) return fail(enrolError.message || "Could not delete enrolments.");
+
+  const { error } = await admin.from("courses").delete().eq("id", course.id);
   if (error) return fail(error.message || "Could not delete this course.");
 
   revalidateCourse(slug);
+  revalidatePath("/certificates");
+  revalidatePath("/admin/reports");
   return { ok: true };
 }
 
@@ -452,4 +496,12 @@ export async function staffEnrolByEmail(
   const userId = await findUserIdByEmail(admin, trimmed);
   if (!userId) return fail("No account uses that email.");
   return enrolLearnerWithAdmin(userId, courseSlug);
+}
+
+export async function staffUnenrolLearner(
+  userId: string,
+  courseSlug: string
+): Promise<ActionResult> {
+  await requireStaff();
+  return unenrolLearnerWithAdmin(userId, courseSlug);
 }

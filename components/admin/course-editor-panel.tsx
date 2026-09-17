@@ -541,7 +541,11 @@ export function CourseEditorPanel({
 
   async function remove() {
     if (pending || slug === "new" || slug === "dptc") return;
-    if (!window.confirm("Delete this course? Lessons will be removed. Enrolments block delete.")) {
+    if (
+      !window.confirm(
+        "Delete this course? Lessons, enrolments, progress, and related records will be removed."
+      )
+    ) {
       return;
     }
     setPending("delete");
