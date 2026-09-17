@@ -1,7 +1,7 @@
 import { isPlayIntroLesson, lessonPageHref } from "@/lib/courses/paths";
 import {
   leftoverNonImageAssets,
-  sectionedLessonImage,
+  orderedSectionMedia,
   unsectionedLessonImages,
   type LessonAsset,
   type LessonAssetSection,
@@ -65,7 +65,7 @@ function sectionsForLesson(lesson: LessonPageSource): LessonAssetSection[] {
   const sections = SECTION_ORDER.filter(
     (section) =>
       lessonHasText(sectionText(lesson, section)) ||
-      Boolean(sectionedLessonImage(lesson.assets, section))
+      orderedSectionMedia(lesson.assets, section).length > 0
   );
   if (
     sections.length ||

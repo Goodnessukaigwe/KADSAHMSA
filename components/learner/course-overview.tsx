@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { SplitCta } from "@/components/landing/split-cta";
+import { LessonSectionMedia } from "@/components/learner/lesson-media";
 import { PlayPoster, ProgressTrack } from "@/components/learner/simulated-video";
 import type { PublishedCourse } from "@/lib/courses/types";
 import { lessonPlayerHref } from "@/lib/courses/paths";
@@ -59,6 +60,11 @@ export function CourseOverview({
 
       <div className="mt-4">
         <PlayPoster slug={slug} src={course.image} title={title} onPlay={go} />
+        {course.coverMedia.length ? (
+          <div className="mt-4">
+            <LessonSectionMedia assets={course.coverMedia} />
+          </div>
+        ) : null}
       </div>
 
       <h1 className="mt-6 max-w-3xl text-3xl leading-tight font-bold tracking-tight sm:text-4xl">

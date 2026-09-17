@@ -9,7 +9,7 @@ export const MISSING_ASSETS_SQL =
   "Apply supabase/apply-phase6.sql before attaching lesson media.";
 
 export const MISSING_SECTION_SQL =
-  "Apply supabase/migrations/20260917100000_lesson_asset_section.sql before placing images on Introduction, Main, or Notes.";
+  "Apply supabase/migrations/20260917100000_lesson_asset_section.sql and supabase/migrations/20260917110000_lesson_asset_cover_section.sql before placing media on Cover, Introduction, Main, or Notes.";
 
 export const LESSON_ASSET_COLUMNS =
   "id, lesson_id, position, kind, title, storage_path, external_url, section";
@@ -66,6 +66,8 @@ export const FILE_ACCEPT =
   ".pdf,.pptx,.jpg,.jpeg,.png,.webp,.gif,.mp3,.wav,.ogg,.m4a,.mp4,.webm,.mov";
 
 export const IMAGE_ACCEPT = ".jpg,.jpeg,.png,.webp,.gif";
+export const VIDEO_ACCEPT = ".mp4,.webm,.mov";
+export const PDF_ACCEPT = ".pdf";
 
 export function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(

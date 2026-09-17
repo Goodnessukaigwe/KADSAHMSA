@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 
-import { LessonMedia, LessonSectionImage } from "@/components/learner/lesson-media";
+import { LessonMedia, LessonSectionImage, LessonSectionMedia } from "@/components/learner/lesson-media";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
 import {
   leftoverNonImageAssets,
-  sectionedLessonImage,
+  orderedSectionMedia,
   unsectionedLessonImages,
   type LessonAssetSection,
   type PlayerPageView,
@@ -34,9 +34,10 @@ export function LessonReader({
   }, [courseSlug, lesson.isLastPageOfModule, lesson.moduleIndex]);
 
   const assets = lesson.assets ?? [];
-  const pageImage = sectionedLessonImage(assets, lesson.section);
+  const pageMedia = orderedSectionMedia(assets, lesson.section);
   const leftoverImages = lesson.isFirstPageOfModule ? unsectionedLessonImages(assets) : [];
   const leftoverMedia = lesson.isLastPageOfModule ? leftoverNonImageAssets(assets) : [];
+  const coverMedia = lesson.isFirstPageOfCourse ? lesson.coverAssets : [];
 
   return (
     <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -63,7 +64,8 @@ export function LessonReader({
           {leftoverImages.map((asset) => (
             <LessonSectionImage key={asset.id} asset={asset} />
           ))}
-          <LessonSectionImage asset={pageImage} />
+          {coverMedia.length ? <LessonSectionMedia assets={coverMedia} /> : null}
+          {pageMedia.length ? <LessonSectionMedia assets={pageMedia} /> : null}
           {lesson.section === "introduction" ? (
             <LessonRichText value={lesson.introduction} />
           ) : null}
@@ -122,6 +124,10 @@ function LessonRichText({
     "[&_a]:underline [&_em]:italic [&_strong]:font-semibold",
     "[&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5",
     "[&_p+p]:mt-3",
+    "[&_[align=left]]:text-left [&_[align=center]]:text-center [&_[align=right]]:text-right",
+    "[&_[style*='text-align:left']]:text-left [&_[style*='text-align: left']]:text-left",
+    "[&_[style*='text-align:center']]:text-center [&_[style*='text-align: center']]:text-center",
+    "[&_[style*='text-align:right']]:text-right [&_[style*='text-align: right']]:text-right",
     className
   );
   if (inlineOnly) {

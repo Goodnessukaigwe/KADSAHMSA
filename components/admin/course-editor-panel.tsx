@@ -3,9 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
   ChevronDown,
   Copy,
+  FileText,
+  Film,
   Italic,
   Link2,
   List,
@@ -30,7 +35,7 @@ import {
   uploadCourseCover,
   uploadLessonAsset,
 } from "@/lib/courses/asset-actions";
-import { IMAGE_ACCEPT, isPublicCoverPath, isUuid } from "@/lib/courses/media";
+import { IMAGE_ACCEPT, PDF_ACCEPT, VIDEO_ACCEPT, isPublicCoverPath, isUuid } from "@/lib/courses/media";
 import {
   joinLessonParagraphs,
   normalizeLinkUrl,
@@ -44,25 +49,36 @@ import type {
   CourseStatus,
   LessonAsset,
   LessonAssetSection,
+  SectionedAssetKind,
 } from "@/lib/courses/types";
 import {
   LESSON_ASSET_SECTIONS,
-  sectionedLessonImage,
+  sectionedLessonAsset,
 } from "@/lib/courses/types";
 import { cn } from "@/lib/utils";
 
 type StagedFile = { file: File; previewUrl: string };
-type StagedSectionImages = Partial<Record<string, Partial<Record<LessonAssetSection, StagedFile>>>>;
+type StagedSectionFiles = Partial<
+  Record<string, Partial<Record<LessonAssetSection, Partial<Record<SectionedAssetKind, StagedFile>>>>>
+>;
+const SECTION_MEDIA_KINDS: SectionedAssetKind[] = ["image", "video", "pdf"];
 
 function revokeStaged(staged: StagedFile | null | undefined) {
   if (staged?.previewUrl.startsWith("blob:")) URL.revokeObjectURL(staged.previewUrl);
 }
 
-function revokeSectionImages(staged: StagedSectionImages) {
+function revokeSectionFiles(staged: StagedSectionFiles) {
   for (const lesson of Object.values(staged)) {
     if (!lesson) continue;
-    for (const image of Object.values(lesson)) revokeStaged(image);
+    for (const files of Object.values(lesson)) {
+      if (!files) continue;
+      for (const file of Object.values(files)) revokeStaged(file);
+    }
   }
+}
+
+function stagedPreview(file: File, kind: SectionedAssetKind) {
+  return kind === "image" ? URL.createObjectURL(file) : "";
 }
 
 function blankLesson(): BuilderLesson {
@@ -105,7 +121,9 @@ export function CourseEditorPanel({
   const [quizOpen, setQuizOpen] = useState(false);
   const [uploadToast, setUploadToast] = useState<string | null>(null);
   const [stagedCover, setStagedCover] = useState<StagedFile | null>(null);
-  const [stagedSectionImages, setStagedSectionImages] = useState<StagedSectionImages>({});
+  const [stagedCoverVideo, setStagedCoverVideo] = useState<StagedFile | null>(null);
+  const [stagedCoverPdf, setStagedCoverPdf] = useState<StagedFile | null>(null);
+  const [stagedSectionFiles, setStagedSectionFiles] = useState<StagedSectionFiles>({});
   const [saved, setSaved] = useState(true);
   const [pending, setPending] = useState<"save" | "publish" | "delete" | "status" | null>(
     null
@@ -155,8 +173,16 @@ export function CourseEditorPanel({
           revokeStaged(current);
           return null;
         });
-        setStagedSectionImages((current) => {
-          revokeSectionImages(current);
+        setStagedCoverVideo((current) => {
+          revokeStaged(current);
+          return null;
+        });
+        setStagedCoverPdf((current) => {
+          revokeStaged(current);
+          return null;
+        });
+        setStagedSectionFiles((current) => {
+          revokeSectionFiles(current);
           return {};
         });
         setSaved(true);
@@ -204,8 +230,16 @@ export function CourseEditorPanel({
       revokeStaged(current);
       return null;
     });
-    setStagedSectionImages((current) => {
-      revokeSectionImages(current);
+    setStagedCoverVideo((current) => {
+      revokeStaged(current);
+      return null;
+    });
+    setStagedCoverPdf((current) => {
+      revokeStaged(current);
+      return null;
+    });
+    setStagedSectionFiles((current) => {
+      revokeSectionFiles(current);
       return {};
     });
     setSaved(true);
@@ -299,19 +333,51 @@ export function CourseEditorPanel({
     markDirty();
   }
 
-  function stageSectionImage(lessonId: string, section: LessonAssetSection, file: File, previewUrl: string) {
-    setStagedSectionImages((current) => {
-      const previous = current[lessonId]?.[section];
+  function stageCoverMedia(kind: "video" | "pdf", file: File) {
+    const staged = { file, previewUrl: "" };
+    if (kind === "video") {
+      setStagedCoverVideo((current) => {
+        revokeStaged(current);
+        return staged;
+      });
+    } else {
+      setStagedCoverPdf((current) => {
+        revokeStaged(current);
+        return staged;
+      });
+    }
+    markDirty();
+  }
+
+  function stageSectionFile(
+    lessonId: string,
+    section: LessonAssetSection,
+    kind: SectionedAssetKind,
+    file: File
+  ) {
+    const previewUrl = stagedPreview(file, kind);
+    setStagedSectionFiles((current) => {
+      const previous = current[lessonId]?.[section]?.[kind];
       if (previous?.previewUrl !== previewUrl) revokeStaged(previous);
       return {
         ...current,
         [lessonId]: {
           ...current[lessonId],
-          [section]: { file, previewUrl },
+          [section]: {
+            ...current[lessonId]?.[section],
+            [kind]: { file, previewUrl },
+          },
         },
       };
     });
     markDirty();
+  }
+
+  function applyLessonAssets(lessonId: string, assets: LessonAsset[]) {
+    setLessons((current) =>
+      current.map((item) => (item.id === lessonId ? { ...item, assets } : item))
+    );
+    setEditing((current) => (current?.id === lessonId ? { ...current, assets } : current));
   }
 
   function matchSavedLesson(draft: BuilderLesson, savedLessons: BuilderLesson[], index: number) {
@@ -323,6 +389,14 @@ export function CourseEditorPanel({
     );
   }
 
+  async function uploadSectionedFile(lessonId: string, section: string, file: File) {
+    const body = new FormData();
+    body.set("file", file);
+    body.set("title", file.name.replace(/\.[^.]+$/, ""));
+    body.set("section", section);
+    return uploadLessonAsset(lessonId, body);
+  }
+
   async function flushQueuedUploads(
     savedCourseId: string,
     draftLessons: BuilderLesson[],
@@ -330,7 +404,9 @@ export function CourseEditorPanel({
   ): Promise<{ lessons: BuilderLesson[]; error?: string }> {
     let nextLessons = savedLessons;
     const coverToFlush = stagedCover;
-    const sectionsToFlush = stagedSectionImages;
+    const coverVideoToFlush = stagedCoverVideo;
+    const coverPdfToFlush = stagedCoverPdf;
+    const sectionsToFlush = stagedSectionFiles;
 
     if (coverToFlush) {
       setUploadToast(coverToFlush.file.name);
@@ -348,6 +424,33 @@ export function CourseEditorPanel({
       setCoverUrl(preview.ok ? preview.url : "");
     }
 
+    const firstDraft = draftLessons[0];
+    const firstSaved = firstDraft ? matchSavedLesson(firstDraft, nextLessons, 0) : nextLessons[0];
+    const coverFiles: { staged: StagedFile | null; clear: () => void }[] = [
+      { staged: coverVideoToFlush, clear: () => setStagedCoverVideo(null) },
+      { staged: coverPdfToFlush, clear: () => setStagedCoverPdf(null) },
+    ];
+    if (coverFiles.some((item) => item.staged)) {
+      if (!firstSaved || !isUuid(firstSaved.id)) {
+        setUploadToast(null);
+        return { lessons: nextLessons, error: "Save the course first to upload cover media." };
+      }
+      for (const item of coverFiles) {
+        if (!item.staged) continue;
+        setUploadToast(item.staged.file.name);
+        const uploaded = await uploadSectionedFile(firstSaved.id, "cover", item.staged.file);
+        if (!uploaded.ok) {
+          setUploadToast(null);
+          return { lessons: nextLessons, error: uploaded.error };
+        }
+        revokeStaged(item.staged);
+        item.clear();
+        nextLessons = nextLessons.map((lesson) =>
+          lesson.id === firstSaved.id ? { ...lesson, assets: uploaded.assets } : lesson
+        );
+      }
+    }
+
     for (const [index, draft] of draftLessons.entries()) {
       const pending = sectionsToFlush[draft.id];
       if (!pending) continue;
@@ -357,30 +460,33 @@ export function CourseEditorPanel({
         return { lessons: nextLessons, error: "Save the course first to upload photos." };
       }
       for (const section of LESSON_ASSET_SECTIONS) {
-        const staged = pending[section];
-        if (!staged) continue;
-        setUploadToast(staged.file.name);
-        const body = new FormData();
-        body.set("file", staged.file);
-        body.set("title", staged.file.name.replace(/\.[^.]+$/, ""));
-        body.set("section", section);
-        const uploaded = await uploadLessonAsset(savedLesson.id, body);
-        if (!uploaded.ok) {
-          setUploadToast(null);
-          return { lessons: nextLessons, error: uploaded.error };
+        const files = pending[section];
+        if (!files) continue;
+        for (const kind of SECTION_MEDIA_KINDS) {
+          const staged = files[kind];
+          if (!staged) continue;
+          setUploadToast(staged.file.name);
+          const uploaded = await uploadSectionedFile(savedLesson.id, section, staged.file);
+          if (!uploaded.ok) {
+            setUploadToast(null);
+            return { lessons: nextLessons, error: uploaded.error };
+          }
+          revokeStaged(staged);
+          setStagedSectionFiles((current) => {
+            const lesson = { ...current[draft.id] };
+            const sectionFiles = { ...lesson[section] };
+            delete sectionFiles[kind];
+            if (Object.keys(sectionFiles).length) lesson[section] = sectionFiles;
+            else delete lesson[section];
+            const next = { ...current };
+            if (Object.keys(lesson).length) next[draft.id] = lesson;
+            else delete next[draft.id];
+            return next;
+          });
+          nextLessons = nextLessons.map((item) =>
+            item.id === savedLesson.id ? { ...item, assets: uploaded.assets } : item
+          );
         }
-        revokeStaged(staged);
-        setStagedSectionImages((current) => {
-          const lesson = { ...current[draft.id] };
-          delete lesson[section];
-          const next = { ...current };
-          if (Object.keys(lesson).length) next[draft.id] = lesson;
-          else delete next[draft.id];
-          return next;
-        });
-        nextLessons = nextLessons.map((item) =>
-          item.id === savedLesson.id ? { ...item, assets: uploaded.assets } : item
-        );
       }
     }
 
@@ -470,6 +576,7 @@ export function CourseEditorPanel({
 
   const live = status === "published";
   const lockedQuiz = slug === "dptc";
+  const firstLesson = lessons[0] ?? null;
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
@@ -563,20 +670,52 @@ export function CourseEditorPanel({
               />
             </FieldRow>
 
-            <FieldRow label="Cover Photo">
-              <CoverThumb
-                courseId={courseId}
-                src={coverUrl || (isPublicCoverPath(coverPath) ? coverPath : "")}
-                onUploading={setUploadToast}
-                onStaged={stageCover}
-                onUploaded={async (path) => {
-                  setCoverPath(path);
-                  const preview = await previewCoverPath(path);
-                  setCoverUrl(preview.ok ? preview.url : "");
-                  setSaved(true);
-                  setUploadToast(null);
-                }}
-              />
+            <FieldRow label="Cover">
+              <div className="flex flex-wrap items-start gap-4">
+                <SlotCaption label="Photo">
+                  <CoverThumb
+                    courseId={courseId}
+                    src={coverUrl || (isPublicCoverPath(coverPath) ? coverPath : "")}
+                    onUploading={setUploadToast}
+                    onStaged={stageCover}
+                    onUploaded={async (path) => {
+                      setCoverPath(path);
+                      const preview = await previewCoverPath(path);
+                      setCoverUrl(preview.ok ? preview.url : "");
+                      setSaved(true);
+                      setUploadToast(null);
+                    }}
+                  />
+                </SlotCaption>
+                <SlotCaption label="Video">
+                  <CoverFileThumb
+                    kind="video"
+                    lessonId={firstLesson?.id ?? null}
+                    asset={sectionedLessonAsset(firstLesson?.assets ?? [], "cover", "video")}
+                    stagedName={stagedCoverVideo?.file.name}
+                    onUploading={setUploadToast}
+                    onStaged={(file) => stageCoverMedia("video", file)}
+                    onUploaded={(lessonId, assets) => {
+                      applyLessonAssets(lessonId, assets);
+                      setSaved(true);
+                    }}
+                  />
+                </SlotCaption>
+                <SlotCaption label="PDF">
+                  <CoverFileThumb
+                    kind="pdf"
+                    lessonId={firstLesson?.id ?? null}
+                    asset={sectionedLessonAsset(firstLesson?.assets ?? [], "cover", "pdf")}
+                    stagedName={stagedCoverPdf?.file.name}
+                    onUploading={setUploadToast}
+                    onStaged={(file) => stageCoverMedia("pdf", file)}
+                    onUploaded={(lessonId, assets) => {
+                      applyLessonAssets(lessonId, assets);
+                      setSaved(true);
+                    }}
+                  />
+                </SlotCaption>
+              </div>
             </FieldRow>
 
             {editing ? (
@@ -618,15 +757,15 @@ export function CourseEditorPanel({
                   label="Introduction"
                   value={editing.introduction}
                   onChange={(introduction) => updateLesson({ ...editing, introduction })}
-                  image={
-                    <SectionImageThumb
+                  media={
+                    <SectionMediaSlots
                       lessonId={editing.id}
                       section="introduction"
-                      asset={sectionedLessonImage(editing.assets ?? [], "introduction")}
-                      previewUrl={stagedSectionImages[editing.id]?.introduction?.previewUrl}
+                      assets={editing.assets ?? []}
+                      staged={stagedSectionFiles[editing.id]?.introduction}
                       onUploading={setUploadToast}
-                      onStaged={(file, previewUrl) =>
-                        stageSectionImage(editing.id, "introduction", file, previewUrl)
+                      onStaged={(kind, file) =>
+                        stageSectionFile(editing.id, "introduction", kind, file)
                       }
                       onUploaded={(assets) => updateLesson({ ...editing, assets })}
                     />
@@ -637,16 +776,14 @@ export function CourseEditorPanel({
                   label="Main Content"
                   value={editing.main}
                   onChange={(main) => updateLesson({ ...editing, main })}
-                  image={
-                    <SectionImageThumb
+                  media={
+                    <SectionMediaSlots
                       lessonId={editing.id}
                       section="main"
-                      asset={sectionedLessonImage(editing.assets ?? [], "main")}
-                      previewUrl={stagedSectionImages[editing.id]?.main?.previewUrl}
+                      assets={editing.assets ?? []}
+                      staged={stagedSectionFiles[editing.id]?.main}
                       onUploading={setUploadToast}
-                      onStaged={(file, previewUrl) =>
-                        stageSectionImage(editing.id, "main", file, previewUrl)
-                      }
+                      onStaged={(kind, file) => stageSectionFile(editing.id, "main", kind, file)}
                       onUploaded={(assets) => updateLesson({ ...editing, assets })}
                     />
                   }
@@ -656,16 +793,14 @@ export function CourseEditorPanel({
                   label="Additional Notes"
                   value={editing.notes}
                   onChange={(notes) => updateLesson({ ...editing, notes })}
-                  image={
-                    <SectionImageThumb
+                  media={
+                    <SectionMediaSlots
                       lessonId={editing.id}
                       section="notes"
-                      asset={sectionedLessonImage(editing.assets ?? [], "notes")}
-                      previewUrl={stagedSectionImages[editing.id]?.notes?.previewUrl}
+                      assets={editing.assets ?? []}
+                      staged={stagedSectionFiles[editing.id]?.notes}
                       onUploading={setUploadToast}
-                      onStaged={(file, previewUrl) =>
-                        stageSectionImage(editing.id, "notes", file, previewUrl)
-                      }
+                      onStaged={(kind, file) => stageSectionFile(editing.id, "notes", kind, file)}
                       onUploaded={(assets) => updateLesson({ ...editing, assets })}
                     />
                   }
@@ -675,7 +810,7 @@ export function CourseEditorPanel({
                     lessonId={editing.id}
                     assets={editing.assets ?? []}
                     hideIds={(editing.assets ?? [])
-                      .filter((asset) => asset.kind === "image" && asset.section)
+                      .filter((asset) => asset.section)
                       .map((asset) => asset.id)}
                     onChange={(assets) => updateLesson({ ...editing, assets })}
                   />
@@ -886,21 +1021,139 @@ function CoverThumb({
   );
 }
 
-function SectionImageThumb({
+function SlotCaption({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-start gap-1">
+      {children}
+      <p className="text-[10px] font-semibold tracking-[0.12em] text-neutral-400 uppercase">{label}</p>
+    </div>
+  );
+}
+
+function CoverFileThumb({
+  kind,
+  lessonId,
+  asset,
+  stagedName,
+  onUploaded,
+  onStaged,
+  onUploading,
+}: {
+  kind: "video" | "pdf";
+  lessonId: string | null;
+  asset?: LessonAsset;
+  stagedName?: string;
+  onUploaded: (lessonId: string, assets: LessonAsset[]) => void;
+  onStaged: (file: File) => void;
+  onUploading?: (name: string | null) => void;
+}) {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const saved = Boolean(lessonId && isUuid(lessonId));
+
+  async function onFile(file: File) {
+    if (pending) return;
+    if (!saved || !lessonId) {
+      setError(null);
+      onStaged(file);
+      return;
+    }
+    setPending(true);
+    setError(null);
+    onUploading?.(file.name);
+    const body = new FormData();
+    body.set("file", file);
+    body.set("title", file.name.replace(/\.[^.]+$/, ""));
+    body.set("section", "cover");
+    const result = await uploadLessonAsset(lessonId, body);
+    setPending(false);
+    onUploading?.(null);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+    onUploaded(lessonId, result.assets);
+  }
+
+  return (
+    <div>
+      <MediaKindSlot
+        kind={kind}
+        asset={asset}
+        pending={pending}
+        label={`Cover ${kind}`}
+        stagedName={stagedName}
+        onFile={(file) => void onFile(file)}
+      />
+      {error ? (
+        <p className="mt-1 max-w-[9rem] text-[11px] text-red-600" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+const SECTION_MEDIA_SLOT_LABEL: Record<SectionedAssetKind, string> = {
+  image: "Photo",
+  video: "Video",
+  pdf: "PDF",
+};
+
+function SectionMediaSlots({
   lessonId,
   section,
-  asset,
-  previewUrl,
+  assets,
+  staged,
   onUploaded,
   onStaged,
   onUploading,
 }: {
   lessonId: string;
   section: LessonAssetSection;
-  asset?: LessonAsset;
-  previewUrl?: string;
+  assets: LessonAsset[];
+  staged?: Partial<Record<SectionedAssetKind, StagedFile>>;
   onUploaded: (assets: LessonAsset[]) => void;
-  onStaged: (file: File, previewUrl: string) => void;
+  onStaged: (kind: SectionedAssetKind, file: File) => void;
+  onUploading?: (name: string | null) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      {SECTION_MEDIA_KINDS.map((kind) => (
+        <SlotCaption key={kind} label={SECTION_MEDIA_SLOT_LABEL[kind]}>
+          <SectionFileThumb
+            lessonId={lessonId}
+            section={section}
+            kind={kind}
+            asset={sectionedLessonAsset(assets, section, kind)}
+            staged={staged?.[kind]}
+            onUploading={onUploading}
+            onStaged={(file) => onStaged(kind, file)}
+            onUploaded={onUploaded}
+          />
+        </SlotCaption>
+      ))}
+    </div>
+  );
+}
+
+function SectionFileThumb({
+  lessonId,
+  section,
+  kind,
+  asset,
+  staged,
+  onUploaded,
+  onStaged,
+  onUploading,
+}: {
+  lessonId: string;
+  section: LessonAssetSection;
+  kind: SectionedAssetKind;
+  asset?: LessonAsset;
+  staged?: StagedFile;
+  onUploaded: (assets: LessonAsset[]) => void;
+  onStaged: (file: File) => void;
   onUploading?: (name: string | null) => void;
 }) {
   const [pending, setPending] = useState(false);
@@ -911,7 +1164,7 @@ function SectionImageThumb({
     if (pending) return;
     if (!saved) {
       setError(null);
-      onStaged(file, URL.createObjectURL(file));
+      onStaged(file);
       return;
     }
     setPending(true);
@@ -933,15 +1186,17 @@ function SectionImageThumb({
 
   return (
     <div>
-      <PhotoSlot
+      <MediaKindSlot
+        kind={kind}
         asset={asset}
-        previewUrl={previewUrl}
+        previewUrl={kind === "image" ? staged?.previewUrl : undefined}
+        stagedName={kind === "image" ? undefined : staged?.file.name}
         pending={pending}
-        label={`${section} image`}
+        label={`${section} ${kind}`}
         onFile={(file) => void onFile(file)}
       />
       {error ? (
-        <p className="mt-1 text-[11px] text-red-600" role="alert">
+        <p className="mt-1 max-w-[9rem] text-[11px] text-red-600" role="alert">
           {error}
         </p>
       ) : null}
@@ -949,22 +1204,31 @@ function SectionImageThumb({
   );
 }
 
-function PhotoSlot({
+function MediaKindSlot({
+  kind,
   asset,
   previewUrl,
+  stagedName,
   pending,
   label,
   onFile,
 }: {
+  kind: SectionedAssetKind;
   asset?: LessonAsset;
   previewUrl?: string;
+  stagedName?: string;
   pending: boolean;
   label: string;
   onFile: (file: File) => void;
 }) {
-  const [url, setUrl] = useState<string | null>(previewUrl ?? null);
+  const [url, setUrl] = useState<string | null>(kind === "image" ? previewUrl ?? null : null);
+  const accept = kind === "image" ? IMAGE_ACCEPT : kind === "video" ? VIDEO_ACCEPT : PDF_ACCEPT;
+  const Icon = kind === "video" ? Film : FileText;
+  const filename = asset?.title || stagedName;
+  const filled = Boolean(asset || stagedName || (kind === "image" && (previewUrl || url)));
 
   useEffect(() => {
+    if (kind !== "image") return;
     if (previewUrl) {
       setUrl(previewUrl);
       return;
@@ -985,25 +1249,28 @@ function PhotoSlot({
     return () => {
       cancelled = true;
     };
-  }, [asset, previewUrl]);
+  }, [asset, previewUrl, kind]);
 
   return (
     <label
       className="relative flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-neutral-200"
       aria-label={label}
+      title={filename || label}
     >
-      {url ? (
+      {kind === "image" && url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt="" className="size-full object-cover" />
+      ) : kind !== "image" ? (
+        <Icon className={cn("size-4", filled ? "text-neutral-800" : "text-neutral-400")} />
       ) : null}
       {pending ? (
-        <span className="absolute inset-0 bg-white/70 text-[8px] font-bold tracking-wider text-neutral-500 uppercase">
+        <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-[8px] font-bold tracking-wider text-neutral-500 uppercase">
           …
         </span>
       ) : null}
       <input
         type="file"
-        accept={IMAGE_ACCEPT}
+        accept={accept}
         className="sr-only"
         disabled={pending}
         onChange={(event) => {
@@ -1024,12 +1291,12 @@ function EditorBlock({
   label,
   value,
   onChange,
-  image,
+  media,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  image?: React.ReactNode;
+  media?: React.ReactNode;
 }) {
   const [boxes, setBoxes] = useState(() =>
     splitLessonParagraphs(value).map((html) => ({ id: newParagraphId(), html }))
@@ -1047,7 +1314,7 @@ function EditorBlock({
   return (
     <FieldRow label={label}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-        {image}
+        {media}
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           {boxes.map((box, index) => (
             <ParagraphBox
@@ -1127,6 +1394,24 @@ function ParagraphBox({
     onHtmlChange(currentHtml());
   }
 
+  function runAlign(command: "justifyLeft" | "justifyCenter" | "justifyRight") {
+    const el = editorRef.current;
+    if (!el) return;
+    el.focus();
+    try {
+      document.execCommand("styleWithCSS", false, "true");
+    } catch {
+      // execCommand styleWithCSS is best-effort
+    }
+    document.execCommand(command, false);
+    try {
+      document.execCommand("styleWithCSS", false, "false");
+    } catch {
+      // restore default for bold/italic
+    }
+    onHtmlChange(currentHtml());
+  }
+
   function applyLink() {
     const el = editorRef.current;
     if (!el) return;
@@ -1175,6 +1460,15 @@ function ParagraphBox({
           <ToolbarIconButton label="List" onClick={() => runCommand("insertUnorderedList")}>
             <List className="size-3.5" />
           </ToolbarIconButton>
+          <ToolbarIconButton label="Align left" onClick={() => runAlign("justifyLeft")}>
+            <AlignLeft className="size-3.5" />
+          </ToolbarIconButton>
+          <ToolbarIconButton label="Align center" onClick={() => runAlign("justifyCenter")}>
+            <AlignCenter className="size-3.5" />
+          </ToolbarIconButton>
+          <ToolbarIconButton label="Align right" onClick={() => runAlign("justifyRight")}>
+            <AlignRight className="size-3.5" />
+          </ToolbarIconButton>
         </span>
       </div>
       <div
@@ -1189,7 +1483,11 @@ function ParagraphBox({
           "min-h-24 w-full bg-transparent px-3 pb-3 text-sm leading-relaxed text-neutral-700 outline-none",
           "[&:empty]:before:pointer-events-none [&:empty]:before:text-neutral-400 [&:empty]:before:content-[attr(data-placeholder)]",
           "[&_a]:underline [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_strong]:font-semibold",
-          "[&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+          "[&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5",
+          "[&_[align=left]]:text-left [&_[align=center]]:text-center [&_[align=right]]:text-right",
+          "[&_[style*='text-align:left']]:text-left [&_[style*='text-align: left']]:text-left",
+          "[&_[style*='text-align:center']]:text-center [&_[style*='text-align: center']]:text-center",
+          "[&_[style*='text-align:right']]:text-right [&_[style*='text-align: right']]:text-right"
         )}
         onInput={() => onHtmlChange(currentHtml())}
         onPaste={(event) => {

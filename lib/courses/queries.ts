@@ -40,6 +40,8 @@ import {
   type PublishedLessonOutline,
   type RecentEnrolment,
   parseLessonAssetSection,
+  coverMediaAssets,
+  courseCoverMedia,
 } from "@/lib/courses/types";
 import { courseHasFinalQuiz } from "@/lib/quiz/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -433,6 +435,17 @@ async function getVisibleCourseInner(
     if (!assetCourseIds.has(course.id)) return null;
   }
 
+  const { data: firstLesson } = await supabase
+    .from("course_lessons")
+    .select("id")
+    .eq("course_id", course.id)
+    .order("position", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  const coverMedia = firstLesson
+    ? coverMediaAssets((await listLessonAssets([firstLesson.id])).get(firstLesson.id) ?? [])
+    : [];
+
   return {
     slug: course.slug,
     title: course.title,
@@ -443,6 +456,7 @@ async function getVisibleCourseInner(
     durationLabel: course.duration_label,
     outline,
     hasFinalQuiz: await courseHasFinalQuiz(course.id, course.slug),
+    coverMedia,
   };
 }
 
@@ -955,6 +969,8 @@ function toPlayerPageView(
     section: current.section,
     isFirstPageOfModule: current.isFirstPageOfModule,
     isLastPageOfModule: current.isLastPageOfModule,
+    isFirstPageOfCourse: current.page === 1,
+    coverAssets: courseCoverMedia(sources),
     pages: pages.map((item) => ({ page: item.page, href: item.href })),
   };
 }

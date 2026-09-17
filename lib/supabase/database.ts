@@ -186,7 +186,7 @@ export type Database = {
           title: string;
           storage_path: string | null;
           external_url: string | null;
-          section: "introduction" | "main" | "notes" | null;
+          section: "cover" | "introduction" | "main" | "notes" | null;
           created_at: string;
         };
         Insert: {
@@ -197,7 +197,7 @@ export type Database = {
           title?: string;
           storage_path?: string | null;
           external_url?: string | null;
-          section?: "introduction" | "main" | "notes" | null;
+          section?: "cover" | "introduction" | "main" | "notes" | null;
           created_at?: string;
         };
         Update: {
@@ -208,7 +208,7 @@ export type Database = {
           title?: string;
           storage_path?: string | null;
           external_url?: string | null;
-          section?: "introduction" | "main" | "notes" | null;
+          section?: "cover" | "introduction" | "main" | "notes" | null;
           created_at?: string;
         };
         Relationships: [];

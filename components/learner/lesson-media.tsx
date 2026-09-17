@@ -29,7 +29,18 @@ export function LessonSectionImage({ asset }: { asset?: LessonAsset }) {
   );
 }
 
-function LessonAssetBlock({ asset }: { asset: LessonAsset }) {
+export function LessonSectionMedia({ assets }: { assets: LessonAsset[] }) {
+  if (!assets.length) return null;
+  return (
+    <div className="max-w-3xl space-y-6">
+      {assets.map((asset) => (
+        <LessonAssetBlock key={asset.id} asset={asset} />
+      ))}
+    </div>
+  );
+}
+
+export function LessonAssetBlock({ asset }: { asset: LessonAsset }) {
   if (asset.kind === "youtube" || asset.kind === "vimeo") {
     const id = videoIdFromAsset(asset.kind, asset.externalUrl);
     if (!id) {

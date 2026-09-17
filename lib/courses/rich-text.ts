@@ -92,6 +92,7 @@ export function sanitizeLessonHtml(html: string): string {
   const out: string[] = [];
   const stack: string[] = [];
   const spanWraps: number[] = [];
+  const alignedDivs: boolean[] = [];
   let lastWasBreak = true;
 
   const emitBreak = () => {
@@ -149,6 +150,21 @@ export function sanitizeLessonHtml(html: string): string {
         }
         continue;
       }
+      if (tag === "div") {
+        const converted = alignedDivs.pop() ?? false;
+        if (converted) {
+          const idx = stack.lastIndexOf("p");
+          if (idx >= 0) {
+            while (stack.length > idx) {
+              const open = stack.pop();
+              if (open) out.push(`</${open}>`);
+            }
+            lastWasBreak = true;
+          }
+        }
+        emitBreak();
+        continue;
+      }
       if (BLOCKISH_UNWRAP.has(tag)) {
         emitBreak();
         continue;
@@ -182,6 +198,17 @@ export function sanitizeLessonHtml(html: string): string {
     }
 
     if (BLOCKISH_UNWRAP.has(tag)) {
+      if (tag === "div") {
+        const align = parseTextAlign(attrPart);
+        if (align) {
+          stack.push("p");
+          alignedDivs.push(true);
+          out.push(`<p style="text-align: ${align}">`);
+          lastWasBreak = true;
+          continue;
+        }
+        alignedDivs.push(false);
+      }
       emitBreak();
       continue;
     }
@@ -218,9 +245,17 @@ export function sanitizeLessonHtml(html: string): string {
       continue;
     }
 
+    if (tag === "p") {
+      const align = parseTextAlign(attrPart);
+      stack.push("p");
+      out.push(align ? `<p style="text-align: ${align}">` : "<p>");
+      lastWasBreak = true;
+      continue;
+    }
+
     stack.push(tag);
     out.push(`<${tag}>`);
-    lastWasBreak = tag === "p" || tag === "ul" || tag === "ol" || tag === "li";
+    lastWasBreak = tag === "ul" || tag === "ol" || tag === "li";
   }
 
   while (stack.length) {
@@ -238,6 +273,18 @@ function skipUntilClose(html: string, from: number, tag: string): number {
   if (!match || match.index == null) return html.length;
   const close = html.indexOf(">", from + match.index);
   return close === -1 ? html.length : close + 1;
+}
+
+function parseTextAlign(attrString: string): "left" | "center" | "right" | null {
+  const style = styleAttr(attrString);
+  const fromStyle = style.match(/text-align\s*:\s*(left|center|right)\b/i);
+  if (fromStyle?.[1]) {
+    return fromStyle[1].toLowerCase() as "left" | "center" | "right";
+  }
+  const align = attrString.match(/\balign\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+  const value = (align?.[1] ?? align?.[2] ?? align?.[3] ?? "").trim().toLowerCase();
+  if (value === "left" || value === "center" || value === "right") return value;
+  return null;
 }
 
 function styleAttr(attrString: string): string {

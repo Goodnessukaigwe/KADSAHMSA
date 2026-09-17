@@ -16,7 +16,11 @@ import {
   parseVideoUrl,
   safeFileName,
 } from "@/lib/courses/media";
-import { parseLessonAssetSection, type LessonAsset } from "@/lib/courses/types";
+import {
+  isSectionedAssetKind,
+  parseLessonAssetSection,
+  type LessonAsset,
+} from "@/lib/courses/types";
 import { getAuthUser, getUserRoles, isStaff, requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -147,8 +151,14 @@ export async function uploadLessonAsset(
   if (!context) return fail("That lesson was not found.");
 
   const title = String(formData.get("title") ?? "").trim() || file.name.replace(/\.[^.]+$/, "");
-  const section =
-    classified.kind === "image" ? parseLessonAssetSection(formData.get("section")) : null;
+  const requestedSection = parseLessonAssetSection(formData.get("section"));
+  if (requestedSection && !isSectionedAssetKind(classified.kind)) {
+    return fail("Only an image, video, or PDF can be placed on Cover, Introduction, Main, or Notes.");
+  }
+  if (requestedSection === "cover" && classified.kind === "image") {
+    return fail("Cover photos upload as the course card image, not as a lesson file.");
+  }
+  const section = requestedSection && isSectionedAssetKind(classified.kind) ? requestedSection : null;
   const id = crypto.randomUUID();
   const path = `${context.courseId}/${context.lessonId}/${id}-${safeFileName(file.name)}`;
   const admin = createAdminClient();
@@ -159,7 +169,7 @@ export async function uploadLessonAsset(
       .from("lesson_assets")
       .select("id, storage_path")
       .eq("lesson_id", lessonId)
-      .eq("kind", "image")
+      .eq("kind", classified.kind)
       .eq("section", section);
     if (existing.error) {
       return fail(assetsError(existing.error.message, "Could not attach that file."));
