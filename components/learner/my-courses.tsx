@@ -386,7 +386,9 @@ function CatalogueGrid({
           <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">
             {course.title}
           </h3>
-          <p className="mt-1 text-sm text-neutral-400">{course.lessons} lessons</p>
+          <p className="mt-1 text-sm text-neutral-400">
+            {course.lessons} {course.lessons === 1 ? "module" : "modules"}
+          </p>
           <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
             <SplitCta
               size="sm"

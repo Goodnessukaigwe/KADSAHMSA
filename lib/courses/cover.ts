@@ -24,14 +24,20 @@ export async function firstLessonImageCoverPath(
   admin: AdminClient,
   courseId: string
 ) {
-  const { data: lessons, error: lessonError } = await admin
-    .from("course_lessons")
-    .select("id")
-    .eq("course_id", courseId)
-    .order("position", { ascending: true });
+  const [{ data: lessons, error: lessonError }, { data: moduleRows }] = await Promise.all([
+    admin.from("course_lessons").select("id, position, module_id").eq("course_id", courseId),
+    admin.from("course_modules").select("id, position").eq("course_id", courseId),
+  ]);
   if (lessonError || !lessons?.length) return "";
 
-  const lessonIds = lessons.map((row) => row.id);
+  const modulePos = new Map((moduleRows ?? []).map((row) => [row.id, row.position]));
+  const lessonIds = [...lessons]
+    .sort(
+      (a, b) =>
+        (modulePos.get(a.module_id) ?? a.position) - (modulePos.get(b.module_id) ?? b.position) ||
+        a.position - b.position
+    )
+    .map((row) => row.id);
   const { data: assets, error: assetError } = await admin
     .from("lesson_assets")
     .select("storage_path, external_url, lesson_id, position")

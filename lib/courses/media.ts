@@ -11,6 +11,12 @@ export const MISSING_ASSETS_SQL =
 export const MISSING_SECTION_SQL =
   "Apply supabase/migrations/20260917100000_lesson_asset_section.sql and supabase/migrations/20260917110000_lesson_asset_cover_section.sql before placing media on Cover, Introduction, Main, or Notes.";
 
+export const MISSING_MODULES_SQL =
+  "Apply supabase/migrations/20260917140000_course_modules.sql before saving course modules.";
+
+export const MISSING_PLAYER_SQL =
+  "Apply supabase/migrations/20260917150000_player_resume_module_quizzes.sql in the dashboard for resume and module quizzes.";
+
 export const LESSON_ASSET_COLUMNS =
   "id, lesson_id, position, kind, title, storage_path, external_url, section";
 

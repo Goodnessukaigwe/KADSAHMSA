@@ -367,7 +367,7 @@ function ExploreSection({
                 {course.title}
               </h3>
               <p className="mt-1 text-sm text-neutral-400">
-                {course.lessons} {course.lessons === 1 ? "lesson" : "lessons"}
+                {course.lessons} {course.lessons === 1 ? "module" : "modules"}
               </p>
               <div className="mt-4 flex items-center gap-2">
                 <SplitCta

@@ -109,7 +109,11 @@ export async function getPublicQuiz(
   return {
     quizId: quiz.id,
     title:
-      quizSlug === "final" ? `${course.title} — Final assessment` : `${course.title} quiz`,
+      quizSlug === "final"
+        ? `${course.title} — Final assessment`
+        : quizSlug.startsWith("module-")
+          ? `${course.title} — Module quiz`
+          : `${course.title} quiz`,
     seconds: quiz.time_limit_seconds ?? 1800,
     maxAttempts: quiz.max_attempts,
     passMark: quiz.pass_mark_percent,

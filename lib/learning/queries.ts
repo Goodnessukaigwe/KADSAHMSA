@@ -25,12 +25,14 @@ function toProgress(row: {
   current_module: number;
   completed_indexes: number[] | null;
   player_seconds: number;
+  resume_lesson_slug?: string | null;
 } | null): CourseProgress {
   if (!row) return emptyProgress();
   return {
     currentModule: row.current_module || 1,
     completed: row.completed_indexes ?? [],
     playerSeconds: row.player_seconds ?? 0,
+    resumeLessonSlug: row.resume_lesson_slug ?? null,
   };
 }
 
@@ -94,10 +96,18 @@ export async function listMyEnrolments(): Promise<EnrolmentRecord[]> {
         ).data?.map((row) => ({ ...row, cover_path: "" })) ?? []
       : courseRows;
 
-  const { data: progressRows } = await supabase
+  const progressFull = await supabase
     .from("course_progress")
-    .select("course_id, current_module, completed_indexes, player_seconds")
+    .select("course_id, current_module, completed_indexes, player_seconds, resume_lesson_slug")
     .eq("user_id", user.id);
+  const progressRows = progressFull.error
+    ? (
+        await supabase
+          .from("course_progress")
+          .select("course_id, current_module, completed_indexes, player_seconds")
+          .eq("user_id", user.id)
+      ).data
+    : progressFull.data;
 
   const courseById = new Map(courses.map((row) => [row.id, row]));
   const progressByCourse = new Map(
@@ -113,7 +123,7 @@ export async function listMyEnrolments(): Promise<EnrolmentRecord[]> {
       const progress = progressByCourse.get(row.course_id) ?? emptyProgress();
       const liveCount = liveCounts.get(row.course_id) ?? 0;
       return [
-        continuePathFor(meta.slug, progress.currentModule).then((href) =>
+        continuePathFor(meta.slug, progress.currentModule, progress.resumeLessonSlug).then((href) =>
           toRecord(
             meta.slug,
             meta.title,
@@ -146,14 +156,20 @@ export async function getMyProgress(slug: string): Promise<CourseProgress> {
   if (!courseId) return emptyProgress();
 
   const supabase = await createClient();
-  const { data } = await supabase
+  const full = await supabase
+    .from("course_progress")
+    .select("current_module, completed_indexes, player_seconds, resume_lesson_slug")
+    .eq("user_id", user.id)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  if (!full.error) return toProgress(full.data);
+  const legacy = await supabase
     .from("course_progress")
     .select("current_module, completed_indexes, player_seconds")
     .eq("user_id", user.id)
     .eq("course_id", courseId)
     .maybeSingle();
-
-  return toProgress(data);
+  return toProgress(legacy.data);
 }
 
 export async function isEnrolledIn(slug: string): Promise<boolean> {

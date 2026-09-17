@@ -11,6 +11,7 @@ import {
   Copy,
   FileText,
   Film,
+  Image as ImageIcon,
   Italic,
   Link2,
   List,
@@ -45,6 +46,7 @@ import {
 import type {
   AdminCourseDetail,
   BuilderLesson,
+  BuilderModule,
   BuilderQuizQuestion,
   CourseStatus,
   LessonAsset,
@@ -53,6 +55,7 @@ import type {
 } from "@/lib/courses/types";
 import {
   LESSON_ASSET_SECTIONS,
+  flattenBuilderLessons,
   sectionedLessonAsset,
 } from "@/lib/courses/types";
 import { cn } from "@/lib/utils";
@@ -81,11 +84,15 @@ function stagedPreview(file: File, kind: SectionedAssetKind) {
   return kind === "image" ? URL.createObjectURL(file) : "";
 }
 
+function newClientId(prefix: string) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 function blankLesson(): BuilderLesson {
   return {
-    id: `new-${Date.now()}`,
-    title: "Untitled module",
-    slug: "untitled-module",
+    id: newClientId("lesson"),
+    title: "",
+    slug: "",
     status: "draft",
     duration: "",
     introduction: "",
@@ -93,6 +100,38 @@ function blankLesson(): BuilderLesson {
     notes: "",
     assets: [],
   };
+}
+
+function blankModule(): BuilderModule {
+  return {
+    id: newClientId("module"),
+    title: "",
+    slug: "",
+    lessons: [blankLesson()],
+    quizQuestions: [],
+  };
+}
+
+function withLesson(modules: BuilderModule[], lesson: BuilderLesson) {
+  return modules.map((module) => ({
+    ...module,
+    lessons: module.lessons.map((item) => (item.id === lesson.id ? lesson : item)),
+  }));
+}
+
+function findLesson(
+  modules: BuilderModule[],
+  lessonId?: string | null,
+  slug?: string
+) {
+  for (const module of modules) {
+    const match = module.lessons.find(
+      (item) => item.id === lessonId || (slug && item.slug === slug)
+    );
+    if (match) return { module, lesson: match };
+  }
+  const module = modules[0];
+  return { module, lesson: module?.lessons[0] ?? null };
 }
 
 export function CourseEditorPanel({
@@ -115,8 +154,11 @@ export function CourseEditorPanel({
   const [coverPath, setCoverPath] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [status, setStatus] = useState<CourseStatus>("draft");
-  const [lessons, setLessons] = useState<BuilderLesson[]>(() => [blankLesson()]);
-  const [editing, setEditing] = useState<BuilderLesson | null>(() => lessons[0] ?? null);
+  const [modules, setModules] = useState<BuilderModule[]>(() => [blankModule()]);
+  const [editingModuleId, setEditingModuleId] = useState(() => modules[0]?.id ?? "");
+  const [editingLessonId, setEditingLessonId] = useState(
+    () => modules[0]?.lessons[0]?.id ?? ""
+  );
   const [finalQuestions, setFinalQuestions] = useState<BuilderQuizQuestion[]>([]);
   const [quizOpen, setQuizOpen] = useState(false);
   const [uploadToast, setUploadToast] = useState<string | null>(null);
@@ -156,7 +198,7 @@ export function CourseEditorPanel({
           return;
         }
         loadedSlug.current = "new";
-        const lesson = blankLesson();
+        const nextModule = blankModule();
         setCourseId(null);
         setTitle("");
         setCourseSlug("");
@@ -165,8 +207,9 @@ export function CourseEditorPanel({
         setCoverPath("");
         setCoverUrl("");
         setStatus("draft");
-        setLessons([lesson]);
-        setEditing(lesson);
+        setModules([nextModule]);
+        setEditingModuleId(nextModule.id);
+        setEditingLessonId(nextModule.lessons[0]?.id ?? "");
         setFinalQuestions([]);
         setQuizOpen(false);
         setStagedCover((current) => {
@@ -213,7 +256,12 @@ export function CourseEditorPanel({
   }, [slug]);
 
   function applyCourse(course: AdminCourseDetail, url: string) {
-    const nextLessons = course.lessons.length ? course.lessons : [blankLesson()];
+    const nextModules = course.modules.length
+      ? course.modules.map((module) => ({
+          ...module,
+          lessons: module.lessons.length ? module.lessons : [blankLesson()],
+        }))
+      : [blankModule()];
     setCourseId(course.id);
     setTitle(course.title);
     setCourseSlug(course.slug);
@@ -222,8 +270,9 @@ export function CourseEditorPanel({
     setCoverPath(course.coverPath);
     setCoverUrl(url);
     setStatus(course.status);
-    setLessons(nextLessons);
-    setEditing(nextLessons[0] ?? null);
+    setModules(nextModules);
+    setEditingModuleId(nextModules[0]?.id ?? "");
+    setEditingLessonId(nextModules[0]?.lessons[0]?.id ?? "");
     setFinalQuestions(course.finalQuestions);
     setQuizOpen(course.finalQuestions.length > 0);
     setStagedCover((current) => {
@@ -251,16 +300,33 @@ export function CourseEditorPanel({
     setError(null);
   }
 
+  function updateModule(next: BuilderModule) {
+    setModules((current) => current.map((item) => (item.id === next.id ? next : item)));
+    markDirty();
+  }
+
   function updateLesson(next: BuilderLesson) {
-    setEditing(next);
-    setLessons((current) => current.map((item) => (item.id === next.id ? next : item)));
+    setModules((current) => withLesson(current, next));
     markDirty();
   }
 
   function createModule() {
+    const next = blankModule();
+    setModules((current) => [...current, next]);
+    setEditingModuleId(next.id);
+    setEditingLessonId(next.lessons[0]?.id ?? "");
+    markDirty();
+  }
+
+  function createLesson(moduleId: string) {
     const next = blankLesson();
-    setLessons((current) => [...current, next]);
-    setEditing(next);
+    setModules((current) =>
+      current.map((module) =>
+        module.id === moduleId ? { ...module, lessons: [...module.lessons, next] } : module
+      )
+    );
+    setEditingModuleId(moduleId);
+    setEditingLessonId(next.id);
     markDirty();
   }
 
@@ -301,17 +367,7 @@ export function CourseEditorPanel({
     markDirty();
   }
 
-  function payload(nextLessons = lessons, nextEditing = editing) {
-    const currentLessons = nextEditing
-      ? nextLessons.map((item) => (item.id === nextEditing.id ? nextEditing : item))
-      : nextLessons;
-    const lessonsToSave =
-      currentLessons.length === 1
-        ? currentLessons.map((lesson) => ({
-            ...lesson,
-            title: title.trim() || lesson.title,
-          }))
-        : currentLessons;
+  function payload(nextModules = modules) {
     return {
       slug,
       title,
@@ -319,7 +375,7 @@ export function CourseEditorPanel({
       summary,
       durationLabel,
       coverPath,
-      lessons: lessonsToSave,
+      modules: nextModules,
       finalQuestions,
     };
   }
@@ -374,10 +430,14 @@ export function CourseEditorPanel({
   }
 
   function applyLessonAssets(lessonId: string, assets: LessonAsset[]) {
-    setLessons((current) =>
-      current.map((item) => (item.id === lessonId ? { ...item, assets } : item))
+    setModules((current) =>
+      current.map((module) => ({
+        ...module,
+        lessons: module.lessons.map((item) =>
+          item.id === lessonId ? { ...item, assets } : item
+        ),
+      }))
     );
-    setEditing((current) => (current?.id === lessonId ? { ...current, assets } : current));
   }
 
   function matchSavedLesson(draft: BuilderLesson, savedLessons: BuilderLesson[], index: number) {
@@ -387,6 +447,19 @@ export function CourseEditorPanel({
       savedLessons[index] ??
       null
     );
+  }
+
+  function applyAssetsToModules(
+    tree: BuilderModule[],
+    lessonId: string,
+    assets: LessonAsset[]
+  ) {
+    return tree.map((module) => ({
+      ...module,
+      lessons: module.lessons.map((item) =>
+        item.id === lessonId ? { ...item, assets } : item
+      ),
+    }));
   }
 
   async function uploadSectionedFile(lessonId: string, section: string, file: File) {
@@ -399,10 +472,11 @@ export function CourseEditorPanel({
 
   async function flushQueuedUploads(
     savedCourseId: string,
-    draftLessons: BuilderLesson[],
-    savedLessons: BuilderLesson[]
-  ): Promise<{ lessons: BuilderLesson[]; error?: string }> {
-    let nextLessons = savedLessons;
+    draftModules: BuilderModule[],
+    savedModules: BuilderModule[]
+  ): Promise<{ modules: BuilderModule[]; error?: string }> {
+    let nextModules = savedModules;
+    const draftLessons = flattenBuilderLessons(draftModules);
     const coverToFlush = stagedCover;
     const coverVideoToFlush = stagedCoverVideo;
     const coverPdfToFlush = stagedCoverPdf;
@@ -415,7 +489,7 @@ export function CourseEditorPanel({
       const coverResult = await uploadCourseCover(savedCourseId, body);
       if (!coverResult.ok) {
         setUploadToast(null);
-        return { lessons: nextLessons, error: coverResult.error };
+        return { modules: nextModules, error: coverResult.error };
       }
       const preview = await previewCoverPath(coverResult.path);
       revokeStaged(coverToFlush);
@@ -424,8 +498,10 @@ export function CourseEditorPanel({
       setCoverUrl(preview.ok ? preview.url : "");
     }
 
-    const firstDraft = draftLessons[0];
-    const firstSaved = firstDraft ? matchSavedLesson(firstDraft, nextLessons, 0) : nextLessons[0];
+    const firstDraft = draftModules[0]?.lessons[0];
+    const firstSaved = firstDraft
+      ? matchSavedLesson(firstDraft, flattenBuilderLessons(nextModules), 0)
+      : flattenBuilderLessons(nextModules)[0];
     const coverFiles: { staged: StagedFile | null; clear: () => void }[] = [
       { staged: coverVideoToFlush, clear: () => setStagedCoverVideo(null) },
       { staged: coverPdfToFlush, clear: () => setStagedCoverPdf(null) },
@@ -433,7 +509,7 @@ export function CourseEditorPanel({
     if (coverFiles.some((item) => item.staged)) {
       if (!firstSaved || !isUuid(firstSaved.id)) {
         setUploadToast(null);
-        return { lessons: nextLessons, error: "Save the course first to upload cover media." };
+        return { modules: nextModules, error: "Save the course first to upload cover media." };
       }
       for (const item of coverFiles) {
         if (!item.staged) continue;
@@ -441,23 +517,21 @@ export function CourseEditorPanel({
         const uploaded = await uploadSectionedFile(firstSaved.id, "cover", item.staged.file);
         if (!uploaded.ok) {
           setUploadToast(null);
-          return { lessons: nextLessons, error: uploaded.error };
+          return { modules: nextModules, error: uploaded.error };
         }
         revokeStaged(item.staged);
         item.clear();
-        nextLessons = nextLessons.map((lesson) =>
-          lesson.id === firstSaved.id ? { ...lesson, assets: uploaded.assets } : lesson
-        );
+        nextModules = applyAssetsToModules(nextModules, firstSaved.id, uploaded.assets);
       }
     }
 
     for (const [index, draft] of draftLessons.entries()) {
       const pending = sectionsToFlush[draft.id];
       if (!pending) continue;
-      const savedLesson = matchSavedLesson(draft, nextLessons, index);
+      const savedLesson = matchSavedLesson(draft, flattenBuilderLessons(nextModules), index);
       if (!savedLesson || !isUuid(savedLesson.id)) {
         setUploadToast(null);
-        return { lessons: nextLessons, error: "Save the course first to upload photos." };
+        return { modules: nextModules, error: "Save the course first to upload photos." };
       }
       for (const section of LESSON_ASSET_SECTIONS) {
         const files = pending[section];
@@ -469,7 +543,7 @@ export function CourseEditorPanel({
           const uploaded = await uploadSectionedFile(savedLesson.id, section, staged.file);
           if (!uploaded.ok) {
             setUploadToast(null);
-            return { lessons: nextLessons, error: uploaded.error };
+            return { modules: nextModules, error: uploaded.error };
           }
           revokeStaged(staged);
           setStagedSectionFiles((current) => {
@@ -483,15 +557,25 @@ export function CourseEditorPanel({
             else delete next[draft.id];
             return next;
           });
-          nextLessons = nextLessons.map((item) =>
-            item.id === savedLesson.id ? { ...item, assets: uploaded.assets } : item
-          );
+          nextModules = applyAssetsToModules(nextModules, savedLesson.id, uploaded.assets);
         }
       }
     }
 
     setUploadToast(null);
-    return { lessons: nextLessons };
+    return { modules: nextModules };
+  }
+
+  function selectSavedTree(
+    tree: BuilderModule[],
+    moduleId: string,
+    lessonId: string,
+    lessonSlug?: string
+  ) {
+    const match = findLesson(tree, lessonId, lessonSlug);
+    setModules(tree);
+    setEditingModuleId(match.module?.id ?? tree[0]?.id ?? moduleId);
+    setEditingLessonId(match.lesson?.id ?? tree[0]?.lessons[0]?.id ?? lessonId);
   }
 
   async function persist(mode: "save" | "publish") {
@@ -507,17 +591,12 @@ export function CourseEditorPanel({
       return;
     }
     setCourseId(result.courseId);
-    const flushed = await flushQueuedUploads(result.courseId, input.lessons, result.lessons);
+    const flushed = await flushQueuedUploads(result.courseId, input.modules, result.modules);
     setPending(null);
     if (flushed.error) {
       setError(flushed.error);
-      if (flushed.lessons.length) {
-        setLessons(flushed.lessons);
-        const current = editing;
-        const match = current
-          ? flushed.lessons.find((item) => item.id === current.id || item.slug === current.slug)
-          : flushed.lessons[0];
-        setEditing(match ?? flushed.lessons[0] ?? null);
+      if (flushed.modules.length) {
+        selectSavedTree(flushed.modules, editingModuleId, editingLessonId);
       }
       return;
     }
@@ -526,13 +605,8 @@ export function CourseEditorPanel({
       onClose({ force: true, exit: "left" });
       return;
     }
-    if (flushed.lessons.length) {
-      setLessons(flushed.lessons);
-      const current = editing;
-      const match = current
-        ? flushed.lessons.find((item) => item.id === current.id || item.slug === current.slug)
-        : flushed.lessons[0];
-      setEditing(match ?? flushed.lessons[0] ?? null);
+    if (flushed.modules.length) {
+      selectSavedTree(flushed.modules, editingModuleId, editingLessonId);
     }
     loadedSlug.current = result.slug;
     if (result.slug !== slug) onSlugChange(result.slug);
@@ -580,7 +654,12 @@ export function CourseEditorPanel({
 
   const live = status === "published";
   const lockedQuiz = slug === "dptc";
-  const firstLesson = lessons[0] ?? null;
+  const editingModule = modules.find((module) => module.id === editingModuleId) ?? modules[0];
+  const editingLesson =
+    editingModule?.lessons.find((lesson) => lesson.id === editingLessonId) ??
+    editingModule?.lessons[0] ??
+    null;
+  const firstLesson = modules[0]?.lessons[0] ?? null;
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
@@ -722,107 +801,137 @@ export function CourseEditorPanel({
               </div>
             </FieldRow>
 
-            {editing ? (
+            {editingModule && editingLesson ? (
               <>
-                {lessons.length > 1 ? (
+                {modules.length > 1 ? (
                   <FieldRow label="Module">
                     <div className="flex min-w-0 flex-1 flex-wrap gap-2">
-                      {lessons.map((lesson) => (
+                      {modules.map((module) => (
                         <button
-                          key={lesson.id}
+                          key={module.id}
                           type="button"
-                          onClick={() => setEditing(lesson)}
+                          onClick={() => {
+                            setEditingModuleId(module.id);
+                            setEditingLessonId(module.lessons[0]?.id ?? "");
+                          }}
                           className={cn(
                             "rounded-full px-3 py-1.5 text-[11px] font-semibold",
-                            editing.id === lesson.id
+                            editingModule.id === module.id
                               ? "bg-neutral-950 text-white"
                               : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                           )}
                         >
-                          {lesson.title || "Untitled module"}
+                          {module.title.trim() || "Untitled module"}
                         </button>
                       ))}
                     </div>
                   </FieldRow>
                 ) : null}
-                {slug !== "new" ? (
-                  <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
-                    <button
-                      type="button"
-                      onClick={createModule}
-                      className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
-                    >
-                      + Create new module
-                    </button>
-                  </div>
+                <FieldRow label="Module title">
+                  <input
+                    value={editingModule.title}
+                    onChange={(event) =>
+                      updateModule({ ...editingModule, title: event.target.value })
+                    }
+                    placeholder="Untitled module"
+                    className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
+                  />
+                </FieldRow>
+                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
+                  <button
+                    type="button"
+                    onClick={createModule}
+                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
+                  >
+                    + Create new module
+                  </button>
+                </div>
+                {editingModule.lessons.length > 1 ? (
+                  <FieldRow label="Lesson">
+                    <div className="flex min-w-0 flex-1 flex-wrap gap-2">
+                      {editingModule.lessons.map((lesson) => (
+                        <button
+                          key={lesson.id}
+                          type="button"
+                          onClick={() => {
+                            setEditingModuleId(editingModule.id);
+                            setEditingLessonId(lesson.id);
+                          }}
+                          className={cn(
+                            "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                            editingLesson.id === lesson.id
+                              ? "bg-neutral-950 text-white"
+                              : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                          )}
+                        >
+                          {lesson.title.trim() || "Untitled lesson"}
+                        </button>
+                      ))}
+                    </div>
+                  </FieldRow>
                 ) : null}
+                <FieldRow label="Lesson title">
+                  <input
+                    value={editingLesson.title}
+                    onChange={(event) =>
+                      updateLesson({ ...editingLesson, title: event.target.value })
+                    }
+                    placeholder="Untitled lesson"
+                    className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
+                  />
+                </FieldRow>
+                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
+                  <button
+                    type="button"
+                    onClick={() => createLesson(editingModule.id)}
+                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
+                  >
+                    + Create new lesson
+                  </button>
+                </div>
                 <EditorBlock
-                  key={`${editing.id}-introduction`}
-                  label="Introduction"
-                  value={editing.introduction}
-                  onChange={(introduction) => updateLesson({ ...editing, introduction })}
+                  key={`${editingLesson.id}-main`}
+                  label="Lesson"
+                  value={editingLesson.main}
+                  onChange={(main) => updateLesson({ ...editingLesson, main })}
                   media={
                     <SectionMediaSlots
-                      lessonId={editing.id}
-                      section="introduction"
-                      assets={editing.assets ?? []}
-                      staged={stagedSectionFiles[editing.id]?.introduction}
+                      lessonId={editingLesson.id}
+                      section="main"
+                      assets={editingLesson.assets ?? []}
+                      staged={stagedSectionFiles[editingLesson.id]?.main}
                       onUploading={setUploadToast}
                       onStaged={(kind, file) =>
-                        stageSectionFile(editing.id, "introduction", kind, file)
+                        stageSectionFile(editingLesson.id, "main", kind, file)
                       }
-                      onUploaded={(assets) => updateLesson({ ...editing, assets })}
-                    />
-                  }
-                />
-                <EditorBlock
-                  key={`${editing.id}-main`}
-                  label="Main Content"
-                  value={editing.main}
-                  onChange={(main) => updateLesson({ ...editing, main })}
-                  media={
-                    <SectionMediaSlots
-                      lessonId={editing.id}
-                      section="main"
-                      assets={editing.assets ?? []}
-                      staged={stagedSectionFiles[editing.id]?.main}
-                      onUploading={setUploadToast}
-                      onStaged={(kind, file) => stageSectionFile(editing.id, "main", kind, file)}
-                      onUploaded={(assets) => updateLesson({ ...editing, assets })}
-                    />
-                  }
-                />
-                <EditorBlock
-                  key={`${editing.id}-notes`}
-                  label="Additional Notes"
-                  value={editing.notes}
-                  onChange={(notes) => updateLesson({ ...editing, notes })}
-                  media={
-                    <SectionMediaSlots
-                      lessonId={editing.id}
-                      section="notes"
-                      assets={editing.assets ?? []}
-                      staged={stagedSectionFiles[editing.id]?.notes}
-                      onUploading={setUploadToast}
-                      onStaged={(kind, file) => stageSectionFile(editing.id, "notes", kind, file)}
-                      onUploaded={(assets) => updateLesson({ ...editing, assets })}
+                      onUploaded={(assets) => updateLesson({ ...editingLesson, assets })}
                     />
                   }
                 />
                 <div className="border-t border-neutral-100 py-4 pl-0 sm:pl-32">
                   <LessonAssetsEditor
-                    lessonId={editing.id}
-                    assets={editing.assets ?? []}
-                    hideIds={(editing.assets ?? [])
+                    lessonId={editingLesson.id}
+                    assets={editingLesson.assets ?? []}
+                    hideIds={(editingLesson.assets ?? [])
                       .filter((asset) => asset.section)
                       .map((asset) => asset.id)}
-                    onChange={(assets) => updateLesson({ ...editing, assets })}
+                    onChange={(assets) => updateLesson({ ...editingLesson, assets })}
                   />
                 </div>
               </>
             ) : null}
           </div>
         )}
+
+        {editingModule && !lockedQuiz && !loading ? (
+          <FinalQuizEditor
+            heading="Module quiz"
+            description="Optional. Leave empty if this module has no quiz — Next on the last lesson goes to the next module. Pass mark 70%, three attempts."
+            emptyHint="No questions yet. Without a module quiz, Next on the last lesson opens the next module."
+            questions={editingModule.quizQuestions ?? []}
+            onChange={(quizQuestions) => updateModule({ ...editingModule, quizQuestions })}
+          />
+        ) : null}
 
         {quizOpen && !lockedQuiz && !loading ? (
           <FinalQuizEditor
@@ -1006,7 +1115,9 @@ function CoverThumb({
         {src ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={src} alt="" className="size-full object-cover" />
-        ) : null}
+        ) : (
+          <ImageIcon className="size-4 text-neutral-400" />
+        )}
         <input
           type="file"
           accept={IMAGE_ACCEPT}
@@ -1227,7 +1338,7 @@ function MediaKindSlot({
 }) {
   const [url, setUrl] = useState<string | null>(kind === "image" ? previewUrl ?? null : null);
   const accept = kind === "image" ? IMAGE_ACCEPT : kind === "video" ? VIDEO_ACCEPT : PDF_ACCEPT;
-  const Icon = kind === "video" ? Film : FileText;
+  const Icon = kind === "image" ? ImageIcon : kind === "video" ? Film : FileText;
   const filename = asset?.title || stagedName;
   const filled = Boolean(asset || stagedName || (kind === "image" && (previewUrl || url)));
 
@@ -1264,9 +1375,9 @@ function MediaKindSlot({
       {kind === "image" && url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt="" className="size-full object-cover" />
-      ) : kind !== "image" ? (
+      ) : (
         <Icon className={cn("size-4", filled ? "text-neutral-800" : "text-neutral-400")} />
-      ) : null}
+      )}
       {pending ? (
         <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-[8px] font-bold tracking-wider text-neutral-500 uppercase">
           …

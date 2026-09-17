@@ -184,11 +184,13 @@ export function continueHref(slug: string, progress?: CourseProgress) {
         currentModule: progress.currentModule,
         completed: progress.completed,
         playerSeconds: 0,
+        resumeLessonSlug: null,
       }
     : {
         currentModule: getCourseProgress(slug).currentModule,
         completed: getCourseProgress(slug).completed,
         playerSeconds: getPlayerSeconds(slug),
+        resumeLessonSlug: null,
       };
   if (mapped.currentModule < 1) {
     return continueHrefFromProgress(slug, emptyProgress());
@@ -203,6 +205,7 @@ export function dptcProgressPercent(progress?: CourseProgress) {
       currentModule: current.currentModule,
       completed: current.completed,
       playerSeconds: 0,
+      resumeLessonSlug: null,
     },
     dptcModules.length
   );

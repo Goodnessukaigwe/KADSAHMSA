@@ -1,7 +1,4 @@
 export function lessonPlayerHref(courseSlug: string, lessonSlug: string) {
-  if (courseSlug === "dptc" && lessonSlug === "introduction") {
-    return `/learn/${courseSlug}/play`;
-  }
   return `/learn/${courseSlug}/lessons/${lessonSlug}`;
 }
 
@@ -9,6 +6,10 @@ export function lessonPageHref(courseSlug: string, lessonSlug: string, page: num
   return `${lessonPlayerHref(courseSlug, lessonSlug)}?page=${page}`;
 }
 
-export function isPlayIntroLesson(courseSlug: string, lessonSlug: string) {
-  return lessonPlayerHref(courseSlug, lessonSlug).endsWith("/play");
+export function moduleQuizHref(courseSlug: string, moduleSlug: string) {
+  return `/learn/${courseSlug}/quiz?module=${encodeURIComponent(moduleSlug)}`;
+}
+
+export function isPlayIntroLesson(_courseSlug: string, _lessonSlug: string) {
+  return false;
 }

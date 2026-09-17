@@ -7,7 +7,7 @@ import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
 import type { PublishedCourse } from "@/lib/courses/types";
-import { lessonPlayerHref } from "@/lib/courses/paths";
+import { continueHref, firstOutlineHref } from "@/lib/learning/progress";
 import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy } from "@/lib/content/dashboard";
@@ -33,10 +33,8 @@ export function CourseDetail({
   const [asked, setAsked] = useState(requested);
   const isDptc = course.slug === dptcCourse.slug;
   const waiting = asked || requested;
-  const firstHref =
-    course.outline[0]
-      ? lessonPlayerHref(course.slug, course.outline[0].slug)
-      : `/learn/${course.slug}`;
+  const firstHref = firstOutlineHref(course.slug, course.outline);
+  const continueTo = enrolled ? continueHref(course.slug, progress, firstHref) : firstHref;
 
   async function enroll() {
     if (!signedIn) {
@@ -45,7 +43,7 @@ export function CourseDetail({
     }
     if (pending) return;
     if (enrolled) {
-      router.push(firstHref);
+      router.push(continueTo);
       return;
     }
     if (waiting) return;
@@ -103,7 +101,7 @@ export function CourseDetail({
         <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {(
             [
-              [String(course.lessons || course.outline.length), isDptc ? "Modules" : "Lessons"],
+              [String(course.lessons || course.outline.length), "Modules"],
               [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
               [course.hasFinalQuiz ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
               ["Free", "Access"],
@@ -124,32 +122,50 @@ export function CourseDetail({
               Course outline
             </h2>
             <div className="mt-4 space-y-2">
-              {course.outline.map((lesson) => {
-                const finished = progress.completed.includes(lesson.position);
+              {course.outline.map((module) => {
+                const finished = progress.completed.includes(module.position);
                 return (
-                  <button
-                    key={lesson.slug}
-                    type="button"
-                    onClick={enroll}
-                    className="flex w-full items-center gap-4 rounded-2xl bg-[#f7f7f7] px-4 py-4 text-left"
+                  <div
+                    key={`${module.position}-${module.slug}`}
+                    className="rounded-2xl bg-[#f7f7f7] px-4 py-4"
                   >
-                    <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
-                      {lesson.position}.
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-bold">{lesson.title}</h3>
-                      <p className="mt-0.5 text-[13px] text-neutral-400">
-                        {lesson.durationLabel || "Self-paced"}
-                        {isDptc && lesson.position === 1 ? " · quiz after this module" : ""}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
+                        {module.position}.
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold">{module.title}</h3>
+                        <p className="mt-0.5 text-[13px] text-neutral-400">
+                          {module.durationLabel || "Self-paced"}
+                          {module.hasQuiz ? " · quiz after this module" : ""}
+                        </p>
+                        {module.lessons.length ? (
+                          <ul className="mt-2 space-y-1">
+                            {module.lessons.map((lesson) => (
+                              <li key={lesson.slug}>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (enrolled) router.push(lesson.href);
+                                    else void enroll();
+                                  }}
+                                  className="text-[13px] text-neutral-400 hover:text-neutral-700"
+                                >
+                                  {lesson.title}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </div>
+                      <div className="hidden w-36 shrink-0 sm:block">
+                        <p className="mb-1 text-right text-[11px] text-neutral-400">
+                          {finished ? "Completed" : enrolled ? "In progress" : "Not started"}
+                        </p>
+                        <ProgressTrack value={finished ? 100 : 0} />
+                      </div>
                     </div>
-                    <div className="hidden w-36 shrink-0 sm:block">
-                      <p className="mb-1 text-right text-[11px] text-neutral-400">
-                        {finished ? "Completed" : enrolled ? "In progress" : "Not started"}
-                      </p>
-                      <ProgressTrack value={finished ? 100 : 0} />
-                    </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

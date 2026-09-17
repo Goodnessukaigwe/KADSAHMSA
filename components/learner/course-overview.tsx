@@ -7,10 +7,9 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { LessonSectionMedia } from "@/components/learner/lesson-media";
 import { PlayPoster, ProgressTrack } from "@/components/learner/simulated-video";
 import type { PublishedCourse } from "@/lib/courses/types";
-import { lessonPlayerHref } from "@/lib/courses/paths";
-import { dptcCourse, dptcModules, moduleHref } from "@/lib/content/dptc";
+import { dptcCourse, dptcModules } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
-import { type CourseProgress } from "@/lib/learning/progress";
+import { continueHref, firstOutlineHref, type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseOverview({
   slug,
@@ -28,23 +27,23 @@ export function CourseOverview({
   const hasFinal = course.hasFinalQuiz;
   const title = course.title;
   const summary = course.summary || (isDptc ? dptcCourse.description : "");
-  const outline =
-    course.outline.length
-      ? course.outline
-      : isDptc
-        ? dptcModules.map((module) => ({
-            slug: module.slug,
-            title: module.title,
-            position: module.index,
-            durationLabel: `${module.minutes} min`,
-          }))
-        : [];
-  const firstHref = outline[0]
-    ? lessonPlayerHref(slug, outline[0].slug)
-    : `/learn/${slug}`;
+  const outline = course.outline.length
+    ? course.outline
+    : isDptc
+      ? dptcModules.map((module) => ({
+          slug: module.slug,
+          title: module.title,
+          position: module.index,
+          durationLabel: `${module.minutes} min`,
+          hasQuiz: module.index === 1,
+          lessons: [],
+        }))
+      : [];
+  const firstHref = firstOutlineHref(slug, outline);
+  const resumeHref = enrolled ? continueHref(slug, progress, firstHref) : firstHref;
 
   function go() {
-    router.push(firstHref);
+    router.push(resumeHref);
   }
 
   return (
@@ -76,7 +75,7 @@ export function CourseOverview({
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
-          [String(outline.length || (isDptc ? dptcModules.length : 0)), isDptc ? "Modules" : "Lessons"],
+          [String(outline.length || (isDptc ? dptcModules.length : 0)), "Modules"],
           [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
           [hasFinal ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
           ["Free", "Access"],
@@ -95,35 +94,48 @@ export function CourseOverview({
           Course outline
         </h2>
         <div className="mt-4 space-y-2">
-          {outline.map((lesson) => {
-            const finished = progress.completed.includes(lesson.position);
-            const current = progress.currentModule === lesson.position;
+          {outline.map((module) => {
+            const finished = progress.completed.includes(module.position);
+            const current = progress.currentModule === module.position;
             const pct = finished ? 100 : current ? 42 : 0;
-            const href = isDptc
-              ? moduleHref(slug, lesson.slug)
-              : lessonPlayerHref(slug, lesson.slug);
             return (
-              <Link
-                key={lesson.slug}
-                href={href}
-                className="flex items-center gap-4 rounded-2xl bg-white px-4 py-4 transition-colors hover:bg-neutral-50"
+              <div
+                key={`${module.position}-${module.slug}`}
+                className="rounded-2xl bg-white px-4 py-4"
               >
-                <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
-                  {lesson.position}.
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-bold">{lesson.title}</h3>
-                  <p className="mt-0.5 text-[13px] text-neutral-400">
-                    {lesson.durationLabel || "Self-paced"}
-                  </p>
+                <div className="flex items-center gap-4">
+                  <span className="w-10 shrink-0 text-2xl font-bold text-neutral-300">
+                    {module.position}.
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold">{module.title}</h3>
+                    <p className="mt-0.5 text-[13px] text-neutral-400">
+                      {module.durationLabel || "Self-paced"}
+                      {module.hasQuiz ? " · quiz after this module" : ""}
+                    </p>
+                    {module.lessons.length ? (
+                      <ul className="mt-2 space-y-1">
+                        {module.lessons.map((lesson) => (
+                          <li key={lesson.slug}>
+                            <Link
+                              href={enrolled ? lesson.href : firstHref}
+                              className="text-[13px] text-neutral-400 hover:text-neutral-700"
+                            >
+                              {lesson.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                  <div className="hidden w-36 shrink-0 sm:block">
+                    <p className="mb-1 text-right text-[11px] text-neutral-400">
+                      {finished ? "Completed" : current ? "In progress" : "Not started"}
+                    </p>
+                    <ProgressTrack value={pct} tone={finished ? "complete" : "default"} />
+                  </div>
                 </div>
-                <div className="hidden w-36 shrink-0 sm:block">
-                  <p className="mb-1 text-right text-[11px] text-neutral-400">
-                    {finished ? "Completed" : current ? "In progress" : "Not started"}
-                  </p>
-                  <ProgressTrack value={pct} tone={finished ? "complete" : "default"} />
-                </div>
-              </Link>
+              </div>
             );
           })}
         </div>

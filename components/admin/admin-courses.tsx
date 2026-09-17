@@ -348,7 +348,7 @@ export function AdminCourses({
               onClick={() => openEditor("new")}
               className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase"
             >
-              Create new module
+              Create new course
               <Plus className="size-4" />
             </button>
           </div>

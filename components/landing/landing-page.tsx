@@ -161,7 +161,7 @@ function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
               const href = `/courses/${course.slug}`;
               const duration =
                 course.durationLabel ||
-                `${course.lessons} ${course.lessons === 1 ? "lesson" : "lessons"}`;
+                `${course.lessons} ${course.lessons === 1 ? "module" : "modules"}`;
               return (
                 <article
                   key={course.slug}

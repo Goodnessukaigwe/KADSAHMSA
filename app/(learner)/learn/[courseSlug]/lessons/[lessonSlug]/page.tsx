@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 
 import { LessonReader } from "@/components/learner/lesson-reader";
-import { getPlayerPage, getVisibleCourse } from "@/lib/courses/queries";
-import { dptcModules } from "@/lib/content/dptc";
+import { getPlayerPage, getVisibleCourse, liveLessonCountForSlug } from "@/lib/courses/queries";
 import { lessonPlayerHref } from "@/lib/courses/paths";
+import { moduleCountFor, progressPercent } from "@/lib/learning/progress";
+import { getMyProgress } from "@/lib/learning/queries";
 
 export const metadata = { title: "Lesson" };
 
@@ -19,11 +20,11 @@ export default async function LessonPage({
   const visible = await getVisibleCourse(courseSlug);
   if (!visible) notFound();
 
-  if (courseSlug === "dptc" && lessonSlug === dptcModules[0].slug) {
-    redirect(`/learn/${courseSlug}/play`);
-  }
-
-  const result = await getPlayerPage(courseSlug, lessonSlug, page, part);
+  const [result, progress, liveCount] = await Promise.all([
+    getPlayerPage(courseSlug, lessonSlug, page, part),
+    getMyProgress(courseSlug),
+    liveLessonCountForSlug(courseSlug),
+  ]);
   if (!result) notFound();
 
   const requestedHref = page
@@ -35,5 +36,11 @@ export default async function LessonPage({
     redirect(result.canonicalHref);
   }
 
-  return <LessonReader courseSlug={courseSlug} lesson={result.lesson} />;
+  return (
+    <LessonReader
+      courseSlug={courseSlug}
+      lesson={result.lesson}
+      progressPercent={progressPercent(progress, moduleCountFor(courseSlug, liveCount))}
+    />
+  );
 }

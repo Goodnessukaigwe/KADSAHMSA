@@ -18,9 +18,15 @@ function emptyQuestion(): BuilderQuizQuestion {
 export function FinalQuizEditor({
   questions,
   onChange,
+  heading = "Final assessment",
+  description = "Multiple choice only. Pass mark 70%, three attempts. A certificate is issued when every live lesson is complete and the learner scores 70% or above. Leave this empty if the course has no quiz and no certificate.",
+  emptyHint = "No questions yet. Add at least one, then Save. Without a final quiz this course will not issue a certificate.",
 }: {
   questions: BuilderQuizQuestion[];
   onChange: (questions: BuilderQuizQuestion[]) => void;
+  heading?: string;
+  description?: string;
+  emptyHint?: string;
 }) {
   function update(index: number, next: BuilderQuizQuestion) {
     onChange(questions.map((question, i) => (i === index ? next : question)));
@@ -30,12 +36,8 @@ export function FinalQuizEditor({
     <section className="mt-8 rounded-[24px] bg-white p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold">Final assessment</h2>
-          <p className="mt-1 max-w-xl text-sm text-neutral-400">
-            Multiple choice only. Pass mark 70%, three attempts. A certificate is issued
-            when every live lesson is complete and the learner scores 70% or above.
-            Leave this empty if the course has no quiz and no certificate.
-          </p>
+          <h2 className="text-lg font-bold">{heading}</h2>
+          <p className="mt-1 max-w-xl text-sm text-neutral-400">{description}</p>
         </div>
         <button
           type="button"
@@ -48,10 +50,7 @@ export function FinalQuizEditor({
       </div>
 
       {questions.length === 0 ? (
-        <p className="mt-6 text-sm text-neutral-400">
-          No questions yet. Add at least one, then Save. Without a final quiz this course
-          will not issue a certificate.
-        </p>
+        <p className="mt-6 text-sm text-neutral-400">{emptyHint}</p>
       ) : (
         <ol className="mt-6 space-y-6">
           {questions.map((question, index) => (

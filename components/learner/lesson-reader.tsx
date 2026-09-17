@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { LessonMedia, LessonSectionImage, LessonSectionMedia } from "@/components/learner/lesson-media";
 import { PlayerRail } from "@/components/learner/player-rail";
@@ -12,7 +13,7 @@ import {
   type LessonAssetSection,
   type PlayerPageView,
 } from "@/lib/courses/types";
-import { markModuleComplete } from "@/lib/learning/actions";
+import { markModuleComplete, saveResumeLesson } from "@/lib/learning/actions";
 import { cn } from "@/lib/utils";
 
 const SECTION_LABEL: Record<LessonAssetSection, string> = {
@@ -24,19 +25,35 @@ const SECTION_LABEL: Record<LessonAssetSection, string> = {
 export function LessonReader({
   courseSlug,
   lesson,
+  progressPercent = 0,
 }: {
   courseSlug: string;
   lesson: PlayerPageView;
+  progressPercent?: number;
 }) {
+  const router = useRouter();
+
   useEffect(() => {
-    if (!lesson.isLastPageOfModule) return;
-    void markModuleComplete(courseSlug, lesson.moduleIndex);
-  }, [courseSlug, lesson.isLastPageOfModule, lesson.moduleIndex]);
+    void saveResumeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
+  }, [courseSlug, lesson.slug, lesson.moduleIndex]);
+
+  async function goNext() {
+    if (lesson.completeOnNext) {
+      await markModuleComplete(courseSlug, lesson.moduleIndex);
+    }
+    if (lesson.nextHref) router.push(lesson.nextHref);
+  }
 
   const assets = lesson.assets ?? [];
   const pageMedia = orderedSectionMedia(assets, lesson.section);
-  const leftoverImages = lesson.isFirstPageOfModule ? unsectionedLessonImages(assets) : [];
-  const leftoverMedia = lesson.isLastPageOfModule ? leftoverNonImageAssets(assets) : [];
+  const leftoverImages =
+    lesson.isSingleLessonPage || lesson.isFirstPageOfModule
+      ? unsectionedLessonImages(assets)
+      : [];
+  const leftoverMedia =
+    lesson.isSingleLessonPage || lesson.isLastPageOfModule
+      ? leftoverNonImageAssets(assets)
+      : [];
   const coverMedia = lesson.isFirstPageOfCourse ? lesson.coverAssets : [];
 
   return (
@@ -56,51 +73,68 @@ export function LessonReader({
         <h1 className="mt-8 text-3xl font-bold tracking-tight sm:text-4xl">
           {lesson.title}
         </h1>
-        <p className="mt-2 text-sm font-semibold tracking-[0.08em] text-neutral-400 uppercase">
-          {SECTION_LABEL[lesson.section]}
-        </p>
+        {lesson.isSingleLessonPage ? null : (
+          <p className="mt-2 text-sm font-semibold tracking-[0.08em] text-neutral-400 uppercase">
+            {SECTION_LABEL[lesson.section]}
+          </p>
+        )}
 
         <div className="mt-8 max-w-3xl space-y-8 text-[15px] leading-relaxed text-neutral-700">
           {leftoverImages.map((asset) => (
             <LessonSectionImage key={asset.id} asset={asset} />
           ))}
           {coverMedia.length ? <LessonSectionMedia assets={coverMedia} /> : null}
-          {pageMedia.length ? <LessonSectionMedia assets={pageMedia} /> : null}
-          {lesson.section === "introduction" ? (
-            <LessonRichText value={lesson.introduction} />
-          ) : null}
-          {lesson.section === "main"
-            ? lesson.mainBlocks.map((block, index) => (
+          {lesson.isSingleLessonPage ? (
+            <>
+              {(["introduction", "main", "notes"] as const).map((section) => {
+                const media = orderedSectionMedia(assets, section);
+                return media.length ? <LessonSectionMedia key={section} assets={media} /> : null;
+              })}
+              <LessonRichText value={lesson.introduction} />
+              {lesson.mainBlocks.map((block, index) => (
                 <section key={`${block.heading ?? "block"}-${index}`}>
                   {block.heading ? (
                     <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
                   ) : null}
                   <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
                 </section>
-              ))
-            : null}
-          {lesson.section === "notes" ? <LessonRichText value={lesson.notes} /> : null}
+              ))}
+              <LessonRichText value={lesson.notes} />
+            </>
+          ) : (
+            <>
+              {pageMedia.length ? <LessonSectionMedia assets={pageMedia} /> : null}
+              {lesson.section === "introduction" ? (
+                <LessonRichText value={lesson.introduction} />
+              ) : null}
+              {lesson.section === "main"
+                ? lesson.mainBlocks.map((block, index) => (
+                    <section key={`${block.heading ?? "block"}-${index}`}>
+                      {block.heading ? (
+                        <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
+                      ) : null}
+                      <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
+                    </section>
+                  ))
+                : null}
+              {lesson.section === "notes" ? <LessonRichText value={lesson.notes} /> : null}
+            </>
+          )}
         </div>
 
         <LessonMedia assets={leftoverMedia} />
       </article>
 
       <PlayerRail
-        toc={{
-          title: "Pages",
-          items: lesson.pages.map((item) => ({
-            id: `page-${item.page}`,
-            label: `Page ${item.page}`,
-            href: item.href,
-            current: item.page === lesson.page,
-          })),
-        }}
+        toc={lesson.toc}
+        progressPercent={progressPercent}
         quizHref={lesson.quizHref}
         previousHref={lesson.previousHref}
         previousLabel={lesson.previousLabel}
         nextHref={lesson.nextHref}
         nextLabel={lesson.nextLabel}
         nextPrimary
+        onNext={lesson.completeOnNext ? () => void goNext() : undefined}
       />
     </div>
   );

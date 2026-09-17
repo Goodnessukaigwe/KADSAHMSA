@@ -32,6 +32,7 @@ export function ModuleQuiz({
   seconds,
   maxAttempts,
   attemptsUsed,
+  nextHref,
 }: {
   courseSlug: string;
   quizSlug: string;
@@ -40,6 +41,8 @@ export function ModuleQuiz({
   seconds: number;
   maxAttempts: number;
   attemptsUsed: number;
+  nextHref?: string;
+  moduleIndex?: number;
 }) {
   const router = useRouter();
   const [state, setState] = useState<QuizAttemptState | null>(null);
@@ -130,7 +133,7 @@ export function ModuleQuiz({
           courseSlug={courseSlug}
           verificationId={state.verificationId}
           onReview={() => {
-            if (passed && quizSlug === "module-1") {
+            if (passed && quizSlug !== "final") {
               router.push(`/learn/${courseSlug}`);
               return;
             }
@@ -141,8 +144,8 @@ export function ModuleQuiz({
             setReviewing(true);
           }}
           onContinue={() => {
-            if (passed && quizSlug === "module-1") {
-              router.push(`/learn/${courseSlug}/lessons/drug-use-nigeria`);
+            if (passed && quizSlug !== "final") {
+              router.push(nextHref ?? `/learn/${courseSlug}`);
               return;
             }
             if (passed && quizSlug === "final") {
@@ -381,7 +384,7 @@ function QuizResultModal({
           {passed
             ? isFinal
               ? "You passed the certificate assessment"
-              : isDptc
+              : isDptc && quizSlug === "module-1"
                 ? "You passed Module 1"
                 : "You passed this quiz"
             : "Below the 70% pass mark"}

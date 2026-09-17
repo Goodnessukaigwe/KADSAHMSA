@@ -6,6 +6,7 @@ import { issueCertificateIfEligible } from "@/lib/certificates/issue";
 import { isQuizSlug } from "@/lib/domain";
 import { isCourseComplete } from "@/lib/learning/progress";
 import { liveLessonCountForSlug } from "@/lib/courses/queries";
+import { markModuleComplete } from "@/lib/learning/actions";
 import { getCourseIdBySlug, getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
 import { requireUser } from "@/lib/permissions";
 import { loadBankForScoring, normalizeQuestionAnswers, scoreQuestions } from "@/lib/quiz/bank";
@@ -42,6 +43,8 @@ type QuizContext = {
   quiz: {
     id: string;
     slug: string;
+    kind: "module" | "final";
+    module_id: string | null;
     max_attempts: number;
     pass_mark_percent: number;
   };
@@ -91,12 +94,22 @@ async function loadQuizContext(
     }
   }
 
-  const { data: quiz } = await supabase
+  const quizSelect = await supabase
     .from("quizzes")
-    .select("id, slug, max_attempts, pass_mark_percent")
+    .select("id, slug, kind, module_id, max_attempts, pass_mark_percent")
     .eq("course_id", courseId)
     .eq("slug", quizSlug)
     .maybeSingle();
+  const quiz = quizSelect.error
+    ? (
+        await supabase
+          .from("quizzes")
+          .select("id, slug, kind, max_attempts, pass_mark_percent")
+          .eq("course_id", courseId)
+          .eq("slug", quizSlug)
+          .maybeSingle()
+      ).data
+    : quizSelect.data;
   if (!quiz) {
     return {
       ok: false,
@@ -117,6 +130,11 @@ async function loadQuizContext(
       quiz: {
         id: quiz.id,
         slug: quiz.slug,
+        kind: quiz.kind,
+        module_id:
+          "module_id" in quiz
+            ? ((quiz as { module_id?: string | null }).module_id ?? null)
+            : null,
         max_attempts: quiz.max_attempts,
         pass_mark_percent: quiz.pass_mark_percent,
       },
@@ -254,6 +272,11 @@ export async function submitAttempt(
   if (quizSlug === "final" && result.passed) {
     const issued = await issueCertificateIfEligible(courseSlug, ctx.userId, result.score);
     if (issued.ok) verificationId = issued.verificationId;
+  } else if (result.passed && ctx.quiz.kind === "module") {
+    const moduleIndex = await moduleIndexForQuiz(ctx.courseId, ctx.quiz);
+    if (moduleIndex) {
+      await markModuleComplete(courseSlug, moduleIndex);
+    }
   }
 
   revalidateQuizPaths(courseSlug);
@@ -266,4 +289,21 @@ export async function submitAttempt(
     maxAttempts: bank.maxAttempts,
     verificationId,
   };
+}
+
+async function moduleIndexForQuiz(
+  courseId: string,
+  quiz: QuizContext["quiz"]
+): Promise<number | null> {
+  const fromSlug = /^module-(\d+)$/.exec(quiz.slug);
+  if (fromSlug) return Number.parseInt(fromSlug[1], 10);
+  if (!quiz.module_id) return null;
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("course_modules")
+    .select("position")
+    .eq("id", quiz.module_id)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  return data?.position ?? null;
 }

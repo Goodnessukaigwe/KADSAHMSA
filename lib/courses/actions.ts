@@ -5,13 +5,13 @@ import { revalidatePath } from "next/cache";
 import { findUserIdByEmail } from "@/lib/auth/admin-users";
 import { removeLessonMediaObjects } from "@/lib/courses/asset-actions";
 import { enrolLearnerWithAdmin, unenrolLearnerWithAdmin } from "@/lib/courses/enrol";
-import { COURSE_MEDIA_BUCKET, isPublicCoverPath, isStockLandingCover } from "@/lib/courses/media";
-import { getAdminCourse, listBuilderLessons, resolveCoverSrc } from "@/lib/courses/queries";
+import { COURSE_MEDIA_BUCKET, isPublicCoverPath, isStockLandingCover, isUuid, MISSING_MODULES_SQL, MISSING_PLAYER_SQL } from "@/lib/courses/media";
+import { getAdminCourse, listBuilderModules, resolveCoverSrc } from "@/lib/courses/queries";
 import {
   ADMIN_COURSE_COLUMN_IDS,
   type AdminCourseColumnId,
   type AdminCourseDetail,
-  type BuilderLesson,
+  type BuilderModule,
   type BuilderQuizQuestion,
   type LessonStatus,
 } from "@/lib/courses/types";
@@ -21,7 +21,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 export type SlugResult =
-  | { ok: true; slug: string; courseId: string; lessons: BuilderLesson[] }
+  | { ok: true; slug: string; courseId: string; modules: BuilderModule[] }
   | { ok: false; error: string };
 
 function fail(error: string): ActionResult {
@@ -104,7 +104,7 @@ export type SaveCourseInput = {
   summary?: string;
   durationLabel?: string;
   coverPath?: string;
-  lessons: BuilderLesson[];
+  modules: BuilderModule[];
   finalQuestions?: BuilderQuizQuestion[];
 };
 
@@ -162,70 +162,197 @@ export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
     }
   }
 
-  const lessonError = await replaceLessons(courseId, input.lessons);
-  if (lessonError) return { ok: false, error: lessonError };
+  const moduleError = await replaceModules(courseId, input.modules);
+  if (moduleError) return { ok: false, error: moduleError };
 
   if (slug !== "dptc") {
     const quizError = await replaceFinalQuiz(courseId, input.finalQuestions ?? []);
     if (quizError) return { ok: false, error: quizError };
+    const moduleQuizError = await replaceModuleQuizzes(courseId, input.modules);
+    if (moduleQuizError) return { ok: false, error: moduleQuizError };
   }
 
   revalidateCourse(input.slug);
   revalidateCourse(slug);
-  return { ok: true, slug, courseId, lessons: await listBuilderLessons(courseId) };
+  return { ok: true, slug, courseId, modules: await listBuilderModules(courseId) };
 }
 
-async function replaceLessons(courseId: string, lessons: BuilderLesson[]) {
-  const supabase = await createClient();
-  const seen = new Set<string>();
-  const rows = lessons.map((lesson, index) => {
-    let slug = slugFromTitle(lesson.slug || lesson.title) || `lesson-${index + 1}`;
-    if (seen.has(slug)) slug = `${slug}-${index + 1}`;
-    seen.add(slug);
-    const status: LessonStatus = lesson.status === "live" ? "live" : "draft";
-    return {
-      course_id: courseId,
-      position: index + 1,
-      slug,
-      title: lesson.title.trim() || `Untitled module ${index + 1}`,
-      status,
-      duration_label: lesson.duration.trim(),
-      introduction: lesson.introduction,
-      main: lesson.main,
-      notes: lesson.notes,
-    };
-  });
+function uniqueEntitySlug(
+  existing: string[],
+  base: string,
+  fallback: string
+) {
+  const seen = new Set(existing);
+  const root = base || fallback;
+  if (!seen.has(root)) return root;
+  for (let i = 2; i < 80; i += 1) {
+    const candidate = `${root}-${i}`;
+    if (!seen.has(candidate)) return candidate;
+  }
+  return `${root}-${Date.now().toString(36)}`;
+}
 
-  const { data: existing } = await supabase
+function isMissingModules(message: string | undefined) {
+  if (!message) return false;
+  return (
+    message.includes("course_modules") ||
+    message.includes("module_id") ||
+    message.includes("schema cache")
+  );
+}
+
+async function replaceModules(courseId: string, modules: BuilderModule[]) {
+  const supabase = await createClient();
+  const cleaned = modules
+    .map((module) => ({
+      ...module,
+      lessons: module.lessons.length ? module.lessons : [],
+    }))
+    .filter((module) => module.lessons.length > 0);
+  if (!cleaned.length) {
+    return "Add a module with at least one lesson before saving.";
+  }
+
+  const { data: existingModules, error: moduleReadError } = await supabase
+    .from("course_modules")
+    .select("id, slug")
+    .eq("course_id", courseId);
+  if (moduleReadError) {
+    return isMissingModules(moduleReadError.message)
+      ? MISSING_MODULES_SQL
+      : moduleReadError.message || "Could not load course modules.";
+  }
+
+  const { data: existingLessons, error: lessonReadError } = await supabase
     .from("course_lessons")
     .select("id, slug")
     .eq("course_id", courseId);
-  const existingBySlug = new Map((existing ?? []).map((row) => [row.slug, row.id]));
-  const keepSlugs = new Set(rows.map((row) => row.slug));
+  if (lessonReadError) {
+    return isMissingModules(lessonReadError.message)
+      ? MISSING_MODULES_SQL
+      : lessonReadError.message || "Could not load lessons.";
+  }
 
-  for (const row of rows) {
-    const id = existingBySlug.get(row.slug);
-    if (id) {
-      const { error } = await supabase.from("course_lessons").update(row).eq("id", id);
-      if (error) return error.message || "Could not save a lesson.";
+  const moduleById = new Map((existingModules ?? []).map((row) => [row.id, row]));
+  const usedModuleIds = new Set<string>();
+  const usedModuleSlugs: string[] = [];
+  const savedModuleIds: string[] = [];
+
+  for (const [index, module] of cleaned.entries()) {
+    const existingId = isUuid(module.id) && moduleById.has(module.id) ? module.id : null;
+    let slug = slugFromTitle(module.slug || module.title) || `module-${index + 1}`;
+    slug = uniqueEntitySlug(
+      usedModuleSlugs.concat(
+        (existingModules ?? [])
+          .filter((row) => row.id !== existingId)
+          .map((row) => row.slug)
+      ),
+      slug,
+      `module-${index + 1}`
+    );
+    usedModuleSlugs.push(slug);
+    const title = module.title.trim() || `Untitled module ${index + 1}`;
+    const row = {
+      course_id: courseId,
+      position: index + 1,
+      slug,
+      title,
+    };
+    if (existingId) {
+      const { error } = await supabase.from("course_modules").update(row).eq("id", existingId);
+      if (error) {
+        return isMissingModules(error.message)
+          ? MISSING_MODULES_SQL
+          : error.message || "Could not save a module.";
+      }
+      usedModuleIds.add(existingId);
+      savedModuleIds.push(existingId);
     } else {
-      const { error } = await supabase.from("course_lessons").insert(row);
-      if (error) return error.message || "Could not save a lesson.";
+      const { data, error } = await supabase.from("course_modules").insert(row).select("id").single();
+      if (error || !data) {
+        return isMissingModules(error?.message)
+          ? MISSING_MODULES_SQL
+          : error?.message || "Could not save a module.";
+      }
+      usedModuleIds.add(data.id);
+      savedModuleIds.push(data.id);
     }
   }
 
-  const stale = (existing ?? []).filter((row) => !keepSlugs.has(row.slug)).map((row) => row.id);
-  if (stale.length) {
-    await removeLessonMediaObjects(stale);
-    const { error } = await supabase.from("course_lessons").delete().in("id", stale);
+  const lessonById = new Map((existingLessons ?? []).map((row) => [row.id, row]));
+  const usedLessonIds = new Set<string>();
+  const usedLessonSlugs: string[] = [];
+
+  for (const [moduleIndex, module] of cleaned.entries()) {
+    const moduleId = savedModuleIds[moduleIndex];
+    for (const [lessonIndex, lesson] of module.lessons.entries()) {
+      const existingId = isUuid(lesson.id) && lessonById.has(lesson.id) ? lesson.id : null;
+      let slug =
+        slugFromTitle(lesson.slug || lesson.title) || `lesson-${moduleIndex + 1}-${lessonIndex + 1}`;
+      slug = uniqueEntitySlug(
+        usedLessonSlugs.concat(
+          (existingLessons ?? [])
+            .filter((row) => row.id !== existingId)
+            .map((row) => row.slug)
+        ),
+        slug,
+        `lesson-${moduleIndex + 1}-${lessonIndex + 1}`
+      );
+      usedLessonSlugs.push(slug);
+      const status: LessonStatus = lesson.status === "live" ? "live" : "draft";
+      const row = {
+        course_id: courseId,
+        module_id: moduleId,
+        position: lessonIndex + 1,
+        slug,
+        title: lesson.title.trim() || `Untitled lesson ${lessonIndex + 1}`,
+        status,
+        duration_label: lesson.duration.trim(),
+        introduction: "",
+        main: lesson.main,
+        notes: "",
+      };
+      if (existingId) {
+        const { error } = await supabase.from("course_lessons").update(row).eq("id", existingId);
+        if (error) {
+          return isMissingModules(error.message)
+            ? MISSING_MODULES_SQL
+            : error.message || "Could not save a lesson.";
+        }
+        usedLessonIds.add(existingId);
+      } else {
+        const { data, error } = await supabase.from("course_lessons").insert(row).select("id").single();
+        if (error || !data) {
+          return isMissingModules(error?.message)
+            ? MISSING_MODULES_SQL
+            : error?.message || "Could not save a lesson.";
+        }
+        usedLessonIds.add(data.id);
+      }
+    }
+  }
+
+  const staleLessons = (existingLessons ?? [])
+    .filter((row) => !usedLessonIds.has(row.id))
+    .map((row) => row.id);
+  if (staleLessons.length) {
+    await removeLessonMediaObjects(staleLessons);
+    const { error } = await supabase.from("course_lessons").delete().in("id", staleLessons);
     if (error) return error.message || "Could not remove a dropped lesson.";
+  }
+
+  const staleModules = (existingModules ?? [])
+    .filter((row) => !usedModuleIds.has(row.id))
+    .map((row) => row.id);
+  if (staleModules.length) {
+    const { error } = await supabase.from("course_modules").delete().in("id", staleModules);
+    if (error) return error.message || "Could not remove a dropped module.";
   }
   return null;
 }
 
-async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion[]) {
-  const admin = createAdminClient();
-  const cleaned = questions
+async function cleanedQuizQuestions(questions: BuilderQuizQuestion[]) {
+  return questions
     .map((question) => ({
       prompt: question.prompt.trim(),
       options: question.options.map((option) => option.trim()),
@@ -237,6 +364,18 @@ async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion
         question.options.length === 4 &&
         question.options.every((option) => option.length > 0)
     );
+}
+
+function isMissingModuleQuizColumn(message: string | undefined) {
+  return Boolean(
+    message &&
+      (message.includes("module_id") || message.includes("schema cache") || message.includes("quizzes_slug_check"))
+  );
+}
+
+async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion[]) {
+  const admin = createAdminClient();
+  const cleaned = await cleanedQuizQuestions(questions);
 
   const { data: existing } = await admin
     .from("quizzes")
@@ -301,6 +440,106 @@ async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion
     }))
   );
   if (insertError) return insertError.message || "Could not save quiz questions.";
+  return null;
+}
+
+async function replaceModuleQuizzes(courseId: string, modules: BuilderModule[]) {
+  const admin = createAdminClient();
+  const { data: moduleRows, error: moduleError } = await admin
+    .from("course_modules")
+    .select("id, position")
+    .eq("course_id", courseId)
+    .order("position", { ascending: true });
+  if (moduleError) {
+    return moduleError.message?.includes("course_modules")
+      ? MISSING_MODULES_SQL
+      : moduleError.message || "Could not load course modules.";
+  }
+
+  const { data: existingQuizzes, error: quizError } = await admin
+    .from("quizzes")
+    .select("id, module_id, slug")
+    .eq("course_id", courseId)
+    .eq("kind", "module");
+  if (quizError) {
+    return isMissingModuleQuizColumn(quizError.message)
+      ? MISSING_PLAYER_SQL
+      : quizError.message || "Could not load module quizzes.";
+  }
+
+  const byModuleId = new Map(
+    (existingQuizzes ?? [])
+      .filter((row) => row.module_id)
+      .map((row) => [row.module_id as string, row])
+  );
+
+  const cleanedModules = modules.filter((module) => module.lessons.length > 0);
+
+  for (const [index, moduleRow] of (moduleRows ?? []).entries()) {
+    const cleaned = await cleanedQuizQuestions(cleanedModules[index]?.quizQuestions ?? []);
+    const slug = `module-${moduleRow.position}`;
+    const existing = byModuleId.get(moduleRow.id);
+    if (!cleaned.length) {
+      if (existing) {
+        const { error } = await admin.from("quizzes").delete().eq("id", existing.id);
+        if (error) return error.message || "Could not remove a module quiz.";
+      }
+      continue;
+    }
+    for (const question of cleaned) {
+      if (
+        !Number.isInteger(question.correctIndex) ||
+        question.correctIndex < 0 ||
+        question.correctIndex > 3
+      ) {
+        return "Each module quiz question needs one correct option (A–D).";
+      }
+    }
+    let quizId = existing?.id ?? null;
+    if (!quizId) {
+      const { data, error } = await admin
+        .from("quizzes")
+        .insert({
+          course_id: courseId,
+          slug,
+          kind: "module",
+          module_id: moduleRow.id,
+          pass_mark_percent: 70,
+          max_attempts: 3,
+          time_limit_seconds: 1800,
+        })
+        .select("id")
+        .single();
+      if (error || !data) {
+        return isMissingModuleQuizColumn(error?.message)
+          ? MISSING_PLAYER_SQL
+          : error?.message || "Could not save a module quiz.";
+      }
+      quizId = data.id;
+    } else if (existing && existing.slug !== slug) {
+      const { error } = await admin
+        .from("quizzes")
+        .update({ slug, module_id: moduleRow.id })
+        .eq("id", existing.id);
+      if (error) {
+        return isMissingModuleQuizColumn(error.message)
+          ? MISSING_PLAYER_SQL
+          : error.message || "Could not update a module quiz.";
+      }
+    }
+    const { error: deleteError } = await admin.from("quiz_questions").delete().eq("quiz_id", quizId);
+    if (deleteError) return deleteError.message || "Could not replace module quiz questions.";
+    const { error: insertError } = await admin.from("quiz_questions").insert(
+      cleaned.map((question, questionIndex) => ({
+        quiz_id: quizId,
+        position: questionIndex + 1,
+        prompt: question.prompt,
+        options: question.options,
+        correct_index: question.correctIndex,
+      }))
+    );
+    if (insertError) return insertError.message || "Could not save module quiz questions.";
+  }
   return null;
 }
 
@@ -374,7 +613,7 @@ async function saveAndPublish(
   }
 
   revalidateCourse(course.slug);
-  return { ok: true, slug: course.slug, courseId: course.id, lessons: await listBuilderLessons(course.id) };
+  return { ok: true, slug: course.slug, courseId: course.id, modules: await listBuilderModules(course.id) };
 }
 
 export async function publishSavedCourse(
@@ -382,7 +621,10 @@ export async function publishSavedCourse(
 ): Promise<SlugResult> {
   const saved = await saveCourse({
     ...input,
-    lessons: input.lessons.map((lesson) => ({ ...lesson, status: "live" })),
+    modules: input.modules.map((module) => ({
+      ...module,
+      lessons: module.lessons.map((lesson) => ({ ...lesson, status: "live" as const })),
+    })),
   });
   if (!saved.ok) return saved;
   return saveAndPublish(saved.slug, true);

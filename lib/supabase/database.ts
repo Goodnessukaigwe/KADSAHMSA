@@ -133,10 +133,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      course_modules: {
+        Row: {
+          id: string;
+          course_id: string;
+          position: number;
+          slug: string;
+          title: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          position: number;
+          slug: string;
+          title: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          course_id?: string;
+          position?: number;
+          slug?: string;
+          title?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       course_lessons: {
         Row: {
           id: string;
           course_id: string;
+          module_id: string;
           position: number;
           slug: string;
           title: string;
@@ -151,6 +182,7 @@ export type Database = {
         Insert: {
           id?: string;
           course_id: string;
+          module_id: string;
           position: number;
           slug: string;
           title: string;
@@ -165,6 +197,7 @@ export type Database = {
         Update: {
           id?: string;
           course_id?: string;
+          module_id?: string;
           position?: number;
           slug?: string;
           title?: string;
@@ -270,6 +303,7 @@ export type Database = {
           current_module: number;
           completed_indexes: number[];
           player_seconds: number;
+          resume_lesson_slug: string | null;
           updated_at: string;
         };
         Insert: {
@@ -279,6 +313,7 @@ export type Database = {
           current_module?: number;
           completed_indexes?: number[];
           player_seconds?: number;
+          resume_lesson_slug?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -288,6 +323,7 @@ export type Database = {
           current_module?: number;
           completed_indexes?: number[];
           player_seconds?: number;
+          resume_lesson_slug?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -298,6 +334,7 @@ export type Database = {
           course_id: string;
           slug: string;
           kind: "module" | "final";
+          module_id: string | null;
           pass_mark_percent: number;
           max_attempts: number;
           time_limit_seconds: number | null;
@@ -308,6 +345,7 @@ export type Database = {
           course_id: string;
           slug: string;
           kind: "module" | "final";
+          module_id?: string | null;
           pass_mark_percent?: number;
           max_attempts?: number;
           time_limit_seconds?: number | null;
@@ -318,6 +356,7 @@ export type Database = {
           course_id?: string;
           slug?: string;
           kind?: "module" | "final";
+          module_id?: string | null;
           pass_mark_percent?: number;
           max_attempts?: number;
           time_limit_seconds?: number | null;

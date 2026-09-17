@@ -109,7 +109,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                     {course.title}
                   </h2>
                   <p className="mt-1 text-sm text-neutral-400">
-                    {course.lessons} {course.lessons === 1 ? "lesson" : "lessons"}
+                    {course.lessons} {course.lessons === 1 ? "module" : "modules"}
                   </p>
                   <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
                     <SplitCta

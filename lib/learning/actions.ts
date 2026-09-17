@@ -23,6 +23,13 @@ function isMissingRequests(message: string | undefined) {
   );
 }
 
+function isMissingResume(message: string | undefined) {
+  return Boolean(
+    message &&
+      (message.includes("resume_lesson_slug") || message.includes("schema cache"))
+  );
+}
+
 function revalidateLearning(slug: string) {
   revalidatePath("/my");
   revalidatePath("/my/courses");
@@ -76,11 +83,85 @@ export async function requestEnrolment(slug: string): Promise<ActionResult> {
 
 export async function markModuleComplete(
   slug: string,
-  moduleIndex: number
+  moduleIndex: number,
+  resumeLessonSlug?: string | null
 ): Promise<ActionResult> {
   const user = await requireUser();
   const seated = await requireExistingEnrolment(slug);
   if (!seated.ok) return seated;
+
+  const { courseId, error } = await resolveCourseId(slug);
+  if (!courseId) return fail(error ?? "That course is not available yet.");
+
+  const supabase = await createClient();
+  const full = await supabase
+    .from("course_progress")
+    .select("current_module, completed_indexes, player_seconds, resume_lesson_slug")
+    .eq("user_id", user.id)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  const row = full.error
+    ? (
+        await supabase
+          .from("course_progress")
+          .select("current_module, completed_indexes, player_seconds")
+          .eq("user_id", user.id)
+          .eq("course_id", courseId)
+          .maybeSingle()
+      ).data
+    : full.data;
+
+  const current = row
+    ? {
+        currentModule: row.current_module,
+        completed: row.completed_indexes ?? [],
+        playerSeconds: row.player_seconds,
+        resumeLessonSlug:
+          "resume_lesson_slug" in row
+            ? ((row as { resume_lesson_slug?: string | null }).resume_lesson_slug ?? null)
+            : null,
+      }
+    : emptyProgress();
+
+  const completed = Array.from(new Set([...current.completed, moduleIndex]));
+  const currentModule = Math.max(current.currentModule, moduleIndex + 1);
+  const payload = {
+    user_id: user.id,
+    course_id: courseId,
+    current_module: currentModule,
+    completed_indexes: completed,
+    player_seconds: current.playerSeconds,
+    resume_lesson_slug: resumeLessonSlug ?? current.resumeLessonSlug,
+  };
+
+  let { error: updateError } = await supabase
+    .from("course_progress")
+    .upsert(payload, { onConflict: "user_id,course_id" });
+
+  if (updateError && isMissingResume(updateError.message)) {
+    const { resume_lesson_slug: _ignored, ...legacy } = payload;
+    const retry = await supabase
+      .from("course_progress")
+      .upsert(legacy, { onConflict: "user_id,course_id" });
+    updateError = retry.error;
+  }
+
+  if (updateError) {
+    return fail(updateError.message || "Could not save progress.");
+  }
+
+  revalidateLearning(slug);
+  return { ok: true };
+}
+
+export async function saveResumeLesson(
+  slug: string,
+  lessonSlug: string,
+  moduleIndex: number
+): Promise<ActionResult> {
+  const user = await requireUser();
+  const seated = await requireExistingEnrolment(slug);
+  if (!seated.ok) return { ok: true };
 
   const { courseId, error } = await resolveCourseId(slug);
   if (!courseId) return fail(error ?? "That course is not available yet.");
@@ -93,35 +174,31 @@ export async function markModuleComplete(
     .eq("course_id", courseId)
     .maybeSingle();
 
-  const current = row
-    ? {
-        currentModule: row.current_module,
-        completed: row.completed_indexes ?? [],
-        playerSeconds: row.player_seconds,
-      }
-    : emptyProgress();
+  const payload = {
+    user_id: user.id,
+    course_id: courseId,
+    current_module: Math.max(row?.current_module ?? 1, moduleIndex),
+    completed_indexes: row?.completed_indexes ?? [],
+    player_seconds: row?.player_seconds ?? 0,
+    resume_lesson_slug: lessonSlug,
+  };
 
-  const completed = Array.from(new Set([...current.completed, moduleIndex]));
-  const currentModule = Math.max(current.currentModule, moduleIndex + 1);
-
-  const { error: updateError } = await supabase
+  let { error: updateError } = await supabase
     .from("course_progress")
-    .upsert(
-      {
-        user_id: user.id,
-        course_id: courseId,
-        current_module: currentModule,
-        completed_indexes: completed,
-        player_seconds: current.playerSeconds,
-      },
-      { onConflict: "user_id,course_id" }
-    );
+    .upsert(payload, { onConflict: "user_id,course_id" });
 
-  if (updateError) {
-    return fail(updateError.message || "Could not save progress.");
+  if (updateError && isMissingResume(updateError.message)) {
+    const { resume_lesson_slug: _ignored, ...legacy } = payload;
+    const retry = await supabase
+      .from("course_progress")
+      .upsert(legacy, { onConflict: "user_id,course_id" });
+    updateError = retry.error;
   }
 
-  revalidateLearning(slug);
+  if (updateError) {
+    return fail(updateError.message || "Could not save resume position.");
+  }
+
   return { ok: true };
 }
 

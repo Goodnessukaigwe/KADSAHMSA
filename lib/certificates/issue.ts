@@ -65,6 +65,7 @@ export async function issueCertificateIfEligible(
       currentModule: progress?.current_module ?? 1,
       completed: progress?.completed_indexes ?? [],
       playerSeconds: progress?.player_seconds ?? 0,
+      resumeLessonSlug: null,
     },
     liveCount
   );

@@ -732,9 +732,6 @@ export function moduleNav(slug: string) {
 }
 
 export function moduleHref(courseSlug: string, moduleSlug: string) {
-  if (moduleSlug === dptcModules[0].slug) {
-    return `/learn/${courseSlug}/play`;
-  }
   return `/learn/${courseSlug}/lessons/${moduleSlug}`;
 }
 
@@ -744,7 +741,7 @@ export function adjacentHrefs(courseSlug: string, moduleSlug: string) {
     previousHref: previous ? moduleHref(courseSlug, previous.slug) : undefined,
     nextHref: next ? moduleHref(courseSlug, next.slug) : `/learn/${courseSlug}/final`,
     nextLabel: next ? `Next (${position + 1}/${total})` : "Final assessment",
-    previousLabel: "Previous module",
+    previousLabel: "Previous",
     position,
     total,
   };

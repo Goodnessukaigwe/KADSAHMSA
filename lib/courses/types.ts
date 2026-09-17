@@ -176,6 +176,18 @@ export type BuilderLesson = {
   assets: LessonAsset[];
 };
 
+export type BuilderModule = {
+  id: string;
+  title: string;
+  slug: string;
+  lessons: BuilderLesson[];
+  quizQuestions?: BuilderQuizQuestion[];
+};
+
+export function flattenBuilderLessons(modules: BuilderModule[]) {
+  return modules.flatMap((module) => module.lessons);
+}
+
 export type BuilderQuizQuestion = {
   id: string;
   prompt: string;
@@ -192,7 +204,7 @@ export type AdminCourseDetail = {
   durationLabel: string;
   coverPath: string;
   enrolled: number;
-  lessons: BuilderLesson[];
+  modules: BuilderModule[];
   finalQuestions: BuilderQuizQuestion[];
 };
 
@@ -243,6 +255,21 @@ export type PlayerLesson = {
   nextLabel: string;
   quizHref?: string;
   assets: LessonAsset[];
+  completeOnNext?: boolean;
+};
+
+export type PlayerTocItem = {
+  id: string;
+  label: string;
+  href: string;
+  current?: boolean;
+};
+
+export type PlayerTocGroup = {
+  id: string;
+  title: string;
+  current?: boolean;
+  items: PlayerTocItem[];
 };
 
 export type PlayerPageView = PlayerLesson & {
@@ -252,19 +279,30 @@ export type PlayerPageView = PlayerLesson & {
   isFirstPageOfModule: boolean;
   isLastPageOfModule: boolean;
   isFirstPageOfCourse: boolean;
+  isSingleLessonPage: boolean;
   coverAssets: LessonAsset[];
-  pages: { page: number; href: string }[];
+  toc: PlayerTocGroup[];
 };
 
-export type PublishedLessonOutline = {
+export type PublishedOutlineLesson = {
+  slug: string;
+  title: string;
+  href: string;
+};
+
+export type PublishedModuleOutline = {
   slug: string;
   title: string;
   position: number;
   durationLabel: string;
+  hasQuiz: boolean;
+  lessons: PublishedOutlineLesson[];
 };
 
+export type PublishedLessonOutline = PublishedModuleOutline;
+
 export type PublishedCourse = CatalogueCourse & {
-  outline: PublishedLessonOutline[];
+  outline: PublishedModuleOutline[];
   hasFinalQuiz: boolean;
   coverMedia: LessonAsset[];
 };
