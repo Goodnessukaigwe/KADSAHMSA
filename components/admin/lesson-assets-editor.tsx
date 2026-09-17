@@ -26,12 +26,16 @@ export function LessonAssetsEditor({
   lessonId,
   assets,
   onChange,
+  hideIds = [],
 }: {
   lessonId: string;
   assets?: LessonAsset[];
   onChange: (assets: LessonAsset[]) => void;
+  hideIds?: string[];
 }) {
   const attached = assets ?? [];
+  const hidden = new Set(hideIds);
+  const visible = attached.filter((asset) => !hidden.has(asset.id));
   const fileRef = useRef<HTMLInputElement>(null);
   const [url, setUrl] = useState("");
   const [pending, setPending] = useState<"upload" | "url" | string | null>(null);
@@ -86,13 +90,18 @@ export function LessonAssetsEditor({
     }
   }
 
-  async function move(index: number, direction: -1 | 1) {
-    const next = index + direction;
-    if (pending || next < 0 || next >= attached.length) return;
-    const ordered = attached.map((asset) => asset.id);
-    const [moved] = ordered.splice(index, 1);
-    ordered.splice(next, 0, moved);
-    setPending(attached[index].id);
+  async function move(visibleIndex: number, direction: -1 | 1) {
+    const nextVisible = visibleIndex + direction;
+    const asset = visible[visibleIndex];
+    const swap = visible[nextVisible];
+    if (!asset || !swap || pending) return;
+    const ordered = attached.map((item) => item.id);
+    const from = ordered.indexOf(asset.id);
+    const to = ordered.indexOf(swap.id);
+    if (from < 0 || to < 0) return;
+    const [moved] = ordered.splice(from, 1);
+    ordered.splice(to, 0, moved);
+    setPending(asset.id);
     try {
       await apply(reorderLessonAssets(lessonId, ordered));
     } finally {
@@ -172,9 +181,9 @@ export function LessonAssetsEditor({
         </p>
       ) : null}
 
-      {attached.length ? (
+      {visible.length ? (
         <ul className="mt-4 space-y-2">
-          {attached.map((asset, index) => (
+          {visible.map((asset, index) => (
             <li
               key={asset.id}
               className="flex flex-wrap items-center gap-2 rounded-2xl border border-neutral-100 bg-neutral-50 px-3 py-2"
@@ -198,7 +207,7 @@ export function LessonAssetsEditor({
                 <button
                   type="button"
                   aria-label="Move down"
-                  disabled={index === attached.length - 1 || pending !== null}
+                  disabled={index === visible.length - 1 || pending !== null}
                   onClick={() => void move(index, 1)}
                   className="flex size-8 items-center justify-center rounded-full text-neutral-400 hover:bg-white disabled:opacity-30"
                 >
@@ -218,7 +227,9 @@ export function LessonAssetsEditor({
           ))}
         </ul>
       ) : saved ? (
-        <p className="mt-4 text-sm text-neutral-400">No files attached yet.</p>
+        <p className="mt-4 text-sm text-neutral-400">
+          {hidden.size ? "No extra files attached yet." : "No files attached yet."}
+        </p>
       ) : null}
     </div>
   );

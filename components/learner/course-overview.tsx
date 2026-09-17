@@ -58,7 +58,7 @@ export function CourseOverview({
       </div>
 
       <div className="mt-4">
-        <PlayPoster src={course.image} title={title} onPlay={go} />
+        <PlayPoster slug={slug} src={course.image} title={title} onPlay={go} />
       </div>
 
       <h1 className="mt-6 max-w-3xl text-3xl leading-tight font-bold tracking-tight sm:text-4xl">

@@ -3,27 +3,43 @@ import "server-only";
 import { lessonPlayerHref } from "@/lib/courses/paths";
 import { dptcModules, getLesson, moduleHref } from "@/lib/content/dptc";
 import {
+  buildCoursePages,
+  parsePageParam,
+  parsePartParam,
+  resolveCoursePage,
+  type LessonPageSource,
+} from "@/lib/courses/player-pages";
+import { resolveWorkingCoverUrl } from "@/lib/courses/cover";
+import {
   COURSE_MEDIA_BUCKET,
   coverForSlug,
   isMissingAssetsRelation,
+  isMissingSectionColumn,
   isPublicCoverPath,
   isStockLandingCover,
+  LESSON_ASSET_COLUMNS,
+  LESSON_ASSET_COLUMNS_LEGACY,
 } from "@/lib/courses/media";
-import type {
-  AdminCourseDetail,
-  AdminCourseRow,
-  AssignableCourse,
-  BuilderLesson,
-  BuilderQuizQuestion,
-  CatalogueCourse,
-  CourseLearnerRow,
-  CourseNavItem,
-  DashboardStat,
-  LessonAsset,
-  PlayerLesson,
-  PublishedCourse,
-  PublishedLessonOutline,
-  RecentEnrolment,
+import { hasLessonMarkup } from "@/lib/courses/rich-text";
+import {
+  ADMIN_COURSE_COLUMN_IDS,
+  type AdminCourseColumnId,
+  type AdminCourseDetail,
+  type AdminCourseRow,
+  type AssignableCourse,
+  type BuilderLesson,
+  type BuilderQuizQuestion,
+  type CatalogueCourse,
+  type CourseLearnerRow,
+  type CourseNavItem,
+  type DashboardStat,
+  type LessonAsset,
+  type PlayerLesson,
+  type PlayerPageView,
+  type PublishedCourse,
+  type PublishedLessonOutline,
+  type RecentEnrolment,
+  parseLessonAssetSection,
 } from "@/lib/courses/types";
 import { courseHasFinalQuiz } from "@/lib/quiz/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -31,6 +47,7 @@ import { isStaffUser, requireStaff } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 
 export type {
+  AdminCourseColumnId,
   AdminCourseDetail,
   AdminCourseRow,
   AssignableCourse,
@@ -41,9 +58,34 @@ export type {
   CourseNavItem,
   DashboardStat,
   PlayerLesson,
+  PlayerPageView,
   PublishedCourse,
   RecentEnrolment,
 };
+
+export const DEFAULT_ADMIN_COURSE_COLUMNS: AdminCourseColumnId[] = [
+  "title",
+  "status",
+  "slug",
+  "duration",
+  "image00",
+  "image01",
+];
+
+export async function getAdminCourseColumns(): Promise<AdminCourseColumnId[]> {
+  const { user } = await requireStaff();
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("admin_course_preferences")
+    .select("course_columns")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const columns = data?.course_columns ?? [];
+  const valid = columns.filter((column): column is AdminCourseColumnId =>
+    ADMIN_COURSE_COLUMN_IDS.includes(column as AdminCourseColumnId)
+  );
+  return valid.length > 0 ? valid : DEFAULT_ADMIN_COURSE_COLUMNS;
+}
 
 function isMissingRelation(message: string | undefined) {
   if (!message) return false;
@@ -59,7 +101,19 @@ function isMissingRelation(message: string | undefined) {
   );
 }
 
-export async function resolveCoverSrc(slug: string, coverPath?: string | null) {
+export async function resolveCoverSrc(
+  slug: string,
+  coverPath?: string | null,
+  courseId?: string | null
+) {
+  if (courseId) {
+    try {
+      const admin = createAdminClient();
+      return (await resolveWorkingCoverUrl(admin, courseId, coverPath)) || "";
+    } catch {
+      return "";
+    }
+  }
   const trimmed = coverForSlug(slug, coverPath);
   if (!trimmed || isStockLandingCover(trimmed)) return "";
   if (isPublicCoverPath(trimmed)) return trimmed;
@@ -128,6 +182,7 @@ function toLessonAsset(row: {
   title: string;
   storage_path: string | null;
   external_url: string | null;
+  section?: string | null;
 }): LessonAsset {
   return {
     id: row.id,
@@ -137,6 +192,7 @@ function toLessonAsset(row: {
     title: row.title,
     storagePath: row.storage_path,
     externalUrl: row.external_url,
+    section: parseLessonAssetSection(row.section ?? null),
   };
 }
 
@@ -144,18 +200,26 @@ export async function listLessonAssets(lessonIds: string[]): Promise<Map<string,
   const grouped = new Map<string, LessonAsset[]>();
   if (!lessonIds.length) return grouped;
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const primary = await supabase
     .from("lesson_assets")
-    .select("id, lesson_id, position, kind, title, storage_path, external_url")
+    .select(LESSON_ASSET_COLUMNS)
     .in("lesson_id", lessonIds)
     .order("position", { ascending: true });
-  if (error || !data) {
-    if (error && !isMissingAssetsRelation(error.message)) {
+  let rows = primary.data;
+  if (primary.error) {
+    if (!isMissingSectionColumn(primary.error.message)) {
       return grouped;
     }
-    return grouped;
+    const fallback = await supabase
+      .from("lesson_assets")
+      .select(LESSON_ASSET_COLUMNS_LEGACY)
+      .in("lesson_id", lessonIds)
+      .order("position", { ascending: true });
+    if (fallback.error || !fallback.data) return grouped;
+    rows = fallback.data.map((row) => ({ ...row, section: null }));
   }
-  for (const row of data) {
+  if (!rows) return grouped;
+  for (const row of rows) {
     const list = grouped.get(row.lesson_id) ?? [];
     list.push(toLessonAsset(row));
     grouped.set(row.lesson_id, list);
@@ -224,7 +288,12 @@ function parseMainBlocks(main: string): { heading?: string; body: string }[] {
   for (let i = 0; i < chunks.length; i += 1) {
     const current = chunks[i];
     const next = chunks[i + 1];
-    if (next && current.length <= 80 && !current.includes(".")) {
+    if (
+      next &&
+      current.length <= 80 &&
+      !current.includes(".") &&
+      !hasLessonMarkup(current)
+    ) {
       blocks.push({ heading: current, body: next });
       i += 1;
       continue;
@@ -316,7 +385,7 @@ export async function listPublishedCourses(): Promise<CatalogueCourse[]> {
   );
   return Promise.all(
     visible.map(async (row) => {
-      const image = await resolveCoverSrc(row.slug, row.cover_path);
+      const image = await resolveCoverSrc(row.slug, row.cover_path, row.id);
       return toCatalogueCourse(row, counts.get(row.id) ?? 0, image);
     })
   );
@@ -369,7 +438,7 @@ async function getVisibleCourseInner(
     title: course.title,
     lessons: outline.length,
     priceType: "free",
-    image: await resolveCoverSrc(course.slug, course.cover_path),
+    image: await resolveCoverSrc(course.slug, course.cover_path, course.id),
     summary: course.summary,
     durationLabel: course.duration_label,
     outline,
@@ -382,7 +451,7 @@ export async function listAdminCourses(): Promise<AdminCourseRow[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("courses")
-    .select("id, slug, title, status, cover_path")
+    .select("id, slug, title, status, cover_path, duration_label")
     .order("created_at", { ascending: true });
   if (error || !data) return [];
 
@@ -393,15 +462,61 @@ export async function listAdminCourses(): Promise<AdminCourseRow[]> {
   }
 
   return Promise.all(
-    data.map(async (row) => ({
-      slug: row.slug,
-      title: row.title,
-      image: await resolveCoverSrc(row.slug, row.cover_path),
-      status: row.status,
-      enrolled: enrolled.get(row.id) ?? 0,
-      price: "Free" as const,
-    }))
+    data.map(async (row) => {
+      const { data: lessons } = await supabase
+        .from("course_lessons")
+        .select("id, introduction, main, notes")
+        .eq("course_id", row.id)
+        .order("position", { ascending: true });
+      const lessonIds = (lessons ?? []).map((lesson) => lesson.id);
+      const { data: assets } = lessonIds.length
+        ? await supabase
+            .from("lesson_assets")
+            .select("title, external_url, storage_path, kind")
+            .in("lesson_id", lessonIds)
+            .order("position", { ascending: true })
+            .limit(8)
+        : { data: [] as { title: string; external_url: string | null; storage_path: string | null; kind: string }[] };
+
+      const photos = pickPhotoAssets(assets ?? []);
+      const firstLesson = lessons?.[0];
+
+      return {
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        image: await resolveCoverSrc(row.slug, row.cover_path, row.id),
+        image01: photoLabel(photos[0]),
+        image02: photoLabel(photos[1]),
+        image03: photoLabel(photos[2]),
+        image04: photoLabel(photos[3]),
+        introduction: firstLesson?.introduction ?? "",
+        main: firstLesson?.main ?? "",
+        notes: firstLesson?.notes ?? "",
+        status: row.status,
+        enrolled: enrolled.get(row.id) ?? 0,
+        duration: row.duration_label ?? "",
+        lessons: lessons?.length ?? 0,
+        price: "Free" as const,
+      };
+    })
   );
+}
+
+function photoLabel(asset?: {
+  title: string;
+  external_url: string | null;
+  storage_path: string | null;
+}) {
+  if (!asset) return "";
+  return asset.title || asset.external_url || asset.storage_path || "";
+}
+
+function pickPhotoAssets<
+  T extends { kind: string; title: string; external_url: string | null; storage_path: string | null },
+>(assets: T[]) {
+  const images = assets.filter((asset) => asset.kind === "image");
+  return (images.length ? images : assets).slice(0, 4);
 }
 
 export async function listCourseNav(): Promise<CourseNavItem[]> {
@@ -775,6 +890,123 @@ export async function getPlayerLesson(
     nextLabel: next ? `Next (${index + 2}/${dptcModules.length})` : "Final assessment",
     quizHref: next ? `/learn/${courseSlug}/quiz` : `/learn/${courseSlug}/final`,
     assets: [],
+  };
+}
+
+function dptcFallbackSources(): LessonPageSource[] {
+  return dptcModules.map((mod) => {
+    const lesson = getLesson(mod.slug);
+    const rest = lesson.sections.slice(1);
+    return {
+      slug: lesson.slug,
+      title: lesson.title,
+      position: mod.index,
+      durationLabel: lesson.readTime,
+      introduction: lesson.sections[0]?.body ?? "",
+      main: rest.map((section) => `${section.title}\n\n${section.body}`).join("\n\n"),
+      notes: lesson.keyTerm.body,
+      assets: [] as LessonAsset[],
+    };
+  });
+}
+
+function toPlayerPageView(
+  courseSlug: string,
+  sources: LessonPageSource[],
+  pages: ReturnType<typeof buildCoursePages>,
+  current: ReturnType<typeof buildCoursePages>[number],
+  hasFinal: boolean
+): PlayerPageView {
+  const source = sources.find((item) => item.slug === current.lessonSlug) ?? {
+    slug: current.lessonSlug,
+    title: current.lessonTitle,
+    position: current.moduleIndex,
+    durationLabel: "",
+    introduction: "",
+    main: "",
+    notes: "",
+    assets: [],
+  };
+  const index = pages.findIndex((item) => item.page === current.page);
+  const previous = index > 0 ? pages[index - 1] : null;
+  const next = index >= 0 && index < pages.length - 1 ? pages[index + 1] : null;
+  const lastHref = hasFinal ? `/learn/${courseSlug}/final` : `/learn/${courseSlug}`;
+  return {
+    slug: source.slug,
+    title: source.title,
+    kicker: `Page ${current.page} of ${pages.length}`,
+    readTime: source.durationLabel || "Read",
+    introduction: source.introduction,
+    mainBlocks: parseMainBlocks(source.main),
+    notes: source.notes,
+    moduleIndex: source.position,
+    previousHref: previous
+      ? previous.href
+      : courseSlug === "dptc"
+        ? `/learn/${courseSlug}/play`
+        : undefined,
+    previousLabel: "Previous",
+    nextHref: next ? next.href : lastHref,
+    nextLabel: next ? "Next" : hasFinal ? "Final assessment" : "Back to course",
+    quizHref: !next && hasFinal ? lastHref : undefined,
+    assets: source.assets,
+    page: current.page,
+    pageCount: pages.length,
+    section: current.section,
+    isFirstPageOfModule: current.isFirstPageOfModule,
+    isLastPageOfModule: current.isLastPageOfModule,
+    pages: pages.map((item) => ({ page: item.page, href: item.href })),
+  };
+}
+
+export async function getPlayerPage(
+  courseSlug: string,
+  lessonSlug: string,
+  pageParam?: string,
+  partParam?: string
+): Promise<{ lesson: PlayerPageView; canonicalHref: string } | null> {
+  const requestedPage = parsePageParam(pageParam);
+  const requestedPart = parsePartParam(partParam);
+  const supabase = await createClient();
+  const { data: course } = await supabase
+    .from("courses")
+    .select("id, slug, status")
+    .eq("slug", courseSlug)
+    .maybeSingle();
+
+  if (course) {
+    const lessons = await listLiveLessons(course.id);
+    const assetsByLesson = await listLessonAssets(lessons.map((item) => item.id));
+    const sources: LessonPageSource[] = lessons.map((item) => ({
+      slug: item.slug,
+      title: item.title,
+      position: item.position,
+      durationLabel: item.duration_label,
+      introduction: item.introduction,
+      main: item.main,
+      notes: item.notes,
+      assets: assetsByLesson.get(item.id) ?? [],
+    }));
+    const pages = buildCoursePages(courseSlug, sources);
+    const current = resolveCoursePage(pages, lessonSlug, requestedPage, requestedPart);
+    if (current) {
+      const hasFinal = await courseHasFinalQuiz(course.id, courseSlug);
+      return {
+        lesson: toPlayerPageView(courseSlug, sources, pages, current, hasFinal),
+        canonicalHref: current.href,
+      };
+    }
+  }
+
+  if (courseSlug !== "dptc") return null;
+
+  const sources = dptcFallbackSources();
+  const pages = buildCoursePages(courseSlug, sources);
+  const current = resolveCoursePage(pages, lessonSlug, requestedPage, requestedPart);
+  if (!current) return null;
+  return {
+    lesson: toPlayerPageView(courseSlug, sources, pages, current, true),
+    canonicalHref: current.href,
   };
 }
 

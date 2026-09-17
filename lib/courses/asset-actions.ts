@@ -7,12 +7,16 @@ import {
   classifyUpload,
   COURSE_MEDIA_BUCKET,
   isMissingAssetsRelation,
+  isMissingSectionColumn,
   isUuid,
+  LESSON_ASSET_COLUMNS,
+  LESSON_ASSET_COLUMNS_LEGACY,
   MISSING_ASSETS_SQL,
+  MISSING_SECTION_SQL,
   parseVideoUrl,
   safeFileName,
 } from "@/lib/courses/media";
-import type { LessonAsset } from "@/lib/courses/types";
+import { parseLessonAssetSection, type LessonAsset } from "@/lib/courses/types";
 import { getAuthUser, getUserRoles, isStaff, requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -40,6 +44,7 @@ function toAsset(row: {
   title: string;
   storage_path: string | null;
   external_url: string | null;
+  section?: string | null;
 }): LessonAsset {
   return {
     id: row.id,
@@ -49,6 +54,7 @@ function toAsset(row: {
     title: row.title,
     storagePath: row.storage_path,
     externalUrl: row.external_url,
+    section: parseLessonAssetSection(row.section ?? null),
   };
 }
 
@@ -64,19 +70,27 @@ function revalidateLesson(courseSlug: string, lessonSlug?: string) {
 }
 
 function assetsError(message: string | undefined, fallback: string) {
+  if (isMissingSectionColumn(message)) return MISSING_SECTION_SQL;
   if (isMissingAssetsRelation(message)) return MISSING_ASSETS_SQL;
   return message || fallback;
 }
 
 async function listAssetsAdmin(lessonId: string): Promise<LessonAsset[]> {
   const admin = createAdminClient();
-  const { data, error } = await admin
+  const primary = await admin
     .from("lesson_assets")
-    .select("id, lesson_id, position, kind, title, storage_path, external_url")
+    .select(LESSON_ASSET_COLUMNS)
     .eq("lesson_id", lessonId)
     .order("position", { ascending: true });
-  if (error || !data) return [];
-  return data.map(toAsset);
+  if (!primary.error && primary.data) return primary.data.map(toAsset);
+  if (!primary.error || !isMissingSectionColumn(primary.error.message)) return [];
+  const fallback = await admin
+    .from("lesson_assets")
+    .select(LESSON_ASSET_COLUMNS_LEGACY)
+    .eq("lesson_id", lessonId)
+    .order("position", { ascending: true });
+  if (fallback.error || !fallback.data) return [];
+  return fallback.data.map((row) => toAsset({ ...row, section: null }));
 }
 
 async function loadLessonContext(lessonId: string) {
@@ -133,9 +147,25 @@ export async function uploadLessonAsset(
   if (!context) return fail("That lesson was not found.");
 
   const title = String(formData.get("title") ?? "").trim() || file.name.replace(/\.[^.]+$/, "");
+  const section =
+    classified.kind === "image" ? parseLessonAssetSection(formData.get("section")) : null;
   const id = crypto.randomUUID();
   const path = `${context.courseId}/${context.lessonId}/${id}-${safeFileName(file.name)}`;
   const admin = createAdminClient();
+
+  let existingForSection: { id: string; storage_path: string | null }[] = [];
+  if (section) {
+    const existing = await admin
+      .from("lesson_assets")
+      .select("id, storage_path")
+      .eq("lesson_id", lessonId)
+      .eq("kind", "image")
+      .eq("section", section);
+    if (existing.error) {
+      return fail(assetsError(existing.error.message, "Could not attach that file."));
+    }
+    existingForSection = existing.data ?? [];
+  }
 
   const { error: uploadError } = await admin.storage
     .from(COURSE_MEDIA_BUCKET)
@@ -144,17 +174,35 @@ export async function uploadLessonAsset(
     return fail(assetsError(uploadError.message, "Could not store that file."));
   }
 
-  const { error: insertError } = await admin.from("lesson_assets").insert({
+  const insertRow: {
+    id: string;
+    lesson_id: string;
+    position: number;
+    kind: LessonAsset["kind"];
+    title: string;
+    storage_path: string;
+    section?: LessonAsset["section"];
+  } = {
     id,
     lesson_id: lessonId,
     position: await nextPosition(lessonId),
     kind: classified.kind,
     title: title.slice(0, 160),
     storage_path: path,
-  });
+  };
+  if (section) insertRow.section = section;
+
+  const { error: insertError } = await admin.from("lesson_assets").insert(insertRow);
   if (insertError) {
     await admin.storage.from(COURSE_MEDIA_BUCKET).remove([path]);
     return fail(assetsError(insertError.message, "Could not attach that file."));
+  }
+
+  for (const row of existingForSection) {
+    if (row.storage_path) {
+      await admin.storage.from(COURSE_MEDIA_BUCKET).remove([row.storage_path]);
+    }
+    await admin.from("lesson_assets").delete().eq("id", row.id);
   }
 
   revalidateLesson(context.courseSlug, context.lessonSlug);

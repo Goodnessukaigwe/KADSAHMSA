@@ -95,6 +95,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                 <article key={course.slug} className="flex min-w-0 flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
                     <CourseCover
+                      slug={course.slug}
                       src={course.image}
                       title={course.title}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"

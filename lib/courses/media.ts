@@ -8,6 +8,15 @@ export const VIDEO_LIMIT_BYTES = 80 * 1024 * 1024;
 export const MISSING_ASSETS_SQL =
   "Apply supabase/apply-phase6.sql before attaching lesson media.";
 
+export const MISSING_SECTION_SQL =
+  "Apply supabase/migrations/20260917100000_lesson_asset_section.sql before placing images on Introduction, Main, or Notes.";
+
+export const LESSON_ASSET_COLUMNS =
+  "id, lesson_id, position, kind, title, storage_path, external_url, section";
+
+export const LESSON_ASSET_COLUMNS_LEGACY =
+  "id, lesson_id, position, kind, title, storage_path, external_url";
+
 type FileKind = "pdf" | "pptx" | "video" | "image" | "audio";
 
 const MIME_RULES: Record<string, { kind: FileKind; maxBytes: number }> = {
@@ -69,6 +78,18 @@ export function isMissingAssetsRelation(message: string | undefined) {
   return message.includes("lesson_assets") || message.includes("schema cache");
 }
 
+export function isMissingSectionColumn(message: string | undefined) {
+  if (!message) return false;
+  const lower = message.toLowerCase();
+  if (!lower.includes("section")) return false;
+  return (
+    lower.includes("schema cache") ||
+    lower.includes("does not exist") ||
+    lower.includes("could not find") ||
+    lower.includes("column")
+  );
+}
+
 export function safeFileName(name: string) {
   const base = name
     .replace(/^.*[\\/]/, "")
@@ -90,6 +111,23 @@ export function coverForSlug(_slug: string, coverPath?: string | null) {
 
 export function isPublicCoverPath(path: string) {
   return path.startsWith("/") || /^https?:\/\//i.test(path);
+}
+
+export function courseCoverApiPath(slug: string) {
+  return `/api/courses/${encodeURIComponent(slug)}/cover`;
+}
+
+/** Student covers always go through the API so empty cover_path can fall back to a lesson image. */
+export function displayCoverSrc(slug: string, src?: string | null) {
+  const id = slug.trim();
+  if (id) return courseCoverApiPath(id);
+  const trimmed = src?.trim() ?? "";
+  if (isPublicCoverPath(trimmed)) return trimmed;
+  return "";
+}
+
+export function isLocalPublicAsset(path: string) {
+  return path.startsWith("/") && !path.startsWith("//");
 }
 
 function extensionOf(name: string) {

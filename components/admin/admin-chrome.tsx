@@ -58,7 +58,7 @@ export function AdminChrome({
   }
 
   const initial = name.charAt(0).toUpperCase();
-  const builderMode = /^\/admin\/courses\/[^/]+/.test(pathname);
+  const builderMode = pathname === "/admin/courses";
 
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">

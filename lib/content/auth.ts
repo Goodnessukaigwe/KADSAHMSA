@@ -1,3 +1,11 @@
+export const AUTH_FORM_DEFAULTS = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  acceptedPrivacy: false,
+};
+
 export const authCopy = {
   register: {
     title: "Create an account",

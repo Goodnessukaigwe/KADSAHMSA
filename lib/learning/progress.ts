@@ -1,5 +1,5 @@
 import { dptcModules, moduleHref } from "@/lib/content/dptc";
-import { coverForSlug } from "@/lib/courses/media";
+import { displayCoverSrc } from "@/lib/courses/media";
 
 export type CourseProgress = {
   currentModule: number;
@@ -65,5 +65,5 @@ export function moduleLabelFor(
 }
 
 export function thumbnailFor(slug: string, coverPath?: string | null) {
-  return coverForSlug(slug, coverPath);
+  return displayCoverSrc(slug, coverPath);
 }

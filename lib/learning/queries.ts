@@ -40,13 +40,14 @@ async function toRecord(
   progress: CourseProgress,
   liveCount: number,
   href: string,
-  coverPath?: string | null
+  coverPath?: string | null,
+  courseId?: string | null
 ): Promise<EnrolmentRecord> {
   const lessons = moduleCountFor(slug, liveCount);
   return {
     slug,
     title,
-    image: await resolveCoverSrc(slug, coverPath),
+    image: await resolveCoverSrc(slug, coverPath, courseId),
     lessons,
     progress,
     percent: progressPercent(progress, lessons),
@@ -112,7 +113,15 @@ export async function listMyEnrolments(): Promise<EnrolmentRecord[]> {
       const liveCount = liveCounts.get(row.course_id) ?? 0;
       return [
         continuePathFor(meta.slug, progress.currentModule).then((href) =>
-          toRecord(meta.slug, meta.title, progress, liveCount, href, meta.cover_path)
+          toRecord(
+            meta.slug,
+            meta.title,
+            progress,
+            liveCount,
+            href,
+            meta.cover_path,
+            meta.id
+          )
         ),
       ];
     })

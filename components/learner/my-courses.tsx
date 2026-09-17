@@ -288,7 +288,12 @@ function ProgressRow({
   return (
     <article className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center">
       <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-[72px] sm:w-[88px]">
-        <CourseCover src={course.image} title={course.title} sizes="88px" />
+        <CourseCover
+          slug={course.slug}
+          src={course.image}
+          title={course.title}
+          sizes="88px"
+        />
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="font-bold">{course.title}</h3>
@@ -310,7 +315,12 @@ function CompletedRow({
   return (
     <article className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center">
       <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-[72px] sm:w-[88px]">
-        <CourseCover src={course.image} title={course.title} sizes="88px" />
+        <CourseCover
+          slug={course.slug}
+          src={course.image}
+          title={course.title}
+          sizes="88px"
+        />
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="font-bold">{course.title}</h3>
@@ -364,6 +374,7 @@ function CatalogueGrid({
         <article key={course.slug} className="flex min-w-0 flex-col">
           <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
             <CourseCover
+              slug={course.slug}
               src={course.image}
               title={course.title}
               sizes="(max-width: 640px) 100vw, 33vw"

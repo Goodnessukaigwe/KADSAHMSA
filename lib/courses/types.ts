@@ -12,13 +12,61 @@ export type CatalogueCourse = {
 };
 
 export type AdminCourseRow = {
+  id: string;
   slug: string;
   title: string;
   image: string;
+  image01: string;
+  image02: string;
+  image03: string;
+  image04: string;
+  introduction: string;
+  main: string;
+  notes: string;
   status: CourseStatus;
   enrolled: number;
+  duration: string;
+  lessons: number;
   price: "Free";
 };
+
+export type AdminCourseColumnId =
+  | "title"
+  | "status"
+  | "slug"
+  | "duration"
+  | "image00"
+  | "image01"
+  | "introduction"
+  | "main"
+  | "notes"
+  | "image02"
+  | "image03"
+  | "image04";
+
+export type AdminCourseColumn = {
+  id: AdminCourseColumnId;
+  label: string;
+};
+
+export const ADMIN_COURSE_COLUMN_POOL: AdminCourseColumn[] = [
+  { id: "title", label: "Title" },
+  { id: "status", label: "Status" },
+  { id: "slug", label: "Slug" },
+  { id: "duration", label: "Duration" },
+  { id: "image00", label: "Cover Photo" },
+  { id: "image01", label: "Photo 1" },
+  { id: "introduction", label: "Introduction" },
+  { id: "main", label: "Main Content" },
+  { id: "notes", label: "Additional Notes" },
+  { id: "image02", label: "Photo 2" },
+  { id: "image03", label: "Photo 3" },
+  { id: "image04", label: "Photo 4" },
+];
+
+export const ADMIN_COURSE_COLUMN_IDS: AdminCourseColumnId[] = ADMIN_COURSE_COLUMN_POOL.map(
+  (column) => column.id
+);
 
 export const LESSON_ASSET_KINDS = [
   "pdf",
@@ -32,6 +80,10 @@ export const LESSON_ASSET_KINDS = [
 
 export type LessonAssetKind = (typeof LESSON_ASSET_KINDS)[number];
 
+export const LESSON_ASSET_SECTIONS = ["introduction", "main", "notes"] as const;
+
+export type LessonAssetSection = (typeof LESSON_ASSET_SECTIONS)[number];
+
 export type LessonAsset = {
   id: string;
   lessonId: string;
@@ -40,7 +92,28 @@ export type LessonAsset = {
   title: string;
   storagePath: string | null;
   externalUrl: string | null;
+  section: LessonAssetSection | null;
 };
+
+export function parseLessonAssetSection(value: unknown): LessonAssetSection | null {
+  return value === "introduction" || value === "main" || value === "notes" ? value : null;
+}
+
+export function sectionedLessonImage(assets: LessonAsset[], section: LessonAssetSection) {
+  return assets.find((asset) => asset.kind === "image" && asset.section === section);
+}
+
+export function leftoverLessonAssets(assets: LessonAsset[]) {
+  return assets.filter((asset) => !(asset.kind === "image" && asset.section));
+}
+
+export function unsectionedLessonImages(assets: LessonAsset[]) {
+  return assets.filter((asset) => asset.kind === "image" && !asset.section);
+}
+
+export function leftoverNonImageAssets(assets: LessonAsset[]) {
+  return assets.filter((asset) => asset.kind !== "image");
+}
 
 export type BuilderLesson = {
   id: string;
@@ -121,6 +194,15 @@ export type PlayerLesson = {
   nextLabel: string;
   quizHref?: string;
   assets: LessonAsset[];
+};
+
+export type PlayerPageView = PlayerLesson & {
+  page: number;
+  pageCount: number;
+  section: LessonAssetSection;
+  isFirstPageOfModule: boolean;
+  isLastPageOfModule: boolean;
+  pages: { page: number; href: string }[];
 };
 
 export type PublishedLessonOutline = {

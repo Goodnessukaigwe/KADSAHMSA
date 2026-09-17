@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Share2, Star } from "lucide-react";
+import { Share2 } from "lucide-react";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { site } from "@/lib/content/landing";
@@ -12,7 +12,7 @@ type PlayerRailProps = {
   activeSeconds?: number;
   onHighlight?: (seconds: number) => void;
   quizHref?: string;
-  toc?: { title: string; items: { id: string; label: string }[] };
+  toc?: { title: string; items: { id: string; label: string; href?: string; current?: boolean }[] };
   previousHref?: string;
   nextHref?: string;
   nextLabel?: string;
@@ -58,17 +58,24 @@ export function PlayerRail({
           <p className="text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
             {toc.title}
           </p>
-          <ul className="mt-3 space-y-2 text-sm">
-            {toc.items.map((item, index) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  className={index === 0 ? "font-bold" : "text-neutral-500"}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+          <ul className="mt-3 max-h-[min(24rem,50vh)] space-y-2 overflow-y-auto text-sm">
+            {toc.items.map((item, index) => {
+              const current = item.current ?? (!item.href && index === 0);
+              const className = current ? "font-bold" : "text-neutral-500";
+              return (
+                <li key={item.id}>
+                  {item.href ? (
+                    <Link href={item.href} className={className}>
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a href={`#${item.id}`} className={className}>
+                      {item.label}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : null}
@@ -109,16 +116,6 @@ export function PlayerRail({
           Take quiz
         </SplitCta>
       ) : null}
-
-      <div>
-        <p className="text-sm font-semibold">Rating</p>
-        <div className="mt-1 flex items-center gap-1 text-amber-400">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Star key={index} className="size-4 fill-current" />
-          ))}
-        </div>
-        <p className="mt-1 text-xs text-neutral-400">1,234 reviews · 5 stars</p>
-      </div>
 
       <div className="grid min-w-0 grid-cols-2 gap-2">
         {previousHref ? (

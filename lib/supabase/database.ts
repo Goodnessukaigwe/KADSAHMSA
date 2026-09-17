@@ -78,6 +78,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      admin_course_preferences: {
+        Row: {
+          user_id: string;
+          course_columns: string[];
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          course_columns?: string[];
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          course_columns?: string[];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       courses: {
         Row: {
           id: string;
@@ -168,6 +186,7 @@ export type Database = {
           title: string;
           storage_path: string | null;
           external_url: string | null;
+          section: "introduction" | "main" | "notes" | null;
           created_at: string;
         };
         Insert: {
@@ -178,6 +197,7 @@ export type Database = {
           title?: string;
           storage_path?: string | null;
           external_url?: string | null;
+          section?: "introduction" | "main" | "notes" | null;
           created_at?: string;
         };
         Update: {
@@ -188,6 +208,7 @@ export type Database = {
           title?: string;
           storage_path?: string | null;
           external_url?: string | null;
+          section?: "introduction" | "main" | "notes" | null;
           created_at?: string;
         };
         Relationships: [];

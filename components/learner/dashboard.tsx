@@ -108,6 +108,7 @@ function NewLearnerHome({
         <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
           <div className="relative min-h-[220px] lg:min-h-[280px]">
             <CourseCover
+              slug={featured.slug}
               src={featured.image}
               title={featured.title}
               priority
@@ -226,6 +227,7 @@ function EnrolledHome({
         <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
           <div className="relative min-h-[220px] lg:min-h-[280px]">
             <CourseCover
+              slug={featured.slug}
               src={featured.image}
               title={featured.title}
               priority
@@ -265,7 +267,12 @@ function EnrolledHome({
                 className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center"
               >
                 <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-xl sm:h-16 sm:w-20">
-                  <CourseCover src={course.image} title={course.title} sizes="80px" />
+                  <CourseCover
+                    slug={course.slug}
+                    src={course.image}
+                    title={course.title}
+                    sizes="80px"
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold">{course.title}</h3>
@@ -347,6 +354,7 @@ function ExploreSection({
             <article key={course.slug} className="flex flex-col">
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
                 <CourseCover
+                  slug={course.slug}
                   src={course.image}
                   title={course.title}
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"

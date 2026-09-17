@@ -68,6 +68,7 @@ export function CoursePlayer({
     <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
       <div className="min-w-0">
         <SimulatedVideo
+          slug={courseSlug}
           poster={poster}
           title={title || introModule.title}
           duration={introDurationSeconds}

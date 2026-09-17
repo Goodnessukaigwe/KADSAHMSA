@@ -8,6 +8,7 @@ import { formatClock } from "@/lib/content/dptc";
 import { cn } from "@/lib/utils";
 
 type SimulatedVideoProps = {
+  slug: string;
   poster?: string | null;
   title: string;
   duration: number;
@@ -16,6 +17,7 @@ type SimulatedVideoProps = {
 };
 
 export function SimulatedVideo({
+  slug,
   poster,
   title,
   duration,
@@ -41,6 +43,7 @@ export function SimulatedVideo({
     <div className="overflow-hidden rounded-[22px] bg-black">
       <div className="relative aspect-video min-w-0">
         <CourseCover
+          slug={slug}
           src={poster}
           title={title}
           sizes="(max-width: 1024px) 100vw, 70vw"
@@ -100,10 +103,12 @@ export function SimulatedVideo({
 }
 
 export function PlayPoster({
+  slug,
   src,
   title,
   onPlay,
 }: {
+  slug: string;
   src?: string | null;
   title: string;
   onPlay?: () => void;
@@ -116,6 +121,7 @@ export function PlayPoster({
     >
       <span className="relative block aspect-video">
         <CourseCover
+          slug={slug}
           src={src}
           title={title}
           sizes="(max-width: 1024px) 100vw, 70vw"

@@ -20,6 +20,15 @@ export function LessonMedia({ assets }: { assets: LessonAsset[] }) {
   );
 }
 
+export function LessonSectionImage({ asset }: { asset?: LessonAsset }) {
+  if (!asset) return null;
+  return (
+    <div className="max-w-3xl">
+      <LessonAssetBlock asset={asset} />
+    </div>
+  );
+}
+
 function LessonAssetBlock({ asset }: { asset: LessonAsset }) {
   if (asset.kind === "youtube" || asset.kind === "vimeo") {
     const id = videoIdFromAsset(asset.kind, asset.externalUrl);

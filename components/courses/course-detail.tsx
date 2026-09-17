@@ -76,6 +76,7 @@ export function CourseDetail({
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
           <CourseCover
+            slug={course.slug}
             src={course.image}
             title={course.title}
             priority

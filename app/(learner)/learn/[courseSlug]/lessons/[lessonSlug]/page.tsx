@@ -1,17 +1,21 @@
 import { notFound, redirect } from "next/navigation";
 
 import { LessonReader } from "@/components/learner/lesson-reader";
-import { getPlayerLesson, getVisibleCourse } from "@/lib/courses/queries";
+import { getPlayerPage, getVisibleCourse } from "@/lib/courses/queries";
 import { dptcModules } from "@/lib/content/dptc";
+import { lessonPlayerHref } from "@/lib/courses/paths";
 
 export const metadata = { title: "Lesson" };
 
 export default async function LessonPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ courseSlug: string; lessonSlug: string }>;
+  searchParams: Promise<{ page?: string; part?: string }>;
 }) {
   const { courseSlug, lessonSlug } = await params;
+  const { page, part } = await searchParams;
   const visible = await getVisibleCourse(courseSlug);
   if (!visible) notFound();
 
@@ -19,8 +23,17 @@ export default async function LessonPage({
     redirect(`/learn/${courseSlug}/play`);
   }
 
-  const lesson = await getPlayerLesson(courseSlug, lessonSlug);
-  if (!lesson) notFound();
+  const result = await getPlayerPage(courseSlug, lessonSlug, page, part);
+  if (!result) notFound();
 
-  return <LessonReader courseSlug={courseSlug} lesson={lesson} />;
+  const requestedHref = page
+    ? `${lessonPlayerHref(courseSlug, lessonSlug)}?page=${page}`
+    : part
+      ? `${lessonPlayerHref(courseSlug, lessonSlug)}?part=${part}`
+      : lessonPlayerHref(courseSlug, lessonSlug);
+  if (requestedHref !== result.canonicalHref) {
+    redirect(result.canonicalHref);
+  }
+
+  return <LessonReader courseSlug={courseSlug} lesson={result.lesson} />;
 }

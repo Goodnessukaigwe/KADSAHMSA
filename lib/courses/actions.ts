@@ -1,21 +1,27 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import { findUserIdByEmail } from "@/lib/auth/admin-users";
 import { removeLessonMediaObjects } from "@/lib/courses/asset-actions";
 import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
 import { COURSE_MEDIA_BUCKET, isPublicCoverPath, isStockLandingCover } from "@/lib/courses/media";
-import { listBuilderLessons } from "@/lib/courses/queries";
-import type { BuilderLesson, BuilderQuizQuestion, LessonStatus } from "@/lib/courses/types";
+import { getAdminCourse, listBuilderLessons, resolveCoverSrc } from "@/lib/courses/queries";
+import {
+  ADMIN_COURSE_COLUMN_IDS,
+  type AdminCourseColumnId,
+  type AdminCourseDetail,
+  type BuilderLesson,
+  type BuilderQuizQuestion,
+  type LessonStatus,
+} from "@/lib/courses/types";
 import { requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 export type SlugResult =
-  | { ok: true; slug: string; lessons: BuilderLesson[] }
+  | { ok: true; slug: string; courseId: string; lessons: BuilderLesson[] }
   | { ok: false; error: string };
 
 function fail(error: string): ActionResult {
@@ -47,6 +53,7 @@ function revalidateCourse(slug: string) {
 function usableCoverPath(path?: string) {
   const trimmed = path?.trim() ?? "";
   if (!trimmed || isStockLandingCover(trimmed)) return "";
+  if (trimmed.startsWith("blob:") || trimmed.startsWith("data:")) return "";
   return trimmed;
 }
 
@@ -62,23 +69,32 @@ async function uniqueSlug(base: string, excludeId?: string) {
   return `${root}-${Date.now().toString(36)}`;
 }
 
-export async function createDraftCourse(): Promise<void> {
+export type LoadCourseResult =
+  | { ok: true; course: AdminCourseDetail; coverUrl: string }
+  | { ok: false; error: string };
+
+export async function loadAdminCourse(slug: string): Promise<LoadCourseResult> {
   await requireStaff();
-  const supabase = await createClient();
-  const slug = await uniqueSlug(`untitled-${Date.now().toString(36)}`);
-  const { error } = await supabase.from("courses").insert({
-    slug,
-    title: "Untitled course",
-    status: "draft",
-    summary: "",
-    duration_label: "",
-    cover_path: "",
-  });
-  if (error) {
-    throw new Error(error.message || "Could not create a course.");
+  const trimmed = slug.trim();
+  if (!trimmed || trimmed === "new") {
+    return { ok: false, error: "That course was not found." };
   }
-  revalidateCourse(slug);
-  redirect(`/admin/courses/${slug}`);
+  const course = await getAdminCourse(trimmed);
+  if (!course) return { ok: false, error: "That course was not found." };
+  return {
+    ok: true,
+    course,
+    coverUrl: await resolveCoverSrc(course.slug, course.coverPath, course.id),
+  };
+}
+
+export async function previewCoverPath(
+  path: string
+): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  await requireStaff();
+  const url = await resolveCoverSrc("", path);
+  if (!url) return { ok: false, error: "Could not preview that image." };
+  return { ok: true, url };
 }
 
 export type SaveCourseInput = {
@@ -130,6 +146,7 @@ export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
     courseId = existing.id;
     const wanted = slugFromTitle(input.nextSlug?.trim() || input.slug) || existing.slug;
     slug = wanted === existing.slug ? existing.slug : await uniqueSlug(wanted, existing.id);
+    const nextCover = usableCoverPath(input.coverPath);
     const { error } = await supabase
       .from("courses")
       .update({
@@ -137,7 +154,7 @@ export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
         slug,
         summary: input.summary?.trim() ?? "",
         duration_label: input.durationLabel?.trim() ?? "",
-        cover_path: usableCoverPath(input.coverPath),
+        ...(nextCover ? { cover_path: nextCover } : {}),
       })
       .eq("id", existing.id);
     if (error) {
@@ -155,7 +172,7 @@ export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
 
   revalidateCourse(input.slug);
   revalidateCourse(slug);
-  return { ok: true, slug, lessons: await listBuilderLessons(courseId) };
+  return { ok: true, slug, courseId, lessons: await listBuilderLessons(courseId) };
 }
 
 async function replaceLessons(courseId: string, lessons: BuilderLesson[]) {
@@ -292,6 +309,47 @@ export async function publishCourse(slug: string): Promise<SlugResult> {
   return saved;
 }
 
+export async function setCourseStatus(
+  slug: string,
+  status: "draft" | "published"
+): Promise<ActionResult> {
+  await requireStaff();
+  const supabase = await createClient();
+  const { data: course } = await supabase
+    .from("courses")
+    .select("id, slug")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (!course) return fail("That course was not found.");
+
+  const { error } = await supabase
+    .from("courses")
+    .update({ status })
+    .eq("id", course.id);
+  if (error) return fail(error.message || "Could not update this course.");
+
+  revalidateCourse(course.slug);
+  return { ok: true };
+}
+
+export async function saveAdminCourseColumns(
+  columns: AdminCourseColumnId[]
+): Promise<ActionResult> {
+  const { user } = await requireStaff();
+  const unique = [...new Set(columns)].filter((column): column is AdminCourseColumnId =>
+    ADMIN_COURSE_COLUMN_IDS.includes(column)
+  );
+  if (unique.length === 0) return fail("Choose at least one course table field.");
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("admin_course_preferences").upsert(
+    { user_id: user.id, course_columns: unique },
+    { onConflict: "user_id" }
+  );
+  if (error) return fail(error.message || "Could not save your table fields.");
+  return { ok: true };
+}
+
 async function saveAndPublish(
   slug: string,
   publishLessons: boolean
@@ -316,7 +374,7 @@ async function saveAndPublish(
   }
 
   revalidateCourse(course.slug);
-  return { ok: true, slug: course.slug, lessons: await listBuilderLessons(course.id) };
+  return { ok: true, slug: course.slug, courseId: course.id, lessons: await listBuilderLessons(course.id) };
 }
 
 export async function publishSavedCourse(
