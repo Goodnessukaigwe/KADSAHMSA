@@ -12,6 +12,7 @@ import {
   FileText,
   Film,
   Image as ImageIcon,
+  Loader2,
   Italic,
   Link2,
   List,
@@ -21,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 
+import { CourseEditorSkeleton } from "@/components/skeletons";
 import { FinalQuizEditor } from "@/components/admin/final-quiz-editor";
 import { ModuleQuiz } from "@/components/learner/module-quiz";
 import { LessonAssetsEditor } from "@/components/admin/lesson-assets-editor";
@@ -29,15 +31,15 @@ import {
   deleteCourse,
   loadAdminCourse,
   previewCoverPath,
-  publishSavedCourse,
   saveCourse,
   setCourseStatus,
+  type SaveCourseInput,
 } from "@/lib/courses/actions";
 import {
   getLessonAssetSignedUrl,
   uploadCourseCover,
-  uploadLessonAsset,
 } from "@/lib/courses/asset-actions";
+import { uploadLessonFile } from "@/lib/courses/upload-lesson-file";
 import {
   IMAGE_ACCEPT,
   PDF_ACCEPT,
@@ -46,7 +48,7 @@ import {
   isPublicCoverPath,
   isUuid,
 } from "@/lib/courses/media";
-import { convertDeckToSlides } from "@/lib/courses/slide-import";
+import { convertDeckToSlides, type ImportedSlide } from "@/lib/courses/slide-import";
 import {
   joinLessonParagraphs,
   normalizeLinkUrl,
@@ -77,7 +79,6 @@ type StagedFile = { file: File; previewUrl: string };
 type StagedSectionFiles = Partial<
   Record<string, Partial<Record<LessonAssetSection, Partial<Record<SectionedAssetKind, StagedFile>>>>>
 >;
-type StagedLeftoverFiles = Record<string, StagedFile[]>;
 const SECTION_MEDIA_KINDS: SectionedAssetKind[] = ["image", "video", "pdf"];
 
 function revokeStaged(staged: StagedFile | null | undefined) {
@@ -94,40 +95,8 @@ function revokeSectionFiles(staged: StagedSectionFiles) {
   }
 }
 
-function revokeLeftoverFiles(staged: StagedLeftoverFiles) {
-  for (const files of Object.values(staged)) {
-    for (const file of files) revokeStaged(file);
-  }
-}
-
-function isEmptyUntitledLesson(
-  lesson: BuilderLesson,
-  staged: StagedSectionFiles,
-  leftover: StagedLeftoverFiles
-) {
-  return (
-    !lesson.title.trim() &&
-    !lesson.introduction.trim() &&
-    !lesson.main.trim() &&
-    !lesson.notes.trim() &&
-    !(lesson.assets ?? []).length &&
-    !staged[lesson.id] &&
-    !leftover[lesson.id]?.length
-  );
-}
-
-function uniqueImportedSlug(used: string[], title: string, fallback: string) {
-  const root = slugFromTitle(title) || fallback;
-  if (!used.includes(root)) return root;
-  for (let i = 2; i < 200; i += 1) {
-    const candidate = `${root}-${i}`;
-    if (!used.includes(candidate)) return candidate;
-  }
-  return `${root}-${Date.now().toString(36)}`;
-}
-
 function stagedPreview(file: File, kind: SectionedAssetKind) {
-  return kind === "image" ? URL.createObjectURL(file) : "";
+  return kind === "image" || kind === "video" ? URL.createObjectURL(file) : "";
 }
 
 function newClientId(prefix: string) {
@@ -181,16 +150,131 @@ function findLesson(
   return { module: first, lesson: first?.lessons[0] ?? null };
 }
 
+function lessonTextIsEmpty(value: string) {
+  return (
+    value
+      .replace(/<br\s*\/?>/gi, "")
+      .replace(/<\/?[^>]+>/g, "")
+      .replace(/&nbsp;/gi, " ")
+      .trim() === ""
+  );
+}
+
+function lessonHasStagedFiles(staged: StagedSectionFiles[string] | undefined) {
+  if (!staged) return false;
+  for (const files of Object.values(staged)) {
+    if (!files) continue;
+    for (const item of Object.values(files)) {
+      if (item) return true;
+    }
+  }
+  return false;
+}
+
+function isReusableEmptyLesson(
+  lesson: BuilderLesson,
+  staged: StagedSectionFiles[string] | undefined
+) {
+  return (
+    !lesson.title.trim() &&
+    lessonTextIsEmpty(lesson.introduction) &&
+    lessonTextIsEmpty(lesson.main) &&
+    lessonTextIsEmpty(lesson.notes) &&
+    !(lesson.assets ?? []).length &&
+    !lessonHasStagedFiles(staged)
+  );
+}
+
+type PdfSlideTarget = {
+  draft: BuilderLesson;
+  image: File;
+  flattenIndex: number;
+};
+
+function insertPdfSlideLessons(
+  tree: BuilderModule[],
+  moduleId: string,
+  lessonId: string,
+  slides: ImportedSlide[],
+  reuseCurrent: boolean
+): { modules: BuilderModule[]; targets: PdfSlideTarget[] } {
+  const nextModules = tree.map((module) => {
+    if (module.id !== moduleId) return module;
+    const index = module.lessons.findIndex((item) => item.id === lessonId);
+    if (index < 0) return module;
+    const current = module.lessons[index];
+    const imported = slides.map((slide, slideIndex) => {
+      if (reuseCurrent && slideIndex === 0) {
+        return { ...current, title: slide.title };
+      }
+      return { ...blankLesson(), title: slide.title };
+    });
+    const inserted = reuseCurrent ? imported.slice(1) : imported;
+    const head = reuseCurrent ? imported[0] : current;
+    if (!head) return module;
+    return {
+      ...module,
+      lessons: [
+        ...module.lessons.slice(0, index),
+        head,
+        ...inserted,
+        ...module.lessons.slice(index + 1),
+      ],
+    };
+  });
+
+  const module = nextModules.find((item) => item.id === moduleId);
+  const currentIndex = module?.lessons.findIndex((item) => item.id === lessonId) ?? -1;
+  const startIndex = reuseCurrent ? currentIndex : currentIndex + 1;
+  const importedLessons = module?.lessons.slice(startIndex, startIndex + slides.length) ?? [];
+  const flat = flattenBuilderLessons(nextModules);
+  const targets: PdfSlideTarget[] = [];
+  for (const [index, draft] of importedLessons.entries()) {
+    const slide = slides[index];
+    if (!slide) continue;
+    targets.push({
+      draft,
+      image: slide.image,
+      flattenIndex: flat.findIndex((item) => item.id === draft.id),
+    });
+  }
+  return { modules: nextModules, targets };
+}
+
+function formatUploadToast(value: string) {
+  if (
+    value.startsWith("Rendering ") ||
+    value.startsWith("Uploading ") ||
+    value.startsWith("Preparing ")
+  ) {
+    return value;
+  }
+  return `Uploading ‘${value}’`;
+}
+
+function uploadFailedMessage(cause: unknown) {
+  const message = cause instanceof Error ? cause.message : String(cause ?? "");
+  if (
+    message.toLowerCase().includes("unexpected end of form") ||
+    message.toLowerCase().includes("body exceeded")
+  ) {
+    return "That file is too large to upload here. Use a video of 10 MB or smaller.";
+  }
+  return message.trim() || "Could not upload that file.";
+}
+
 export function CourseEditorPanel({
   slug,
   onClose,
   onSlugChange,
   onDirtyChange,
+  onPublish,
 }: {
   slug: string;
   onClose: (options?: { force?: boolean; exit?: "left" | "right" }) => void;
   onSlugChange: (slug: string) => void;
   onDirtyChange: (dirty: boolean) => void;
+  onPublish: (input: SaveCourseInput) => void;
 }) {
   const router = useRouter();
   const [courseId, setCourseId] = useState<string | null>(null);
@@ -217,12 +301,10 @@ export function CourseEditorPanel({
   const [stagedCoverVideo, setStagedCoverVideo] = useState<StagedFile | null>(null);
   const [stagedCoverPdf, setStagedCoverPdf] = useState<StagedFile | null>(null);
   const [stagedSectionFiles, setStagedSectionFiles] = useState<StagedSectionFiles>({});
-  const [stagedLeftoverFiles, setStagedLeftoverFiles] = useState<StagedLeftoverFiles>({});
-  const [importingDeck, setImportingDeck] = useState<string | null>(null);
   const [saved, setSaved] = useState(true);
-  const [pending, setPending] = useState<"save" | "publish" | "delete" | "status" | null>(
-    null
-  );
+  const [pending, setPending] = useState<
+    "save" | "publish" | "delete" | "status" | "import" | null
+  >(null);
   const [loading, setLoading] = useState(slug !== "new");
   const [error, setError] = useState<string | null>(null);
   const loadedSlug = useRef<string | null>(null);
@@ -281,10 +363,6 @@ export function CourseEditorPanel({
         });
         setStagedSectionFiles((current) => {
           revokeSectionFiles(current);
-          return {};
-        });
-        setStagedLeftoverFiles((current) => {
-          revokeLeftoverFiles(current);
           return {};
         });
         setSaved(true);
@@ -354,10 +432,6 @@ export function CourseEditorPanel({
       revokeSectionFiles(current);
       return {};
     });
-    setStagedLeftoverFiles((current) => {
-      revokeLeftoverFiles(current);
-      return {};
-    });
     setSaved(true);
     setError(null);
   }
@@ -405,14 +479,6 @@ export function CourseEditorPanel({
         if (!files) continue;
         for (const file of Object.values(files)) revokeStaged(file);
       }
-      const next = { ...current };
-      delete next[lessonId];
-      return next;
-    });
-    setStagedLeftoverFiles((current) => {
-      const files = current[lessonId];
-      if (!files) return current;
-      for (const file of files) revokeStaged(file);
       const next = { ...current };
       delete next[lessonId];
       return next;
@@ -482,107 +548,6 @@ export function CourseEditorPanel({
     markDirty();
   }
 
-  // Overlay UI is hidden; keep this so PowerPoint import can be restored later.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function importPowerPoint(moduleId: string, file: File) {
-    if (importingDeck || pending) return;
-    setError(null);
-    const classified = classifyUpload(file);
-    if (!classified.ok) {
-      setError(classified.error);
-      return;
-    }
-    if (classified.kind !== "pptx" && classified.kind !== "pdf") {
-      setError("Upload a PowerPoint (.pptx) or a PDF exported from PowerPoint.");
-      return;
-    }
-
-    setImportingDeck("Reading file…");
-    try {
-      const converted = await convertDeckToSlides(file, (current, total) => {
-        setImportingDeck(`Converting slide ${current} of ${total}`);
-      });
-      if (!converted.ok) {
-        setError(converted.error);
-        return;
-      }
-      applyImportedSlides(moduleId, converted.slides, file);
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "That file could not be read as a PowerPoint or PDF. Export the deck as .pptx or .pdf and try again."
-      );
-    } finally {
-      setImportingDeck(null);
-    }
-  }
-
-  function applyImportedSlides(moduleId: string, slides: { title: string; image: File }[], leftover: File) {
-    const currentModule = modules.find((item) => item.id === moduleId);
-    if (!currentModule || !slides.length) return;
-
-    const usedSlugs = modules.flatMap((item) =>
-      item.lessons.map((lesson) => lesson.slug).filter(Boolean)
-    );
-    const replace =
-      currentModule.lessons.length === 1 &&
-      isEmptyUntitledLesson(currentModule.lessons[0], stagedSectionFiles, stagedLeftoverFiles);
-
-    const generated = slides.map((slide, index) => {
-      const base = replace && index === 0 ? currentModule.lessons[0] : blankLesson();
-      const title = slide.title.trim() || `Slide ${index + 1}`;
-      const slug = uniqueImportedSlug(usedSlugs, title, `slide-${index + 1}`);
-      usedSlugs.push(slug);
-      return {
-        ...base,
-        title,
-        slug,
-        main: replace && index === 0 ? base.main : "",
-        introduction: replace && index === 0 ? base.introduction : "",
-        notes: replace && index === 0 ? base.notes : "",
-      };
-    });
-
-    setModules((current) =>
-      current.map((item) =>
-        item.id === moduleId
-          ? { ...item, lessons: replace ? generated : [...item.lessons, ...generated] }
-          : item
-      )
-    );
-    setEditingModuleId(moduleId);
-    setEditingLessonId(generated[0]?.id ?? editingLessonId);
-
-    setStagedSectionFiles((current) => {
-      const next = { ...current };
-      for (const [index, lesson] of generated.entries()) {
-        const previous = next[lesson.id]?.main?.image;
-        if (previous?.previewUrl !== undefined) revokeStaged(previous);
-        const image = slides[index]?.image;
-        if (!image) continue;
-        next[lesson.id] = {
-          ...next[lesson.id],
-          main: {
-            ...next[lesson.id]?.main,
-            image: { file: image, previewUrl: URL.createObjectURL(image) },
-          },
-        };
-      }
-      return next;
-    });
-
-    setStagedLeftoverFiles((current) => {
-      const firstId = generated[0]?.id;
-      if (!firstId) return current;
-      const next = { ...current };
-      for (const staged of next[firstId] ?? []) revokeStaged(staged);
-      next[firstId] = [{ file: leftover, previewUrl: "" }];
-      return next;
-    });
-    markDirty();
-  }
-
   function addQuestion() {
     if (slug === "dptc") return;
     setFinalQuestions((current) => [
@@ -644,7 +609,10 @@ export function CourseEditorPanel({
   }
 
   function stageCoverMedia(kind: "video" | "pdf", file: File) {
-    const staged = { file, previewUrl: "" };
+    const staged = {
+      file,
+      previewUrl: kind === "video" ? URL.createObjectURL(file) : "",
+    };
     if (kind === "video") {
       setStagedCoverVideo((current) => {
         revokeStaged(current);
@@ -683,6 +651,26 @@ export function CourseEditorPanel({
     markDirty();
   }
 
+  function stageMainImages(entries: { lessonId: string; file: File }[]) {
+    if (!entries.length) return stagedSectionFiles;
+    const next = { ...stagedSectionFiles };
+    for (const { lessonId, file } of entries) {
+      const previewUrl = stagedPreview(file, "image");
+      const previous = next[lessonId]?.main?.image;
+      if (previous?.previewUrl !== previewUrl) revokeStaged(previous);
+      next[lessonId] = {
+        ...next[lessonId],
+        main: {
+          ...next[lessonId]?.main,
+          image: { file, previewUrl },
+        },
+      };
+    }
+    setStagedSectionFiles(next);
+    markDirty();
+    return next;
+  }
+
   function applyLessonAssets(lessonId: string, assets: LessonAsset[]) {
     setModules((current) =>
       current.map((module) => ({
@@ -717,25 +705,24 @@ export function CourseEditorPanel({
   }
 
   async function uploadSectionedFile(lessonId: string, section: string, file: File) {
-    const body = new FormData();
-    body.set("file", file);
-    body.set("title", file.name.replace(/\.[^.]+$/, ""));
-    body.set("section", section);
-    return uploadLessonAsset(lessonId, body);
+    try {
+      return await uploadLessonFile(lessonId, file, section);
+    } catch (cause) {
+      return { ok: false as const, error: uploadFailedMessage(cause) };
+    }
   }
 
   async function flushQueuedUploads(
     savedCourseId: string,
     draftModules: BuilderModule[],
-    savedModules: BuilderModule[]
+    savedModules: BuilderModule[],
+    sectionsToFlush = stagedSectionFiles
   ): Promise<{ modules: BuilderModule[]; error?: string }> {
     let nextModules = savedModules;
     const draftLessons = flattenBuilderLessons(draftModules);
     const coverToFlush = stagedCover;
     const coverVideoToFlush = stagedCoverVideo;
     const coverPdfToFlush = stagedCoverPdf;
-    const sectionsToFlush = stagedSectionFiles;
-    const leftoverToFlush = stagedLeftoverFiles;
 
     if (coverToFlush) {
       setUploadToast(coverToFlush.file.name);
@@ -817,36 +804,107 @@ export function CourseEditorPanel({
       }
     }
 
-    for (const [index, draft] of draftLessons.entries()) {
-      const leftover = leftoverToFlush[draft.id];
-      if (!leftover?.length) continue;
-      const savedLesson = matchSavedLesson(draft, flattenBuilderLessons(nextModules), index);
-      if (!savedLesson || !isUuid(savedLesson.id)) {
-        setUploadToast(null);
-        return { modules: nextModules, error: "Save the course first to upload files." };
-      }
-      for (const staged of leftover) {
-        setUploadToast(staged.file.name);
-        const body = new FormData();
-        body.set("file", staged.file);
-        body.set("title", staged.file.name.replace(/\.[^.]+$/, ""));
-        const uploaded = await uploadLessonAsset(savedLesson.id, body);
-        if (!uploaded.ok) {
-          setUploadToast(null);
-          return { modules: nextModules, error: uploaded.error };
-        }
-        revokeStaged(staged);
-        setStagedLeftoverFiles((current) => {
-          const next = { ...current };
-          delete next[draft.id];
-          return next;
-        });
-        nextModules = applyAssetsToModules(nextModules, savedLesson.id, uploaded.assets);
-      }
-    }
-
     setUploadToast(null);
     return { modules: nextModules };
+  }
+
+  async function importPdfAsLessons(file: File) {
+    if (pending) return;
+    setUploadToast("Preparing PDF…");
+    const currentModules = modules;
+    const currentModule = currentModules.find((item) => item.id === editingModuleId);
+    const currentLesson =
+      currentModule?.lessons.find((item) => item.id === editingLessonId) ??
+      currentModule?.lessons[0];
+    if (!currentModule || !currentLesson) {
+      setError("Select a lesson before importing a PDF.");
+      return;
+    }
+
+    setPending("import");
+    setError(null);
+    try {
+      const converted = await convertDeckToSlides(file, (current, total) => {
+        setUploadToast(`Rendering slide ${current} of ${total}`);
+      });
+      if (!converted.ok) {
+        setError(converted.error);
+        return;
+      }
+      if (!converted.slides.length) {
+        setError(
+          "That file could not be read as a PDF. Export the slides as a PDF and try again."
+        );
+        return;
+      }
+
+      const reuse = isReusableEmptyLesson(
+        currentLesson,
+        stagedSectionFiles[currentLesson.id]
+      );
+      const { modules: nextModules, targets } = insertPdfSlideLessons(
+        currentModules,
+        currentModule.id,
+        currentLesson.id,
+        converted.slides,
+        reuse
+      );
+      const firstTarget = targets[0];
+      if (!firstTarget) {
+        setError("Could not add lessons from that PDF.");
+        return;
+      }
+
+      const firstDraftId = firstTarget.draft.id;
+      setModules(nextModules);
+      setEditingModuleId(currentModule.id);
+      setEditingLessonId(firstDraftId);
+      const mergedStaging = stageMainImages(
+        targets.map((target) => ({ lessonId: target.draft.id, file: target.image }))
+      );
+
+      const courseSaved = Boolean(slug !== "new" && courseId && isUuid(courseId));
+      if (!courseSaved) return;
+
+      setPending("save");
+      const result = await saveCourse(payload(nextModules));
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setCourseId(result.courseId);
+
+      const flushed = await flushQueuedUploads(
+        result.courseId,
+        nextModules,
+        result.modules,
+        mergedStaging
+      );
+      if (flushed.error) {
+        setError(flushed.error);
+        if (flushed.modules.length) {
+          selectSavedTree(flushed.modules, currentModule.id, firstDraftId);
+        }
+        return;
+      }
+
+      setSaved(true);
+      if (flushed.modules.length) {
+        const firstSaved =
+          matchSavedLesson(
+            firstTarget.draft,
+            flattenBuilderLessons(flushed.modules),
+            firstTarget.flattenIndex
+          )?.id ?? firstDraftId;
+        selectSavedTree(flushed.modules, currentModule.id, firstSaved);
+      }
+      loadedSlug.current = result.slug;
+      if (result.slug !== slug) onSlugChange(result.slug);
+      router.refresh();
+    } finally {
+      setUploadToast(null);
+      setPending(null);
+    }
   }
 
   function selectSavedTree(
@@ -863,11 +921,16 @@ export function CourseEditorPanel({
 
   async function persist(mode: "save" | "publish") {
     if (pending) return;
-    setPending(mode);
+    if (mode === "publish") {
+      setPending("publish");
+      onPublish(payload());
+      onClose({ force: true, exit: "left" });
+      return;
+    }
+    setPending("save");
     setError(null);
     const input = payload();
-    const result =
-      mode === "publish" ? await publishSavedCourse(input) : await saveCourse(input);
+    const result = await saveCourse(input);
     if (!result.ok) {
       setPending(null);
       setError(result.error);
@@ -884,10 +947,6 @@ export function CourseEditorPanel({
       return;
     }
     setSaved(true);
-    if (mode === "publish") {
-      onClose({ force: true, exit: "left" });
-      return;
-    }
     if (flushed.modules.length) {
       selectSavedTree(flushed.modules, editingModuleId, editingLessonId);
     }
@@ -950,16 +1009,21 @@ export function CourseEditorPanel({
     null;
   const firstLesson = modules[0]?.lessons[0] ?? null;
 
-  return (
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-      <button
-        type="button"
-        onClick={() => onClose()}
-        className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-950 lg:hidden"
-      >
-        ← Back to list
-      </button>
+  if (loading) {
+    return (
+      <div className="flex min-h-[calc(100vh-7rem)] w-full flex-col gap-6">
+        {error ? (
+          <p className="mb-4 text-sm text-red-600" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <CourseEditorSkeleton />
+      </div>
+    );
+  }
 
+  return (
+    <div className="flex min-h-[calc(100vh-7rem)] w-full flex-col gap-6 lg:flex-row lg:items-start">
       <div className="min-w-0 flex-1">
         {error ? (
           <p className="mb-4 text-sm text-red-600" role="alert">
@@ -967,12 +1031,7 @@ export function CourseEditorPanel({
           </p>
         ) : null}
 
-        {loading ? (
-          <p className="rounded-[28px] bg-white px-6 py-10 text-sm text-neutral-400">
-            Loading course…
-          </p>
-        ) : (
-          <div className="rounded-[28px] bg-white px-5 py-2 sm:px-6">
+        <div className="rounded-[28px] bg-white px-5 py-2 sm:px-6">
             <FieldRow label="Title">
               <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-neutral-100 px-4">
                 <input
@@ -1059,12 +1118,16 @@ export function CourseEditorPanel({
                     }}
                   />
                 </SlotCaption>
-                <SlotCaption label="Video">
+                <SlotCaption
+                  label="Video"
+                  hint="Do not upload videos larger than 10 MB."
+                >
                   <CoverFileThumb
                     kind="video"
                     lessonId={firstLesson?.id ?? null}
                     asset={sectionedLessonAsset(firstLesson?.assets ?? [], "cover", "video")}
                     stagedName={stagedCoverVideo?.file.name}
+                    previewUrl={stagedCoverVideo?.previewUrl}
                     onUploading={setUploadToast}
                     onStaged={(file) => stageCoverMedia("video", file)}
                     onUploaded={(lessonId, assets) => {
@@ -1168,7 +1231,7 @@ export function CourseEditorPanel({
                   <button
                     type="button"
                     onClick={() => createLesson(editingModule.id)}
-                    disabled={Boolean(importingDeck) || pending !== null}
+                    disabled={pending !== null}
                     className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950 disabled:opacity-60"
                   >
                     + Create new lesson
@@ -1249,6 +1312,7 @@ export function CourseEditorPanel({
                         stageSectionFile(editingLesson.id, "main", kind, file)
                       }
                       onUploaded={(assets) => updateLesson({ ...editingLesson, assets })}
+                      onPdfImport={importPdfAsLessons}
                     />
                   }
                 />
@@ -1261,17 +1325,10 @@ export function CourseEditorPanel({
                       .map((asset) => asset.id)}
                     onChange={(assets) => updateLesson({ ...editingLesson, assets })}
                   />
-                  {stagedLeftoverFiles[editingLesson.id]?.length ? (
-                    <p className="mt-2 text-sm text-neutral-400">
-                      Original {stagedLeftoverFiles[editingLesson.id]?.[0]?.file.name} will upload
-                      when you save.
-                    </p>
-                  ) : null}
                 </div>
               </>
             ) : null}
           </div>
-        )}
 
         {editingModule && !lockedQuiz && !loading ? (
           <FinalQuizEditor
@@ -1448,7 +1505,7 @@ export function CourseEditorPanel({
         {uploadToast ? (
           <p className="inline-flex items-center gap-2 self-end rounded-full bg-emerald-50 px-3 py-2 text-[11px] font-semibold text-emerald-700">
             <span className="size-2 animate-pulse rounded-full bg-emerald-500" />
-            Uploading ‘{uploadToast}’
+            {formatUploadToast(uploadToast)}
           </p>
         ) : null}
       </aside>
@@ -1539,11 +1596,22 @@ function CoverThumb({
   );
 }
 
-function SlotCaption({ label, children }: { label: string; children: React.ReactNode }) {
+function SlotCaption({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col items-start gap-1">
       {children}
       <p className="text-[10px] font-semibold tracking-[0.12em] text-neutral-400 uppercase">{label}</p>
+      {hint ? (
+        <p className="max-w-40 text-[10px] leading-snug text-neutral-500">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -1553,6 +1621,7 @@ function CoverFileThumb({
   lessonId,
   asset,
   stagedName,
+  previewUrl,
   onUploaded,
   onStaged,
   onUploading,
@@ -1561,6 +1630,7 @@ function CoverFileThumb({
   lessonId: string | null;
   asset?: LessonAsset;
   stagedName?: string;
+  previewUrl?: string;
   onUploaded: (lessonId: string, assets: LessonAsset[]) => void;
   onStaged: (file: File) => void;
   onUploading?: (name: string | null) => void;
@@ -1571,6 +1641,13 @@ function CoverFileThumb({
 
   async function onFile(file: File) {
     if (pending) return;
+    if (kind === "video") {
+      const classified = classifyUpload(file);
+      if (!classified.ok) {
+        setError(classified.error);
+        return;
+      }
+    }
     if (!saved || !lessonId) {
       setError(null);
       onStaged(file);
@@ -1579,18 +1656,20 @@ function CoverFileThumb({
     setPending(true);
     setError(null);
     onUploading?.(file.name);
-    const body = new FormData();
-    body.set("file", file);
-    body.set("title", file.name.replace(/\.[^.]+$/, ""));
-    body.set("section", "cover");
-    const result = await uploadLessonAsset(lessonId, body);
-    setPending(false);
-    onUploading?.(null);
-    if (!result.ok) {
-      setError(result.error);
-      return;
+    try {
+      const result = await uploadLessonFile(lessonId, file, "cover");
+      setPending(false);
+      onUploading?.(null);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      onUploaded(lessonId, result.assets);
+    } catch (cause) {
+      setPending(false);
+      onUploading?.(null);
+      setError(uploadFailedMessage(cause));
     }
-    onUploaded(lessonId, result.assets);
   }
 
   return (
@@ -1598,6 +1677,7 @@ function CoverFileThumb({
       <MediaKindSlot
         kind={kind}
         asset={asset}
+        previewUrl={kind === "video" ? previewUrl : undefined}
         pending={pending}
         label={`Cover ${kind}`}
         stagedName={stagedName}
@@ -1626,6 +1706,7 @@ function SectionMediaSlots({
   onUploaded,
   onStaged,
   onUploading,
+  onPdfImport,
 }: {
   lessonId: string;
   section: LessonAssetSection;
@@ -1634,11 +1715,16 @@ function SectionMediaSlots({
   onUploaded: (assets: LessonAsset[]) => void;
   onStaged: (kind: SectionedAssetKind, file: File) => void;
   onUploading?: (name: string | null) => void;
+  onPdfImport?: (file: File) => Promise<void>;
 }) {
   return (
     <div className="flex flex-col gap-3">
       {SECTION_MEDIA_KINDS.map((kind) => (
-        <SlotCaption key={kind} label={SECTION_MEDIA_SLOT_LABEL[kind]}>
+        <SlotCaption
+          key={kind}
+          label={SECTION_MEDIA_SLOT_LABEL[kind]}
+          hint={kind === "video" ? "Do not upload videos larger than 10 MB." : undefined}
+        >
           <SectionFileThumb
             lessonId={lessonId}
             section={section}
@@ -1648,6 +1734,7 @@ function SectionMediaSlots({
             onUploading={onUploading}
             onStaged={(file) => onStaged(kind, file)}
             onUploaded={onUploaded}
+            onImport={kind === "pdf" && onPdfImport ? onPdfImport : undefined}
           />
         </SlotCaption>
       ))}
@@ -1664,6 +1751,7 @@ function SectionFileThumb({
   onUploaded,
   onStaged,
   onUploading,
+  onImport,
 }: {
   lessonId: string;
   section: LessonAssetSection;
@@ -1673,6 +1761,7 @@ function SectionFileThumb({
   onUploaded: (assets: LessonAsset[]) => void;
   onStaged: (file: File) => void;
   onUploading?: (name: string | null) => void;
+  onImport?: (file: File) => Promise<void>;
 }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1680,6 +1769,25 @@ function SectionFileThumb({
 
   async function onFile(file: File) {
     if (pending) return;
+    if (kind === "video") {
+      const classified = classifyUpload(file);
+      if (!classified.ok) {
+        setError(classified.error);
+        return;
+      }
+    }
+    if (onImport) {
+      setPending(true);
+      setError(null);
+      try {
+        await onImport(file);
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : "Could not import that PDF.");
+      } finally {
+        setPending(false);
+      }
+      return;
+    }
     if (!saved) {
       setError(null);
       onStaged(file);
@@ -1688,18 +1796,20 @@ function SectionFileThumb({
     setPending(true);
     setError(null);
     onUploading?.(file.name);
-    const body = new FormData();
-    body.set("file", file);
-    body.set("title", file.name.replace(/\.[^.]+$/, ""));
-    body.set("section", section);
-    const result = await uploadLessonAsset(lessonId, body);
-    setPending(false);
-    onUploading?.(null);
-    if (!result.ok) {
-      setError(result.error);
-      return;
+    try {
+      const result = await uploadLessonFile(lessonId, file, section);
+      setPending(false);
+      onUploading?.(null);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      onUploaded(result.assets);
+    } catch (cause) {
+      setPending(false);
+      onUploading?.(null);
+      setError(uploadFailedMessage(cause));
     }
-    onUploaded(result.assets);
   }
 
   return (
@@ -1707,8 +1817,8 @@ function SectionFileThumb({
       <MediaKindSlot
         kind={kind}
         asset={asset}
-        previewUrl={kind === "image" ? staged?.previewUrl : undefined}
-        stagedName={kind === "image" ? undefined : staged?.file.name}
+        previewUrl={kind === "image" || kind === "video" ? staged?.previewUrl : undefined}
+        stagedName={kind === "pdf" ? staged?.file.name : undefined}
         pending={pending}
         label={`${section} ${kind}`}
         onFile={(file) => void onFile(file)}
@@ -1739,14 +1849,19 @@ function MediaKindSlot({
   label: string;
   onFile: (file: File) => void;
 }) {
-  const [url, setUrl] = useState<string | null>(kind === "image" ? previewUrl ?? null : null);
+  const [url, setUrl] = useState<string | null>(
+    kind === "image" || kind === "video" ? previewUrl ?? null : null
+  );
   const accept = kind === "image" ? IMAGE_ACCEPT : kind === "video" ? VIDEO_ACCEPT : PDF_ACCEPT;
   const Icon = kind === "image" ? ImageIcon : kind === "video" ? Film : FileText;
   const filename = asset?.title || stagedName;
-  const filled = Boolean(asset || stagedName || (kind === "image" && (previewUrl || url)));
+  const filled = Boolean(
+    asset || stagedName || ((kind === "image" || kind === "video") && (previewUrl || url))
+  );
+  const videoPlayer = kind === "video" && (pending || Boolean(url));
 
   useEffect(() => {
-    if (kind !== "image") return;
+    if (kind !== "image" && kind !== "video") return;
     if (previewUrl) {
       setUrl(previewUrl);
       return;
@@ -1771,19 +1886,36 @@ function MediaKindSlot({
 
   return (
     <label
-      className="relative flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-neutral-200"
+      className={cn(
+        "relative flex cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-neutral-200",
+        videoPlayer ? "aspect-video w-40" : "size-10"
+      )}
       aria-label={label}
-      title={filename || label}
+      aria-busy={pending}
+      title={pending && kind === "video" ? "Uploading video" : filename || label}
     >
       {kind === "image" && url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt="" className="size-full object-cover" />
+      ) : kind === "video" && url && !pending ? (
+        <video
+          src={url}
+          muted
+          playsInline
+          preload="metadata"
+          className="size-full object-cover"
+        />
       ) : (
         <Icon className={cn("size-4", filled ? "text-neutral-800" : "text-neutral-400")} />
       )}
       {pending ? (
-        <span className="absolute inset-0 flex items-center justify-center bg-white/70 text-[8px] font-bold tracking-wider text-neutral-500 uppercase">
-          …
+        <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-neutral-950/70 text-white">
+          <Loader2 className="size-5 animate-spin" aria-hidden />
+          {kind === "video" ? (
+            <span className="text-[9px] font-bold tracking-[0.12em] uppercase">Uploading</span>
+          ) : (
+            <span className="text-[8px] font-bold tracking-wider uppercase">…</span>
+          )}
         </span>
       ) : null}
       <input

@@ -40,7 +40,7 @@ export function LandingPage({
 
 function Hero() {
   return (
-    <section className="landing-grid relative overflow-hidden">
+    <section className="relative overflow-hidden">
       <div className="mx-auto max-w-[1120px] px-4 pt-14 pb-10 text-center sm:px-6 sm:pt-20 sm:pb-14">
         <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 shadow-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -56,7 +56,9 @@ function Hero() {
           {hero.subtitle}
         </p>
         <div className="mt-8 flex justify-center">
-          <SplitCta href="/courses">{hero.cta}</SplitCta>
+          <SplitCta href="/courses" iconPlacement="inline">
+            {hero.cta}
+          </SplitCta>
         </div>
 
         <div className="mt-14 grid gap-3 sm:grid-cols-3 sm:gap-4">
@@ -83,13 +85,16 @@ function Hero() {
 
 function About() {
   return (
-    <section id="about" className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24">
+    <section id="about" aria-labelledby="landing-about-title" className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto grid max-w-[1120px] items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
         <div>
           <span className="inline-flex rounded-full bg-neutral-100 px-3 py-1 text-[11px] font-medium text-neutral-500">
             {about.badge}
           </span>
-          <h2 className="mt-4 max-w-lg text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
+          <h2
+            id="landing-about-title"
+            className="mt-4 max-w-lg text-3xl leading-tight font-bold tracking-tight sm:text-4xl"
+          >
             {about.title}
           </h2>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-neutral-500">
@@ -197,14 +202,14 @@ function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
                     {course.summary || "A published KADSAMHSA course."}
                   </p>
                   <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <SplitCta href={href} icon="plus" className="min-w-0 w-full sm:w-auto">
+                    <SplitCta href={href} iconPlacement="inline" className="min-w-0 w-full sm:w-auto">
                       View course
                     </SplitCta>
                     <Link
-                      href={href}
-                      className="inline-flex h-9 shrink-0 items-center justify-center text-[11px] font-semibold tracking-[0.14em] text-neutral-800 uppercase"
+                      href="/register"
+                      className="inline-flex h-11 shrink-0 items-center justify-center text-[11px] font-semibold tracking-[0.14em] text-neutral-800 uppercase"
                     >
-                      Learn more
+                      Sign up
                     </Link>
                   </div>
                 </article>

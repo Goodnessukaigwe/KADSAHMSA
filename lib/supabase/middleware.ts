@@ -102,35 +102,5 @@ export async function updateSession(request: NextRequest) {
     return secured(NextResponse.redirect(home));
   }
 
-  if (user && (pathname === "/admin" || pathname.startsWith("/admin/"))) {
-    const { data: roleRows } = await supabase
-      .from("user_roles")
-      .select("role_id")
-      .eq("user_id", user.id);
-    const roles = (roleRows ?? []).map((row) => row.role_id);
-    if (!isStaff(roles)) {
-      const learnerHome = request.nextUrl.clone();
-      learnerHome.pathname = "/my";
-      learnerHome.search = "";
-      return secured(NextResponse.redirect(learnerHome));
-    }
-  }
-
-  if (user && (pathname === "/org" || pathname.startsWith("/org/"))) {
-    const { data: roleRows } = await supabase
-      .from("user_roles")
-      .select("role_id")
-      .eq("user_id", user.id);
-    const roles = (roleRows ?? []).map((row) => row.role_id);
-    const canOpenOrg =
-      isStaff(roles) || roles.some((role) => role === "org_admin");
-    if (!canOpenOrg) {
-      const learnerHome = request.nextUrl.clone();
-      learnerHome.pathname = "/my";
-      learnerHome.search = "";
-      return secured(NextResponse.redirect(learnerHome));
-    }
-  }
-
   return secured(supabaseResponse);
 }

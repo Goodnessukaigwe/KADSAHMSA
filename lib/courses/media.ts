@@ -3,7 +3,7 @@ import type { LessonAssetKind } from "@/lib/courses/types";
 export const COURSE_MEDIA_BUCKET = "course-media";
 
 export const FILE_LIMIT_BYTES = 20 * 1024 * 1024;
-export const VIDEO_LIMIT_BYTES = 80 * 1024 * 1024;
+export const VIDEO_LIMIT_BYTES = 10 * 1024 * 1024;
 
 export const MISSING_ASSETS_SQL =
   "Apply supabase/apply-phase6.sql before attaching lesson media.";
@@ -23,14 +23,51 @@ export const LESSON_ASSET_COLUMNS =
 export const LESSON_ASSET_COLUMNS_LEGACY =
   "id, lesson_id, position, kind, title, storage_path, external_url";
 
-type FileKind = "pdf" | "pptx" | "video" | "image" | "audio";
+type FileKind = "pdf" | "video" | "image" | "audio";
+
+export function classifyUpload(file: File):
+  | { ok: true; kind: FileKind; mime: string }
+  | { ok: false; error: string } {
+  return classifyUploadMeta(file.name, file.type, file.size);
+}
+
+export function classifyUploadMeta(
+  name: string,
+  type: string,
+  size: number
+): { ok: true; kind: FileKind; mime: string } | { ok: false; error: string } {
+  const ext = extensionOf(name);
+  const byMime = MIME_RULES[type];
+  const byExt = EXT_RULES[ext];
+  const rule = byMime ?? (byExt ? { kind: byExt.kind, maxBytes: byExt.maxBytes } : null);
+  if (!rule) {
+    return {
+      ok: false,
+      error:
+        "That file type is not allowed. Use PDF, an image, audio, or MP4/WebM video.",
+    };
+  }
+  if (size <= 0) {
+    return { ok: false, error: "Choose a file to upload." };
+  }
+  if (size > rule.maxBytes) {
+    return {
+      ok: false,
+      error:
+        rule.kind === "video"
+          ? "That video is too large. Video files must be 10 MB or smaller."
+          : "That file is too large. Images, audio, and PDF must be 20 MB or smaller.",
+    };
+  }
+  return {
+    ok: true,
+    kind: rule.kind,
+    mime: byMime ? type : (byExt?.mime ?? type),
+  };
+}
 
 const MIME_RULES: Record<string, { kind: FileKind; maxBytes: number }> = {
   "application/pdf": { kind: "pdf", maxBytes: FILE_LIMIT_BYTES },
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation": {
-    kind: "pptx",
-    maxBytes: FILE_LIMIT_BYTES,
-  },
   "image/jpeg": { kind: "image", maxBytes: FILE_LIMIT_BYTES },
   "image/png": { kind: "image", maxBytes: FILE_LIMIT_BYTES },
   "image/webp": { kind: "image", maxBytes: FILE_LIMIT_BYTES },
@@ -49,11 +86,6 @@ const MIME_RULES: Record<string, { kind: FileKind; maxBytes: number }> = {
 
 const EXT_RULES: Record<string, { kind: FileKind; mime: string; maxBytes: number }> = {
   pdf: { kind: "pdf", mime: "application/pdf", maxBytes: FILE_LIMIT_BYTES },
-  pptx: {
-    kind: "pptx",
-    mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    maxBytes: FILE_LIMIT_BYTES,
-  },
   jpg: { kind: "image", mime: "image/jpeg", maxBytes: FILE_LIMIT_BYTES },
   jpeg: { kind: "image", mime: "image/jpeg", maxBytes: FILE_LIMIT_BYTES },
   png: { kind: "image", mime: "image/png", maxBytes: FILE_LIMIT_BYTES },
@@ -69,12 +101,11 @@ const EXT_RULES: Record<string, { kind: FileKind; mime: string; maxBytes: number
 };
 
 export const FILE_ACCEPT =
-  ".pdf,.pptx,.jpg,.jpeg,.png,.webp,.gif,.mp3,.wav,.ogg,.m4a,.mp4,.webm,.mov";
+  ".pdf,.jpg,.jpeg,.png,.webp,.gif,.mp3,.wav,.ogg,.m4a,.mp4,.webm,.mov";
 
 export const IMAGE_ACCEPT = ".jpg,.jpeg,.png,.webp,.gif";
 export const VIDEO_ACCEPT = ".mp4,.webm,.mov";
 export const PDF_ACCEPT = ".pdf";
-export const DECK_ACCEPT = ".pptx,.pdf";
 
 export function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -142,39 +173,6 @@ export function isLocalPublicAsset(path: string) {
 function extensionOf(name: string) {
   const match = name.toLowerCase().match(/\.([a-z0-9]+)$/);
   return match?.[1] ?? "";
-}
-
-export function classifyUpload(file: File):
-  | { ok: true; kind: FileKind; mime: string }
-  | { ok: false; error: string } {
-  const ext = extensionOf(file.name);
-  const byMime = MIME_RULES[file.type];
-  const byExt = EXT_RULES[ext];
-  const rule = byMime ?? (byExt ? { kind: byExt.kind, maxBytes: byExt.maxBytes } : null);
-  if (!rule) {
-    return {
-      ok: false,
-      error:
-        "That file type is not allowed. Use PDF, PPTX, an image, audio, or MP4/WebM video.",
-    };
-  }
-  if (file.size <= 0) {
-    return { ok: false, error: "Choose a file to upload." };
-  }
-  if (file.size > rule.maxBytes) {
-    return {
-      ok: false,
-      error:
-        rule.kind === "video"
-          ? "That video is too large. Video files must be 80 MB or smaller."
-          : "That file is too large. Images, audio, PDF, and PPTX must be 20 MB or smaller.",
-    };
-  }
-  return {
-    ok: true,
-    kind: rule.kind,
-    mime: byMime ? file.type : (byExt?.mime ?? file.type),
-  };
 }
 
 export function classifyImageUpload(file: File):

@@ -1,9 +1,11 @@
 import "server-only";
 
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 
 import { displayNameFromEmail } from "@/lib/learner-session";
+import { avatarPublicUrl, isMissingAvatarColumn } from "@/lib/profile/media";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -28,6 +30,7 @@ export type SessionProfile = {
   id: string;
   email: string;
   name: string;
+  avatarUrl: string | null;
   roles: Role[];
 };
 
@@ -45,7 +48,7 @@ export function assertRole(roles: readonly Role[], role: Role): void {
   }
 }
 
-export async function getAuthUser(): Promise<User | null> {
+export const getAuthUser = cache(async (): Promise<User | null> => {
   try {
     const supabase = await createClient();
     const {
@@ -55,9 +58,9 @@ export async function getAuthUser(): Promise<User | null> {
   } catch {
     return null;
   }
-}
+});
 
-export async function getUserRoles(userId: string): Promise<Role[]> {
+export const getUserRoles = cache(async (userId: string): Promise<Role[]> => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("user_roles")
@@ -67,7 +70,7 @@ export async function getUserRoles(userId: string): Promise<Role[]> {
   return (data ?? [])
     .map((row) => row.role_id)
     .filter((role): role is Role => (ROLES as readonly string[]).includes(role));
-}
+});
 
 export async function requireUser(): Promise<User> {
   const user = await getAuthUser();
@@ -138,23 +141,38 @@ export async function isStaffUser(): Promise<boolean> {
   return isStaff(roles);
 }
 
-export async function getSessionProfile(): Promise<SessionProfile | null> {
+export const getSessionProfile = cache(async (): Promise<SessionProfile | null> => {
   const user = await getAuthUser();
   if (!user) return null;
 
   const supabase = await createClient();
-  const { data: profile } = await supabase
+  let fullName = "";
+  let avatarPath = "";
+
+  const withAvatar = await supabase
     .from("profiles")
-    .select("full_name")
+    .select("full_name, avatar_path")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (withAvatar.error && isMissingAvatarColumn(withAvatar.error.message)) {
+    const fallback = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle();
+    fullName = fallback.data?.full_name ?? "";
+  } else {
+    fullName = withAvatar.data?.full_name ?? "";
+    avatarPath = withAvatar.data?.avatar_path ?? "";
+  }
 
   const metadataName =
     typeof user.user_metadata?.full_name === "string"
       ? user.user_metadata.full_name
       : "";
   const name =
-    profile?.full_name?.trim() ||
+    fullName.trim() ||
     metadataName.trim() ||
     displayNameFromEmail(user.email ?? "");
   const roles = await getUserRoles(user.id);
@@ -163,9 +181,10 @@ export async function getSessionProfile(): Promise<SessionProfile | null> {
     id: user.id,
     email: user.email ?? "",
     name,
+    avatarUrl: avatarPublicUrl(avatarPath),
     roles,
   };
-}
+});
 
 export async function requireSessionProfile(): Promise<SessionProfile> {
   const profile = await getSessionProfile();

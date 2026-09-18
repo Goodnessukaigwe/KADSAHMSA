@@ -6,9 +6,9 @@ import { Search } from "lucide-react";
 
 import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
+import { TabButton } from "@/components/ui/tab-button";
 import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { cn } from "@/lib/utils";
 
 type Tab = "free" | "paid";
 
@@ -40,28 +40,20 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
       <section className="px-4 pb-8 sm:px-6" aria-label="Course catalogue">
         <div className="mx-auto max-w-[1120px]">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex gap-6" role="tablist" aria-label="Course type">
+            <div className="flex gap-2" role="tablist" aria-label="Course type">
               {(
                 [
                   ["free", "Free courses"],
                   ["paid", "Paid courses"],
                 ] as const
               ).map(([value, label]) => (
-                <button
+                <TabButton
                   key={value}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === value}
-                  className={cn(
-                    "border-b-2 pb-1.5 text-[11px] font-bold tracking-[0.14em] uppercase",
-                    tab === value
-                      ? "border-neutral-950 text-neutral-950"
-                      : "border-transparent text-neutral-400 hover:text-neutral-700"
-                  )}
+                  selected={tab === value}
                   onClick={() => setTab(value)}
                 >
                   {label}
-                </button>
+                </TabButton>
               ))}
             </div>
 
@@ -115,15 +107,16 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                     <SplitCta
                       href={`/courses/${course.slug}`}
                       size="sm"
+                      iconPlacement="inline"
                       className="min-w-0 w-full sm:flex-1"
                     >
                       View course
                     </SplitCta>
                     <Link
-                      href={`/courses/${course.slug}`}
-                      className="inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-[#f4f4f4] px-4 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase"
+                      href="/register"
+                      className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[#f4f4f4] px-4 text-[11px] font-bold tracking-[0.12em] text-neutral-950 uppercase"
                     >
-                      Read more
+                      Sign up
                     </Link>
                   </div>
                 </article>

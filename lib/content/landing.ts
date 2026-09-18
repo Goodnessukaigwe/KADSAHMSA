@@ -24,10 +24,10 @@ export const hero = {
 } as const;
 
 export const about = {
-  badge: "Our story",
-  title: "We turned a 236-page manual into training anyone can finish.",
-  body: "The UNODC/EU DPTC curriculum used to live as PowerPoint decks and a 236-page trainer resource. KADSAMHSA now delivers it as self-paced modules, quizzes, and a verifiable certificate — built for low-bandwidth access across Nigeria.",
-  cta: "Read our story",
+  badge: "About the academy",
+  title: "An online academy for training staff, partners, and communities.",
+  body: "KADSAMHSA Academy takes drug prevention, treatment, and care training out of workshop rooms. People learn at their own pace. Organisations track their teams. Every certificate can be checked.",
+  cta: "About the academy",
 } as const;
 
 export const stats = [

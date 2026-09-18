@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { LessonSectionMedia } from "@/components/learner/lesson-media";
@@ -22,7 +21,6 @@ export function CourseOverview({
   enrolled: boolean;
   progress: CourseProgress;
 }) {
-  const router = useRouter();
   const isDptc = slug === dptcCourse.slug;
   const hasFinal = course.hasFinalQuiz;
   const title = course.title;
@@ -42,10 +40,6 @@ export function CourseOverview({
   const firstHref = firstOutlineHref(slug, outline);
   const resumeHref = enrolled ? continueHref(slug, progress, firstHref) : firstHref;
 
-  function go() {
-    router.push(resumeHref);
-  }
-
   return (
     <div className="relative pb-16 lg:pr-[300px]">
       <div className="flex flex-wrap gap-2">
@@ -58,7 +52,7 @@ export function CourseOverview({
       </div>
 
       <div className="mt-4">
-        <PlayPoster slug={slug} src={course.image} title={title} onPlay={go} />
+        <PlayPoster slug={slug} src={course.image} title={title} href={resumeHref} />
         {course.coverMedia.length ? (
           <div className="mt-4">
             <LessonSectionMedia assets={course.coverMedia} />
@@ -158,7 +152,7 @@ export function CourseOverview({
           ))}
         </dl>
         <div className="mt-8">
-          <SplitCta variant="light" className="w-full" onClick={go}>
+          <SplitCta variant="light" className="w-full" href={resumeHref}>
             {enrolled ? "Continue this course" : "Preview this course"}
           </SplitCta>
         </div>

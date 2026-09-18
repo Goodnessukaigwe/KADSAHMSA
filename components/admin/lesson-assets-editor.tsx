@@ -7,9 +7,9 @@ import {
   attachLessonVideoUrl,
   deleteLessonAsset,
   reorderLessonAssets,
-  uploadLessonAsset,
 } from "@/lib/courses/asset-actions";
 import { classifyUpload, FILE_ACCEPT, isUuid } from "@/lib/courses/media";
+import { uploadLessonFile } from "@/lib/courses/upload-lesson-file";
 import type { LessonAsset } from "@/lib/courses/types";
 
 const KIND_LABEL: Record<LessonAsset["kind"], string> = {
@@ -69,10 +69,7 @@ export function LessonAssetsEditor({
     }
     setPending("upload");
     try {
-      const body = new FormData();
-      body.set("file", file);
-      body.set("title", file.name.replace(/\.[^.]+$/, ""));
-      await apply(uploadLessonAsset(lessonId, body));
+      await apply(uploadLessonFile(lessonId, file));
     } finally {
       setPending(null);
     }
@@ -134,8 +131,10 @@ export function LessonAssetsEditor({
       ) : (
         <>
           <p className="mt-2 text-sm text-neutral-400">
-            Images, audio, PDF, and PPTX up to 20 MB. Video files up to 80 MB. PPTX
-            downloads only — it is not a slide player.
+            Images, audio, and PDF up to 20 MB.
+          </p>
+          <p className="mt-1 text-sm text-neutral-400">
+            Do not upload videos larger than 10 MB.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <input

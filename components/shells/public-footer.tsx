@@ -5,7 +5,7 @@ import { ArrowUp, Mail, MapPin, Phone } from "lucide-react";
 import { footer, site } from "@/lib/content/landing";
 
 function FooterLink({ href, children }: { href: string; children: ReactNode }) {
-  const className = "hover:text-white";
+  const className = "inline-flex min-h-11 items-center hover:text-white";
   if (href.startsWith("http") || href.startsWith("mailto:")) {
     return (
       <a href={href} className={className} target="_blank" rel="noreferrer">
@@ -137,10 +137,16 @@ export function PublicFooter() {
               © {site.year} {site.name}. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-              <Link href="/privacy" className="text-xs text-white/55 hover:text-white">
+              <Link
+                href="/privacy"
+                className="inline-flex min-h-11 items-center text-xs text-white/55 hover:text-white"
+              >
                 Privacy
               </Link>
-              <Link href="/about" className="text-xs text-white/55 hover:text-white">
+              <Link
+                href="/about"
+                className="inline-flex min-h-11 items-center text-xs text-white/55 hover:text-white"
+              >
                 Terms of use
               </Link>
               <a

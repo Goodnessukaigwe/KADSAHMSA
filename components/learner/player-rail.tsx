@@ -22,6 +22,7 @@ type PlayerRailProps = {
   previousLabel?: string;
   nextPrimary?: boolean;
   onNext?: () => void;
+  navPending?: boolean;
 };
 
 export function PlayerRail({
@@ -37,6 +38,7 @@ export function PlayerRail({
   toc,
   progressPercent,
   onNext,
+  navPending = false,
 }: PlayerRailProps) {
   return (
     <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">
@@ -151,7 +153,12 @@ export function PlayerRail({
           <Link
             href={previousHref}
             data-nav="previous"
-            className="flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-200 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-700 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]"
+            aria-disabled={navPending || undefined}
+            tabIndex={navPending ? -1 : undefined}
+            className={cn(
+              "flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-200 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-700 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]",
+              navPending && "pointer-events-none opacity-50"
+            )}
           >
             {previousLabel}
           </Link>
@@ -166,8 +173,10 @@ export function PlayerRail({
               type="button"
               data-nav="next"
               onClick={onNext}
+              disabled={navPending}
+              aria-busy={navPending || undefined}
               className={cn(
-                "flex h-11 min-w-0 items-center justify-center rounded-full px-2 text-center text-[10px] font-bold tracking-[0.08em] uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]",
+                "flex h-11 min-w-0 items-center justify-center rounded-full px-2 text-center text-[10px] font-bold tracking-[0.08em] uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em] disabled:pointer-events-none disabled:opacity-50",
                 nextPrimary
                   ? "bg-neutral-950 text-white"
                   : "bg-neutral-200 text-neutral-700"
@@ -179,11 +188,14 @@ export function PlayerRail({
             <Link
               href={nextHref}
               data-nav="next"
+              aria-disabled={navPending || undefined}
+              tabIndex={navPending ? -1 : undefined}
               className={cn(
                 "flex h-11 min-w-0 items-center justify-center rounded-full px-2 text-center text-[10px] font-bold tracking-[0.08em] uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]",
                 nextPrimary
                   ? "bg-neutral-950 text-white"
-                  : "bg-neutral-200 text-neutral-700"
+                  : "bg-neutral-200 text-neutral-700",
+                navPending && "pointer-events-none opacity-50"
               )}
             >
               {nextLabel}

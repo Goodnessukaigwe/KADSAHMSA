@@ -9,7 +9,13 @@ export default async function AdminLayout({
   await requireStaff();
   const profile = await requireSessionProfile();
   return (
-    <AdminChrome user={{ name: profile.name, email: profile.email }}>
+    <AdminChrome
+      user={{
+        name: profile.name,
+        email: profile.email,
+        avatarUrl: profile.avatarUrl,
+      }}
+    >
       {children}
     </AdminChrome>
   );

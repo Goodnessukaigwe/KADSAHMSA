@@ -12,6 +12,8 @@ secrets/
 node_modules/
 vendor/
 
+DPTC
+
 # DPTC import script local Python venv (recreate with:
 #   python3 -m venv scripts/dptc/.venv && scripts/dptc/.venv/bin/pip install python-pptx)
 scripts/dptc/.venv/

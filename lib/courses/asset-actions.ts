@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import {
   classifyImageUpload,
   classifyUpload,
+  classifyUploadMeta,
   COURSE_MEDIA_BUCKET,
   isMissingAssetsRelation,
   isMissingSectionColumn,
@@ -217,6 +218,147 @@ export async function uploadLessonAsset(
 
   revalidateLesson(context.courseSlug, context.lessonSlug);
   return { ok: true, assets: await listAssetsAdmin(lessonId) };
+}
+
+export type PreparedLessonUpload =
+  | {
+      ok: true;
+      id: string;
+      path: string;
+      token: string;
+      kind: LessonAsset["kind"];
+      mime: string;
+      title: string;
+      section: LessonAsset["section"];
+    }
+  | { ok: false; error: string };
+
+export async function prepareLessonAssetUpload(input: {
+  lessonId: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  title?: string;
+  section?: string | null;
+}): Promise<PreparedLessonUpload> {
+  await requireStaff();
+  if (!isUuid(input.lessonId)) {
+    return fail("Save this lesson first, then attach files or video URLs.");
+  }
+
+  const classified = classifyUploadMeta(input.fileName, input.fileType, input.fileSize);
+  if (!classified.ok) return fail(classified.error);
+
+  const context = await loadLessonContext(input.lessonId);
+  if (!context) return fail("That lesson was not found.");
+
+  const requestedSection = parseLessonAssetSection(input.section);
+  if (requestedSection && !isSectionedAssetKind(classified.kind)) {
+    return fail("Only an image, video, or PDF can be placed on Cover, Introduction, Main, or Notes.");
+  }
+  if (requestedSection === "cover" && classified.kind === "image") {
+    return fail("Cover photos upload as the course card image, not as a lesson file.");
+  }
+
+  const id = crypto.randomUUID();
+  const path = `${context.courseId}/${context.lessonId}/${id}-${safeFileName(input.fileName)}`;
+  const admin = createAdminClient();
+  const { data, error } = await admin.storage
+    .from(COURSE_MEDIA_BUCKET)
+    .createSignedUploadUrl(path);
+  if (error || !data?.token) {
+    return fail(assetsError(error?.message, "Could not start that upload."));
+  }
+
+  const title =
+    input.title?.trim() || input.fileName.replace(/\.[^.]+$/, "") || "Lesson media";
+  return {
+    ok: true,
+    id,
+    path,
+    token: data.token,
+    kind: classified.kind,
+    mime: classified.mime,
+    title: title.slice(0, 160),
+    section: requestedSection && isSectionedAssetKind(classified.kind) ? requestedSection : null,
+  };
+}
+
+export async function completeLessonAssetUpload(input: {
+  id: string;
+  lessonId: string;
+  path: string;
+  kind: LessonAsset["kind"];
+  title: string;
+  section: LessonAsset["section"];
+}): Promise<AssetsResult> {
+  await requireStaff();
+  if (!isUuid(input.lessonId) || !isUuid(input.id)) {
+    return fail("Save this lesson first, then attach files or video URLs.");
+  }
+
+  const context = await loadLessonContext(input.lessonId);
+  if (!context) return fail("That lesson was not found.");
+  const expectedPrefix = `${context.courseId}/${context.lessonId}/${input.id}-`;
+  if (!input.path.startsWith(expectedPrefix)) {
+    return fail("That file was not found.");
+  }
+
+  const admin = createAdminClient();
+  const { error: missing } = await admin.storage
+    .from(COURSE_MEDIA_BUCKET)
+    .createSignedUrl(input.path, 30);
+  if (missing) {
+    return fail("That file did not finish uploading. Try again.");
+  }
+
+  let existingForSection: { id: string; storage_path: string | null }[] = [];
+  if (input.section) {
+    const existing = await admin
+      .from("lesson_assets")
+      .select("id, storage_path")
+      .eq("lesson_id", input.lessonId)
+      .eq("kind", input.kind)
+      .eq("section", input.section);
+    if (existing.error) {
+      return fail(assetsError(existing.error.message, "Could not attach that file."));
+    }
+    existingForSection = existing.data ?? [];
+  }
+
+  const insertRow: {
+    id: string;
+    lesson_id: string;
+    position: number;
+    kind: LessonAsset["kind"];
+    title: string;
+    storage_path: string;
+    section?: LessonAsset["section"];
+  } = {
+    id: input.id,
+    lesson_id: input.lessonId,
+    position: await nextPosition(input.lessonId),
+    kind: input.kind,
+    title: input.title.slice(0, 160),
+    storage_path: input.path,
+  };
+  if (input.section) insertRow.section = input.section;
+
+  const { error: insertError } = await admin.from("lesson_assets").insert(insertRow);
+  if (insertError) {
+    await admin.storage.from(COURSE_MEDIA_BUCKET).remove([input.path]);
+    return fail(assetsError(insertError.message, "Could not attach that file."));
+  }
+
+  for (const row of existingForSection) {
+    if (row.storage_path) {
+      await admin.storage.from(COURSE_MEDIA_BUCKET).remove([row.storage_path]);
+    }
+    await admin.from("lesson_assets").delete().eq("id", row.id);
+  }
+
+  revalidateLesson(context.courseSlug, context.lessonSlug);
+  return { ok: true, assets: await listAssetsAdmin(input.lessonId) };
 }
 
 export async function attachLessonVideoUrl(

@@ -10,6 +10,16 @@ function safeNext(path: string | null) {
   return "/my";
 }
 
+function destination(type: EmailOtpType, next: string) {
+  if (type === "recovery") {
+    return "/reset-password";
+  }
+  if (type === "email" || type === "signup") {
+    return next;
+  }
+  return next;
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
@@ -17,14 +27,14 @@ export async function GET(request: Request) {
   const next = safeNext(searchParams.get("next"));
 
   if (!token_hash || !type) {
-    return NextResponse.redirect(`${origin}/login?error=callback`);
+    return NextResponse.redirect(`${origin}/login?error=confirm`);
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.verifyOtp({ type, token_hash });
   if (error) {
-    return NextResponse.redirect(`${origin}/login?error=callback`);
+    return NextResponse.redirect(`${origin}/login?error=confirm`);
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  return NextResponse.redirect(`${origin}${destination(type, next)}`);
 }

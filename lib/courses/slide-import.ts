@@ -15,7 +15,7 @@ export type SlideImportResult =
 export type SlideImportProgress = (current: number, total: number) => void;
 
 const INVALID_DECK =
-  "That file could not be read as a PowerPoint or PDF. Export the deck as .pptx or .pdf and try again.";
+  "That file could not be read as a PDF. Export the slides as a PDF and try again.";
 
 function fallbackTitle(index: number) {
   return `Slide ${index + 1}`;
@@ -71,18 +71,15 @@ export async function convertDeckToSlides(
 
   const classified = classifyUpload(file);
   if (!classified.ok) return { ok: false, error: classified.error };
-  if (classified.kind !== "pptx" && classified.kind !== "pdf") {
+  if (classified.kind !== "pdf") {
     return {
       ok: false,
-      error: "Upload a PowerPoint (.pptx) or a PDF exported from PowerPoint.",
+      error: "Upload a PDF to render as slides.",
     };
   }
 
   try {
-    if (classified.kind === "pdf") {
-      return await convertPdfToSlides(file, onProgress);
-    }
-    return await convertPptxToSlides(file, onProgress);
+    return await convertPdfToSlides(file, onProgress);
   } catch (cause) {
     const message = cause instanceof Error ? cause.message : "";
     if (message.includes("too large") || message.includes("more than")) {
@@ -92,53 +89,12 @@ export async function convertDeckToSlides(
   }
 }
 
-async function convertPptxToSlides(
-  file: File,
-  onProgress?: SlideImportProgress
-): Promise<SlideImportResult> {
-  const { PptxRenderer } = await import("pptx-browser");
-  const renderer = new PptxRenderer();
-  try {
-    await renderer.load(file);
-    const total = renderer.slideCount;
-    if (!total) return { ok: false, error: INVALID_DECK };
-    if (total > MAX_SLIDE_IMPORT) {
-      return {
-        ok: false,
-        error: `This deck has more than ${MAX_SLIDE_IMPORT} slides. Split it into smaller files and upload each one.`,
-      };
-    }
-
-    const slides: ImportedSlide[] = [];
-    for (let index = 0; index < total; index += 1) {
-      onProgress?.(index + 1, total);
-      const canvas = document.createElement("canvas");
-      await renderer.renderSlide(index, canvas, SLIDE_RENDER_WIDTH);
-      let title = fallbackTitle(index);
-      try {
-        const extracted = await renderer.extractSlide(index);
-        title = cleanTitle(extracted.title, index);
-      } catch {
-        title = fallbackTitle(index);
-      }
-      slides.push({
-        title,
-        image: await canvasToImageFile(canvas, `slide-${index + 1}`),
-      });
-    }
-    return { ok: true, slides };
-  } finally {
-    renderer.destroy();
-  }
-}
-
 async function convertPdfToSlides(
   file: File,
   onProgress?: SlideImportProgress
 ): Promise<SlideImportResult> {
   const pdfjs = await import("pdfjs-dist");
-  const workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
-  pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+  pdfjs.GlobalWorkerOptions.workerSrc = "/api/pdf-worker";
 
   const data = new Uint8Array(await file.arrayBuffer());
   const task = pdfjs.getDocument({ data, disableRange: true, disableStream: true });

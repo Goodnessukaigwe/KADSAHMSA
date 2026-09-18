@@ -176,7 +176,7 @@ Use the Figma-backed student flow already proven in the theme demo as UX referen
 
 - [x] F1 — Public landing + catalogue (SSR), search/filters, cards
 - [x] F2 — Course detail (overview, objectives, outline, duration, cert info, Enrol CTA)
-- [x] F3 — Register / login / password reset (email; phone = P1 later)
+- [x] F3 — Register / login / password reset (email; phone = P1 later). Public signup creates a confirmed account immediately (no verify-email). Forgot-password sends a reset mail into the existing set-password screen. Org/CSV provisioned accounts stay auto-confirmed. **Dashboard:** Confirm email OFF; recovery token-hash template still required (see README). F10/Resend is still later.
 - [x] F4 — Course player: module/lesson nav, content blocks, mark complete, progress, resume (text lessons; media uploads in Phase 6)
 - [x] F8 — Learner dashboard: my courses, progress, certificates entry, payment history **shell** (live receipts wait for Phase 9)
 - [x] F11 — Mobile + low-bandwidth basics on catalogue and lesson pages
@@ -398,4 +398,4 @@ PRD §13 durations are unchanged. This table is the **engineering sequence** (Pa
 
 **Phase 7 remainder:** apply [`supabase/apply-phase7.sql`](supabase/apply-phase7.sql) if `consents` is missing, then [`supabase/apply-enrol-requests.sql`](supabase/apply-enrol-requests.sql) so learners request a seat and leftover verify courses stay unpublished. Legal still owes NDPA policy sign-off. Staff + pilot org walk [`docs/uat-script.md`](docs/uat-script.md) before checking UAT. Production on the KADSAMHSA domain waits on DNS.
 
-Do not start Paystack, a tutor role, or remaining F10 emails in this slice. Phase 8 is handover (admin manual, recorded training).
+Do not start Paystack, a tutor role, or remaining F10 emails in this slice. Phase 8 is handover (admin manual, recorded training). Public signup/reset mail uses Supabase Auth emails only; branded Resend templates stay with F10.

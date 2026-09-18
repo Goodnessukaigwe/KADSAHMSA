@@ -14,7 +14,7 @@ export default function AuthLayout({
         Skip to main content
       </a>
       <PublicHeader />
-      <div id="main" className="landing-grid flex-1">
+      <div id="main" className="flex-1">
         {children}
       </div>
     </div>

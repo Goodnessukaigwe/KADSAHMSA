@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { confirmPendingEmail } from "@/lib/auth/actions";
 import { homeAfterSignIn } from "@/lib/auth/home";
 import { authCopy } from "@/lib/content/auth";
 import { createClient } from "@/lib/supabase/client";
@@ -16,6 +17,10 @@ function safeNext(path: string | undefined, fallback: string) {
     return path;
   }
   return fallback;
+}
+
+function isUnconfirmed(message: string | undefined) {
+  return Boolean(message && /email not confirmed/i.test(message));
 }
 
 export function LoginForm({
@@ -43,10 +48,18 @@ export function LoginForm({
 
     try {
       const supabase = createClient();
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      let { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
         password,
       });
+
+      if (isUnconfirmed(signInError?.message)) {
+        await confirmPendingEmail(normalizedEmail);
+        ({ data, error: signInError } = await supabase.auth.signInWithPassword({
+          email: normalizedEmail,
+          password,
+        }));
+      }
 
       if (signInError || !data.user) {
         setError(

@@ -22,7 +22,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-In the Supabase dashboard: Authentication → URL configuration. Set Site URL to `http://localhost:3000` and add redirect URLs `http://localhost:3000/auth/callback` and `http://localhost:3000/auth/confirm`. Signup confirms the account on the server and does not send a confirmation email.
+Public signup creates a confirmed account and signs the learner in. Forgot-password still sends a reset mail through `/auth/confirm`. Org CSV enrol and the DPTC import script still auto-confirm provisioned accounts.
+
+In the Supabase dashboard (required — this repo does not toggle it for you):
+
+1. **Authentication → Providers → Email:** turn **Confirm email OFF** so signup does not send a verification mail.
+2. **Authentication → URL configuration:** Site URL `http://localhost:3000`. Redirect allow-list: `http://localhost:3000/auth/callback`, `http://localhost:3000/auth/confirm`, plus the same paths on staging/production.
+3. **Authentication → Email templates** — reset password must use a token-hash link that `/auth/confirm` already verifies:
+
+```
+{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password
+```
+
+Without (2) and (3), the forgot-password inbox click will not land in-app. Do not use Resend for these mails; F10 transactional mail is later.
 
 ### Database migrations
 

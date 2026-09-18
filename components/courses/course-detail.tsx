@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { CourseCover } from "@/components/courses/course-cover";
@@ -143,16 +144,33 @@ export function CourseDetail({
                           <ul className="mt-2 space-y-1">
                             {module.lessons.map((lesson) => (
                               <li key={lesson.slug}>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (enrolled) router.push(lesson.href);
-                                    else void enroll();
-                                  }}
-                                  className="text-[13px] text-neutral-400 hover:text-neutral-700"
-                                >
-                                  {lesson.title}
-                                </button>
+                                {enrolled ? (
+                                  <Link
+                                    href={lesson.href}
+                                    className="inline-flex min-h-11 items-center text-[13px] text-neutral-400 hover:text-neutral-700"
+                                  >
+                                    {lesson.title}
+                                  </Link>
+                                ) : !signedIn ? (
+                                  <Link
+                                    href="/register"
+                                    className="inline-flex min-h-11 items-center text-[13px] text-neutral-400 hover:text-neutral-700"
+                                  >
+                                    {lesson.title}
+                                  </Link>
+                                ) : waiting || pending ? (
+                                  <span className="inline-flex min-h-11 items-center text-[13px] text-neutral-400">
+                                    {lesson.title}
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => void enroll()}
+                                    className="inline-flex min-h-11 items-center text-[13px] text-neutral-400 hover:text-neutral-700"
+                                  >
+                                    {lesson.title}
+                                  </button>
+                                )}
                               </li>
                             ))}
                           </ul>
@@ -193,7 +211,14 @@ export function CourseDetail({
             ))}
           </dl>
           <div className="mt-8">
-            <SplitCta variant="light" className="w-full" onClick={enroll}>
+            <SplitCta
+              variant="light"
+              className="w-full"
+              href={enrolled ? continueTo : signedIn ? undefined : "/register"}
+              busy={pending}
+              disabled={signedIn && !enrolled && (waiting || pending)}
+              onClick={signedIn && !enrolled && !waiting ? enroll : undefined}
+            >
               {pending
                 ? "Requesting…"
                 : signedIn && enrolled

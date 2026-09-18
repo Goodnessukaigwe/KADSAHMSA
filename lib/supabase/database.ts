@@ -8,16 +8,19 @@ export type Database = {
         Row: {
           id: string;
           full_name: string;
+          avatar_path: string;
           created_at: string;
         };
         Insert: {
           id: string;
           full_name?: string;
+          avatar_path?: string;
           created_at?: string;
         };
         Update: {
           id?: string;
           full_name?: string;
+          avatar_path?: string;
           created_at?: string;
         };
         Relationships: [];

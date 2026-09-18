@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -36,16 +36,23 @@ export function LessonReader({
   progressPercent?: number;
 }) {
   const router = useRouter();
+  const [navPending, setNavPending] = useState(false);
 
   useEffect(() => {
     void saveResumeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
   }, [courseSlug, lesson.slug, lesson.moduleIndex]);
 
-  async function goNext() {
+  function goNext() {
+    if (navPending) return;
+    setNavPending(true);
     if (lesson.completeOnNext) {
-      await markModuleComplete(courseSlug, lesson.moduleIndex);
+      void markModuleComplete(courseSlug, lesson.moduleIndex);
     }
-    if (lesson.nextHref) router.push(lesson.nextHref);
+    if (lesson.nextHref) {
+      router.push(lesson.nextHref);
+      return;
+    }
+    setNavPending(false);
   }
 
   const assets = lesson.assets ?? [];
@@ -69,15 +76,14 @@ export function LessonReader({
   ];
   const otherCover = coverMedia.filter((asset) => asset.kind !== "image");
   const otherPageMedia = pageMedia.filter((asset) => asset.kind !== "image");
-  // When the slides are already rendered inline as images (PowerPoint import),
-  // the leftover original deck becomes a small secondary download link instead
-  // of an inline render or a "download to view" card.
+  // When slides are already rendered inline as images, leftover original PDFs
+  // become a small secondary download link. Legacy PPTX files download instead.
   const hasInlineImages = wideImages.length > 0;
   const originalDeckFiles = hasInlineImages
-    ? leftoverMedia.filter((asset) => asset.kind === "pptx" || asset.kind === "pdf")
+    ? leftoverMedia.filter((asset) => asset.kind === "pdf")
     : [];
   const bottomMedia = hasInlineImages
-    ? leftoverMedia.filter((asset) => asset.kind !== "pptx" && asset.kind !== "pdf")
+    ? leftoverMedia.filter((asset) => asset.kind !== "pdf")
     : leftoverMedia;
 
   return (
@@ -170,7 +176,8 @@ export function LessonReader({
         nextHref={lesson.nextHref}
         nextLabel={lesson.nextLabel}
         nextPrimary
-        onNext={lesson.completeOnNext ? () => void goNext() : undefined}
+        navPending={navPending}
+        onNext={lesson.completeOnNext ? goNext : undefined}
       />
     </div>
   );

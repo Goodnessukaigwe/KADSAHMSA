@@ -1,6 +1,6 @@
 import { AuthSplit } from "@/components/auth/auth-split";
 import {
-  ForgotPasswordNotice,
+  ForgotPasswordForm,
   ResetPasswordForm,
 } from "@/components/auth/reset-password-form";
 import { authCopy } from "@/lib/content/auth";
@@ -18,7 +18,7 @@ export default async function ResetPasswordPage() {
 
   return (
     <AuthSplit image={authCopy.resetImage} imageAlt={authCopy.reset.imageAlt}>
-      {user ? <ResetPasswordForm /> : <ForgotPasswordNotice />}
+      {user ? <ResetPasswordForm /> : <ForgotPasswordForm />}
     </AuthSplit>
   );
 }

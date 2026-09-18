@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ListFilter } from "lucide-react";
 
+import { QuizQuestionSkeleton } from "@/components/skeletons";
 import type { PublicQuizQuestion } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import {
@@ -152,7 +153,7 @@ export function ModuleQuiz({
 
   finishRef.current = finish;
 
-  if (!state) return <div className="min-h-[40vh]" />;
+  if (!state) return <QuizQuestionSkeleton />;
 
   const question = questions[state.index];
   const selected = state.answers[state.index];

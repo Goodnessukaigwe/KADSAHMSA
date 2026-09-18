@@ -11,7 +11,7 @@ Apply SQL first if tables are missing: `apply-all.sql` → phase 3 → 4 → 4b 
 | # | Step | Expected |
 |---|------|----------|
 | 1.1 | Open `/register`. Leave the privacy box **unticked** and submit. | Signup refused. No account. |
-| 1.2 | Tick the box (link opens `/privacy`). Submit. | Account created. A `consents` row exists for that user (`privacy` / `2026-09-08-draft`). |
+| 1.2 | Tick the box (link opens `/privacy`). Submit. | Lands on `/my` with a session. A `consents` row exists for that user (`privacy` / `2026-09-08-draft`). No confirmation email. |
 | 1.3 | Open `/courses`, request enrolment on a **free** published course with a live lesson or uploaded media. Confirm `/learn/...` redirects back to the course page. Staff Enrol on that course’s Learners list. | Request is pending until staff Enrol. Then the course appears on `/my` and `/my/courses`, and lessons open. |
 | 1.4 | Open a lesson with text and, if attached, PDF / image / audio / uploaded video. | Content reads. Signed media plays or downloads. Unenrolled users cannot get a signed URL. |
 | 1.5 | Open a lesson with a YouTube or Vimeo URL. | Embed plays (CSP must allow youtube-nocookie and `player.vimeo.com`). |

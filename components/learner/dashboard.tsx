@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
 import { OnboardingModal } from "@/components/learner/onboarding-modal";
-import { useCourseSearch } from "@/components/learner/student-chrome";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy, returningGreeting } from "@/lib/content/dashboard";
@@ -48,7 +47,6 @@ function NewLearnerHome({
   requestedSlugs: string[];
 }) {
   const router = useRouter();
-  const { query } = useCourseSearch();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
@@ -61,11 +59,10 @@ function NewLearnerHome({
     setAsked(requestedSlugs);
   }, [requestedSlugs]);
 
-  const explore = useFilteredExplore(query, catalogue);
-  const featured = !query.trim() ? catalogue[0] : null;
+  const featured = catalogue[0] ?? null;
   const exploreList = featured
-    ? explore.filter((course) => course.slug !== featured.slug)
-    : explore;
+    ? catalogue.filter((course) => course.slug !== featured.slug)
+    : catalogue;
 
   async function enroll(slug: string) {
     if (pending || asked.includes(slug)) return;
@@ -127,6 +124,8 @@ function NewLearnerHome({
               <SplitCta
                 variant="light"
                 size="sm"
+                busy={pending === featured.slug}
+                disabled={Boolean(pending) || asked.includes(featured.slug)}
                 onClick={() => enroll(featured.slug)}
               >
                 {pending === featured.slug
@@ -152,7 +151,6 @@ function NewLearnerHome({
 
       <ExploreSection
         courses={exploreList}
-        catalogueEmpty={catalogue.length === 0}
         enrolled={[]}
         requested={asked}
         pending={pending}
@@ -174,8 +172,6 @@ function EnrolledHome({
   requestedSlugs: string[];
 }) {
   const router = useRouter();
-  const { query } = useCourseSearch();
-  const explore = useFilteredExplore(query, catalogue);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
   const [asked, setAsked] = useState<string[]>(requestedSlugs);
@@ -244,10 +240,7 @@ function EnrolledHome({
               />
             </div>
             <div className="mt-6">
-              <SplitCta
-                variant="light"
-                onClick={() => enrollOrContinue(featured.slug, featured)}
-              >
+              <SplitCta variant="light" href={featured.href}>
                 {dashboardCopy.continueFeatured}
               </SplitCta>
             </div>
@@ -286,11 +279,7 @@ function EnrolledHome({
                     />
                   </div>
                 </div>
-                <SplitCta
-                  size="sm"
-                  className="shrink-0"
-                  onClick={() => enrollOrContinue(course.slug, course)}
-                >
+                <SplitCta size="sm" className="shrink-0" href={course.href}>
                   {dashboardCopy.continueShort}
                 </SplitCta>
               </article>
@@ -300,8 +289,7 @@ function EnrolledHome({
       ) : null}
 
       <ExploreSection
-        courses={explore}
-        catalogueEmpty={catalogue.length === 0}
+        courses={catalogue}
         enrolled={snapshot.enrolledSlugs}
         requested={asked}
         pending={pending}
@@ -316,24 +304,14 @@ function EnrolledHome({
   );
 }
 
-function useFilteredExplore(query: string, catalogue: CatalogueCourse[]) {
-  return useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return catalogue;
-    return catalogue.filter((course) => course.title.toLowerCase().includes(q));
-  }, [query, catalogue]);
-}
-
 function ExploreSection({
   courses,
-  catalogueEmpty,
   enrolled,
   requested,
   pending,
   onEnroll,
 }: {
   courses: CatalogueCourse[];
-  catalogueEmpty: boolean;
   enrolled: string[];
   requested: string[];
   pending: string | null;
@@ -346,7 +324,7 @@ function ExploreSection({
       </h2>
       {courses.length === 0 ? (
         <p className="mt-8 text-sm text-neutral-500">
-          {catalogueEmpty ? emptyCatalogueCopy : "No courses match your search."}
+          {emptyCatalogueCopy}
         </p>
       ) : (
         <div className="mt-6 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
@@ -373,7 +351,21 @@ function ExploreSection({
                 <SplitCta
                   size="sm"
                   className="min-w-0 flex-1"
-                  onClick={() => onEnroll(course.slug)}
+                  href={
+                    enrolled.includes(course.slug)
+                      ? `/learn/${course.slug}`
+                      : undefined
+                  }
+                  busy={pending === course.slug && !enrolled.includes(course.slug)}
+                  disabled={
+                    !enrolled.includes(course.slug) &&
+                    (Boolean(pending) || requested.includes(course.slug))
+                  }
+                  onClick={
+                    enrolled.includes(course.slug)
+                      ? undefined
+                      : () => onEnroll(course.slug)
+                  }
                 >
                   {pending === course.slug
                     ? enrolled.includes(course.slug)

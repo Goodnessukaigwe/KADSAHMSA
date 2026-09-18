@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Maximize, Pause, Play, Settings, Volume2 } from "lucide-react";
 
 import { CourseCover } from "@/components/courses/course-cover";
@@ -106,17 +107,16 @@ export function PlayPoster({
   slug,
   src,
   title,
-  onPlay,
+  href,
 }: {
   slug: string;
   src?: string | null;
   title: string;
-  onPlay?: () => void;
+  href: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onPlay}
+    <Link
+      href={href}
       className="relative block w-full overflow-hidden rounded-[22px]"
     >
       <span className="relative block aspect-video">
@@ -132,7 +132,7 @@ export function PlayPoster({
           </span>
         </span>
       </span>
-    </button>
+    </Link>
   );
 }
 

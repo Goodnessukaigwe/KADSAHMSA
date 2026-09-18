@@ -7,7 +7,7 @@ export function NotFoundPage() {
     <div className="bg-white font-sans text-neutral-950">
       <section className="px-4 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto max-w-[1120px]">
-          <div className="landing-grid overflow-hidden rounded-[28px] bg-[#f6f6f6] px-6 py-10 shadow-[0_16px_50px_rgba(0,0,0,0.06)] sm:px-10 sm:py-14 lg:px-14">
+          <div className="overflow-hidden rounded-[28px] bg-[#f6f6f6] px-6 py-10 shadow-[0_16px_50px_rgba(0,0,0,0.06)] sm:px-10 sm:py-14 lg:px-14">
             <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
               <div className="max-w-md">
                 <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-medium text-neutral-500 shadow-sm">

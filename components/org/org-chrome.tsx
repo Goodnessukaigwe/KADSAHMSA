@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Building2, LayoutDashboard, Menu, X } from "lucide-react";
 
+import { ChromeAvatarLink } from "@/components/profile/chrome-avatar";
+import { ChromeNavLink } from "@/components/shells/chrome-nav-link";
 import { site } from "@/lib/content/landing";
-import { clearLearner, firstNameOf } from "@/lib/learner-session";
-import { createClient } from "@/lib/supabase/client";
+import { firstNameOf } from "@/lib/learner-session";
 import { cn } from "@/lib/utils";
 
 export function OrgChrome({
@@ -16,30 +17,16 @@ export function OrgChrome({
   isStaff = false,
 }: {
   children: React.ReactNode;
-  user: { name: string; email: string };
+  user: { name: string; email: string; avatarUrl?: string | null };
   isStaff?: boolean;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [navOpen, setNavOpen] = useState(false);
   const name = firstNameOf(user.name || "Admin");
 
   useEffect(() => {
     setNavOpen(false);
   }, [pathname]);
-
-  async function logout() {
-    try {
-      await createClient().auth.signOut();
-    } catch {
-      // Still clear leftover client keys below.
-    }
-    clearLearner();
-    router.push("/");
-    router.refresh();
-  }
-
-  const initial = name.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">
@@ -62,20 +49,16 @@ export function OrgChrome({
             </span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
-            <span className="flex size-9 items-center justify-center rounded-full bg-white/15 text-xs font-bold">
-              {initial}
-            </span>
+            <ChromeAvatarLink
+              href="/org/profile"
+              name={user.name}
+              avatarUrl={user.avatarUrl}
+              className="size-9 text-xs"
+            />
             <div className="hidden leading-tight sm:block">
               <p className="text-sm font-semibold" title={user.email}>
                 {name}
               </p>
-              <button
-                type="button"
-                onClick={logout}
-                className="text-[11px] text-white/55 hover:text-white"
-              >
-                Log out
-              </button>
             </div>
           </div>
         </div>
@@ -100,34 +83,23 @@ export function OrgChrome({
           )}
         >
           <nav className="flex flex-col gap-1" aria-label="Organisation">
-            <Link
+            <ChromeNavLink
               href="/org"
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
-                pathname === "/org" || pathname.startsWith("/org/")
-                  ? "bg-white/10 text-white"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
-              )}
+              active={pathname === "/org"}
             >
               <LayoutDashboard className="size-4" />
               Dashboard
-            </Link>
+            </ChromeNavLink>
             {isStaff ? (
-              <Link
-                href="/admin/organizations"
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
-              >
+              <ChromeNavLink href="/admin/organizations">
                 <Building2 className="size-4" />
                 Admin organisations
-              </Link>
+              </ChromeNavLink>
             ) : (
-              <Link
-                href="/my"
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
-              >
+              <ChromeNavLink href="/my">
                 <LayoutDashboard className="size-4" />
                 Learner home
-              </Link>
+              </ChromeNavLink>
             )}
           </nav>
         </aside>

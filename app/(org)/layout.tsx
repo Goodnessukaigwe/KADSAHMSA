@@ -10,7 +10,11 @@ export default async function OrgLayout({
   const profile = await requireSessionProfile();
   return (
     <OrgChrome
-      user={{ name: profile.name, email: profile.email }}
+      user={{
+        name: profile.name,
+        email: profile.email,
+        avatarUrl: profile.avatarUrl,
+      }}
       isStaff={isStaff(roles)}
     >
       {children}

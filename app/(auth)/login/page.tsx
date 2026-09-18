@@ -10,16 +10,16 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; next?: string }>;
 }) {
   const params = await searchParams;
+  const initialError =
+    params.error === "confirm"
+      ? authCopy.login.confirmError
+      : params.error === "callback"
+        ? authCopy.login.callbackError
+        : null;
+
   return (
     <AuthSplit image={authCopy.loginImage} imageAlt={authCopy.login.imageAlt}>
-      <LoginForm
-        initialError={
-          params.error === "callback"
-            ? "Could not complete sign-in. Try again."
-            : null
-        }
-        nextPath={params.next}
-      />
+      <LoginForm initialError={initialError} nextPath={params.next} />
     </AuthSplit>
   );
 }

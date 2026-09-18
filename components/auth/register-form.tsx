@@ -5,9 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { registerAccount } from "@/lib/auth/actions";
-import { homeAfterSignIn } from "@/lib/auth/home";
 import { authCopy } from "@/lib/content/auth";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const copy = authCopy.register;
@@ -50,20 +48,7 @@ export function RegisterForm() {
         return;
       }
 
-      const supabase = createClient();
-      const { data: session, error: signInError } = await supabase.auth.signInWithPassword({
-        email: normalizedEmail,
-        password,
-      });
-
-      if (signInError || !session.user) {
-        setError(signInError?.message || "Account created. Log in to continue.");
-        setPending(false);
-        return;
-      }
-
-      const home = await homeAfterSignIn(supabase, session.user.id);
-      router.push(home);
+      router.push("/my");
       router.refresh();
     } catch (cause) {
       setError(

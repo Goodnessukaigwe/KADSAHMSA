@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ListFilter } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { CourseCover } from "@/components/courses/course-cover";
 import { SplitCta } from "@/components/landing/split-cta";
-import { useCourseSearch } from "@/components/learner/student-chrome";
 import { ProgressTrack } from "@/components/learner/simulated-video";
+import { TabButton } from "@/components/ui/tab-button";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy } from "@/lib/content/dashboard";
@@ -30,7 +30,6 @@ export function MyCourses({
   requestedSlugs?: string[];
 }) {
   const router = useRouter();
-  const { query } = useCourseSearch();
   const [tab, setTab] = useState<Tab>("all");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
@@ -46,20 +45,8 @@ export function MyCourses({
   const enrolledSlugs = new Set(snapshot.enrolledSlugs);
   const notStartedList = free.filter((course) => !enrolledSlugs.has(course.slug));
 
-  const visibleNotStarted = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return notStartedList.filter((course) => {
-      if (q && !course.title.toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [query, notStartedList]);
-
-  const visibleProgress = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return inProgress.filter((course) =>
-      q ? course.title.toLowerCase().includes(q) : true
-    );
-  }, [query, inProgress]);
+  const visibleNotStarted = notStartedList;
+  const visibleProgress = inProgress;
 
   const inProgressCount = inProgress.length;
   const completedCount = completed.length;
@@ -84,10 +71,6 @@ export function MyCourses({
     }
     setAsked((current) => (current.includes(slug) ? current : [...current, slug]));
     router.refresh();
-  }
-
-  function resume(course: EnrolmentRecord) {
-    router.push(course.href);
   }
 
   return (
@@ -117,40 +100,19 @@ export function MyCourses({
         <StatCard value="0" label="Payments" href="/my/payments" />
       </div>
 
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-5" role="tablist">
-          {(
-            [
-              ["all", "All"],
-              ["progress", `In progress (${inProgressCount})`],
-              ["completed", `Completed (${completedCount})`],
-              ["not-started", `Not started (${notStartedCount})`],
-            ] as const
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={tab === id}
-              onClick={() => setTab(id)}
-              className={cn(
-                "border-b-2 pb-1.5 text-[11px] font-bold tracking-[0.14em] uppercase",
-                tab === id
-                  ? "border-neutral-950 text-neutral-950"
-                  : "border-transparent text-neutral-400"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-neutral-500 uppercase"
-        >
-          <ListFilter className="size-3.5" />
-          Filter
-        </button>
+      <div className="mt-8 flex flex-wrap items-center gap-1" role="tablist">
+        {(
+          [
+            ["all", "All"],
+            ["progress", `In progress (${inProgressCount})`],
+            ["completed", `Completed (${completedCount})`],
+            ["not-started", `Not started (${notStartedCount})`],
+          ] as const
+        ).map(([id, label]) => (
+          <TabButton key={id} selected={tab === id} onClick={() => setTab(id)}>
+            {label}
+          </TabButton>
+        ))}
       </div>
 
       {tab === "all" || tab === "progress" ? (
@@ -165,11 +127,7 @@ export function MyCourses({
           ) : (
             <div className={cn("flex flex-col gap-3", tab === "all" && "mt-4")}>
               {visibleProgress.map((course) => (
-                <ProgressRow
-                  key={course.slug}
-                  course={course}
-                  onContinue={() => resume(course)}
-                />
+                <ProgressRow key={course.slug} course={course} />
               ))}
             </div>
           )}
@@ -280,10 +238,8 @@ function StatCard({
 
 function ProgressRow({
   course,
-  onContinue,
 }: {
   course: EnrolmentRecord;
-  onContinue: () => void;
 }) {
   return (
     <article className="flex flex-col gap-4 rounded-2xl bg-white p-3 sm:flex-row sm:items-center">
@@ -302,7 +258,7 @@ function ProgressRow({
           <ProgressTrack value={course.percent} />
         </div>
       </div>
-      <RowAction label="Continue" onClick={onContinue} />
+      <RowAction label="Continue" href={course.href} />
     </article>
   );
 }
@@ -393,6 +349,8 @@ function CatalogueGrid({
             <SplitCta
               size="sm"
               className="min-w-0 w-full sm:flex-1"
+              busy={pending === course.slug}
+              disabled={Boolean(pending) || requested.includes(course.slug)}
               onClick={() => onEnroll(course.slug)}
             >
               {pending === course.slug

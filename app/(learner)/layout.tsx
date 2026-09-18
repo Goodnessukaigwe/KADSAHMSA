@@ -8,7 +8,13 @@ export default async function LearnerLayout({
 }) {
   const profile = await requireSessionProfile();
   return (
-    <StudentChrome user={{ name: profile.name, email: profile.email }}>
+    <StudentChrome
+      user={{
+        name: profile.name,
+        email: profile.email,
+        avatarUrl: profile.avatarUrl,
+      }}
+    >
       {children}
     </StudentChrome>
   );

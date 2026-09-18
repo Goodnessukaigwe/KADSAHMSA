@@ -3,13 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Download, FileText } from "lucide-react";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { getLessonAssetSignedUrl } from "@/lib/courses/asset-actions";
 import { embedSrc, videoIdFromAsset } from "@/lib/courses/media";
 import { convertDeckToSlides } from "@/lib/courses/slide-import";
 import type { LessonAsset } from "@/lib/courses/types";
-
-const PPTX_MIME =
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 
 export function LessonMedia({ assets }: { assets: LessonAsset[] }) {
   if (!assets.length) return null;
@@ -96,6 +94,28 @@ export function LessonAssetBlock({
   return <StoredAsset asset={asset} layout={layout} />;
 }
 
+function MediaSkeleton({
+  aspect,
+  label,
+}: {
+  aspect: "image" | "video";
+  label: string;
+}) {
+  return (
+    <div
+      className={
+        aspect === "image"
+          ? "aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200"
+          : "aspect-video w-full overflow-hidden rounded-2xl bg-neutral-200"
+      }
+      aria-busy="true"
+      aria-label={label}
+    >
+      <Skeleton className="size-full rounded-2xl bg-neutral-200" />
+    </div>
+  );
+}
+
 function StoredAsset({
   asset,
   layout = "default",
@@ -126,7 +146,12 @@ function StoredAsset({
   }, [asset.id]);
 
   if (pending) {
-    return <p className="text-sm text-neutral-400">Loading {asset.title || "file"}…</p>;
+    return (
+      <MediaSkeleton
+        aspect={asset.kind === "image" ? "image" : "video"}
+        label={`Loading ${asset.title || "file"}`}
+      />
+    );
   }
   if (error || !url) {
     return (
@@ -191,7 +216,7 @@ function StoredAsset({
     );
   }
 
-  if (asset.kind === "pptx" || asset.kind === "pdf") {
+  if (asset.kind === "pdf") {
     return <InlineDeck asset={asset} url={url} layout={layout} />;
   }
 
@@ -199,8 +224,7 @@ function StoredAsset({
 }
 
 /**
- * Renders a stored PPTX or PDF inline as slide images using the same
- * in-browser rasterizer as the admin import (pptx-browser / pdfjs-dist).
+ * Renders a stored PDF inline as slide images using pdfjs-dist.
  * Falls back to the download card only if conversion fails.
  */
 function InlineDeck({
@@ -225,11 +249,7 @@ function InlineDeck({
       const response = await fetch(url);
       if (!response.ok) throw new Error("Could not load that file.");
       const blob = await response.blob();
-      const file = new File(
-        [blob],
-        asset.kind === "pptx" ? "slides.pptx" : "document.pdf",
-        { type: asset.kind === "pptx" ? PPTX_MIME : "application/pdf" }
-      );
+      const file = new File([blob], "document.pdf", { type: "application/pdf" });
       const converted = await convertDeckToSlides(file);
       if (!converted.ok || !converted.slides.length) {
         throw new Error(converted.ok ? "Empty file." : converted.error);
@@ -252,16 +272,17 @@ function InlineDeck({
       for (const item of objectUrls.current) URL.revokeObjectURL(item);
       objectUrls.current = [];
     };
-  }, [url, asset.kind]);
+  }, [url]);
 
   if (failed) {
     return <DownloadCard asset={asset} url={url} />;
   }
   if (!slides) {
     return (
-      <p className="text-sm text-neutral-400">
-        Preparing {asset.title || (asset.kind === "pptx" ? "slides" : "PDF")}…
-      </p>
+      <MediaSkeleton
+        aspect="image"
+        label={`Loading ${asset.title || "PDF"}`}
+      />
     );
   }
 
@@ -287,7 +308,7 @@ function InlineDeck({
       ))}
       <p className="text-sm text-neutral-500">
         <a href={url} target="_blank" rel="noreferrer" className="underline">
-          {asset.kind === "pptx" ? "Download the original presentation" : "Open the original PDF"}
+          Open the original PDF
         </a>
       </p>
     </figure>

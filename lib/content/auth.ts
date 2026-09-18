@@ -35,12 +35,19 @@ export const authCopy = {
     forgot: "Forgot password?",
     noAccount: "Don’t have an account?",
     registerLink: "Sign up",
+    confirmError:
+      "That reset link is invalid or has expired. Request a new one from forgot password.",
+    callbackError: "Could not complete sign-in. Try again.",
     imageAlt:
       "KADSAMHSA training session with participants gathered together",
   },
   reset: {
     title: "Forgot password?",
-    hint: "Log in first, then open Forgot password to choose a new one — or contact KADSAMHSA if you cannot access your account.",
+    hint: "Enter your email. If an account exists, we will send a reset link.",
+    email: "Email Address",
+    emailPlaceholder: "Enter your email address",
+    submit: "Send reset link",
+    sent: "If that email exists, we sent a link.",
     contact: "Contact KADSAMHSA",
     updateTitle: "Choose a new password",
     newPassword: "New password",

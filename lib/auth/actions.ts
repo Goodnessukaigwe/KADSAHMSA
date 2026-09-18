@@ -1,5 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
+
+import { findUserIdByEmail } from "@/lib/auth/admin-users";
 import { requireUser } from "@/lib/permissions";
 import { PRIVACY_POLICY_KEY, PRIVACY_POLICY_VERSION } from "@/lib/privacy";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -7,6 +10,18 @@ import { createClient } from "@/lib/supabase/server";
 
 export type RegisterResult = { ok: true } | { ok: false; error: string };
 export type UpdatePasswordResult = { ok: true } | { ok: false; error: string };
+export type RequestPasswordResetResult = { ok: true } | { ok: false; error: string };
+
+async function appOrigin(): Promise<string> {
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  if (!host) {
+    return "http://localhost:3000";
+  }
+  const proto =
+    headerList.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
 
 export async function registerAccount(
   name: string,
@@ -55,7 +70,7 @@ export async function registerAccount(
       policy_version: PRIVACY_POLICY_VERSION,
     });
 
-    if (consentError) {
+    if (consentError && !/duplicate|unique/i.test(consentError.message)) {
       await admin.auth.admin.deleteUser(userId);
       if (/consents|schema cache|does not exist/i.test(consentError.message)) {
         return {
@@ -69,12 +84,61 @@ export async function registerAccount(
       };
     }
 
+    const supabase = await createClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
+    });
+    if (signInError) {
+      return {
+        ok: false,
+        error: "Account created. Log in to continue.",
+      };
+    }
+
     return { ok: true };
   } catch (cause) {
     if (cause instanceof Error && /Missing NEXT_PUBLIC_SUPABASE|SUPABASE_SERVICE_ROLE/.test(cause.message)) {
       return { ok: false, error: "Authentication is not configured. Add Supabase keys to .env.local." };
     }
     return { ok: false, error: "Could not create your account. Try again." };
+  }
+}
+
+/** Lets leftover unconfirmed accounts sign in now that public signup no longer verifies email. */
+export async function confirmPendingEmail(email: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedEmail.includes("@")) return;
+
+  try {
+    const admin = createAdminClient();
+    const userId = await findUserIdByEmail(admin, normalizedEmail);
+    if (!userId) return;
+    await admin.auth.admin.updateUserById(userId, { email_confirm: true });
+  } catch {
+    // Sign-in still reports the original error if this cannot run.
+  }
+}
+
+export async function requestPasswordReset(email: string): Promise<RequestPasswordResetResult> {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!normalizedEmail.includes("@") || normalizedEmail.length < 6) {
+    return { ok: false, error: "Enter a valid email address." };
+  }
+
+  try {
+    const supabase = await createClient();
+    const origin = await appOrigin();
+    await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${origin}/auth/confirm?next=/reset-password`,
+    });
+    return { ok: true };
+  } catch (cause) {
+    if (cause instanceof Error && /Missing NEXT_PUBLIC_SUPABASE/.test(cause.message)) {
+      return { ok: false, error: "Authentication is not configured. Add Supabase keys to .env.local." };
+    }
+    return { ok: true };
   }
 }
 
