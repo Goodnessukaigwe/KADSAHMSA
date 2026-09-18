@@ -1,0 +1,2355 @@
+{
+  "course": {
+    "slug": "dptc-course",
+    "title": "Sensitization on Drug Use, Drug Dependence and Drug Prevention, Treatment and Care (DPTC)",
+    "summary": "The Drug Prevention, Treatment and Care (DPTC) sensitization course adapts the UNODC/European Union-supported “Response to Drugs and Related Organised Crime in Nigeria” trainer resource for self-paced online delivery by KADSAMHSA (Kaduna State Ministry of Health / Kaduna State Agency for the Control of AIDS, Drug Abuse and Substance Use). Across 13 modules it equips law enforcement officers, health workers, social workers and community leaders across Kaduna State to understand why people use drugs, distinguish use from dependence, reduce stigma at first contact, and refer people toward evidence-based treatment and care rather than punishment alone. Each module opens with an ungraded pre-test, moves through short content lessons with an embedded knowledge check and a discussion-based case study, and closes with a graded post-test (pass mark 80%); a 26-question final assessment covers the full curriculum.",
+    "durationLabel": "~3 hrs · 13 modules"
+  },
+  "modules": [
+    {
+      "position": 1,
+      "slug": "module-1",
+      "title": "Introduction and Course Outline",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-1-introduction-and-course-outline",
+          "title": "Introduction and Course Outline",
+          "main": "Start here: why this course exists, what sensitization means, and how the course works\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-1-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Explain that risk of drug use is associated with multiple factors, most outside the individual's control\n2. Distinguish between drug use prevention and sensitization, and explain how they complement each other\n3. Describe the aims of DPTC sensitization: increasing knowledge and reducing stigma\n4. Outline the topics, learning methods and expectations of the DPTC course\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. The strongest evidence about why people begin using drugs points to:\nA. A simple lack of knowledge about drugs and their consequences\nB. Multiple risk factors including personality, mental health, family and community environment\nC. Deliberate moral failure by the individual\nD. Exposure to drug education campaigns\nQ2. The primary objective of drug use prevention is to:\nA. Punish those who use drugs\nB. Help people avoid or delay initiation of drug use, or avoid developing disorders\nC. Eliminate all drugs from society\nD. Identify drug users for arrest\nQ3. Sensitization on drug use and DPTC primarily aims to:\nA. Teach people how to use drugs safely\nB. Increase knowledge and awareness, and reduce stigma\nC. Replace drug treatment services\nD. Train law enforcement in drug interdiction\nQ4. Most of the risk factors that make a child vulnerable to drug use are:\nA. Fully within the child's control\nB. Largely outside the child's control\nC. Caused by drug education in schools\nD. Genetic only\nQ5. In recent years, the global response to drug use disorders has increasingly treated them as:\nA. Exclusively a criminal and legal matter\nB. A health issue requiring evidence-based treatment and prevention\nC. A private family matter\nD. An issue with no effective response",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-1-why-this-course-exists",
+          "title": "Why This Course Exists",
+          "main": "BACKGROUND\n\nUNODC assessments in Nigeria examined attitudes to drug prevention, treatment and care (DPTC) among law enforcement and the public\nFinding: a clear need to raise the profile of sensitization on the nature of drug use, drug dependence and DPTC\nThe sensitization course aims to:\nIncrease knowledge and awareness of drug use, dependence and DPTC\nReduce the stigma associated with drug use\nLonger-term impact: evidence-based policy, evidence-based services, and improved service uptake\nKADSAMHSA has adopted this package for online delivery to build workforce and community capacity across Kaduna State",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-1-what-this-module-covers",
+          "title": "What This Module Covers",
+          "main": "Risk factors for drug use\nPrevention of drug use\nUnderstanding sensitization\nBrief overview of the course outline, learning methods and expectations",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-1-risk-factors-for-drug-use",
+          "title": "Risk Factors for Drug Use",
+          "main": "MORE THAN A LACK OF KNOWLEDGE\n\nIt was once thought that better information alone would stop drug use — evidence shows otherwise\nDominant risk factors identified by international research:\nPersonality traits (sensation-seeking, aggressive, impulsive)\nMental health disorders\nFamily neglect and abuse; abusive parenting; chaotic home environment\nPoor attachment to school and community; negative school environment\nGrowing up in marginalized and deprived communities\nSource: International Standards on Drug Use Prevention, UNODC, 2013",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-1-most-risk-factors-are-outside-the-child-s-control",
+          "title": "Most Risk Factors Are Outside the Child's Control",
+          "main": "No child chooses to be neglected by their parents\nMarginalized youth in poor communities — with little family support and limited education — are especially at risk\nChildren and communities affected by conflict or disaster face elevated risk\nRisky behaviours (dropping out, aggression, delinquency, risky sex, depression) often share a health-disorder dimension\nBlaming the individual displays a lack of understanding of what leads people to use drugs\n\nKnowledge Check\n\nA colleague says: “If young people just knew the dangers, they would not use drugs.” What does the evidence say?\nA. Correct — information alone prevents drug use\nB. Incorrect — risk is driven by multiple personal, family and community factors beyond knowledge\nC. Correct — but only for cannabis\nD. Incorrect — drug use is purely genetic\n\nAnswer: B — Information-only approaches show little or no lasting behaviour change.",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-1-what-is-prevention",
+          "title": "What Is Prevention?",
+          "main": "Primary objective: help people — particularly young people — avoid or delay initiation of drug use, or avoid developing disorders (e.g. dependence)\nThe broader aim: the healthy and safe development of children and youth so they realize their talents and become contributing members of society\nEffective prevention supports positive engagement with family, school, workplace and community\nEvidence-based programmes go beyond information — they address the risk factors that contribute to drug use\nSource: International Standards on Drug Use Prevention, UNODC, 2013",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-1-what-is-sensitization",
+          "title": "What Is Sensitization?",
+          "main": "An educational approach to inform, illuminate and challenge pre-existing ideas about drug use, dependence and DPTC\nAims: increase knowledge and awareness; reduce stigma associated with drug use\nTargets local leaders and practitioners to:\nGain their endorsement and support for DPTC interventions\nIncrease their understanding of drug use as a health issue — not just a criminal or legal issue\nGuided by the latest international scientific evidence to ensure credibility and validity",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-1-sensitization-and-prevention-complementary-but-differen",
+          "title": "Sensitization and Prevention: Complementary but Different",
+          "main": "Prevention\n\nAim: avoid or delay initiation of drug use; prevent progression to disorders\nPrimary target: children, young people, families, schools, communities\nOutcome: reduced initiation and reduced vulnerability\nStrategy: evidence-based programmes addressing risk and protective factors\n\nSensitization\n\nAim: increase knowledge and reduce stigma about drug use, dependence and DPTC\nPrimary target: local leaders, practitioners, law enforcement, the public\nOutcome: endorsement of DPTC; drug use understood as a health issue\nStrategy: education grounded in current international scientific evidence",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-1-course-outline-what-you-will-study",
+          "title": "Course Outline: What You Will Study",
+          "main": "Foundation modules (1–5):\nThe drug use situation in Nigeria\nSupply reduction\nDemand and harm reduction\nDrugs, effects and dependency\nCauses of drug use and stigma\nTreatment and care modules (6–9):\nTypes of drug treatment\nSpecial populations\nDrug screening (ASSIST)\nAdvocacy\nSystems and rights modules (10–12):\nFamily interventions\nHuman rights and drug users\nSpecific issues for law enforcement\nEach topic is a self-contained online module; complete them in the sequence assigned by your programme coordinator",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-1-how-the-online-course-works",
+          "title": "How the Online Course Works",
+          "main": "Each module includes: a pre-test, content slides, knowledge checks, a case study, additional readings, and a post-test\nPre-test: sets your baseline — it is not graded\nPost-test: pass mark is 80% (4 of 5); you may retake after reviewing the module\nCase studies: respond in the LMS discussion forum where indicated\nShort films are provided as viewing links, and group activities are delivered as LMS forum discussions",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-1-online-learning-agreement",
+          "title": "Online Learning Agreement",
+          "main": "State opinions honestly in forums so everyone benefits from frank discussion\nAsk clarifying questions freely through the LMS discussion boards or help desk\nListen to (read) a person's full opinion before reacting — discuss ideas, not the person expressing them\nUnpopular opinions may be expressed respectfully — we learn from them\nWork to resolve disagreements rather than taking inflexible positions\nComplete modules and assessments within the timelines set by your programme coordinator",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-1-introduce-yourself-icebreaker-lms-forum-activity",
+          "title": "Introduce Yourself (Icebreaker — LMS Forum Activity)",
+          "main": "Post a short introduction in the Module 0 forum:\nMy full name is…\nI am from the following organisation/agency, and my designation is…\nBriefly, what I would like to gain from this course is…\nOne good thing that happened to me in the past year was…\nRead and reply to at least two other participants — you will be working alongside them throughout the course",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-1-reframing-drug-use-in-the-community",
+          "title": "Reframing Drug Use in the Community",
+          "main": "A respected community leader in a Kaduna LGA tells a KADSAMHSA outreach team: “The only way to deal with these drug boys is to hand them to the police. Talking about ‘health’ will just encourage them.”\nThe outreach team has 15 minutes with the leader and a group of ward heads. They want the leader's endorsement for a planned community sensitization programme and referral pathway to a PHC Centre of Excellence.\n\nDiscuss / respond in the LMS forum:\n\nWhat key messages from this module would you use with the leader?\nHow would you explain the difference between sensitization and ‘encouraging’ drug use?\nWhich risk factors would you highlight to shift blame away from the individual?\nWhat would you ask the leader to actually do to show endorsement?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-1-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUNODC — International Standards on Drug Use Prevention  —  the global evidence base for what works in prevention\nhttps://www.unodc.org/unodc/en/prevention/prevention-standards.html\nDrug Use in Nigeria 2018 — full survey report (UNODC/NBS/CRISA)  —  Nigeria's first comprehensive national drug use survey\nhttps://www.unodc.org/documents/data-and-analysis/statistics/Drugs/Drug_Use_Survey_Nigeria_2019_BOOK.pdf\nUNODC Listen First  —  science-based prevention videos and materials you can also use in community sensitization\nhttps://www.unodc.org/listenfirst/\nISSUP — International Society of Substance Use Professionals  —  free online courses, webinars and a global professional community\nhttps://www.issup.net",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 16,
+          "slug": "module-1-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Risk of drug use is driven by multiple factors — most outside the individual's control\n2. Prevention helps people avoid or delay drug use; its broader aim is healthy, safe development\n3. Sensitization increases knowledge and reduces stigma, targeting leaders and practitioners\n4. Drug use is a health issue, not only a criminal or legal issue\n5. This course is evidence-based and each module is a self-contained online unit\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which of the following is NOT among the dominant evidence-based risk factors for drug use?",
+          "options": [
+            "Family neglect and abuse",
+            "Poor attachment to school and community",
+            "Having received drug information at school",
+            "Mental health disorders"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "The broader aim of drug prevention, beyond delaying initiation, is:",
+          "options": [
+            "Zero tolerance policing",
+            "Healthy and safe development of children and youth",
+            "Mandatory treatment for all users",
+            "Eliminating alcohol sales"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Sensitization activities typically target:",
+          "options": [
+            "Only people who use drugs",
+            "Local leaders and practitioners",
+            "Only school children",
+            "Foreign donors"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Why do information-only ('booklets and brochures') prevention approaches fall short?",
+          "options": [
+            "They are too expensive",
+            "They produce little or no lasting behaviour change because other risk factors also drive drug use",
+            "They are illegal in Nigeria",
+            "They only work for adults"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Sensitization and prevention are best described as:",
+          "options": [
+            "Identical activities",
+            "Complementary approaches differing in aim, target groups, outcomes and strategies",
+            "Competing approaches — only one should be funded",
+            "Both obsolete"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 2,
+      "slug": "module-2",
+      "title": "The Drug Use Situation in Nigeria",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-2-the-drug-use-situation-in-nigeria",
+          "title": "The Drug Use Situation in Nigeria",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-2-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the three components of the National Survey on Drug Use and Health (2018)\n2. Summarize major drug supply issues in Nigeria, including trafficked drugs and precursors\n3. Describe the extent and patterns of drug use in Nigeria by gender, age and drug type\n4. Explain the health consequences of high-risk drug use, including blood-borne viruses\n5. Identify the major barriers to accessing drug treatment in Nigeria\n6. Describe drug use and criminal justice implications, and suggested policy responses\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. In 2017, the estimated past-year prevalence of drug use (excluding alcohol and tobacco) among Nigerians aged 15–64 was:\nA. 5.6%\nB. 14.4%\nC. 22.4%\nD. 2.1%\nQ2. Which geopolitical zone had the highest drug use prevalence in the 2018 survey?\nA. North-Central\nB. North-West\nC. South-West\nD. South-South\nQ3. Nearly what proportion of high-risk drug users in Nigeria are opioid users?\nA. 10%\nB. 25%\nC. 50%\nD. 90%\nQ4. Which of these was identified as a key barrier to drug treatment in Nigeria?\nA. Too many treatment centres\nB. Prohibitive cost, stigma and lack of available services\nC. Free universal treatment\nD. Excess treatment information\nQ5. In the past 12 months before the survey, what share of high-risk drug users had received treatment for a drug problem?\nA. 4%\nB. 24%\nC. 44%\nD. 64%",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-2-drug-supply-nigeria-as-a-transit-and-production-point",
+          "title": "Drug Supply: Nigeria as a Transit and Production Point",
+          "main": "SUPPLY CONTEXT\n\nWest Africa, including Nigeria, remains a key transit point for drug trafficking\nTrafficked substances: cannabis, cocaine, precursors (ephedrine for ATS manufacture) and tramadol\nLate 2017: Lagos customs seized 115 tons of tramadol\nCocaine: Nigeria a major trafficking hub and transit country within West Africa\nCannabis: cultivation well established, concentrated in the South-West; the main drug seized by NDLEA\nATS: since 2011, 12 methamphetamine laboratories dismantled; 2016 ‘super lab’ could produce 3,000 kg per cycle; 1,352 kg seized in 2016\nPrecursors: 718 kg of ephedrine seized in 2016; 168 kg in 2017; diversion of legally imported ephedrine remains a concern\nSource: NDLEA seizure data; UNODC World Drug Report 2017/2018",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-2-the-national-survey-on-drug-use-and-health-2018",
+          "title": "The National Survey on Drug Use and Health (2018)",
+          "main": "Nigeria's first large-scale, comprehensive, nationwide drug use survey\nConducted by NBS and CRISA with UNODC technical support; funded by the EU (10th EDF)\nThree components:\nNational Household Survey: 38,850 households, rural and urban\nInterviews with 9,344 problem drug users\nKey Informant Survey: 2,787 persons\nCoverage: all 36 states and the FCT; survey period 2016–2017",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-2-the-extent-of-drug-use-in-nigeria",
+          "title": "The Extent of Drug Use in Nigeria",
+          "main": "An estimated 14.3 million people aged 15–64 used drugs (excluding alcohol and tobacco) in 2017\nAround one in seven adults — more than double the global average\nMany people using drugs used more than one substance in the past year\n\nDrug use in Nigeria is significantly high and a concern for all\n\n14.4%\nof Nigerians aged 15–64 used a drug in the past year (2017) — vs a 5.6% global average (2016)\nSource: Drug Use in Nigeria 2018 (UNODC/NBS/CRISA)",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-2-who-uses-drugs-gender-and-age",
+          "title": "Who Uses Drugs? Gender and Age",
+          "main": "An estimated 10.8 million men and 3.4 million women reported past-year drug use\nOne in four drug users in Nigeria is a woman (globally: one in three)\nHighest levels of past-year use: ages 25–39; lowest: below 24\nAmphetamines and ecstasy: more common among young people\nNon-medical use of pharmaceutical opioids and cough syrup: found among older people (45–64)",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-2-high-risk-drug-users-and-injecting",
+          "title": "High-Risk Drug Users and Injecting",
+          "main": "High-risk drug user: used opioids, crack/cocaine or amphetamines in past 12 months AND at least 5 times in the past 30 days\nEstimated ~376,000 high-risk drug users (0.4% of the population); nearly 90% are opioid users\nAbout 80,000 people had injected drugs — roughly one in five high-risk users injects\nMost common drugs injected: pharmaceutical opioids, then cocaine and heroin (75% inject opioids)\n78% of PWID are men, but women were more likely to inject heroin\nNearly half of PWID reported using a needle/syringe after someone else — women more likely to share a partner's equipment",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-2-health-consequences-infections-and-poly-drug-use",
+          "title": "Health Consequences: Infections and Poly-Drug Use",
+          "main": "Around 6% of high-risk drug users self-reported living with HIV; ~9% of PWID\n2014 IBBSS bio-behavioural data (6 states): 3.4% of PWID living with HIV\nInjecting is associated with HIV, hepatitis B and C, overdose and injection-site infections\nPoly-drug use: 95% of high-risk users used more than one substance in the past year (42% among general-population users)\nIn Nigeria, more than 80% of high-risk drug users show dependence severity requiring some intervention",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-2-drug-use-by-geopolitical-zone-2017",
+          "title": "Drug Use by Geopolitical Zone (2017)",
+          "main": "North-Central: 10.0% — lowest prevalence (~1.5 million users; cannabis, cough syrup, opioids)\nNorth-West (includes Kaduna State): 12.0% — cannabis by far the most used, then opioids and cough syrup\nNorth-East: 13.6% — cannabis widely used, followed closely by opioids\nSouth-West: 22.4% — highest in the country (cannabis, opioids, cough syrup ~700,000, tranquilizers ~207,000)\nSouth-South: 16.6% — cannabis and opioids the main drugs\nPlanning point: KADSAMHSA programmes serve a zone where cannabis and opioids dominate the treatment demand profile\nSource: Drug Use in Nigeria 2018\n\nKnowledge Check\n\nOne in how many high-risk drug users in Nigeria injects drugs?\nA. One in two\nB. One in five\nC. One in twenty\nD. One in fifty\n\nAnswer: B — ~80,000 PWID among ~376,000 high-risk users.",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-2-treatment-access-and-barriers",
+          "title": "Treatment Access and Barriers",
+          "main": "Treatment is mainly in tertiary hospitals, some NGOs and faith-based centres; services are not free\nKey barriers:\nProhibitive cost\nFear and social stigma\nTreatment not available\nNo information on where to find local treatment\nYobe, Imo, Bayelsa, Rivers and Lagos ranked hardest states to access treatment\n\n4%\n\nof high-risk drug users received treatment in the past 12 months; only 12% ever received treatment",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-2-social-and-criminal-justice-consequences",
+          "title": "Social and Criminal Justice Consequences",
+          "main": "Two-thirds of general-population drug users reported missing school/work, poor performance, or neglecting family\nNearly 1 in 8 Nigerian adults has suffered consequences from another person's drug use\nNearly one quarter of high-risk users had ever been arrested for a drug-related offence; ~9% in the past year\nOf those arrested: 73% for possession; also theft (12%), sex work (5%), burglary (4%)",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-2-the-national-response-achievements-to-date",
+          "title": "The National Response: Achievements to Date",
+          "main": "UNODC/EU project ‘Response to Drugs and Related Organised Crime in Nigeria’ (2013–2019)\nNational Drug Control Master Plan 2015–2019: development, implementation and monitoring supported\nNational Minimum Standards for Drug Treatment in Nigeria (2018)\nNational guidelines on estimation and quantification of narcotics and precursors for medical/scientific purposes\nDrug treatment training for over 1,200 health practitioners\n11 model drug treatment centres and 7 regional training centres established; Nigerian Epidemiological Network created",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-2-using-survey-data-for-state-level-planning",
+          "title": "Using Survey Data for State-Level Planning",
+          "main": "You are preparing a briefing for the Kaduna State Ministry of Health budget committee. A committee member argues that scarce funds should go to interdiction only, saying: “Treatment is a federal problem — and anyway, hardly anyone here uses drugs.”\nYou have the 2018 national survey at hand: North-West prevalence of 12%, cannabis and opioid dominance, a 4% past-year treatment rate among high-risk users, and cost/stigma/availability as the leading barriers.\n\nDiscuss / respond in the LMS forum:\n\nWhich three statistics would you lead with, and why?\nHow does the treatment gap argument support investment in KADSAMHSA services (e.g., PHC-level care)?\nHow would you respond to ‘hardly anyone here uses drugs’ using zone-level data?\nWhat one policy recommendation would you make based on the barriers identified?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-2-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nDrug Use in Nigeria 2018 — full survey report (PDF)  —  read the executive summary and the North-West zone tables\nhttps://www.unodc.org/documents/data-and-analysis/statistics/Drugs/Drug_Use_Survey_Nigeria_2019_BOOK.pdf\nNational Bureau of Statistics — survey summary page  —  key findings of the 2018 survey in brief\nhttps://nigerianstat.gov.ng/elibrary/read/881\nUNODC World Drug Report (latest edition)  —  global context for the Nigerian figures, updated annually\nhttps://www.unodc.org/unodc/en/data-and-analysis/world-drug-report.html\nUNODC Country Office Nigeria  —  current national programmes, news and publications\nhttps://www.unodc.org/nigeria/",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-2-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. 14.4% of Nigerians aged 15–64 used drugs in 2017 — over twice the global average\n2. Cannabis and (non-medical) opioids, especially tramadol, dominate the pattern of use\n3. About 376,000 high-risk users; ~80,000 inject; sharing of injecting equipment is common\n4. Only 4% of high-risk users accessed treatment in the past year — cost, stigma and availability are the key barriers\n5. Drug use carries heavy social and criminal justice consequences; policy responses must widen affordable treatment\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "How many Nigerians aged 15–64 were estimated to have used drugs (excluding alcohol/tobacco) in 2017?",
+          "options": [
+            "1.4 million",
+            "14.3 million",
+            "38 million",
+            "80,000"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "The North-West zone's estimated drug use prevalence was:",
+          "options": [
+            "10.0%",
+            "12.0%",
+            "16.6%",
+            "22.4%"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "The most common category of drugs injected in Nigeria in the past year was:",
+          "options": [
+            "Hallucinogens",
+            "Pharmaceutical opioids",
+            "Cannabis",
+            "Inhalants"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "What proportion of high-risk drug users showed dependence severity requiring some intervention?",
+          "options": [
+            "More than 80%",
+            "About 50%",
+            "About 20%",
+            "Less than 5%"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Which set correctly lists major treatment barriers found by the survey?",
+          "options": [
+            "Cost, stigma, unavailability, lack of information",
+            "Excess of centres, low demand",
+            "Free services, long queues",
+            "Language barriers only"
+          ],
+          "correctIndex": 0
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "slug": "module-3",
+      "title": "Understanding the Concept of Supply Reduction",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-3-understanding-the-concept-of-supply-reduction",
+          "title": "Understanding the Concept of Supply Reduction",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-3-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the global scale and patterns of drug use, cultivation and trafficking\n2. Define supply reduction and identify its main methods\n3. Explain the three strategic pillars: supply reduction, demand reduction and harm reduction\n4. Critically assess the challenges and limitations of supply reduction\n5. Describe alternative development and the conditions for its success\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Roughly how many people worldwide used illicit drugs in 2016?\nA. 27 million\nB. 275 million\nC. 2.75 billion\nD. 755 million\nQ2. Supply reduction is best defined as:\nA. Reducing the desire to use drugs through education\nB. Methods to reduce or stop production and trafficking of illicit drugs before they reach consumers\nC. Providing clean needles to PWID\nD. Treating drug dependence with medication\nQ3. Cannabis use prevalence in West and Central Africa compared with the global average is:\nA. Much lower\nB. About the same\nC. Much higher (13.2% vs 3.9%)\nD. Zero\nQ4. Seventeen years of opium eradication data in Afghanistan show that eradication:\nA. Ended opium cultivation\nB. Failed to keep pace with cultivation despite huge resources\nC. Was never attempted\nD. Reduced global heroin purity\nQ5. In the cocaine value chain example, 1 kg of paste worth $585 in the Colombian jungle can ultimately retail on US streets for about:\nA. $5,000\nB. $27,000\nC. $330,000 (after adulteration to 2 kg)\nD. $1,000,000",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-3-a-drug-using-world",
+          "title": "A Drug-Using World",
+          "main": "Just over a quarter of a billion people used illicit drugs in 2016\nIncluding legal drugs (alcohol, tobacco) the figure would be substantially higher\nDrug use increased by around 20 million people between 2015 and 2016\n\n275m\n\npeople aged 15–64 used illicit drugs in 2016 — about 1 in 18 adults (5.6% prevalence)\nSource: UNODC World Drug Report 2018",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-3-key-types-of-drugs-used-globally",
+          "title": "Key Types of Drugs Used Globally",
+          "main": "Opioids: ~34 million users — includes opiates and synthetic analogues (fentanyl, methadone, buprenorphine, tramadol)\nOpiates: ~19 million users — naturally derived (opium, morphine, codeine) and semi-synthetics such as heroin\nAfrica, including Nigeria, is a transit area for Afghan heroin — driving increased local heroin use\nCannabis in Africa: 7.6% prevalence vs 3.9% globally; West/Central Africa: 13.2%\nMethamphetamine (an ATS) rising in many regions, especially Asia\nPWID worldwide: ~11 million (2016); China, Russia and the USA host 45% of them; injecting now documented in 36 sub-Saharan African countries including Nigeria",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-3-where-drugs-are-cultivated-and-produced",
+          "title": "Where Drugs Are Cultivated and Produced",
+          "main": "Opium poppy (heroin, opium, opiates): South-West Asia (Afghanistan) and South-East Asia (Lao PDR, Myanmar)\nCoca bush (cocaine): South America\nCannabis: resin — North Africa, Middle East, South-West Asia; herb — grown globally (including Nigeria)\nAmphetamine-type stimulants: manufactured in all regions of the world\nTrafficking routes constantly change with production shifts and law enforcement pressure",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-3-three-strategic-solutions-to-the-world-drug-problem",
+          "title": "Three Strategic Solutions to the World Drug Problem",
+          "main": "Supply reduction: disrupt production and supply of illicit drugs; control and regulate licit substances\nDemand reduction: prevent uptake of harmful drug use, including abstinence-oriented strategies (Module 3)\nHarm reduction: reduce drug-related harm to individuals and communities (Module 3)\nA balanced drug policy uses all three — no single pillar succeeds alone",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-3-supply-reduction-methods",
+          "title": "Supply Reduction: Methods",
+          "main": "Eradicate cultivation of crops used for illicit drugs (coca, opium poppy)\nTarget and dismantle clandestine laboratories (e.g., ATS ‘super labs’)\nSeize drugs and interdict trafficking by land, air and sea; arrest traffickers\nRegulate licit substances: laws and controls on alcohol, tobacco, pharmaceuticals, over-the-counter medicines and inhalants\n\nReality check: seizures have not matched large-scale cultivation and production\n\nSource: UNODC 2015",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-3-challenges-of-supply-reduction",
+          "title": "Challenges of Supply Reduction",
+          "main": "Fully effective only when demand is low and all countries cooperate\nHigh global cost — estimated around US$100 billion per year\nCultivation zones are often remote, politically unstable or outside central government control\nDrug income funds militias, organized crime and other illegal activity\nLegal crops often cannot compete with illicit crop profits\nEradication frequently displaces production elsewhere (the ‘balloon effect’)\nAfghanistan: 17 years of eradication failed to keep pace with cultivation",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-3-follow-the-money-profit-and-corruption",
+          "title": "Follow the Money: Profit and Corruption",
+          "main": "Cocaine value chain (OAS 2013): $585/kg paste in the Colombian jungle → $5,000 at port → $15,000 at the Mexican border → $27,000 entering the US → adulterated to 2 kg → ~$330,000 on the street\nEstimated global drug-related income: US$426–652 billion (2014)\n“Drug cartels buy more than real estate, banks and businesses; they buy elections, candidates and parties. In a word, they buy power.” — Antonio Maria Costa, former UNODC Executive Director (2008)\nUS example: drug control budget rose past US$23 billion (1981–2002), yet street heroin purity rose and price fell\n\nKnowledge Check\n\nWhy does eradicating drug crops in one area often fail to reduce overall supply?\nA. Farmers stop growing all crops\nB. Production shifts elsewhere — the ‘balloon effect’ — while profits still outcompete legal crops\nC. Eradication is illegal under international law\nD. Drug crops cannot be destroyed\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-3-alternative-development",
+          "title": "Alternative Development",
+          "main": "Illicit crops give farmers quick returns from non-perishable products — survival income, but no long-term development\nAlternative development targets the vulnerabilities and poverty that draw communities into illicit cultivation\nCombines viable legal livelihoods, infrastructure, market access and community development\nKey challenges: long-term financial investment and sustained political commitment\nSource: UNODC 2015",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-3-the-tramadol-seizure-dilemma",
+          "title": "The Tramadol Seizure Dilemma",
+          "main": "A joint operation in a northern commercial hub seizes a container of tramadol tablets falsely declared as vitamins. Interviews reveal an established route feeding markets across several states, with demand strongest among transport workers and out-of-school youth.\nAt the debrief, one officer proposes doubling checkpoint seizures. A public health adviser notes that seizures have risen for years while non-medical tramadol use has also risen.\n\nDiscuss / respond in the LMS forum:\n\nUsing this module, explain why seizures alone are unlikely to solve the tramadol problem.\nWhich demand-side factors keep the market profitable despite interdiction?\nTramadol also has legitimate medical uses — what regulatory (licit supply control) issues does this raise?\nDraft one balanced recommendation combining supply reduction with another pillar.",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-3-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUNODC World Drug Report (latest edition)  —  cultivation, production and trafficking chapters\nhttps://www.unodc.org/unodc/en/data-and-analysis/world-drug-report.html\n\nUNODC — Drug Trafficking  —  how trafficking networks and routes operate\n\nhttps://www.unodc.org/unodc/en/drug-trafficking/index.html\nUNODC — Alternative Development  —  what makes alternative livelihoods for farming communities succeed\nhttps://www.unodc.org/unodc/en/alternative-development/index.html\nGlobal Commission on Drug Policy — reports  —  critical evidence on enforcement-only approaches, including the war on drugs series\nhttps://www.globalcommissionondrugs.org/reports",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-3-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. About 275 million people used illicit drugs in 2016 — we live in a drug-using world\n2. Supply reduction targets production and trafficking before drugs reach consumers\n3. Eradication, lab dismantling and seizures have not kept pace with production; profits fuel corruption\n4. Supply reduction also includes regulating legal substances such as alcohol, tobacco and pharmaceuticals\n5. Supply reduction works best as one pillar of a balanced strategy with demand and harm reduction\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "The estimated number of people who inject drugs worldwide (2016) was about:",
+          "options": [
+            "1 million",
+            "11 million",
+            "110 million",
+            "500,000"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which is NOT a supply reduction method?",
+          "options": [
+            "Crop eradication",
+            "Dismantling clandestine laboratories",
+            "Needle and syringe programmes",
+            "Interdiction of trafficked drugs"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Estimated global drug-related income in 2014 was:",
+          "options": [
+            "US$4–6 billion",
+            "US$42–65 billion",
+            "US$426–652 billion",
+            "US$4–6 trillion"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Rising US drug-control spending from 1981–2002 coincided with street heroin becoming:",
+          "options": [
+            "Purer and cheaper",
+            "Weaker and costlier",
+            "Unavailable",
+            "Legal"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Alternative development primarily aims to:",
+          "options": [
+            "Punish farming communities",
+            "Reduce the poverty and vulnerability that drive illicit crop cultivation",
+            "Increase drug seizure statistics",
+            "Replace demand reduction"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 4,
+      "slug": "module-4",
+      "title": "Understanding the Concept of Drug Demand and Harm Reduction",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-4-understanding-the-concept-of-drug-demand-and-harm-reduc",
+          "title": "Understanding the Concept of Drug Demand and Harm Reduction",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-4-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Define demand reduction and describe its main components\n2. Describe evidence-based prevention interventions across family, school and community settings\n3. Explain what makes school-based drug education effective — and what does not work\n4. Define harm reduction and explain its rationale and practical logic\n5. List the ten interventions of the WHO/UNODC/UNAIDS comprehensive harm reduction package\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Demand reduction means:\nA. Seizing drugs at borders\nB. Reducing the demand or need for drugs through prevention, education, treatment and social support\nC. Reducing drug prices\nD. Closing pharmacies\nQ2. Which school-based approach does evidence support?\nA. Scare tactics highlighting dangers\nB. One-off talks by strangers such as police or 'recovered users'\nC. Multiple short sessions integrated into the usual curriculum, delivered by the usual teacher\nD. Sensational materials\nQ3. Harm reduction primarily aims to:\nA. Encourage drug use\nB. Reduce the health, social and economic harms associated with drug use\nC. Replace all treatment\nD. Punish relapse\nQ4. The motorbike helmet is used in this module as an analogy for:\nA. Supply reduction\nB. Harm reduction — reducing consequences without condoning the risk behaviour\nC. Crop eradication\nD. Drug testing\nQ5. Which intervention belongs to the comprehensive harm reduction package?\nA. Needle and syringe programmes\nB. Mandatory detention\nC. Public shaming\nD. Crop spraying",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-4-what-is-demand-reduction",
+          "title": "What Is Demand Reduction?",
+          "main": "Reducing the demand or need for illicit drugs through prevention, education, treatment and social support programmes\nEducation and information: general community, youth (school and non-school), and people who use drugs\nTreatment: detoxification, counselling, rehabilitation, therapeutic community, substitution therapy, social reintegration\nCommunity development: address poverty and socio-economic drivers; integrate people into meaningful social structures",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-4-prevention-within-demand-reduction",
+          "title": "Prevention Within Demand Reduction",
+          "main": "Any activity focused on preventing or delaying initiation of drug use and the transition to problem use\nAlso about the healthy and safe development of children\nNo effective prevention policy or system can be developed or implemented in isolation\nPrevention science has improved, but gaps remain — much research still comes from high-income nations",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-4-evidence-based-prevention-across-the-life-course",
+          "title": "Evidence-Based Prevention Across the Life Course",
+          "main": "Family: parenting skills programmes — strongest evidence in early and middle childhood (e.g., Strong Families-type programmes)\nSchool: early childhood education for disadvantaged children; personal and social skills education; classroom management; school policies on substances\nCommunity: community multi-component initiatives; media campaigns only when carefully designed; entertainment venue and workplace policies\nInterventions are matched to age (prenatal to adulthood) and risk level (universal, selective, indicated)\nSource: UNODC International Standards on Drug Use Prevention",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-4-school-based-education-what-works",
+          "title": "School-Based Education: What Works",
+          "main": "Merely highlighting dangers (scare tactics) is not effective\n\nBetter results when drug education is delivered by the usual teacher — not strangers (police, doctors, ‘recovered users’)\nAvoid sensational or exaggerated material\nIntegrate content into the usual curriculum; provide multiple short sessions\nFrame realistic drug education as part of broader life education\nMass campaigns are often too simplistic relative to community expectations of what they can achieve",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-4-treatment-as-demand-reduction-preview-of-module-6",
+          "title": "Treatment as Demand Reduction (Preview of Module 6)",
+          "main": "Detoxification and stabilization\nPsychosocial counselling and rehabilitation\nTherapeutic community programmes\nMedically assisted treatment — drug substitution therapy\nSocial reintegration, community development and vocational education\n\nKnowledge Check\n\nYour LGA plans a one-day rally where police officers warn students about drugs with graphic images. Based on evidence, this approach will most likely:\nA. Produce lasting behaviour change\nB. Have little or no lasting effect — and may backfire\nC. Reduce drug supply\nD. Qualify as harm reduction\n\nAnswer: B — Scare tactics and outsider-delivered one-off sessions show poor outcomes.",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-4-what-is-harm-reduction",
+          "title": "What Is Harm Reduction?",
+          "main": "Policies, programmes, services and actions that reduce the health, social and economic harms of drug use to individuals, communities and society\nComplements approaches that seek to prevent or reduce overall drug consumption\nOften serves as a bridge to drug dependence treatment or cessation — but those are not the only goals\n\nAn important aim: keep people who use drugs alive, healthy and productive",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-4-harm-reduction-a-practical-everyday-logic",
+          "title": "Harm Reduction: A Practical, Everyday Logic",
+          "main": "Harm reduction is an old public health concept used in many areas of life\nExample: compulsory motorbike helmets\nHelmets do not prevent accidents — but when accidents occur, they reduce death and injury\nHelmet laws do not condone bad driving; they accept that accidents happen and reduce their consequences\nHelmets complement other efforts: driver education, better roads, law enforcement",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-4-rationale-for-harm-reduction",
+          "title": "Rationale for Harm Reduction",
+          "main": "Prevents spread of blood-borne viruses among PWID and the wider community — strong evidence that NSPs significantly reduce HIV\nGives people awareness and skills to make informed choices\nRecognizes that despite education, some individuals will continue to use drugs\nPeople should not be denied services because they engage in high-risk behaviour — the RIGHT TO HEALTH\nUN commitment: 2001 Declaration of Commitment on HIV/AIDS; 2006 General Assembly Political Declaration\nCountry comparisons show far lower HIV among PWID where harm reduction was scaled up; at least six African countries have adopted NSP and methadone\nSource: Global Commission on Drug Policy 2011",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-4-the-comprehensive-package-ten-essential-interventions",
+          "title": "The Comprehensive Package: Ten Essential Interventions",
+          "main": "1. Needle and syringe programmes (NSP)\n2. Opioid substitution therapy (OST) and other evidence-based drug dependence treatment\n3. HIV testing and counselling\n4. Antiretroviral therapy\n5. Prevention and treatment of sexually transmitted infections\n6. Condom programmes for PWID and their sexual partners\n7. Targeted information, education and communication for PWID and partners\n8. Prevention, vaccination, diagnosis and treatment of viral hepatitis\n9. Prevention, diagnosis and treatment of tuberculosis\n10. Naloxone for prevention and treatment of opioid overdose\nSource: WHO, UNODC, UNAIDS",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-4-forum-activity",
+          "title": "Forum Activity",
+          "main": "Group 1 question: What changes could make hospital-based drug treatment programmes accessible to more drug users?\nGroup 2 question: Harm reduction is not fully national policy in Nigeria — what are the key lessons about this intervention for people who use drugs?\nPost your response to ONE question in the Module 3 forum and reply to a colleague who answered the other question",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-4-two-cities-two-hiv-curves",
+          "title": "Two Cities, Two HIV Curves",
+          "main": "City A introduced needle and syringe programmes and OST early; HIV prevalence among PWID stayed low. City B prohibited both; HIV among PWID climbed sharply over the same decade.\nA state assembly member asks you: “Doesn't giving out needles just encourage injecting?” You have five minutes to respond using the evidence in this module.\n\nDiscuss / respond in the LMS forum:\n\nSummarize the strongest two evidence points you would present.\nUse the helmet analogy to answer the member's question directly.\nWhich elements of the ten-intervention package could realistically be linked to existing KADSAMHSA and PHC services?\nWhat outcome indicators would you propose to track?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-4-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUNODC — International Standards on Drug Use Prevention  —  family, school and community intervention evidence\nhttps://www.unodc.org/unodc/en/prevention/prevention-standards.html\nWHO — People who inject drugs  —  the comprehensive package and HIV service guidance\nhttps://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/populations/people-who-inject-drugs\nHarm Reduction International — Global State of Harm Reduction  —  where harm reduction stands worldwide, including Africa\nhttps://hri.global/global-state-of-harm-reduction/\nGlobal Commission on Drug Policy — reports  —  country comparisons on harm reduction and HIV outcomes\nhttps://www.globalcommissionondrugs.org/reports",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-4-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Demand reduction spans prevention, education, treatment and community development\n2. Effective school prevention: usual teachers, multiple integrated sessions, no scare tactics\n3. Harm reduction reduces the harms of drug use without requiring abstinence first — like helmet laws\n4. The WHO/UNODC/UNAIDS package lists ten essential interventions, from NSP and OST to naloxone\n5. Supply, demand and harm reduction are complementary pillars of an effective response\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which of the following is a demand reduction activity?",
+          "options": [
+            "Border interdiction",
+            "School-based life-skills education",
+            "Crop eradication",
+            "Precursor control"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Evidence on who should deliver school drug education favours:",
+          "options": [
+            "Police officers",
+            "Recovered users",
+            "The students' usual teacher",
+            "Celebrities"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "An 'important aim' of harm reduction stated in this module is to:",
+          "options": [
+            "Keep drug users alive, healthy and productive",
+            "Ensure abstinence before any service",
+            "Increase arrests",
+            "Lower drug prices"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Which pair belongs to the comprehensive package?",
+          "options": [
+            "NSP and naloxone",
+            "Detention and forced labour",
+            "Crop spraying and checkpoints",
+            "Curfews and fines"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "The principle that people should not be denied services because of high-risk behaviour reflects:",
+          "options": [
+            "The right to health",
+            "Zero tolerance",
+            "Deterrence theory",
+            "The balloon effect"
+          ],
+          "correctIndex": 0
+        }
+      ]
+    },
+    {
+      "position": 5,
+      "slug": "module-5",
+      "title": "Drugs and Effects and Understanding Drug Dependency",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-5-drugs-and-effects-and-understanding-drug-dependency",
+          "title": "Drugs and Effects and Understanding Drug Dependency",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-5-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Define what a drug is and how psychoactive substances affect the central nervous system\n2. Distinguish between drug use, misuse and dependence\n3. Describe the drug dependence syndrome as a complex, relapsing medical condition\n4. Classify drugs as depressants, stimulants and hallucinogens, with common Nigerian examples\n5. Identify and correct common myths about drug dependency\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. A drug is best defined as:\nA. Only an illegal substance\nB. A substance (legal or illegal) that acts on the central nervous system, altering thinking, feeling and behaviour\nC. Only injectable substances\nD. Any food supplement\nQ2. Of the ~275 million people who used illicit drugs in 2016, roughly how many had problematic use?\nA. All of them\nB. About 31 million\nC. About 200 million\nD. Fewer than 1 million\nQ3. Drug dependence is best understood as:\nA. A moral failure\nB. A lack of willpower\nC. A complex, often relapsing medical condition with biological, psychological and social components\nD. A choice made daily\nQ4. Drugs that slow down the central nervous system are called:\nA. Stimulants\nB. Depressants\nC. Hallucinogens\nD. Antibiotics\nQ5. Which statement about cannabis is supported by this course?\nA. Everyone who tries it becomes dependent\nB. About one in ten users can become dependent\nC. It is a stimulant\nD. It has no psychoactive ingredient",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-5-what-is-a-drug-and-how-does-it-affect-us",
+          "title": "What Is a Drug and How Does It Affect Us?",
+          "main": "A substance — legal or illegal — taken into the body that affects the central nervous system by acting on the brain and spinal cord\nAlters the way a person thinks, feels and behaves\nAffects the normal functioning of the body and/or brain\nMay also prevent or cure disease or enhance physical or mental welfare (medicines)\nRoutes of use: ingesting, smoking, injecting, inhaling",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-5-not-all-drug-use-is-the-same",
+          "title": "Not All Drug Use Is the Same",
+          "main": "The majority of people who use drugs do not have drug problems or dependency\nUse: taking a legal or illegal drug without negative consequences — social events, recreation, experimentation, cultural or religious practice\nMisuse: losing control on an occasion, causing harm to self or others (e.g., drink-driving crash) — without being dependent\n‘Use’ and ‘misuse’ are preferred over ‘abuse’ — they are non-judgmental and less stigmatizing\n\n31m\n\nof ~275 million people who used illicit drugs in 2016 had problematic use",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-5-the-drug-dependence-syndrome",
+          "title": "The Drug Dependence Syndrome",
+          "main": "A cluster of physiological, behavioural and cognitive experiences\nSubstance use takes on a much higher priority than behaviours that once had greater value\nDesire — often strong, sometimes overpowering — to take the substance\nInability to control the impulse to use despite negative consequences\nPhysical changes in brain areas critical for judgment, decision-making, learning, memory and behaviour control\nAfter a period of abstinence, return to use can lead to rapid reappearance of the syndrome (relapse risk)\nSource: WHO ICD-10",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-5-how-dependence-develops-initiation-to-disorder",
+          "title": "How Dependence Develops: Initiation to Disorder",
+          "main": "Susceptible individuals: genetic disposition, child abuse history, psychiatric conditions, substance use in the home, social isolation\nEven small exposure to a substance can alter brain chemistry; pathways are modified with repeated use\nEnvironment shapes the path: poverty, social change, cultural norms, drug policy, availability and peer culture\nSocial support and integration are protective\nThe range runs from casual, non-problematic (even beneficial, e.g., prescribed) use to chronic dependence",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-5-dependency-is-a-medical-condition-not-a-moral-failure",
+          "title": "Dependency Is a Medical Condition — Not a Moral Failure",
+          "main": "Dependence is not the result of a lack of willpower or moral weakness\n\nIt has biological, psychological and sociological components\nWHO and international bodies agree: a complex, often relapsing medical condition\nThis framing determines the right response: treatment and care, not blame",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-5-what-determines-a-drug-s-effects",
+          "title": "What Determines a Drug's Effects?",
+          "main": "Size, weight and health of the person\nTolerance — whether the person is used to taking it\nPoly-drug use — other drugs taken around the same time\nThe amount taken and the strength/purity of the drug (varies with illegally produced drugs)\nRoute of use: smoked, injected, ingested\nEnvironment and mood — the setting and reason for taking",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-5-classifying-psychoactive-drugs",
+          "title": "Classifying Psychoactive Drugs",
+          "main": "By effect on the central nervous system:\nDepressants — slow down the CNS\nStimulants — speed up the CNS\nHallucinogens — distort the CNS\nBy legal status:\nOver-the-counter with minimal restrictions\nRestricted to medical prescription\nRestricted by social policy\nCompletely illegal\nThe same drug can be freely available in one country and prescription-only in another",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-5-depressants-opioids-and-heroin",
+          "title": "Depressants: Opioids and Heroin",
+          "main": "Opioid family: opium, codeine, morphine, heroin, pethidine, methadone, tramadol\nHeroin: narcotic analgesic from the opium poppy; Nigerian street names include ‘Gabji’ and ‘Market’\nForms: white powder, tan granular form, heroin base; effects last three to six hours\nRoutes: injected, smoked, snorted, mixed with cannabis/tobacco\nNot everyone who tries heroin becomes dependent — but physical dependence and withdrawal deter many from stopping\nMajor risk: overdose depressing the respiratory system — risk rises when combined with alcohol or sedatives",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-5-depressant-cannabis",
+          "title": "Depressant: Cannabis",
+          "main": "From the plant cannabis sativa; psychoactive ingredient THC produces the ‘high’\nForms: marijuana, hashish, hash oil; commonly smoked, eaten, or brewed as tea in Nigeria\nAbout one in ten users can become dependent\nNigerian names: Weewee, Igbo, Weed, Kush, Skunk, Ghanja, Taba and many others\nShort-term effects: loss of inhibition, altered senses and memory, anxiety/mild paranoia, reduced coordination, bloodshot eyes",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-5-stimulants-cocaine-and-amphetamine-type-stimulants",
+          "title": "Stimulants: Cocaine and Amphetamine-Type Stimulants",
+          "main": "Cocaine: from coca leaves; powder, freebase and crack forms; snorted, injected or smoked; names include Coke, Powder, Thailand White\nCocaine short-term: confidence, energy, alertness; long-term: insomnia, nasal damage, anxiety, paranoia, psychosis, depression\nAmphetamines: stimulate the CNS like adrenaline; powder, tablet, capsule or liquid\nSelf-medication with amphetamine occurs among truck drivers, students, fishermen and businessmen to stave off fatigue\nInhalants (also widely misused by street-involved youth): initial euphoria then drowsiness; chronic use damages brain, liver and kidneys and can be fatal\n\nKnowledge Check\n\nA client uses tramadol daily, has tried to stop repeatedly, and continues despite job loss and family conflict. This pattern best matches:\nA. Recreational use\nB. Experimental use\nC. The dependence syndrome\nD. Therapeutic use\n\nAnswer: C — Loss of control, salience and continued use despite consequences are core ICD-10 dependence features.",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-5-true-or-false-common-myths-about-drug-dependency",
+          "title": "True or False? Common Myths About Drug Dependency",
+          "main": "‘People dependent on drugs can stop whenever they wish’ — FALSE\n‘Drug dependency is a moral failure or willpower problem’ — FALSE\n‘All people who use drugs are drug dependent’ — FALSE\n‘You cannot be dependent on prescribed medication’ — FALSE\n‘If you can go to work, you are not really dependent’ — FALSE\n‘A relapse equals failure’ / ‘Rehab doesn't work’ — FALSE: relapse is part of a chronic condition; treatment works",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-5-film-activity-glue-made-me-a-ghost-8-minutes",
+          "title": "Film Activity: ‘Glue Made Me A Ghost’ (8 minutes)",
+          "main": "Watch the short film linked in the LMS — written and performed by ex-street children in Cambodia, most formerly dependent on glue\nBased on real experiences: scavenging, sleeping on the streets, injuries, gang violence and the risks of inhalant use\nForum prompt: Which risk factors from the Introductory Module do you see in the children's stories? What parallels exist for street-involved children in Nigerian cities?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-5-same-drug-different-stories",
+          "title": "Same Drug, Different Stories",
+          "main": "Three people use codeine cough syrup: (1) a nurse takes it as prescribed after surgery for ten days; (2) a student takes large doses at parties most weekends and recently blacked out; (3) a mechanic has used it daily for two years, needs more to feel normal, and has sold tools to buy it.\nA community volunteer says all three are ‘addicts’ who should be reported to the police.\n\nDiscuss / respond in the LMS forum:\n\nClassify each person's pattern: use, misuse or dependence — and justify each classification.\nWhat response is appropriate for each of the three?\nWhy is the volunteer's blanket label both inaccurate and harmful?\nWhich brain- and behaviour-based features would you check for in person 3?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 16,
+          "slug": "module-5-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nNIDA — Drugs, Brains, and Behavior: The Science of Addiction  —  accessible neuroscience of dependence\nhttps://nida.nih.gov/publications/drugs-brains-behavior-science-addiction\nNIDA — Commonly Used Drugs Charts  —  effects, forms and health risks of each major drug class\nhttps://nida.nih.gov/research-topics/commonly-used-drugs-charts\nWHO ICD-11 browser  —  the current diagnostic criteria for disorders due to substance use\nhttps://icd.who.int\nUNODC/WHO — International Standards for the Treatment of Drug Use Disorders  —  bridge reading to Module 6\nhttps://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 17,
+          "slug": "module-5-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. A drug acts on the central nervous system, altering thinking, feeling and behaviour\n2. Most people who use drugs are not dependent — use, misuse and dependence are distinct\n3. Dependence is a complex, often relapsing medical condition — not a moral or willpower failure\n4. Drugs are classified as depressants, stimulants and hallucinogens\n5. Effects depend on the person, the drug, the dose, the route and the setting\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which sequence correctly matches drug class to CNS effect?",
+          "options": [
+            "Depressants slow, stimulants speed up, hallucinogens distort",
+            "Depressants distort, stimulants slow, hallucinogens speed up",
+            "All three slow the CNS",
+            "All three speed up the CNS"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Preferred, less stigmatizing terminology in this course is:",
+          "options": [
+            "Drug abuse and abusers",
+            "Drug use and misuse",
+            "Junkies and addicts",
+            "Delinquents"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which is a core feature of the dependence syndrome?",
+          "options": [
+            "Occasional social use",
+            "Continued use despite negative consequences and impaired control",
+            "Use only when prescribed",
+            "Immediate ability to stop"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Overdose risk with heroin rises sharply when it is combined with:",
+          "options": [
+            "Vitamins",
+            "Other depressants such as alcohol or sedatives",
+            "Vegetables",
+            "Antibiotics"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "‘A relapse equals failure.’ According to the evidence, this statement is:",
+          "options": [
+            "True",
+            "False — relapse is a recognized feature of a chronic, relapsing condition",
+            "True for opioids only",
+            "True for young people only"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 6,
+      "slug": "module-6",
+      "title": "Causes of Drug Use and Associated Stigma of Drug Users",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-6-causes-of-drug-use-and-associated-stigma-of-drug-users",
+          "title": "Causes of Drug Use and Associated Stigma of Drug Users",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-6-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Explain that there is no single theory of why people use drugs\n2. Describe the categories of drug use from experimental to dependent and therapeutic\n3. Identify the social, economic and political determinants of vulnerability to drug use\n4. Define stigma and describe its consequences for drug users and their families\n5. Apply non-stigmatizing language and identify practical ways to reduce stigma\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Why do people use drugs?\nA. One single cause explains all drug use\nB. There is no single theory — reasons are wide-ranging and multi-factorial\nC. Only peer pressure\nD. Only poverty\nQ2. A person who tries a substance once or twice out of curiosity and stops is showing:\nA. Dependent use\nB. Experimental use\nC. Intensive use\nD. Therapeutic use\nQ3. Evidence on the ‘gateway’ idea shows that:\nA. Cannabis use inevitably leads to heroin\nB. There is no evidence that using one drug necessarily leads people to other drugs\nC. All drug users progress to injecting\nD. Alcohol always precedes cannabis\nQ4. Stigma is best defined as:\nA. A medical diagnosis\nB. A ‘stain’ marking someone as unacceptable, leading to prejudice and discrimination\nC. A form of treatment\nD. A legal penalty\nQ5. One major consequence of stigma is that it:\nA. Speeds up treatment entry\nB. Delays drug users and families from seeking help\nC. Reduces drug prices\nD. Improves media reporting",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-6-why-do-people-take-drugs",
+          "title": "Why Do People Take Drugs?",
+          "main": "There is no single theory or explanation\n\nDespite widespread negative feelings toward drug use — and abundant information about consequences — millions start or continue\nCommon reasons named by communities: confidence, peer pressure, rebellion, relaxation, experimentation, curiosity, fun, loneliness, boredom, ritual, mental health, social pressures\nForum warm-up: before continuing, post three reasons you have observed in your own community",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-6-ritual-cultural-and-religious-use",
+          "title": "Ritual, Cultural and Religious Use",
+          "main": "In several societies drug use is tied to long-standing ritual, religious or cultural practice\nExample: the coca leaf — chewed and brewed for centuries in the Andes; an energizer and remedy, integral to cultural tradition\nYet the leaf is often treated as equivalent to cocaine or heroin\nUnderstanding context prevents misjudging culturally embedded practices",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-6-coping-with-problems-and-difficulties",
+          "title": "Coping With Problems and Difficulties",
+          "main": "To be accepted by peers\nTo deal with life's problems and bad moods\nBoredom and lack of opportunity\nTo deal with mental health problems (self-medication)\nTo deal with physical pain",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-6-categories-of-drug-use",
+          "title": "Categories of Drug Use",
+          "main": "Experimental: tried once or twice out of curiosity; not continued\nRecreational: chosen for enjoyment, to enhance a mood or social occasion\nSituational: used for a specific purpose or setting (e.g., staying awake to work or study)\nIntensive: heavy, frequent use — escalating risk\nDependent: the dependence syndrome (Module 4)\nTherapeutic: prescribed medical use",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-6-why-do-people-choose-certain-drugs",
+          "title": "Why Do People Choose Certain Drugs?",
+          "main": "Effects: matched to occasion — amphetamines for energy, alcohol against stress\nAvailability: greater supply, more use — where cannabis is grown locally, use is more widespread\nAffordability: widely available drugs tend to be cheaper\nAccessibility: easy access increases use of specific drugs\nPoly-drug use: mixing for a more intense experience\n\nNo evidence that using one drug necessarily leads to ‘harder’ drugs over time",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-6-vulnerability-social-economic-and-political-determinant",
+          "title": "Vulnerability: Social, Economic and Political Determinants",
+          "main": "Individual: genetics, mental health, trauma history\nFamily: neglect, abuse, substance use in the home\nCommunity and society: laws and norms favourable to drug use, availability, poverty, marginalization, lack of opportunity\nVulnerability is layered — which is why single-cause explanations and single-sector responses fail\nSource: UNODC 2015\n\nKnowledge Check\n\nCannabis use is highest where it is grown locally and cheap. Which drivers of drug choice does this illustrate?\nA. Effects and ritual\nB. Availability, affordability and accessibility\nC. Gateway progression\nD. Peer pressure only\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-6-self-check-the-stigma-mirror-part-one",
+          "title": "Self-Check: The Stigma Mirror (Part One)",
+          "main": "Answer honestly for yourself before continuing:\nYour son announces he will marry someone who once received drug treatment — what is your reaction?\nWould you invite a former drug user to your house for dinner?\nWould you employ a former drug user in your home or organization?\nWould you rent your guest room to someone once treated for a drug problem?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-6-the-stigma-mirror-part-two",
+          "title": "The Stigma Mirror (Part Two)",
+          "main": "Now imagine the drug user is your own son or daughter:\nWould you want him or her to get married?\nWould you want him or her to have a house of their own?\nWould you want him or her to get a job and be self-sufficient?\nNotice the shift: closeness produces compassion. Stigma shrinks when the person becomes real to us",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-6-what-is-stigma-and-what-does-it-do",
+          "title": "What Is Stigma and What Does It Do?",
+          "main": "Stigma: a ‘stain’ marking someone as unacceptable — it leads to prejudice and discrimination\nDelays help-seeking: users deny problems to avoid the ‘hopeless addict’ label; families hide the issue out of shame\nContributes to low self-esteem; builds on and reinforces existing prejudice and social inequality\nMedia language matters: ‘junkie’ and ‘addict’ are socially accepted but derogatory, dehumanizing terms\nUK survey (3,000 respondents): far less empathy toward drug users than toward people with mental health problems — high blame and intolerance\nMental health stigma declined through sensitization — the same change is possible for drug use",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-6-reducing-stigma-in-practice",
+          "title": "Reducing Stigma in Practice",
+          "main": "Use person-first, neutral language: ‘person who uses drugs’, ‘person with a substance use disorder’\nPresent drug dependence as the medical condition it is\nEngage media, religious and community leaders with accurate information\nMake services welcoming and confidential — stigma at the clinic door defeats every other investment\nModel the change: staff and volunteers audit their own language and assumptions",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-6-the-radio-phone-in",
+          "title": "The Radio Phone-In",
+          "main": "A popular Kaduna radio host runs a phone-in titled ‘Ridding our streets of junkies’. Callers demand arrests and public shaming. The host invites KADSAMHSA to send a guest ‘to defend the addicts’.\nYou are the guest. You have one 10-minute segment and two caller questions to change the frame of the conversation.\n\nDiscuss / respond in the LMS forum:\n\nWhat alternative title/frame would you propose to the producer, and why does language matter?\nWhich two evidence points from Modules 4–5 would you use on air?\nHow would you answer a caller who says stigma is ‘useful because it discourages drug use’?\nWhat single call-to-action would you leave listeners with?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-6-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nNIDA — Words Matter: Preferred Language for Talking About Addiction  —  practical person-first language guide\nhttps://nida.nih.gov/research-topics/addiction-science/words-matter-preferred-language-talking-about-addiction\n\nNIDA — Stigma and Discrimination  —  how stigma harms health and what reduces it\n\nhttps://nida.nih.gov/research-topics/stigma-discrimination\nUNODC World Drug Report (latest edition)  —  chapters on the drivers and determinants of drug use\nhttps://www.unodc.org/unodc/en/data-and-analysis/world-drug-report.html\nGlobal Commission on Drug Policy — The World Drug Perception Problem  —  how public perceptions of drug users diverge from evidence\nhttps://www.globalcommissionondrugs.org/reports",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-6-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. There is no single cause of drug use — reasons range from ritual and recreation to coping and pain\n2. Drug choice is shaped by effects, availability, affordability and accessibility\n3. There is no evidence that one drug automatically leads to another\n4. Stigma marks people as unacceptable, delays help-seeking and harms families\n5. Language, accurate information and welcoming services are frontline tools against stigma\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which category describes using a drug for a specific purpose, e.g., staying awake to drive at night?",
+          "options": [
+            "Experimental",
+            "Situational",
+            "Therapeutic",
+            "Dependent"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Chewing coca leaf in Andean communities illustrates:",
+          "options": [
+            "Dependent use",
+            "Culturally embedded, ritual use",
+            "Injecting drug use",
+            "Gateway use"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "The UK attitudes survey found the public showed:",
+          "options": [
+            "More empathy to drug users than to people with mental illness",
+            "Less empathy to drug users, with high blame and intolerance",
+            "Equal empathy",
+            "No opinion"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which phrase reflects non-stigmatizing language?",
+          "options": [
+            "Junkie",
+            "Addict",
+            "Person who uses drugs",
+            "Hopeless case"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Stigma harms public health mainly because it:",
+          "options": [
+            "Makes drugs cheaper",
+            "Prevents and delays people and families from seeking help",
+            "Improves treatment quality",
+            "Reduces relapse"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 7,
+      "slug": "module-7",
+      "title": "Types of Drug Treatment",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-7-types-of-drug-treatment",
+          "title": "Types of Drug Treatment",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-7-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the global and African treatment gap and the aims of drug treatment\n2. State the principles of effective treatment\n3. Describe the main treatment modalities: counselling, detoxification, residential, outpatient/community-based, mutual help, and substitution therapy\n4. Explain the benefits and limits of each modality and who each suits best\n5. Relate treatment barriers in Nigeria to service design at state level\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Globally, about how many people who need drug treatment can access it?\nA. 1 in 2\nB. 1 in 6\nC. All\nD. 1 in 100\nQ2. Detoxification on its own is:\nA. Complete treatment\nB. Not treatment — it must be followed by behavioural therapy and/or medication\nC. Only for alcohol\nD. Illegal\nQ3. The main substitution medicines for opioid dependence are:\nA. Aspirin and paracetamol\nB. Methadone and buprenorphine\nC. Diazepam and codeine\nD. There are none\nQ4. Which principle of effective treatment is correct?\nA. A single treatment works for everyone\nB. Treatment must address multiple needs of the person, not just drug use\nC. Short treatment is always sufficient\nD. Plans should never change\nQ5. Residential treatment outcomes are generally better with stays of at least:\nA. Three days\nB. Three weeks\nC. Three months\nD. Three years",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-7-the-treatment-gap",
+          "title": "The Treatment Gap",
+          "main": "Demand for treatment keeps rising; supply of services does not\nBeds and services are unavailable, or priced beyond most of the population\n\nClosing this gap is a central task for agencies like KADSAMHSA\n\n1 in 18\n\npeople in Africa who need drug treatment can access it — globally the figure is 1 in 6\nSource: National Institute on Drug Abuse 2012",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-7-what-treatment-aims-to-do",
+          "title": "What Treatment Aims To Do",
+          "main": "Improve the health and quality of life of people with drug dependence\nWork toward abstinence and reduce injury and death associated with high-risk use\nMajor interventions: counselling, detoxification, abstinence-based residential and outpatient care, mutual help groups, drug substitution programmes\nRemember: drug dependence is a chronic, relapsing medical condition — treatment is managed accordingly",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-7-principles-of-effective-treatment",
+          "title": "Principles of Effective Treatment",
+          "main": "No single treatment is appropriate for everyone\nTreatment needs to be readily available\nAttend to the multiple needs of the individual — not just the drug use\nRemaining in treatment for an adequate period is critical\nContinually assess and adjust the treatment plan as the person's needs change",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-7-counselling",
+          "title": "Counselling",
+          "main": "An interactive, confidential exchange helping clients explore problems and build capacity to solve them\nA trained counsellor collects relevant information and offers professional guidance in a formal setting\nFormats: individual, couples, small groups, family or support people\nMost effective when voluntary — engagement and empowerment matter\nCounselling is a learned skill, not a conversation; motivational interviewing is an evidence-based approach\nThe counsellor never simply tells the person what to do\nOn its own counselling will not resolve every drug problem — links to other treatment services are essential",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-7-detoxification-withdrawal-management",
+          "title": "Detoxification (Withdrawal Management)",
+          "main": "Allows the body to rid itself of a drug while managing withdrawal symptoms; usually 7–14 days\nOften the first step — must be followed by behavioural therapy and/or medication\n\nDetoxification alone, with no follow-up, is not treatment\n\nPrimary goal is patient safety, not long-term abstinence; never withhold detox over doubts about commitment\nSupportive care and patient choice are crucial; plan post-withdrawal care from the start",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-7-residential-treatment",
+          "title": "Residential Treatment",
+          "main": "Hospital or non-hospital settings; three-month stays produce better outcomes; therapeutic communities run 6–12 months\nFocus: ‘un-learning’ harmful behaviours; building skills and attitudes for a drug-free life; personal responsibility\nHighly structured activities examine damaging beliefs and destructive patterns\nLimits: high drop-out; expensive; does not suit everyone; aftercare essential to prevent relapse\nIn many low/middle-income countries, some centres offer poor services, untrained staff and prison-like conditions — relapse after release is common",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-7-outpatient-and-community-based-treatment",
+          "title": "Outpatient and Community-Based Treatment",
+          "main": "Located in the community; mobilizes community resources; psychosocial approach; continuum of care linked to health and social services\nSuits people in stable, supportive environments or without funds for residential care; same principles, lower cost\nModel components:\nCSOs identify users, screen and refer to primary health services\nHealth centres provide screening, counselling, primary care and referral to hospitals for specialized care\nWelfare agencies and NGOs add education, vocational training, income generation and psychosocial support\n\nThis is the logic behind KADSAMHSA's PHC-level integration of care",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-7-mutual-help-groups-and-substitution-therapy",
+          "title": "Mutual Help Groups and Substitution Therapy",
+          "main": "Mutual help: 12-step model (AA/NA principles); complements and extends professional treatment; social support for abstinence during and after treatment\nSubstitution: replacing a drug with a medically prescribed one — available for nicotine, alcohol and opioids\nNo suitable substitutes yet for cocaine, ATS or cannabis\nFor opioid dependence: methadone or buprenorphine — both WHO essential medicines; no ‘high’, markedly reduced craving\nBenefits: better health and social functioning, reduced crime, mortality and blood-borne virus transmission; relatively inexpensive; 12-month duration produces better outcomes; can lead to full abstinence\n\nKnowledge Check\n\nA client completes 10 days of inpatient detox and is discharged with no follow-up plan. According to this module, the service has provided:\nA. Complete treatment\nB. Withdrawal management only — not treatment\nC. Substitution therapy\nD. A therapeutic community programme\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-7-treatment-barriers-in-nigeria-and-what-they-imply",
+          "title": "Treatment Barriers in Nigeria — and What They Imply",
+          "main": "Barriers (Module 1): prohibitive cost, fear and stigma, unavailability, no information on where to find help\nService design responses:\nDecentralize: bring screening and basic care to PHC level\nReduce cost: subsidized or insured care (e.g., behavioral health coverage initiatives)\nReduce stigma: confidential, welcoming, person-first services\nInform: publicize referral pathways and entry points",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-7-forum-activity-counselling-questions",
+          "title": "Forum Activity: Counselling Questions",
+          "main": "Choose ONE and post your answer in the Module 6 forum:\n1. Why do you think drug users do not seek counselling?\n2. Why must counselling be voluntary (outside treatment-centre settings)?\n3. From your experience, why is maintaining confidentiality so important in drug treatment counselling?\nReply to at least one colleague who answered a different question",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-7-matching-the-client-to-the-modality",
+          "title": "Matching the Client to the Modality",
+          "main": "Four clients present at a KADSAMHSA-supported centre: (A) a 32-year-old trader, opioid-dependent for 6 years, two failed detox attempts, stable family; (B) a 19-year-old student using cannabis heavily for 8 months, supportive parents; (C) a 40-year-old man, severe poly-drug dependence, homeless, chaotic environment; (D) a 28-year-old woman who completed residential treatment last month.\nResources available: outpatient counselling, a 16-week structured programme, residential beds, peer support groups, and (hypothetically) an OST pilot.\n\nDiscuss / respond in the LMS forum:\n\nMatch each client to the most appropriate primary modality and justify using module principles.\nFor client A, why might counselling alone fail? What does the evidence suggest?\nFor client D, what does the module say about the period after residential treatment?\nWhich client(s) illustrate why ‘no single treatment fits everyone’?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-7-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUNODC/WHO — International Standards for the Treatment of Drug Use Disorders  —  the global quality framework for treatment systems\nhttps://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders\n\nNIDA — Treatment research topic  —  detailed evidence per treatment modality\n\nhttps://nida.nih.gov/research-topics/treatment\nUNODC — Drug Prevention and Treatment  —  UNODC's treatment programmes, tools and publications\nhttps://www.unodc.org/unodc/en/drug-prevention-and-treatment/index.html\nISSUP — free online learning for treatment professionals  —  includes Universal Treatment Curriculum resources and webinars\nhttps://www.issup.net",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-7-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Only 1 in 6 people globally — and 1 in 18 in Africa — can access needed drug treatment\n2. No single treatment fits everyone; adequate duration and attention to multiple needs are critical\n3. Detoxification alone is not treatment; it must connect to ongoing care\n4. Community-based and outpatient care extends reach at lower cost — the logic of PHC integration\n5. Methadone and buprenorphine are WHO essential medicines with strong evidence for opioid dependence\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "In Africa, the proportion of people needing drug treatment who can access it is about:",
+          "options": [
+            "1 in 2",
+            "1 in 6",
+            "1 in 18",
+            "1 in 50"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Which modality replaces an illicit opioid with a prescribed medicine?",
+          "options": [
+            "Detoxification",
+            "Substitution therapy (OST)",
+            "Mutual help groups",
+            "Vocational training"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Therapeutic community programmes typically last:",
+          "options": [
+            "1–2 days",
+            "1–2 weeks",
+            "6–12 months",
+            "5 years minimum"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Which statement about counselling is correct?",
+          "options": [
+            "It is just a friendly conversation",
+            "It is a learned skill, most effective when voluntary, using approaches like motivational interviewing",
+            "It requires no training",
+            "It replaces all other treatment"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Substitution medicines currently exist for all of the following EXCEPT:",
+          "options": [
+            "Nicotine",
+            "Alcohol",
+            "Opioids",
+            "Cocaine and ATS"
+          ],
+          "correctIndex": 3
+        }
+      ]
+    },
+    {
+      "position": 8,
+      "slug": "module-8",
+      "title": "Special Populations: Women Drug Users, People Who Inject Drugs and Young Drug Users",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-8-special-populations-women-drug-users-people-who-inject",
+          "title": "Special Populations: Women Drug Users, People Who Inject Drugs and Young Drug Users",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-8-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the specific patterns and risks of drug use among women, including in Nigeria\n2. Explain why women who use drugs are a hidden population and face distinct treatment barriers\n3. Summarize the health risks facing people who inject drugs, including HIV, hepatitis C, overdose and TB\n4. Describe HIV trends among PWID in Nigeria and the role of the harm reduction package\n5. Explain why young people (10–24) are a distinct vulnerable population\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Globally, what fraction of the world's drug users are women?\nA. One tenth\nB. One third\nC. One half\nD. Two thirds\nQ2. Globally, women are more likely than men to misuse:\nA. Heroin only\nB. Prescription drugs, particularly opioids and tranquillizers\nC. Inhalants\nD. No substances\nQ3. In Nigeria, HIV prevalence among PWID (IBBSS series) between 2007 and 2014:\nA. Rose from 3.4% to 5.6%\nB. Fell from 5.6% to 3.4%\nC. Stayed at 10%\nD. Was never measured\nQ4. Globally, about what proportion of PWID have hepatitis C?\nA. 2%\nB. 12%\nC. 52%\nD. 92%\nQ5. After HIV, the second most common cause of death among illicit drug users is:\nA. Malaria\nB. Overdose\nC. Typhoid\nD. Road accidents",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-8-women-who-use-drugs-the-global-picture",
+          "title": "Women Who Use Drugs: The Global Picture",
+          "main": "Women are more likely than men to misuse prescription drugs — particularly opioids and tranquillizers\nIn Nigeria: 3.4 million women reported past-year drug use (vs 10.8 million men)\n\nYet only one in five drug users in treatment worldwide is a woman\n\n1 in 3\n\nof the world's drug users is a woman; ~3.5 million women inject drugs",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-8-elevated-hiv-risk-among-women-who-inject",
+          "title": "Elevated HIV Risk Among Women Who Inject",
+          "main": "HIV prevalence is generally higher among females who inject drugs (FWID) than males across regions\nDrug use and sex work often overlap, creating dual risk (unsafe sex + unsafe injecting):\nAsia: FWID who sell sex are ~20× more likely than other female sex workers to acquire HIV\nTanzania: 85% of FWID also sell sex; HIV 62% (vs 28% among men who inject)\nNepal: half of FWID sell sex; HIV 33% vs 6.3% among male injectors\nIn Nigeria: HIV among female injectors is about five times higher than male counterparts",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-8-women-using-drugs-in-nigeria-survey-findings",
+          "title": "Women Using Drugs in Nigeria: Survey Findings",
+          "main": "Women high-risk users more likely than men to have sex with other drug users (67% vs 46%)\nNearly half of women (vs one third of men) reported a steady partner who also used drugs\nWomen more likely to report a steady partner who injects (28% vs 11%)\nMen were 3× more likely to pay for sex; women 4–5× more likely to receive money or drugs for sex\nArrests for sex work almost exclusively reported among women — highest among women who inject\nSource: Drug Use in Nigeria 2018",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-8-a-hidden-population",
+          "title": "A Hidden Population",
+          "main": "Hard to reach and under-represented in drug treatment services\nHigh concealment of drug use due to intense stigma, societal disapproval and demonization — especially of mothers\nPathways to dependence: male injecting partners, domestic violence and intimidation, histories of sexual abuse, low self-esteem, isolation, sex work\nVulnerabilities: fear of exposure; difficulty accessing clean equipment; sharing a partner's needle; being injected by someone else\nTreatment barriers: services not tailored to women; no childcare; fear of losing custody\n\nKnowledge Check\n\nA treatment centre reports that almost no women enrol, and concludes ‘women here don't use drugs’. What does this module suggest?\nA. The conclusion is correct\nB. Women who use drugs are a hidden population — low enrolment reflects concealment, stigma and service barriers, not absence of need\nC. Women cannot become dependent\nD. Women only use alcohol\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-8-people-who-inject-drugs-nigeria",
+          "title": "People Who Inject Drugs: Nigeria",
+          "main": "~80,000 people estimated to have injected drugs; 1 in 5 high-risk users injects; 78% men\nWomen who inject were more likely to inject heroin and engage in higher-risk sexual behaviour\nHIV among PWID declined: 5.6% (2007) → 4.2% (2010) → 3.4% (2014), with rising sterile-needle use over the period\nIBBSS 2014: 44% of PWID knew someone who had died of AIDS\nSelf-reported HIV among high-risk users ~6%; among PWID ~9% (subject to reporting bias)\nSource: IBBSS 2014; Drug Use in Nigeria 2018",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-8-beyond-hiv-the-wider-health-burden-of-injecting",
+          "title": "Beyond HIV: The Wider Health Burden of Injecting",
+          "main": "Hepatitis C: PWID have rates 25× the general population; ~52% of PWID globally; 60–70% of chronic carriers develop chronic liver disease\nOverdose: second most common cause of death among illicit drug users; ~35% of global illicit drug mortality; most deaths accidental, 1–3 hours after opioid use\nTB: people with HIV who inject have 2–6× the risk of developing TB\nVein and soft-tissue injuries from repeated injecting\nCompounding factors: criminalization, unfriendly services, fear of arrest, poverty, homelessness",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-8-the-harm-reduction-package-for-pwid",
+          "title": "The Harm Reduction Package for PWID",
+          "main": "The WHO/UNAIDS/UNODC-supported package (Module 3) directly addresses these risks: NSP, OST, testing, ART, STI care, condoms, targeted IEC, hepatitis services, TB services, naloxone\nEvidence: risks fall measurably where the package is implemented at scale\nService design principle: meet women and young people where they are, with tailored, confidential entry points",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-8-young-people-10-24-a-time-of-transition",
+          "title": "Young People (10–24): A Time of Transition",
+          "main": "Physical, emotional and social transitions define this period\nMore vulnerable young people experience more: unprotected sex, STIs including HIV, unintended pregnancy, violence, mental health disorders — and substance use\nEarly initiation raises the risk of later problems — prevention and youth-friendly services are the priority responses\nLinks directly to school-based and community programming (Module 3) and to family interventions (Module 10)",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-8-amina-s-second-visit",
+          "title": "Amina's Second Visit",
+          "main": "Amina, 26, attends a PHC for a wound on her arm. The nurse suspects injecting. Amina is evasive, mentions her partner ‘handles the injections’, has a 3-year-old child, and leaves before testing is discussed. She returns two weeks later, pregnant, and asks whether the clinic will report her to anyone.\nThe facility has HIV testing, antenatal care, and a referral line to a KADSAMHSA treatment centre. There is no female counsellor on duty today.\n\nDiscuss / respond in the LMS forum:\n\nWhich vulnerability factors from this module does Amina's story illustrate?\nWhat should the nurse say to the confidentiality question — and why does the answer determine everything that follows?\nDesign Amina's next three service steps using the harm reduction package and women-specific considerations.\nWhat structural changes would make this facility genuinely accessible to women who use drugs?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-8-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUNODC World Drug Report — Women and Drugs booklet  —  global evidence on gendered patterns of use and treatment\nhttps://www.unodc.org/unodc/en/data-and-analysis/world-drug-report.html\nWHO — People who inject drugs  —  HIV, hepatitis and harm reduction service guidance for PWID\nhttps://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/populations/people-who-inject-drugs\nUNAIDS  —  data and guidance on key populations, including people who inject drugs\nhttps://www.unaids.org\nWHO — Adolescent health  —  why the 10–24 transition years need distinct services\nhttps://www.who.int/health-topics/adolescent-health",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-8-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. One in three drug users globally is a woman — but only one in five people in treatment is\n2. Women who use drugs are a hidden population facing stigma, violence, partner-linked risk and custody fears\n3. Nigeria has ~80,000 PWID; HIV among them fell to 3.4% by 2014, but hepatitis C, overdose and TB remain major threats\n4. The ten-intervention harm reduction package directly targets the risks of injecting\n5. Young people aged 10–24 are in transition and need prevention plus youth-friendly services\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Worldwide, the share of people in drug treatment who are women is about:",
+          "options": [
+            "One in two",
+            "One in three",
+            "One in five",
+            "Nine in ten"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "In Nigeria, which drug were women who inject more likely than men to inject?",
+          "options": [
+            "Cannabis",
+            "Heroin",
+            "Inhalants",
+            "Ecstasy"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "PWID carry a hepatitis C burden how many times that of the general population (where data exist)?",
+          "options": [
+            "2×",
+            "5×",
+            "25×",
+            "100×"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Most overdose deaths occur:",
+          "options": [
+            "Instantly",
+            "1–3 hours after opioid administration — usually accidental",
+            "After one week",
+            "Only in hospitals"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A key reason women avoid treatment services is:",
+          "options": [
+            "Lack of interest in health",
+            "Fear of exposure, custody loss, and services not tailored to women",
+            "Excess of female-only clinics",
+            "Free services"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 9,
+      "slug": "module-9",
+      "title": "Drug Screening: Steps to Take",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-9-drug-screening-steps-to-take",
+          "title": "Drug Screening: Steps to Take",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-9-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Explain why drug screening matters and who can conduct it\n2. Identify the groups of people who should be screened and the substances covered\n3. Administer the ASSIST screening approach with rapport, sensitivity and confidentiality\n4. Score ASSIST responses and interpret lower, moderate and high risk levels\n5. Match risk levels to the correct response: no treatment, brief intervention, or referral\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. ASSIST stands for:\nA. Alcohol, Smoking and Substance Involvement Screening Test\nB. Advanced Substance Screening Instrument\nC. African Standard Substance Inventory\nD. Assessment of Serious Intoxication\nQ2. Who can administer the ASSIST screening?\nA. Only psychiatrists\nB. A range of trained workers — nurses, community health workers, social workers, GPs and others in contact with people who use drugs\nC. Only police officers\nD. Only laboratory scientists\nQ3. In ASSIST scoring, 'daily or almost daily' use in the past 3 months scores:\nA. 0\nB. 2\nC. 4\nD. 6\nQ4. A 'moderate risk' ASSIST score calls for:\nA. No action\nB. A brief intervention\nC. Immediate arrest\nD. Compulsory admission\nQ5. The manner of administering ASSIST matters because:\nA. It changes the scoring rules\nB. A friendly, non-judgmental, confidential approach improves consent and accuracy of answers\nC. It is legally required to be hostile\nD. Clients cannot understand questions otherwise",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-9-why-screen-for-substance-use",
+          "title": "Why Screen for Substance Use?",
+          "main": "Deaths and injuries linked to drugs are a global public health burden\nDrug use is linked to social, financial, legal and relationship problems\nUse is not declining — and is likely to get worse without action\nScreening detects harmful use early and can avert progression to dependence\nEvery screening is an opportunity to educate people about the risks of hazardous use",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-9-who-can-screen-and-who-should-be-screened",
+          "title": "Who Can Screen — and Who Should Be Screened?",
+          "main": "Screeners: primary health care workers and anyone in contact with people who use drugs:\nCommunity health workers, mental health workers, nurses\nSocial workers, physicians, general practitioners, psychologists\nPeople to screen:\nAnyone from young adulthood\nAttendees of STI clinics, university health services and mental health settings\nPeople with complaints suggesting drug use issues\nNew prisoners — particularly for drug-associated offences\nPeople whose condition would be worsened by substance use\nPregnant women",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-9-substances-covered-and-local-names-matter",
+          "title": "Substances Covered — and Local Names Matter",
+          "main": "The range assessed is broad, including tobacco and alcohol — highly hazardous psychoactive substances\nGlobal drug names are used, but always consider local names to avoid misinterpretation (e.g., ‘Gabji’ for heroin, ‘Weewee’/‘Igbo’ for cannabis)\nThe screener should know common drugs and side effects, and understand the difference between use, misuse and dependence",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-9-administering-assist-building-trust",
+          "title": "Administering ASSIST: Building Trust",
+          "main": "A person is more likely to consent and answer accurately when the health worker:\nShows they are listening; is friendly and non-judgmental\nShows sensitivity and empathy\nProvides information about the screening and carefully explains why substance questions are asked\nExplains confidentiality clearly\nUse gentle prompts to check answers — e.g., an older client who says ‘no’ to cannabis may reconsider when asked about use at school or parties years ago",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-9-scoring-responses-past-three-months",
+          "title": "Scoring Responses (Past Three Months)",
+          "main": "Never — not used at all in the last 3 months → score 0\nOnce or twice — 1–2 times in the last 3 months → score 2\nMonthly — average 1–3 times per month → score 3\nWeekly — average 1–4 times per week → score 4\nDaily or almost daily — 5–7 days per week → score 6\nOnce confirmed a person never used a drug, do not keep repeating that drug in later questions",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-9-interpreting-scores-and-choosing-the-response",
+          "title": "Interpreting Scores and Choosing the Response",
+          "main": "Lower risk: score 3 or less (alcohol: 10 or less) → no treatment needed; brief feedback\nModerate risk → brief intervention\nHigh risk → referral to specialist assessment and treatment\n\nThe majority of people screened will require no further assistance\n\nRisk is modified by family history, psychiatric comorbidity, age, gender and socioeconomic status — consider these in assessing the individual\n\nKnowledge Check\n\nA client scores in the moderate risk band for cannabis and lower risk for all other substances. The correct next step is:\nA. No action at all\nB. A brief intervention focused on cannabis\nC. Immediate referral to residential treatment\nD. Report to law enforcement\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-9-the-brief-intervention-and-motivational-interviewing",
+          "title": "The Brief Intervention and Motivational Interviewing",
+          "main": "Aim: help the person understand their substance use is a risk — motivating them to reduce or cease use\nMotivational interviewing: directs people to explore and resolve their own doubts (the ‘good things’ vs the ‘less good things’) and move through the stages of change\nBuilt on empathy: accepting, non-judgmental, respectful, never argumentative, avoiding labels like ‘drug addict’\nDuration: from three minutes up to 15–30 minutes",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-9-practice-activity-one-score-the-client-lms-quiz",
+          "title": "Practice Activity One: Score the Client (LMS Quiz)",
+          "main": "In the LMS, you will read a short dialogue between a health worker and a client\nUsing the score table (0 / 2 / 3 / 4 / 6), assign a score for each substance mentioned\nThen classify the client's overall risk band and select the matching response\nYour scores are auto-checked against the answer key — review any mismatch before proceeding",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-9-practice-activity-two-score-the-recorded-interview",
+          "title": "Practice Activity Two: Score the Recorded Interview",
+          "main": "Watch the demonstration ASSIST interview video linked in the LMS\nAs you watch, score each of the client's answers on the downloadable scoring sheet\nPause after the final question, total your scores, and choose the risk band and matching response\nThen open the model scoring in the LMS and review any item where your score differed\nOptional: record yourself reading the ASSIST questions aloud and listen back — aim for a friendly, neutral, unhurried tone",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-9-screening-at-the-phc-ibrahim",
+          "title": "Screening at the PHC: Ibrahim",
+          "main": "Ibrahim, 29, attends a PHC Centre of Excellence with poor sleep and stomach pain. Asked about substances, he reports: tramadol ‘most days of the week’ for the past year; cannabis about once a month; alcohol once or twice in three months; no other substances. He has tried to cut down twice, and a friend has expressed concern.\nYou are the trained screener on duty, with the ASSIST forms and a referral pathway to a KADSAMHSA treatment centre.\n\nDiscuss / respond in the LMS forum:\n\nAssign frequency scores for tramadol, cannabis and alcohol using the 0/2/3/4/6 scale.\nWhich substance is likely to place Ibrahim in a higher risk band, and what is the matching response?\nDraft the first two sentences you would say to Ibrahim when giving feedback — non-judgmental and specific.\nWhat details go into the referral if specialist assessment is indicated?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-9-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nWHO — The ASSIST: manual for use in primary care  —  the full instrument, scoring and interpretation\nhttps://www.who.int/publications/i/item/978924159938-2\nWHO — The ASSIST package overview  —  all three ASSIST manuals, including the self-help guide\nhttps://www.who.int/publications/i/item/the-who-assist-package-for-hazardous-and-harmful-substance-use\nWHO — The ASSIST-linked brief intervention manual  —  how to deliver the brief intervention step by step\nhttps://iris.who.int/handle/10665/44321\nWHO mhGAP programme  —  how screening fits primary-care mental health and substance use services\nhttps://www.who.int/teams/mental-health-and-substance-use/treatment-care/mhgap",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-9-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Screening detects harmful use early and can avert dependence — and many workers can do it\n2. Rapport, empathy and clear confidentiality drive consent and accurate answers\n3. ASSIST frequency scores: 0, 2, 3, 4, 6 — from never to daily/almost daily\n4. Risk bands map to responses: none → brief feedback; moderate → brief intervention; high → referral\n5. Further guided practice is essential before using ASSIST with real clients\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which group is specifically listed for screening?",
+          "options": [
+            "Pregnant women",
+            "Only elderly men",
+            "Only schoolteachers",
+            "Nobody under 40"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "'Weekly' use in the past three months scores:",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "6"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "The lower-risk cut-off for alcohol differs from other substances; it is:",
+          "options": [
+            "3 or less",
+            "10 or less",
+            "27 or less",
+            "0 only"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Motivational interviewing works mainly by:",
+          "options": [
+            "Arguing until the client agrees",
+            "Helping the client explore and resolve their own ambivalence with empathy",
+            "Prescribing medication",
+            "Threatening consequences"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Most people who complete ASSIST screening will need:",
+          "options": [
+            "Residential treatment",
+            "No further intervention",
+            "Police referral",
+            "Detoxification"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 10,
+      "slug": "module-10",
+      "title": "Understanding Advocacy and Steps to Achieve Success",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-10-understanding-advocacy-and-steps-to-achieve-success",
+          "title": "Understanding Advocacy and Steps to Achieve Success",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-10-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Define advocacy and explain why it is needed in the drug use response\n2. State the principles of advocacy, including avoiding increased harm\n3. Apply the eight-step advocacy planning framework\n4. Identify advocacy targets and build a coalition with the right membership\n5. Write SMART advocacy objectives and outline an action plan\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. Advocacy is best described as:\nA. Providing clinical treatment\nB. Influencing decision-making to develop, establish or change policies, programmes and services\nC. Fundraising only\nD. Arresting offenders\nQ2. A core principle of advocacy in this field is that activities should:\nA. Maximize publicity at any cost\nB. Avoid increasing harm to drug users\nC. Exclude drug users from planning\nD. Ignore evidence\nQ3. SMART objectives are:\nA. Specific, Measurable, Achievable, Relevant, Time-constrained\nB. Simple, Modern, Ambitious, Rapid, Total\nC. Strategic, Military, Active, Regional, Tough\nD. None of these\nQ4. The first step of the advocacy planning framework is to:\nA. Create an action plan\nB. Select an issue or problem to address\nC. Identify allies\nD. Monitor and evaluate\nQ5. 'Support Don't Punish' is:\nA. A treatment medication\nB. An international advocacy campaign questioning punitive drug policy\nC. A police unit\nD. A UN convention",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-10-what-is-advocacy",
+          "title": "What Is Advocacy?",
+          "main": "“Advocacy aims at influencing decision-making, with the goals of developing, establishing or changing policies and establishing and sustaining programmes and services” — WHO (2003)\nAction directed at changing the policies, positions or programmes of any institution\nAn ongoing process to change values, attitudes, actions, policies and laws by influencing decision-makers, opinion leaders, organizations and systems at different levels",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-10-why-advocacy-is-needed",
+          "title": "Why Advocacy Is Needed",
+          "main": "Widespread criminalization leaves many drug users marginalized, vulnerable and without needed health services\nDrug users are commonly the most disliked group in any community — seen as criminals, diseased, useless\nThat attitude feeds stigma and discrimination — and drives resistance to effective programmes\n\nAdvocacy is how evidence gets translated into policy and services",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-10-principles-of-advocacy",
+          "title": "Principles of Advocacy",
+          "main": "Advocacy activities should avoid increasing harm — e.g., outreach permitted only on condition police can arrest clients would harm the people it serves\nBalance short-term pragmatic goals with long-term developmental goals\nObjectives relate to approaches shown by research to be effective\nActivities are specific, targeted, and fit the social, cultural and political context of society",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-10-the-eight-step-advocacy-planning-framework",
+          "title": "The Eight-Step Advocacy Planning Framework",
+          "main": "Step 1: Select an issue or problem you want to address\nStep 2: Analyze and research the issue\nStep 3: Develop specific objectives for your advocacy work\nStep 4: Identify your targets\nStep 5: Identify your allies\nStep 6: Identify your resources\nStep 7: Create an action plan\nStep 8: Implement, monitor and evaluate",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-10-targets-and-allies",
+          "title": "Targets and Allies",
+          "main": "Typical targets: politicians, health bureaucrats, law enforcement (including corrections), mainstream health workers, media, religious leaders, community leaders, neighbours of programmes\nCoalition membership: start small, grow with needed skills:\nDoctors, health and social workers, lawyers\nDrug users themselves — their insights directly affect their community\nHarm reduction practitioners, nurses, NGO staff\nMedia representatives",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-10-are-your-objectives-achievable-ask-first",
+          "title": "Are Your Objectives Achievable? Ask First",
+          "main": "Is the issue so sensitive that policymakers cannot be approached directly?\nHave others tried advocating on this issue — what lessons did they learn?\nIs sufficient information available to persuade policymakers? If not, the objective should include collecting it",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-10-make-objectives-smart",
+          "title": "Make Objectives SMART",
+          "main": "Specific — states clearly what the programme aims to achieve\nMeasurable — measurable without massive resources\nAchievable — pragmatic, within available finance and staff\nRelevant — useful to the process of working toward the goal\nTime-constrained — met within the set timeframe\n\nKnowledge Check\n\n‘We will improve public attitudes to drug users’ fails as a SMART objective mainly because it is:\nA. Too specific\nB. Not measurable or time-constrained\nC. Too short\nD. Illegal\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-10-action-plans-general-tips",
+          "title": "Action Plans: General Tips",
+          "main": "For each objective and audience, deliver consistent messages, through a variety of media, from a variety of sources, over an extended period\nPlan events with credible spokespersons from coalition partners\nDelegate responsibilities clearly for implementing and monitoring specific activities\nOrganize training and practice in advocacy\nIdentify, verify and incorporate key facts and data to support objectives",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-10-case-in-point-support-don-t-punish",
+          "title": "Case in Point: Support Don't Punish",
+          "main": "An international campaign questioning punitive approaches to drug use\nDay of Action 2013: events in 41 cities across 20 countries — the simple message caught the public imagination\n“I believe drugs have destroyed many people, but wrong government policies have destroyed many more.” — Kofi Annan, former UN Secretary-General\nLesson: a clear message, broad coalition and repeated delivery can shift the debate",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-10-forum-activity",
+          "title": "Forum Activity",
+          "main": "Post your answer to ONE question in the Module 9 forum:\n1. What are the main opportunities and advantages of undertaking advocacy on drug use in your community?\n2. What are the main challenges to undertaking advocacy on drug use in your community?\nReply to a colleague who answered the other question",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-10-a-mini-advocacy-plan-for-kaduna",
+          "title": "A Mini Advocacy Plan for Kaduna",
+          "main": "Your coalition wants LGA chairpersons to publicly endorse referral (rather than arrest) for minor possession cases involving young people, in line with alternatives-to-incarceration practice directions.\nYou have: survey data on treatment barriers, two supportive religious leaders, a sympathetic radio producer, and a small budget for one quarter.\n\nDiscuss / respond in the LMS forum:\n\nWork through steps 1–4 of the planning framework for this issue in bullet form.\nWrite ONE SMART objective for the quarter.\nWho are your three highest-value targets and what message fits each?\nWhat could go wrong that would increase harm — and how do you guard against it?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-10-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nSupport Don't Punish campaign  —  the living case study from this module — tools, materials and the global day of action\nhttps://supportdontpunish.org\nInternational Drug Policy Consortium (IDPC)  —  advocacy guides, policy analysis and training resources\nhttps://idpc.net\nCommunity Tool Box (University of Kansas)  —  free, practical how-to chapters on advocacy, coalitions and campaigns\nhttps://ctb.ku.edu/en\nGlobal Commission on Drug Policy — reports  —  evidence and framing used by reform advocates worldwide\nhttps://www.globalcommissionondrugs.org/reports",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 15,
+          "slug": "module-10-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Advocacy influences decision-making to change policies, programmes and services\n2. First principle: avoid increasing harm to the people you advocate for\n3. Plan in eight steps — from selecting the issue to implement, monitor and evaluate\n4. Objectives must be SMART; coalitions should include drug users' own voices\n5. Consistent messages, varied media and credible messengers, sustained over time, win change\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which is a stated advocacy principle?",
+          "options": [
+            "Balance short-term pragmatic goals with long-term developmental goals",
+            "Publicity at any cost",
+            "Exclude the media",
+            "Avoid research evidence"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Step 8 of the planning framework is:",
+          "options": [
+            "Select an issue",
+            "Identify allies",
+            "Implement, monitor and evaluate",
+            "Identify resources"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Why include drug users in the advocacy coalition?",
+          "options": [
+            "They have excellent insights and information directly affecting their community",
+            "To meet quotas",
+            "They cannot contribute",
+            "For publicity only"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "The 2013 Support Don't Punish Day of Action reached:",
+          "options": [
+            "4 cities in 2 countries",
+            "41 cities in 20 countries",
+            "410 cities in 200 countries",
+            "One city"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "An advocacy action plan should deliver:",
+          "options": [
+            "One message, once, from one source",
+            "Consistent messages through varied media and sources over an extended period",
+            "Random messages",
+            "Messages only to opponents"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 11,
+      "slug": "module-11",
+      "title": "Interventions and Responses to Drug Problems in the Family",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-11-interventions-and-responses-to-drug-problems-in-the-fa",
+          "title": "Interventions and Responses to Drug Problems in the Family",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-11-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the ripple effect of drug use from the individual to family and society\n2. Summarize how family members are affected by a relative's drug use\n3. Identify the three ways adult family members' support helps their drug-using relative\n4. Describe the 5-Step Method and the evidence for its effectiveness\n5. Apply the social network diagram to map support around an affected family member\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. The 'ripple effect' of drug use refers to:\nA. Effects only on the user\nB. Impacts spreading from the individual to family, friends and wider society\nC. Water contamination\nD. Price fluctuations\nQ2. Compared to others, family members of drug users experience:\nA. Lower healthcare use\nB. Higher levels of depression, anxiety, somatic complaints and healthcare costs\nC. No measurable effects\nD. Guaranteed immunity to stress\nQ3. The 5-Step Method focuses primarily on:\nA. The drug user only\nB. Affected and concerned family members\nC. Law enforcement\nD. Schools\nQ4. In Step 3 of the 5-Step Method, the three broad coping positions are:\nA. Engage, tolerate, withdraw\nB. Fight, flight, freeze\nC. Deny, accept, report\nD. None of these\nQ5. Evidence from the UK and Italy shows the 5-Step Method:\nA. Has no effect\nB. Significantly reduces psychological and physical symptoms in family members and improves coping\nC. Only works for alcohol\nD. Worsens family stress",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-11-the-ripple-effect",
+          "title": "The Ripple Effect",
+          "main": "Drug use is often treated as a ‘private’ act of an individual — but its consequences never stay private\nImpacts move outward: individual → family → friends → community → society\nCommunity-level effects include robberies, violence and insecurity — the public becomes a victim too\nIn Nigeria's large family structures, each user's drug problem touches many more people than in small-family societies",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-11-how-family-members-are-affected",
+          "title": "How Family Members Are Affected",
+          "main": "Higher levels of depression, anxiety and somatic complaints\nMore frequent use of health services and higher total healthcare costs\nHigh rates of marital separation and divorce; low marital satisfaction\nIncreased interpersonal conflicts, financial strain and exposure to violence\nChildren of drug users often experience difficult childhoods",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-11-families-are-rarely-the-focus-of-services",
+          "title": "Families Are Rarely the Focus of Services",
+          "main": "Service delivery traditionally focuses on the drug user; attention to the family is occasional, less intense, shorter\nThree broad categories of family-involved responses exist:\nWorking with families to get the user into treatment — e.g., CRAFT (Community Reinforcement and Family Training)\nInvolving families in the user's treatment itself\nResponding to the family members' own needs in their own right\nFamily support helps in three ways: influencing the course of the problem; improving the relative's outcomes and treatment engagement; and reducing harm to other family members",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-11-the-5-step-method-principles",
+          "title": "The 5-Step Method: Principles",
+          "main": "Focused on affected and concerned family members — in their own right\n\nFamily members are viewed as ordinary people responding to highly stressful experiences — not as causes of the problem\nFlexible and adaptable to a range of settings and circumstances\nThe person delivering it matters and needs training — professional primary healthcare workers are suitable\nEvidence from the UK and Italy shows it is a very promising approach to reducing family-related harm",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-11-steps-1-and-2-listen-reassure-inform",
+          "title": "Steps 1 and 2: Listen, Reassure, Inform",
+          "main": "Step 1 — Listen and reassure: establish what life is like for the family member; set boundaries and goals; agree how future contact happens; follow up missed appointments. For some families, Step 1 is all that is required\nStep 2 — Provide relevant, specific, targeted information:\nShare evidence and facts about specific drugs, potential harms and dependence\nBalance too little information (raises concern) against too much (creates confusion)\nProvide written and verbal explanations; share contacts of other helpful agencies",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-11-step-3-explore-coping-responses",
+          "title": "Step 3: Explore Coping Responses",
+          "main": "Identify the family's current coping position:\nENGAGE — standing up to the problem\nTOLERATE — putting up with it (associated with ill-health; puts the user's needs before the family's)\nWITHDRAW — becoming independent of the problem\nExplore advantages and disadvantages of the current response, then of alternatives\n\nStay alert to the risk of domestic violence and work to minimize it",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-11-steps-4-and-5-support-networks-and-further-help",
+          "title": "Steps 4 and 5: Support Networks and Further Help",
+          "main": "Step 4 — Explore social support: map family, friends and agencies on a social network diagram (+ supportive, − non-supportive, +/− mixed, 0 neutral); maximize positives, neutralize negatives\nStep 5 — Discuss further needs and referral:\nFurther help for the family member; help for the user\nSessions for the whole family or other members\nOnward referral to other agencies\n\nKey aim: consolidate the work and promote hope that the situation can improve\n\nKnowledge Check\n\nA mother says she pays her son's drug debts and hides his use from his father 'to keep peace'. In 5-Step terms, this coping position is:\nA. Engaging\nB. Tolerating — associated with ill health and putting the user's needs first\nC. Withdrawing\nD. Referring\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-11-what-the-evidence-shows",
+          "title": "What the Evidence Shows",
+          "main": "Significant reductions in psychological and physical symptoms among family members\nSignificant improvement in coping\nSignificant positive change in attitudes of the primary care professionals delivering it\nPositive effects extend to the substance user as well",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-11-three-families-three-responses-forum-activity",
+          "title": "Three Families, Three Responses (Forum Activity)",
+          "main": "Scenario A: A husband discovers his wife has a serious drinking problem — draw and explain a social network diagram of his available support.\nScenario B: A wife confirms her husband is using drugs and behaving erratically; she is desperately seeking help for herself — describe the services she would want.\nScenario C: You are establishing a service for family members of people with alcohol and drug problems — anticipate the key challenges you will face.\n\nDiscuss / respond in the LMS forum:\n\nChoose ONE scenario and post a full response in the Module 10 forum.\nFor A: label each person/agency +, −, +/− or 0 and name your characters.\nFor B: which of the 5 Steps address her needs, and in what order?\nFor C: how will you reach families who hide the problem out of shame?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-11-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nAFINet — Addiction and the Family International Network  —  home of the 5-Step Method: research, resources and webinars\nhttps://afinetwork.info\nAdfam  —  UK charity supporting families affected by drugs and alcohol — practical guidance that translates well\nhttps://adfam.org.uk\nUNODC — Family skills training programmes  —  evidence-based family programming for prevention, including Strong Families\nhttps://www.unodc.org/unodc/en/prevention/familyskillstraining.html\nPartnership to End Addiction  —  free guides for families, including CRAFT-based approaches\nhttps://drugfree.org",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-11-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Drug use ripples outward — family members carry heavy, measurable health and social burdens\n2. Families deserve help in their own right, not only as a route to the user's treatment\n3. The 5-Step Method: listen and reassure; inform; explore coping; build support; address further needs\n4. Coping positions — engage, tolerate, withdraw — each carry advantages and costs; tolerating harms families most\n5. Evidence shows the method reduces family symptoms, improves coping, and benefits the user too\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Which is NOT a documented effect on family members of drug users?",
+          "options": [
+            "Higher anxiety and depression",
+            "Higher healthcare costs",
+            "Higher marital satisfaction",
+            "Increased interpersonal conflict"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "CRAFT is an approach that primarily:",
+          "options": [
+            "Teaches family and friends strategies to help their loved one change and enter treatment",
+            "Provides methadone",
+            "Trains police",
+            "Replaces counselling"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "In Step 2, information should be:",
+          "options": [
+            "As much as possible, all at once",
+            "Relevant, specific and targeted — balanced between too little and too much",
+            "Withheld",
+            "Only verbal"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "On a social network diagram, '+/−' indicates:",
+          "options": [
+            "Overall support",
+            "Overall non-support",
+            "Mixed support",
+            "Neutral"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "The key aim of Step 5 is to:",
+          "options": [
+            "Close the case permanently",
+            "Consolidate the work and promote hope that the situation may improve",
+            "Assign blame",
+            "Begin detoxification"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 12,
+      "slug": "module-12",
+      "title": "Human Rights and Drug Users",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-12-human-rights-and-drug-users",
+          "title": "Human Rights and Drug Users",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-12-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Describe the development of international human rights, including the UDHR and the International Bill of Human Rights\n2. Explain the three international drug control conventions and their actual implications for policy\n3. Describe how drug policy and practice can violate the right to health, liberty and life\n4. Identify rights violations affecting women, children and people in detention\n5. Relate international human rights standards to the Nigerian legal context\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. The Universal Declaration of Human Rights was adopted in:\nA. 1919\nB. 1948\nC. 1961\nD. 1988\nQ2. The three international drug control conventions restrict controlled drugs to:\nA. Recreational purposes\nB. Medical and scientific purposes\nC. Export only\nD. Religious purposes\nQ3. The conventions' position on the death penalty for drug offences is that they:\nA. Require it\nB. Encourage it\nC. Never support it\nD. Are silent and neutral\nQ4. Human rights are described as universal, inalienable and:\nA. Indivisible\nB. Negotiable\nC. Optional\nD. Regional\nQ5. Criminalizing drug use has been shown to:\nA. Eliminate drug use\nB. Push users into riskier practices such as hurried injecting and sharing equipment\nC. Guarantee treatment access\nD. Reduce HIV automatically",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-12-the-development-of-human-rights",
+          "title": "The Development of Human Rights",
+          "main": "People have always held rights and responsibilities within family, religion, community and state\nThe United Nations was founded on a pledge to promote and respect human rights for all\nUniversal Declaration of Human Rights (UDHR) adopted 1948 by 56 UN members; its principles now appear in most national constitutions\n30 articles — from the right to equality (Art. 1) and freedom from discrimination (Art. 2) onward\nNot legally binding, but widely regarded as ‘a common standard of achievement for all people and all nations’",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-12-what-are-human-rights",
+          "title": "What Are Human Rights?",
+          "main": "Belong to every individual, without discrimination or discretion, forever\nUniversal — a birthright of every member of the human family; they define what governments can, cannot and should do to us\nInalienable — one cannot and should not lose their rights\nIndivisible — no one can be denied rights because someone decides they are ‘less human’ than another\nICCPR (civil/political rights) + ICESCR (economic/social/cultural rights) + UDHR = the International Bill of Human Rights",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-12-the-three-drug-control-conventions",
+          "title": "The Three Drug Control Conventions",
+          "main": "1961 Single Convention on Narcotic Drugs (amended 1972): opium and derivatives, coca/cocaine, cannabis\n1971 Convention on Psychotropic Substances: manufactured psychoactives — amphetamines, benzodiazepines, LSD and others\n1988 Convention Against Illicit Traffic: suppressing trafficking, money-laundering and precursor control; requires criminalizing possession/purchase of controlled drugs\nTogether they form the framework within which national drug laws — including Nigeria's — operate",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-12-what-the-conventions-actually-say",
+          "title": "What the Conventions Actually Say",
+          "main": "Restrict controlled drugs to medical and scientific purposes — but are not a justification for a repressive ‘prohibitionist’ model of imprisonment and severe punishment\n\nTheir adopted vision is protecting public health\n\nThey call for social cohesion and reintegration — people affected by drugs need social protection, health care and community solidarity, not punishment\nThey call for science-based prevention and treatment; they never mention or support compulsory treatment\nThey are not against harm reduction (when not isolated from demand reduction) nor against controlled medicines in treating dependence\nThey never support the death penalty for drug-related crimes",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-12-the-right-to-health-and-how-criminalization-undermines",
+          "title": "The Right to Health — and How Criminalization Undermines It",
+          "main": "ICESCR Article 12: everyone's right to the highest attainable standard of health — including people who use drugs\nCriminalization drives risky practices: sharing syringes, hurried injecting in unsafe places to avoid detection\nConsequences: greater risk of overdose, vascular injuries and infections (HIV, hepatitis C)\nThe comprehensive harm reduction package (Module 3) is endorsed by WHO, UNODC, UNAIDS and supported by UN human rights bodies",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-12-liberty-and-life-where-policy-crosses-the-line",
+          "title": "Liberty and Life: Where Policy Crosses the Line",
+          "main": "Arbitrary arrest and detention: police sometimes target areas near treatment services; arrest counts used as ‘success’ indicators\nLarge numbers held in prolonged pre-trial detention for minor drug offences; incarceration rates of 50–90% among people who use drugs, with elevated health risks in prison\nRight to life: death sentences are restricted to the ‘most serious crimes’; the INCB says the death penalty should be abolished for drug offences\nYet 33 countries/territories retain it for drugs; an estimated 600–1,000 drug-related executions annually",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-12-coercive-and-compulsory-treatment",
+          "title": "Coercive and Compulsory 'Treatment'",
+          "main": "People are frequently detained for ‘treatment’ on police suspicion or a urine test — coercive treatment becomes a form of incarceration\nCompulsory detention centres subject detainees to strenuous forced exercise, beatings, solitary confinement and forced labour\nPractices are not evidence-based; informed consent is disregarded; abuse, including sexual violence, is reported\nThe UN has called for closure of compulsory centres — yet approximately 235,000 people remain detained in East and South-East Asia alone",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-12-women-children-and-generalized-discrimination",
+          "title": "Women, Children and Generalized Discrimination",
+          "main": "Women are imprisoned for drug offences more than for any other crime — closely linked to poverty and disempowerment\nWomen who use drugs risk losing custody, forced sterilization or abortion, penalties for use during pregnancy, and violence — including from partners and law enforcement\nChildren who use drugs face criminal prosecution, often with no access to harm reduction or treatment\nA drug conviction record obstructs employment, custody, benefits and travel\n“A criminal record for a young person for a minor drug offence can be a far greater threat to their well-being than occasional drug use.” — Kofi Annan (2015)\n\nKnowledge Check\n\nA commentator claims 'the UN conventions require harsh imprisonment of drug users.' Based on this module, this claim is:\nA. Accurate\nB. Inaccurate — the conventions' vision is public health, reintegration and proportionate, science-based responses\nC. Accurate for cannabis only\nD. Impossible to assess\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-12-the-nigerian-context",
+          "title": "The Nigerian Context",
+          "main": "NDLEA Act 1989 (amended 2004): 15–25 years' imprisonment for unlawful possession or use of narcotics — of whatever quantity, for whatever purpose; compulsory treatment can be ordered\nInternational evidence: eradication-and-criminalization approaches carry unintended consequences — organized crime, violence, rights violations\nA 2015 Nigerian study (95 people who use drugs across six states, communities and prisons) documented a range of abuses — rarely otherwise recorded\nReform direction: proportionate responses and health-based alternatives — e.g., alternatives-to-incarceration practice directions now operating in Kaduna State",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-12-voices-from-the-2015-nigeria-study",
+          "title": "Voices From the 2015 Nigeria Study",
+          "main": "From the study interviews: a drug control officer says, “Imagine a situation where you arrest offenders and you as a state commander do not have resources to feed them in your custody due to low funding. Do you expect me to feed them from my salary?” Detainees describe prolonged pre-trial detention and pressure to pay for release.\nYou are preparing a KADSAMHSA briefing on rights-respecting alternatives for minor possession cases, aimed at police leadership.\n\nDiscuss / respond in the LMS forum:\n\nWhich specific rights issues does the officer's statement reveal (for detainees AND for the system)?\nWhich convention principles support diversion to treatment over detention for minor cases?\nHow do alternatives-to-incarceration referral pathways address both the rights problem and the resources problem?\nWhat two indicators would show your briefing changed practice?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-12-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nUniversal Declaration of Human Rights — full text  —  the 30 articles every practitioner should know\nhttps://www.un.org/en/about-us/universal-declaration-of-human-rights\nOffice of the UN High Commissioner for Human Rights (OHCHR)  —  human rights standards, treaty bodies and drug policy guidance\nhttps://www.ohchr.org\nInternational Narcotics Control Board (INCB)  —  annual reports on implementation of the drug conventions\nhttps://www.incb.org\n\nWHO — Human rights and health (fact sheet)  —  the right to health explained\n\nhttps://www.who.int/news-room/fact-sheets/detail/human-rights-and-health",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 14,
+          "slug": "module-12-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Human rights are universal, inalienable and indivisible — they include people who use drugs\n2. The drug conventions' vision is public health, reintegration and science-based responses — not maximal punishment\n3. Criminalization drives riskier drug use and mass detention; compulsory 'treatment' is a rights abuse\n4. Women and children face distinct, severe rights violations under punitive regimes\n5. Nigeria's strict statutory penalties coexist with a reform direction toward proportionate, health-based alternatives\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "The International Bill of Human Rights comprises:",
+          "options": [
+            "UDHR + ICCPR + ICESCR",
+            "Only the UDHR",
+            "The three drug conventions",
+            "The NDLEA Act"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Which statement about the conventions is TRUE?",
+          "options": [
+            "They mandate compulsory treatment",
+            "They support the death penalty for trafficking",
+            "They never support the death penalty for drug-related crimes",
+            "They ban all medicines"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Estimated annual drug-related executions worldwide:",
+          "options": [
+            "0",
+            "600–1,000",
+            "60–100",
+            "10,000+"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Under the NDLEA Act as amended, unlawful possession or use carries:",
+          "options": [
+            "A fine only",
+            "15–25 years' imprisonment regardless of quantity or purpose",
+            "Community service",
+            "No penalty"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which is a rights-respecting response to minor possession by a young person?",
+          "options": [
+            "Prolonged pre-trial detention",
+            "Diversion to assessment and treatment through a referral pathway",
+            "Public shaming",
+            "Compulsory detention centre"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 13,
+      "slug": "module-13",
+      "title": "Specific Issues for Law Enforcement",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-13-specific-issues-for-law-enforcement",
+          "title": "Specific Issues for Law Enforcement",
+          "main": "Online self-paced module with pre-test, knowledge checks, case study and post-test\nAdapted for online delivery by KADSAMHSA from the UNODC/European Union Trainer Resource Modules, “Response to Drugs and Related Organised Crime in Nigeria” (May 2019).",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-13-learning-objectives",
+          "title": "Learning Objectives",
+          "main": "By the end of this module, you will be able to:\n1. Summarize the Nigerian drug situation as it concerns law enforcement\n2. Describe common law enforcement views on drug use and the reasons for reluctance toward public health approaches\n3. Explain why law enforcement is uniquely well placed to steer people who use drugs to assistance\n4. Describe the use of discretion and the range of options for dealing with drug use offenders\n5. Outline how law enforcement and health services collaborate successfully\n\nPre-Test — Check Your Starting Point (not graded)\n\nQ1. The National Drug Control Master Plan 2015–2019 gave demand reduction and law enforcement:\nA. No priority\nB. Equal priority\nC. Priority to enforcement only\nD. Priority to demand reduction only\nQ2. Law enforcement is well placed to steer drug users to help because officers:\nA. Can prescribe medication\nB. Are available 24/7 and meet users at 'treatable moments' of crisis\nC. Run laboratories\nD. Control drug prices\nQ3. When police actively target public health services for drug users, a documented result is:\nA. More users attend services\nB. Users avoid services, adopt riskier practices and move beyond providers' reach\nC. HIV declines\nD. Trust in police increases\nQ4. A 'drug diversion' scheme means:\nA. Rerouting trafficking routes\nB. Offering an arrested minor-possession user a caution conditional on assessment and treatment\nC. Diverting police funds\nD. Hiding drugs\nQ5. Police discretion is about:\nA. Ignoring all laws\nB. Weighing the gravity of the offence in deciding the response, as is done for minor assaults, theft and traffic offences\nC. Secret operations\nD. Avoiding paperwork",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-13-the-enforcement-context-in-nigeria",
+          "title": "The Enforcement Context in Nigeria",
+          "main": "Nigeria remains a key transit point; trafficked drugs include cannabis, cocaine, tramadol and ATS precursors (Module 1)\nDrug trafficking is a complex, multimillion-dollar criminal business\nNDCMP 2015–2019: increased focus on mid- to high-level traffickers and producers — and equal priority to demand reduction and law enforcement\nTreatment and continuing-care facilities remain few and inadequate — enforcement alone cannot absorb the problem",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-13-how-law-enforcement-often-sees-drug-use",
+          "title": "How Law Enforcement Often Sees Drug Use",
+          "main": "Agencies predominantly focus on enforcing drug laws and managing the consequences of use\nConstant exposure can build very negative attitudes toward illicit drug use\nFour categories of drug-related crime connect policing to drug markets: use/distribution offences, income-generating crime, systemic violence, and offences committed under influence",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-13-why-some-officers-resist-public-health-approaches",
+          "title": "Why Some Officers Resist Public Health Approaches",
+          "main": "Belief that public health responses (including harm reduction) conflict with enforcement goals\nFear that service sites attract users and dealers and disrupt neighbourhoods\nBelief that harm reduction compromises prevention and treatment\nConcern that not stressing 'Say No To Drugs' zero tolerance might 'increase drug use'\nView that interventions for PWID are 'too liberal'\nWorry that services for drug users crowd out care for the 'innocent'",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-13-the-actual-role-and-unique-position-of-law-enforcement",
+          "title": "The Actual Role — and Unique Position — of Law Enforcement",
+          "main": "Enforce drug laws; ensure everyone lives in a safe, secure environment\nLong history of working across public health issues; significant influence on drug strategies\nUniquely placed to steer users to assistance:\nAvailable 24 hours a day, seven days a week\nFrequent contact with dependent and problematic users\nContact at ‘treatable moments’ — times of crisis when people are open to change",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-13-best-friend-or-worst-enemy",
+          "title": "Best Friend or Worst Enemy",
+          "main": "Law enforcement can be the best friend, or the worst enemy, of a public health response\nUnsupportive policing severely disrupts interventions; supportive policing enables them\nActive targeting of services leads to: fewer users in services, riskier injecting, users scattering beyond providers' reach, and deep reluctance to engage for fear of arrest\nSupportive practice: no unwarranted patrols or searches at service sites; an enabling environment for health and harm reduction work\n\nKnowledge Check\n\nA patrol begins stationing officers outside a drop-in centre and questioning everyone entering. Based on this module, the most likely result is:\nA. Attendance rises\nB. Users stop attending, disperse and take greater risks — undermining both health and policing goals\nC. HIV transmission stops\nD. Dealers surrender\n\nAnswer: B",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-13-discretion-and-the-range-of-options",
+          "title": "Discretion and the Range of Options",
+          "main": "Discretion is not disregard of the law — it weighs the gravity of the ‘crime’, as with minor assaults, theft and traffic offences\nBalance accountability (reports, running sheets) against the cost and effort of prosecution\nOptions for drug use offenders:\nWarning — verbal caution, usually undocumented\nCaution — formal warning at a station after an offence\nDrug diversion — caution conditional on attending clinical assessment and commencing treatment or assistance\nImprisonment is an unhealthy outcome: overcrowding, disease (HIV, hepatitis, TB), violence, abuse and corruption",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-13-making-collaboration-work",
+          "title": "Making Collaboration Work",
+          "main": "Technical Working Groups of police, health and local government act as multi-sectoral steering committees\nAgree strategies from the start; secure management support\nFocus on shared benefits and the public image of working together; monitor developments jointly\nKaduna application: the police-to-KADSAMHSA referral and feedback pathway operationalizes exactly this collaboration for eligible cases",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-13-key-points-recap-before-your-case-work",
+          "title": "Key Points Recap Before Your Case Work",
+          "main": "Law enforcement and public health can — and must — work together\nOfficers meet people who use drugs at treatable moments no one else sees\nDiscretion, cautions and diversion beat imprisonment for minor use offences\nSupportive policing multiplies the impact of every health investment",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-13-two-scenarios-from-the-field",
+          "title": "Two Scenarios From the Field",
+          "main": "Scenario One: You are posted to a busy station in a low-income area; your supervisor wants to improve public perception of the force. Near the market you see a group of young people; a colleague says some are known drug users — not violent, but deeply mistrustful of officers.\nScenario Two: A 15-year-old boy is brought in for possessing heroin, which he says is for personal use — he injects twice daily. His family is very poor, both parents unemployed; he cannot afford school and his work prospects are limited.\n\nDiscuss / respond in the LMS forum:\n\nScenario One: What action would you take, what biases might shape your interaction, and why might these youths mistrust officers?\nScenario Two: What concerns do you have for the boy's future, what pathways would reduce his drug-related harm and improve his prospects, and what goes in your report?\nFor both: which ingredients of effective community policing apply — proactive policing, open communication, empathy, role modeling, leadership?\nHow would a formal referral pathway to KADSAMHSA change your options in Scenario Two?",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-13-additional-readings-resources",
+          "title": "Additional Readings & Resources",
+          "main": "Optional — click any link to explore the topic further for your own professional development.\nLaw Enforcement and HIV Network (LEAHN)  —  peer-led guidance on police–public health partnership\nhttps://leahn.org\nLEAD Support Bureau  —  how law-enforcement-assisted diversion programmes work in practice\nhttps://leadbureau.org\nInternational Drug Policy Consortium (IDPC)  —  resources on proportionate responses and alternatives to incarceration\nhttps://idpc.net\nUNODC/WHO — International Standards for the Treatment of Drug Use Disorders  —  includes guidance on people in contact with the criminal justice system\nhttps://www.who.int/publications/i/item/international-standards-for-the-treatment-of-drug-use-disorders",
+          "durationLabel": "1 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-13-key-points-of-this-module",
+          "title": "Key Points of this Module",
+          "main": "1. Enforcement alone cannot solve the drug problem — the national strategy gives health and enforcement equal priority\n2. Officers meet people who use drugs 24/7, often at treatable moments of crisis\n3. Policing can enable or destroy public health interventions — targeting services drives risk underground\n4. Warnings, cautions and diversion to treatment are evidence-aligned options for minor use offences\n5. Structured collaboration — joint working groups and referral pathways — turns principle into daily practice\n\nYou have completed this module's core content.",
+          "durationLabel": "1 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "The four categories of drug-related crime include all EXCEPT:",
+          "options": [
+            "Use and distribution offences",
+            "Income-generating crime",
+            "Systemic violence",
+            "Tax evasion by pharmacies"
+          ],
+          "correctIndex": 3
+        },
+        {
+          "prompt": "'Treatable moments' refers to:",
+          "options": [
+            "Hospital opening hours",
+            "Times of crisis when a person is most open to accepting help",
+            "Court schedules",
+            "School terms"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A formal warning given at a police station after an offence is a:",
+          "options": [
+            "Warning",
+            "Caution",
+            "Diversion",
+            "Sentence"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Prisons are described as unhealthy for people who use drugs because of:",
+          "options": [
+            "Excess healthcare",
+            "Overcrowding, disease, violence, abuse and corruption",
+            "Too much exercise",
+            "Isolation from drugs only"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A successful police–health collaboration mechanism described in this module is:",
+          "options": [
+            "Separate operations with no contact",
+            "Multi-sectoral technical working groups with agreed strategies and management support",
+            "Competing budgets",
+            "Media campaigns only"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    }
+  ],
+  "finalQuestions": [
+    {
+      "prompt": "Which of the following is NOT among the dominant evidence-based risk factors for drug use?",
+      "options": [
+        "Family neglect and abuse",
+        "Poor attachment to school and community",
+        "Having received drug information at school",
+        "Mental health disorders"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "The broader aim of drug prevention, beyond delaying initiation, is:",
+      "options": [
+        "Zero tolerance policing",
+        "Healthy and safe development of children and youth",
+        "Mandatory treatment for all users",
+        "Eliminating alcohol sales"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "How many Nigerians aged 15–64 were estimated to have used drugs (excluding alcohol/tobacco) in 2017?",
+      "options": [
+        "1.4 million",
+        "14.3 million",
+        "38 million",
+        "80,000"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "The North-West zone's estimated drug use prevalence was:",
+      "options": [
+        "10.0%",
+        "12.0%",
+        "16.6%",
+        "22.4%"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "The estimated number of people who inject drugs worldwide (2016) was about:",
+      "options": [
+        "1 million",
+        "11 million",
+        "110 million",
+        "500,000"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Which is NOT a supply reduction method?",
+      "options": [
+        "Crop eradication",
+        "Dismantling clandestine laboratories",
+        "Needle and syringe programmes",
+        "Interdiction of trafficked drugs"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "Which of the following is a demand reduction activity?",
+      "options": [
+        "Border interdiction",
+        "School-based life-skills education",
+        "Crop eradication",
+        "Precursor control"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Evidence on who should deliver school drug education favours:",
+      "options": [
+        "Police officers",
+        "Recovered users",
+        "The students' usual teacher",
+        "Celebrities"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "Which sequence correctly matches drug class to CNS effect?",
+      "options": [
+        "Depressants slow, stimulants speed up, hallucinogens distort",
+        "Depressants distort, stimulants slow, hallucinogens speed up",
+        "All three slow the CNS",
+        "All three speed up the CNS"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "prompt": "Preferred, less stigmatizing terminology in this course is:",
+      "options": [
+        "Drug abuse and abusers",
+        "Drug use and misuse",
+        "Junkies and addicts",
+        "Delinquents"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Which category describes using a drug for a specific purpose, e.g., staying awake to drive at night?",
+      "options": [
+        "Experimental",
+        "Situational",
+        "Therapeutic",
+        "Dependent"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Chewing coca leaf in Andean communities illustrates:",
+      "options": [
+        "Dependent use",
+        "Culturally embedded, ritual use",
+        "Injecting drug use",
+        "Gateway use"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "In Africa, the proportion of people needing drug treatment who can access it is about:",
+      "options": [
+        "1 in 2",
+        "1 in 6",
+        "1 in 18",
+        "1 in 50"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "Which modality replaces an illicit opioid with a prescribed medicine?",
+      "options": [
+        "Detoxification",
+        "Substitution therapy (OST)",
+        "Mutual help groups",
+        "Vocational training"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Worldwide, the share of people in drug treatment who are women is about:",
+      "options": [
+        "One in two",
+        "One in three",
+        "One in five",
+        "Nine in ten"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "In Nigeria, which drug were women who inject more likely than men to inject?",
+      "options": [
+        "Cannabis",
+        "Heroin",
+        "Inhalants",
+        "Ecstasy"
+      ],
+      "correctIndex": 1
+    },
+    {
+      "prompt": "Which group is specifically listed for screening?",
+      "options": [
+        "Pregnant women",
+        "Only elderly men",
+        "Only schoolteachers",
+        "Nobody under 40"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "prompt": "'Weekly' use in the past three months scores:",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "6"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "Which is a stated advocacy principle?",
+      "options": [
+        "Balance short-term pragmatic goals with long-term developmental goals",
+        "Publicity at any cost",
+        "Exclude the media",
+        "Avoid research evidence"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "prompt": "Step 8 of the planning framework is:",
+      "options": [
+        "Select an issue",
+        "Identify allies",
+        "Implement, monitor and evaluate",
+        "Identify resources"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "Which is NOT a documented effect on family members of drug users?",
+      "options": [
+        "Higher anxiety and depression",
+        "Higher healthcare costs",
+        "Higher marital satisfaction",
+        "Increased interpersonal conflict"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "CRAFT is an approach that primarily:",
+      "options": [
+        "Teaches family and friends strategies to help their loved one change and enter treatment",
+        "Provides methadone",
+        "Trains police",
+        "Replaces counselling"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "prompt": "The International Bill of Human Rights comprises:",
+      "options": [
+        "UDHR + ICCPR + ICESCR",
+        "Only the UDHR",
+        "The three drug conventions",
+        "The NDLEA Act"
+      ],
+      "correctIndex": 0
+    },
+    {
+      "prompt": "Which statement about the conventions is TRUE?",
+      "options": [
+        "They mandate compulsory treatment",
+        "They support the death penalty for trafficking",
+        "They never support the death penalty for drug-related crimes",
+        "They ban all medicines"
+      ],
+      "correctIndex": 2
+    },
+    {
+      "prompt": "The four categories of drug-related crime include all EXCEPT:",
+      "options": [
+        "Use and distribution offences",
+        "Income-generating crime",
+        "Systemic violence",
+        "Tax evasion by pharmacies"
+      ],
+      "correctIndex": 3
+    },
+    {
+      "prompt": "'Treatable moments' refers to:",
+      "options": [
+        "Hospital opening hours",
+        "Times of crisis when a person is most open to accepting help",
+        "Court schedules",
+        "School terms"
+      ],
+      "correctIndex": 1
+    }
+  ]
+}
