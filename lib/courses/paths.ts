@@ -10,6 +10,8 @@ export function moduleQuizHref(courseSlug: string, moduleSlug: string) {
   return `/learn/${courseSlug}/quiz?module=${encodeURIComponent(moduleSlug)}`;
 }
 
-export function isPlayIntroLesson(_courseSlug: string, _lessonSlug: string) {
+export function isPlayIntroLesson(courseSlug: string, lessonSlug: string) {
+  void courseSlug;
+  void lessonSlug;
   return false;
 }

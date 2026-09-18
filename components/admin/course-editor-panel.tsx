@@ -223,10 +223,10 @@ function insertPdfSlideLessons(
     };
   });
 
-  const module = nextModules.find((item) => item.id === moduleId);
-  const currentIndex = module?.lessons.findIndex((item) => item.id === lessonId) ?? -1;
+  const selectedModule = nextModules.find((item) => item.id === moduleId);
+  const currentIndex = selectedModule?.lessons.findIndex((item) => item.id === lessonId) ?? -1;
   const startIndex = reuseCurrent ? currentIndex : currentIndex + 1;
-  const importedLessons = module?.lessons.slice(startIndex, startIndex + slides.length) ?? [];
+  const importedLessons = selectedModule?.lessons.slice(startIndex, startIndex + slides.length) ?? [];
   const flat = flattenBuilderLessons(nextModules);
   const targets: PdfSlideTarget[] = [];
   for (const [index, draft] of importedLessons.entries()) {

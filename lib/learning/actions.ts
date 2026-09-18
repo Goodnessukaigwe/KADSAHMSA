@@ -30,6 +30,23 @@ function isMissingResume(message: string | undefined) {
   );
 }
 
+function progressWithoutResume(payload: {
+  user_id: string;
+  course_id: string;
+  current_module: number;
+  completed_indexes: unknown;
+  player_seconds: number;
+  resume_lesson_slug?: string | null;
+}) {
+  return {
+    user_id: payload.user_id,
+    course_id: payload.course_id,
+    current_module: payload.current_module,
+    completed_indexes: payload.completed_indexes,
+    player_seconds: payload.player_seconds,
+  };
+}
+
 function revalidateLearning(slug: string) {
   revalidatePath("/my");
   revalidatePath("/my/courses");
@@ -139,10 +156,9 @@ export async function markModuleComplete(
     .upsert(payload, { onConflict: "user_id,course_id" });
 
   if (updateError && isMissingResume(updateError.message)) {
-    const { resume_lesson_slug: _ignored, ...legacy } = payload;
     const retry = await supabase
       .from("course_progress")
-      .upsert(legacy, { onConflict: "user_id,course_id" });
+      .upsert(progressWithoutResume(payload), { onConflict: "user_id,course_id" });
     updateError = retry.error;
   }
 
@@ -188,10 +204,9 @@ export async function saveResumeLesson(
     .upsert(payload, { onConflict: "user_id,course_id" });
 
   if (updateError && isMissingResume(updateError.message)) {
-    const { resume_lesson_slug: _ignored, ...legacy } = payload;
     const retry = await supabase
       .from("course_progress")
-      .upsert(legacy, { onConflict: "user_id,course_id" });
+      .upsert(progressWithoutResume(payload), { onConflict: "user_id,course_id" });
     updateError = retry.error;
   }
 
