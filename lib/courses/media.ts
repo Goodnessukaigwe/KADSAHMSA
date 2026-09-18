@@ -74,6 +74,7 @@ export const FILE_ACCEPT =
 export const IMAGE_ACCEPT = ".jpg,.jpeg,.png,.webp,.gif";
 export const VIDEO_ACCEPT = ".mp4,.webm,.mov";
 export const PDF_ACCEPT = ".pdf";
+export const DECK_ACCEPT = ".pptx,.pdf";
 
 export function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(

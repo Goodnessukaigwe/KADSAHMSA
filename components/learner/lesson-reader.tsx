@@ -3,7 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { LessonMedia, LessonSectionImage, LessonSectionMedia } from "@/components/learner/lesson-media";
+import {
+  LessonAssetLink,
+  LessonMedia,
+  LessonSectionMedia,
+} from "@/components/learner/lesson-media";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
 import {
@@ -55,6 +59,26 @@ export function LessonReader({
       ? leftoverNonImageAssets(assets)
       : [];
   const coverMedia = lesson.isFirstPageOfCourse ? lesson.coverAssets : [];
+  const wideImages = [
+    ...leftoverImages,
+    ...(lesson.isSingleLessonPage
+      ? (["introduction", "main", "notes"] as const).flatMap((section) =>
+          orderedSectionMedia(assets, section).filter((asset) => asset.kind === "image")
+        )
+      : pageMedia.filter((asset) => asset.kind === "image")),
+  ];
+  const otherCover = coverMedia.filter((asset) => asset.kind !== "image");
+  const otherPageMedia = pageMedia.filter((asset) => asset.kind !== "image");
+  // When the slides are already rendered inline as images (PowerPoint import),
+  // the leftover original deck becomes a small secondary download link instead
+  // of an inline render or a "download to view" card.
+  const hasInlineImages = wideImages.length > 0;
+  const originalDeckFiles = hasInlineImages
+    ? leftoverMedia.filter((asset) => asset.kind === "pptx" || asset.kind === "pdf")
+    : [];
+  const bottomMedia = hasInlineImages
+    ? leftoverMedia.filter((asset) => asset.kind !== "pptx" && asset.kind !== "pdf")
+    : leftoverMedia;
 
   return (
     <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -79,15 +103,20 @@ export function LessonReader({
           </p>
         )}
 
+        {wideImages.length ? (
+          <div className="mt-8">
+            <LessonSectionMedia assets={wideImages} layout="wide" />
+          </div>
+        ) : null}
+
         <div className="mt-8 max-w-3xl space-y-8 text-[15px] leading-relaxed text-neutral-700">
-          {leftoverImages.map((asset) => (
-            <LessonSectionImage key={asset.id} asset={asset} />
-          ))}
-          {coverMedia.length ? <LessonSectionMedia assets={coverMedia} /> : null}
+          {otherCover.length ? <LessonSectionMedia assets={otherCover} /> : null}
           {lesson.isSingleLessonPage ? (
             <>
               {(["introduction", "main", "notes"] as const).map((section) => {
-                const media = orderedSectionMedia(assets, section);
+                const media = orderedSectionMedia(assets, section).filter(
+                  (asset) => asset.kind !== "image"
+                );
                 return media.length ? <LessonSectionMedia key={section} assets={media} /> : null;
               })}
               <LessonRichText value={lesson.introduction} />
@@ -103,7 +132,7 @@ export function LessonReader({
             </>
           ) : (
             <>
-              {pageMedia.length ? <LessonSectionMedia assets={pageMedia} /> : null}
+              {otherPageMedia.length ? <LessonSectionMedia assets={otherPageMedia} /> : null}
               {lesson.section === "introduction" ? (
                 <LessonRichText value={lesson.introduction} />
               ) : null}
@@ -122,7 +151,14 @@ export function LessonReader({
           )}
         </div>
 
-        <LessonMedia assets={leftoverMedia} />
+        <LessonMedia assets={bottomMedia} />
+        {originalDeckFiles.length ? (
+          <div className="mt-6 max-w-3xl space-y-2">
+            {originalDeckFiles.map((asset) => (
+              <LessonAssetLink key={asset.id} asset={asset} />
+            ))}
+          </div>
+        ) : null}
       </article>
 
       <PlayerRail

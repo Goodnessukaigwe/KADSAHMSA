@@ -176,12 +176,38 @@ export type BuilderLesson = {
   assets: LessonAsset[];
 };
 
+export const DEFAULT_QUIZ_TIME_LIMIT_SECONDS = 1800;
+export const MIN_QUIZ_TIME_LIMIT_MINUTES = 1;
+export const MAX_QUIZ_TIME_LIMIT_MINUTES = 1440;
+
+export function quizTimeLimitMinutes(seconds?: number | null) {
+  const minutes = Math.round((seconds ?? DEFAULT_QUIZ_TIME_LIMIT_SECONDS) / 60);
+  if (!Number.isFinite(minutes) || minutes < MIN_QUIZ_TIME_LIMIT_MINUTES) {
+    return Math.round(DEFAULT_QUIZ_TIME_LIMIT_SECONDS / 60);
+  }
+  return Math.min(MAX_QUIZ_TIME_LIMIT_MINUTES, minutes);
+}
+
+export function quizTimeLimitSeconds(minutes?: number | string | null) {
+  const parsed =
+    typeof minutes === "string" ? Number.parseInt(minutes, 10) : Number(minutes);
+  if (!Number.isFinite(parsed) || parsed < MIN_QUIZ_TIME_LIMIT_MINUTES) {
+    return DEFAULT_QUIZ_TIME_LIMIT_SECONDS;
+  }
+  return Math.min(MAX_QUIZ_TIME_LIMIT_MINUTES, Math.round(parsed)) * 60;
+}
+
+export function clampQuizTimeLimitSeconds(seconds?: number | null) {
+  return quizTimeLimitSeconds(quizTimeLimitMinutes(seconds));
+}
+
 export type BuilderModule = {
   id: string;
   title: string;
   slug: string;
   lessons: BuilderLesson[];
   quizQuestions?: BuilderQuizQuestion[];
+  quizTimeLimitSeconds?: number;
 };
 
 export function flattenBuilderLessons(modules: BuilderModule[]) {
@@ -206,6 +232,7 @@ export type AdminCourseDetail = {
   enrolled: number;
   modules: BuilderModule[];
   finalQuestions: BuilderQuizQuestion[];
+  finalTimeLimitSeconds: number;
 };
 
 export type CourseLearnerRow = {

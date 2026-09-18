@@ -25,11 +25,11 @@ export default async function CourseQuizPage({
   const visible = await getVisibleCourse(courseSlug);
   if (!visible) notFound();
 
-  const module = resolveOutlineModule(visible.outline, moduleParam, courseSlug);
-  const isDptcModuleOne = courseSlug === "dptc" && module?.position === 1;
-  const hasQuiz = Boolean(module?.hasQuiz || isDptcModuleOne);
+  const outlineModule = resolveOutlineModule(visible.outline, moduleParam, courseSlug);
+  const isDptcModuleOne = courseSlug === "dptc" && outlineModule?.position === 1;
+  const hasQuiz = Boolean(outlineModule?.hasQuiz || isDptcModuleOne);
 
-  if (!module || !hasQuiz) {
+  if (!outlineModule || !hasQuiz) {
     return (
       <div className="mx-auto max-w-lg pb-16">
         <h1 className="text-3xl font-bold tracking-tight">No module quiz</h1>
@@ -46,7 +46,7 @@ export default async function CourseQuizPage({
     );
   }
 
-  const quizSlug = isDptcModuleOne ? "module-1" : `module-${module.position}`;
+  const quizSlug = isDptcModuleOne ? "module-1" : `module-${outlineModule.position}`;
   const quiz = await getPublicQuiz(courseSlug, quizSlug);
   if (!quiz) {
     return (
@@ -70,7 +70,7 @@ export default async function CourseQuizPage({
   const nextHref = nextHrefAfterModule(
     courseSlug,
     visible.outline,
-    module,
+    outlineModule,
     visible.hasFinalQuiz
   );
 
@@ -84,7 +84,7 @@ export default async function CourseQuizPage({
       maxAttempts={quiz.maxAttempts}
       attemptsUsed={attemptsUsed}
       nextHref={nextHref}
-      moduleIndex={module.position}
+      moduleIndex={outlineModule.position}
     />
   );
 }

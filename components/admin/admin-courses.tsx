@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, ChevronDown, GripVertical, Plus, Settings2 } from "lucide-react";
 
 import { CourseEditorPanel } from "@/components/admin/course-editor-panel";
-import { saveAdminCourseColumns, setCourseStatus } from "@/lib/courses/actions";
+import { deleteCourse, saveAdminCourseColumns, setCourseStatus } from "@/lib/courses/actions";
 import {
   ADMIN_COURSE_COLUMN_POOL,
   type AdminCourseColumn,
@@ -41,6 +41,8 @@ export function AdminCourses({
   const fieldMenuRef = useRef<HTMLDivElement>(null);
   const [statusPending, setStatusPending] = useState<string | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
+  const [deletePending, setDeletePending] = useState(false);
   const [editSlug, setEditSlug] = useState<string | null>(initialEdit);
   const [overlayPhase, setOverlayPhase] = useState<
     "closed" | "entering" | "open" | "exiting-left" | "exiting-right"
@@ -227,6 +229,49 @@ export function AdminCourses({
     setStatusPending(null);
   }
 
+  function toggleSelected(slug: string, checked: boolean) {
+    setSelectedSlugs((current) => {
+      if (checked) return current.includes(slug) ? current : [...current, slug];
+      return current.filter((item) => item !== slug);
+    });
+  }
+
+  async function removeSelected() {
+    const slugs = selectedSlugs;
+    if (!slugs.length || deletePending) return;
+    if (
+      !window.confirm(
+        slugs.length === 1
+          ? "Delete this course? Lessons, enrolments, progress, and related records will be removed."
+          : "Delete these courses? Lessons, enrolments, progress, and related records will be removed."
+      )
+    ) {
+      return;
+    }
+    setDeletePending(true);
+    setStatusError(null);
+    const failures: string[] = [];
+    const succeeded: string[] = [];
+    try {
+      for (const slug of slugs) {
+        try {
+          const result = await deleteCourse(slug);
+          if (result.ok) succeeded.push(slug);
+          else failures.push(`${slug}: ${result.error}`);
+        } catch (error) {
+          failures.push(
+            `${slug}: ${error instanceof Error ? error.message : "Could not delete this course."}`
+          );
+        }
+      }
+    } finally {
+      setSelectedSlugs((current) => current.filter((slug) => !succeeded.includes(slug)));
+      if (failures.length) setStatusError(failures.join(" "));
+      setDeletePending(false);
+      if (succeeded.length) router.refresh();
+    }
+  }
+
   const overlayActive = overlayPhase !== "closed";
 
   return (
@@ -343,14 +388,26 @@ export function AdminCourses({
                 Search, manage access, and approve organization accounts.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => openEditor("new")}
-              className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase"
-            >
-              Create new course
-              <Plus className="size-4" />
-            </button>
+            <div className="flex flex-wrap items-center gap-4">
+              {selectedSlugs.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => void removeSelected()}
+                  disabled={deletePending}
+                  className="text-[11px] font-bold tracking-[0.12em] text-red-600 uppercase disabled:opacity-60"
+                >
+                  {deletePending ? "Deleting…" : "Delete"}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => openEditor("new")}
+                className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase"
+              >
+                Create new course
+                <Plus className="size-4" />
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 flex items-center gap-2 border-b border-neutral-200 pb-3 lg:hidden">
@@ -397,6 +454,8 @@ export function AdminCourses({
                     course={course}
                     columns={columns.map((column) => column.id)}
                     pending={statusPending === course.slug}
+                    selected={selectedSlugs.includes(course.slug)}
+                    onSelectedChange={(checked) => toggleSelected(course.slug, checked)}
                     onOpen={() => openEditor(course.slug)}
                     onStatusChange={(next) => void updateStatus(course, next)}
                   />
@@ -506,12 +565,16 @@ function CourseRow({
   course,
   columns,
   pending,
+  selected,
+  onSelectedChange,
   onOpen,
   onStatusChange,
 }: {
   course: AdminCourseRow;
   columns: AdminCourseColumnId[];
   pending: boolean;
+  selected: boolean;
+  onSelectedChange: (checked: boolean) => void;
   onOpen: () => void;
   onStatusChange: (status: "draft" | "published") => void;
 }) {
@@ -520,7 +583,13 @@ function CourseRow({
       <td className="px-4 py-4">
         <div className="flex items-center gap-3">
           <GripVertical className="size-3.5 text-neutral-300" />
-          <input type="checkbox" aria-label={`Select ${course.title}`} className="accent-neutral-950" />
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={(event) => onSelectedChange(event.target.checked)}
+            aria-label={`Select ${course.title}`}
+            className="accent-neutral-950 disabled:cursor-not-allowed disabled:opacity-40"
+          />
         </div>
       </td>
       {columns.map((column) => (

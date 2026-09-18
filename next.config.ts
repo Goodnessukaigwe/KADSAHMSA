@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     "*": ["./prototype/**/*", "./content/**/*"],
   },
+  serverExternalPackages: ["@napi-rs/canvas"],
   experimental: {
     serverActions: {
       bodySizeLimit: "85mb",

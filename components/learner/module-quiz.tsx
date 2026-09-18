@@ -7,6 +7,7 @@ import { ListFilter } from "lucide-react";
 import type { PublicQuizQuestion } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import {
+  clearQuizState,
   defaultQuizState,
   getQuizState,
   saveQuizState,
@@ -33,6 +34,8 @@ export function ModuleQuiz({
   maxAttempts,
   attemptsUsed,
   nextHref,
+  preview = false,
+  previewCorrectIndexes,
 }: {
   courseSlug: string;
   quizSlug: string;
@@ -43,6 +46,8 @@ export function ModuleQuiz({
   attemptsUsed: number;
   nextHref?: string;
   moduleIndex?: number;
+  preview?: boolean;
+  previewCorrectIndexes?: number[];
 }) {
   const router = useRouter();
   const [state, setState] = useState<QuizAttemptState | null>(null);
@@ -51,10 +56,19 @@ export function ModuleQuiz({
   const [error, setError] = useState<string | null>(null);
   const [used, setUsed] = useState(attemptsUsed);
   const submitting = useRef(false);
+  const finishRef = useRef<(current: QuizAttemptState) => void>(() => undefined);
 
   useEffect(() => {
+    if (preview) {
+      setState(defaultQuizState(questions.length, seconds));
+      return;
+    }
     const stored = getQuizState(courseSlug, quizSlug);
-    setState(stored ?? defaultQuizState(questions.length, seconds));
+    const stale =
+      stored &&
+      (stored.seconds !== seconds || stored.answers.length !== questions.length);
+    if (stale) clearQuizState(courseSlug, quizSlug);
+    setState(stale || !stored ? defaultQuizState(questions.length, seconds) : stored);
     void startAttempt(courseSlug, quizSlug).then((result) => {
       if (!result.ok) {
         setError(result.error);
@@ -62,7 +76,7 @@ export function ModuleQuiz({
       }
       setUsed(result.attemptsUsed);
     });
-  }, [courseSlug, quizSlug, questions.length, seconds]);
+  }, [courseSlug, quizSlug, questions.length, seconds, preview]);
 
   const submitted = state?.submitted ?? false;
 
@@ -72,28 +86,50 @@ export function ModuleQuiz({
       setState((current) => {
         if (!current || current.submitted) return current;
         const remaining = Math.max(0, current.remaining - 1);
-        const next = { ...current, remaining };
+        const next = { ...current, remaining, seconds };
         if (remaining === 0) {
-          void finish(next);
+          finishRef.current(next);
           return next;
         }
-        saveQuizState(next, courseSlug, quizSlug);
+        if (!preview) saveQuizState(next, courseSlug, quizSlug);
         return next;
       });
     }, 1000);
     return () => window.clearInterval(id);
-    // finish is stable enough via ref; we only care about submitted/quizSlug
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submitted, courseSlug, quizSlug]);
+  }, [submitted, courseSlug, quizSlug, preview, seconds]);
 
   function update(next: QuizAttemptState) {
-    saveQuizState(next, courseSlug, quizSlug);
-    setState(next);
+    const withLimit = { ...next, seconds };
+    if (!preview) saveQuizState(withLimit, courseSlug, quizSlug);
+    setState(withLimit);
+  }
+
+  function scorePreview(current: QuizAttemptState) {
+    const correctIndexes = previewCorrectIndexes ?? [];
+    const correctCount = current.answers.filter(
+      (answer, index) => answer === correctIndexes[index]
+    ).length;
+    return {
+      score: questions.length ? Math.round((correctCount / questions.length) * 100) : 0,
+      correctIndexes,
+    };
   }
 
   async function finish(current: QuizAttemptState) {
     if (submitting.current || current.submitted) return;
     submitting.current = true;
+    if (preview) {
+      const result = scorePreview(current);
+      update({
+        ...current,
+        submitted: true,
+        score: result.score,
+        attemptsUsed: 0,
+        correctIndexes: result.correctIndexes,
+      });
+      submitting.current = false;
+      return;
+    }
     setPending(true);
     setError(null);
     const result = await submitAttempt(courseSlug, quizSlug, current.answers);
@@ -114,6 +150,8 @@ export function ModuleQuiz({
     });
   }
 
+  finishRef.current = finish;
+
   if (!state) return <div className="min-h-[40vh]" />;
 
   const question = questions[state.index];
@@ -132,27 +170,28 @@ export function ModuleQuiz({
           quizSlug={quizSlug}
           courseSlug={courseSlug}
           verificationId={state.verificationId}
+          preview={preview}
           onReview={() => {
-            if (passed && quizSlug !== "final") {
+            if (!preview && passed && quizSlug !== "final") {
               router.push(`/learn/${courseSlug}`);
               return;
             }
-            if (passed && quizSlug === "final") {
+            if (!preview && passed && quizSlug === "final") {
               router.push("/certificates");
               return;
             }
             setReviewing(true);
           }}
           onContinue={() => {
-            if (passed && quizSlug !== "final") {
+            if (!preview && passed && quizSlug !== "final") {
               router.push(nextHref ?? `/learn/${courseSlug}`);
               return;
             }
-            if (passed && quizSlug === "final") {
+            if (!preview && passed && quizSlug === "final") {
               router.push("/certificates");
               return;
             }
-            if (attemptsLeft <= 0) {
+            if (!preview && attemptsLeft <= 0) {
               router.push("/quiz");
               return;
             }
@@ -160,9 +199,9 @@ export function ModuleQuiz({
             submitting.current = false;
             update({
               ...defaultQuizState(questions.length, seconds),
-              attemptsUsed: used,
+              attemptsUsed: preview ? 0 : used,
             });
-            void startAttempt(courseSlug, quizSlug);
+            if (!preview) void startAttempt(courseSlug, quizSlug);
           }}
         />
       ) : null}
@@ -337,6 +376,7 @@ function QuizResultModal({
   quizSlug,
   courseSlug,
   verificationId,
+  preview,
   onReview,
   onContinue,
 }: {
@@ -346,12 +386,14 @@ function QuizResultModal({
   quizSlug: string;
   courseSlug: string;
   verificationId?: string;
+  preview?: boolean;
   onReview: () => void;
   onContinue: () => void;
 }) {
   const passed = score >= DEFAULT_PASS_MARK;
   const isFinal = quizSlug === "final";
   const isDptc = courseSlug === "dptc";
+  const liveNav = passed && !preview;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
@@ -406,9 +448,9 @@ function QuizResultModal({
             onClick={onReview}
             className="h-12 rounded-full bg-neutral-200 px-3 text-[10px] font-bold tracking-[0.08em] text-neutral-800 uppercase sm:text-[11px] sm:tracking-[0.12em]"
           >
-            {passed && isFinal
+            {liveNav && isFinal
               ? "Open certificates"
-              : passed
+              : liveNav
                 ? "Back to the course"
                 : "Review answers"}
           </button>
@@ -417,13 +459,13 @@ function QuizResultModal({
             onClick={onContinue}
             className="h-12 rounded-full bg-neutral-950 px-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase sm:text-[11px] sm:tracking-[0.12em]"
           >
-            {passed && isFinal
+            {liveNav && isFinal
               ? "View certificate"
-              : passed
+              : liveNav
                 ? "Next module"
-                : attemptsLeft > 0
-                  ? "Retake quiz"
-                  : "Quiz results"}
+                : !preview && attemptsLeft <= 0
+                  ? "Quiz results"
+                  : "Retake quiz"}
           </button>
         </div>
       </div>

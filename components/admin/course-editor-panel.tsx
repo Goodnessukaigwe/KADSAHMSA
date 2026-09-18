@@ -18,9 +18,11 @@ import {
   Play,
   Plus,
   Trash2,
+  X,
 } from "lucide-react";
 
 import { FinalQuizEditor } from "@/components/admin/final-quiz-editor";
+import { ModuleQuiz } from "@/components/learner/module-quiz";
 import { LessonAssetsEditor } from "@/components/admin/lesson-assets-editor";
 import { slugFromTitle } from "@/lib/content/admin-builder";
 import {
@@ -36,7 +38,15 @@ import {
   uploadCourseCover,
   uploadLessonAsset,
 } from "@/lib/courses/asset-actions";
-import { IMAGE_ACCEPT, PDF_ACCEPT, VIDEO_ACCEPT, isPublicCoverPath, isUuid } from "@/lib/courses/media";
+import {
+  IMAGE_ACCEPT,
+  PDF_ACCEPT,
+  VIDEO_ACCEPT,
+  classifyUpload,
+  isPublicCoverPath,
+  isUuid,
+} from "@/lib/courses/media";
+import { convertDeckToSlides } from "@/lib/courses/slide-import";
 import {
   joinLessonParagraphs,
   normalizeLinkUrl,
@@ -57,6 +67,9 @@ import {
   LESSON_ASSET_SECTIONS,
   flattenBuilderLessons,
   sectionedLessonAsset,
+  DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
+  quizTimeLimitMinutes,
+  quizTimeLimitSeconds,
 } from "@/lib/courses/types";
 import { cn } from "@/lib/utils";
 
@@ -64,6 +77,7 @@ type StagedFile = { file: File; previewUrl: string };
 type StagedSectionFiles = Partial<
   Record<string, Partial<Record<LessonAssetSection, Partial<Record<SectionedAssetKind, StagedFile>>>>>
 >;
+type StagedLeftoverFiles = Record<string, StagedFile[]>;
 const SECTION_MEDIA_KINDS: SectionedAssetKind[] = ["image", "video", "pdf"];
 
 function revokeStaged(staged: StagedFile | null | undefined) {
@@ -78,6 +92,38 @@ function revokeSectionFiles(staged: StagedSectionFiles) {
       for (const file of Object.values(files)) revokeStaged(file);
     }
   }
+}
+
+function revokeLeftoverFiles(staged: StagedLeftoverFiles) {
+  for (const files of Object.values(staged)) {
+    for (const file of files) revokeStaged(file);
+  }
+}
+
+function isEmptyUntitledLesson(
+  lesson: BuilderLesson,
+  staged: StagedSectionFiles,
+  leftover: StagedLeftoverFiles
+) {
+  return (
+    !lesson.title.trim() &&
+    !lesson.introduction.trim() &&
+    !lesson.main.trim() &&
+    !lesson.notes.trim() &&
+    !(lesson.assets ?? []).length &&
+    !staged[lesson.id] &&
+    !leftover[lesson.id]?.length
+  );
+}
+
+function uniqueImportedSlug(used: string[], title: string, fallback: string) {
+  const root = slugFromTitle(title) || fallback;
+  if (!used.includes(root)) return root;
+  for (let i = 2; i < 200; i += 1) {
+    const candidate = `${root}-${i}`;
+    if (!used.includes(candidate)) return candidate;
+  }
+  return `${root}-${Date.now().toString(36)}`;
 }
 
 function stagedPreview(file: File, kind: SectionedAssetKind) {
@@ -109,6 +155,7 @@ function blankModule(): BuilderModule {
     slug: "",
     lessons: [blankLesson()],
     quizQuestions: [],
+    quizTimeLimitSeconds: DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
   };
 }
 
@@ -124,14 +171,14 @@ function findLesson(
   lessonId?: string | null,
   slug?: string
 ) {
-  for (const module of modules) {
-    const match = module.lessons.find(
-      (item) => item.id === lessonId || (slug && item.slug === slug)
+  for (const item of modules) {
+    const match = item.lessons.find(
+      (lesson) => lesson.id === lessonId || (slug && lesson.slug === slug)
     );
-    if (match) return { module, lesson: match };
+    if (match) return { module: item, lesson: match };
   }
-  const module = modules[0];
-  return { module, lesson: module?.lessons[0] ?? null };
+  const first = modules[0];
+  return { module: first, lesson: first?.lessons[0] ?? null };
 }
 
 export function CourseEditorPanel({
@@ -160,12 +207,18 @@ export function CourseEditorPanel({
     () => modules[0]?.lessons[0]?.id ?? ""
   );
   const [finalQuestions, setFinalQuestions] = useState<BuilderQuizQuestion[]>([]);
+  const [finalTimeLimitSeconds, setFinalTimeLimitSeconds] = useState(
+    DEFAULT_QUIZ_TIME_LIMIT_SECONDS
+  );
   const [quizOpen, setQuizOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [uploadToast, setUploadToast] = useState<string | null>(null);
   const [stagedCover, setStagedCover] = useState<StagedFile | null>(null);
   const [stagedCoverVideo, setStagedCoverVideo] = useState<StagedFile | null>(null);
   const [stagedCoverPdf, setStagedCoverPdf] = useState<StagedFile | null>(null);
   const [stagedSectionFiles, setStagedSectionFiles] = useState<StagedSectionFiles>({});
+  const [stagedLeftoverFiles, setStagedLeftoverFiles] = useState<StagedLeftoverFiles>({});
+  const [importingDeck, setImportingDeck] = useState<string | null>(null);
   const [saved, setSaved] = useState(true);
   const [pending, setPending] = useState<"save" | "publish" | "delete" | "status" | null>(
     null
@@ -211,7 +264,9 @@ export function CourseEditorPanel({
         setEditingModuleId(nextModule.id);
         setEditingLessonId(nextModule.lessons[0]?.id ?? "");
         setFinalQuestions([]);
+        setFinalTimeLimitSeconds(DEFAULT_QUIZ_TIME_LIMIT_SECONDS);
         setQuizOpen(false);
+        setPreviewOpen(false);
         setStagedCover((current) => {
           revokeStaged(current);
           return null;
@@ -226,6 +281,10 @@ export function CourseEditorPanel({
         });
         setStagedSectionFiles((current) => {
           revokeSectionFiles(current);
+          return {};
+        });
+        setStagedLeftoverFiles((current) => {
+          revokeLeftoverFiles(current);
           return {};
         });
         setSaved(true);
@@ -274,7 +333,11 @@ export function CourseEditorPanel({
     setEditingModuleId(nextModules[0]?.id ?? "");
     setEditingLessonId(nextModules[0]?.lessons[0]?.id ?? "");
     setFinalQuestions(course.finalQuestions);
+    setFinalTimeLimitSeconds(
+      course.finalTimeLimitSeconds ?? DEFAULT_QUIZ_TIME_LIMIT_SECONDS
+    );
     setQuizOpen(course.finalQuestions.length > 0);
+    setPreviewOpen(false);
     setStagedCover((current) => {
       revokeStaged(current);
       return null;
@@ -289,6 +352,10 @@ export function CourseEditorPanel({
     });
     setStagedSectionFiles((current) => {
       revokeSectionFiles(current);
+      return {};
+    });
+    setStagedLeftoverFiles((current) => {
+      revokeLeftoverFiles(current);
       return {};
     });
     setSaved(true);
@@ -327,6 +394,192 @@ export function CourseEditorPanel({
     );
     setEditingModuleId(moduleId);
     setEditingLessonId(next.id);
+    markDirty();
+  }
+
+  function dropLessonStaging(lessonId: string) {
+    setStagedSectionFiles((current) => {
+      const lesson = current[lessonId];
+      if (!lesson) return current;
+      for (const files of Object.values(lesson)) {
+        if (!files) continue;
+        for (const file of Object.values(files)) revokeStaged(file);
+      }
+      const next = { ...current };
+      delete next[lessonId];
+      return next;
+    });
+    setStagedLeftoverFiles((current) => {
+      const files = current[lessonId];
+      if (!files) return current;
+      for (const file of files) revokeStaged(file);
+      const next = { ...current };
+      delete next[lessonId];
+      return next;
+    });
+  }
+
+  function removeLesson(moduleId: string, lessonId: string) {
+    const currentModule = modules.find((item) => item.id === moduleId);
+    const lesson = currentModule?.lessons.find((item) => item.id === lessonId);
+    if (!currentModule || !lesson) return;
+    const label = lesson.title.trim() || "this untitled lesson";
+    if (!window.confirm(`Delete ${label}? This cannot be undone after you save.`)) return;
+
+    dropLessonStaging(lessonId);
+
+    if (currentModule.lessons.length <= 1) {
+      const next = blankLesson();
+      setModules((current) =>
+        current.map((module) =>
+          module.id === moduleId ? { ...module, lessons: [next] } : module
+        )
+      );
+      setEditingModuleId(moduleId);
+      setEditingLessonId(next.id);
+      markDirty();
+      return;
+    }
+
+    const index = currentModule.lessons.findIndex((item) => item.id === lessonId);
+    const remaining = currentModule.lessons.filter((item) => item.id !== lessonId);
+    const nextId = remaining[Math.min(index, remaining.length - 1)]?.id ?? "";
+    setModules((current) =>
+      current.map((module) =>
+        module.id === moduleId ? { ...module, lessons: remaining } : module
+      )
+    );
+    setEditingModuleId(moduleId);
+    setEditingLessonId(nextId);
+    markDirty();
+  }
+
+  function removeModule(moduleId: string) {
+    const currentModule = modules.find((item) => item.id === moduleId);
+    if (!currentModule) return;
+    const label = currentModule.title.trim() || "this untitled module";
+    if (!window.confirm(`Delete ${label}? This cannot be undone after you save.`)) return;
+
+    for (const lesson of currentModule.lessons) {
+      dropLessonStaging(lesson.id);
+    }
+
+    if (modules.length <= 1) {
+      const next = blankModule();
+      setModules([next]);
+      setEditingModuleId(next.id);
+      setEditingLessonId(next.lessons[0]?.id ?? "");
+      markDirty();
+      return;
+    }
+
+    const index = modules.findIndex((item) => item.id === moduleId);
+    const remaining = modules.filter((item) => item.id !== moduleId);
+    const neighbor = remaining[Math.min(index, remaining.length - 1)];
+    setModules(remaining);
+    setEditingModuleId(neighbor?.id ?? "");
+    setEditingLessonId(neighbor?.lessons[0]?.id ?? "");
+    markDirty();
+  }
+
+  // Overlay UI is hidden; keep this so PowerPoint import can be restored later.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async function importPowerPoint(moduleId: string, file: File) {
+    if (importingDeck || pending) return;
+    setError(null);
+    const classified = classifyUpload(file);
+    if (!classified.ok) {
+      setError(classified.error);
+      return;
+    }
+    if (classified.kind !== "pptx" && classified.kind !== "pdf") {
+      setError("Upload a PowerPoint (.pptx) or a PDF exported from PowerPoint.");
+      return;
+    }
+
+    setImportingDeck("Reading file…");
+    try {
+      const converted = await convertDeckToSlides(file, (current, total) => {
+        setImportingDeck(`Converting slide ${current} of ${total}`);
+      });
+      if (!converted.ok) {
+        setError(converted.error);
+        return;
+      }
+      applyImportedSlides(moduleId, converted.slides, file);
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "That file could not be read as a PowerPoint or PDF. Export the deck as .pptx or .pdf and try again."
+      );
+    } finally {
+      setImportingDeck(null);
+    }
+  }
+
+  function applyImportedSlides(moduleId: string, slides: { title: string; image: File }[], leftover: File) {
+    const currentModule = modules.find((item) => item.id === moduleId);
+    if (!currentModule || !slides.length) return;
+
+    const usedSlugs = modules.flatMap((item) =>
+      item.lessons.map((lesson) => lesson.slug).filter(Boolean)
+    );
+    const replace =
+      currentModule.lessons.length === 1 &&
+      isEmptyUntitledLesson(currentModule.lessons[0], stagedSectionFiles, stagedLeftoverFiles);
+
+    const generated = slides.map((slide, index) => {
+      const base = replace && index === 0 ? currentModule.lessons[0] : blankLesson();
+      const title = slide.title.trim() || `Slide ${index + 1}`;
+      const slug = uniqueImportedSlug(usedSlugs, title, `slide-${index + 1}`);
+      usedSlugs.push(slug);
+      return {
+        ...base,
+        title,
+        slug,
+        main: replace && index === 0 ? base.main : "",
+        introduction: replace && index === 0 ? base.introduction : "",
+        notes: replace && index === 0 ? base.notes : "",
+      };
+    });
+
+    setModules((current) =>
+      current.map((item) =>
+        item.id === moduleId
+          ? { ...item, lessons: replace ? generated : [...item.lessons, ...generated] }
+          : item
+      )
+    );
+    setEditingModuleId(moduleId);
+    setEditingLessonId(generated[0]?.id ?? editingLessonId);
+
+    setStagedSectionFiles((current) => {
+      const next = { ...current };
+      for (const [index, lesson] of generated.entries()) {
+        const previous = next[lesson.id]?.main?.image;
+        if (previous?.previewUrl !== undefined) revokeStaged(previous);
+        const image = slides[index]?.image;
+        if (!image) continue;
+        next[lesson.id] = {
+          ...next[lesson.id],
+          main: {
+            ...next[lesson.id]?.main,
+            image: { file: image, previewUrl: URL.createObjectURL(image) },
+          },
+        };
+      }
+      return next;
+    });
+
+    setStagedLeftoverFiles((current) => {
+      const firstId = generated[0]?.id;
+      if (!firstId) return current;
+      const next = { ...current };
+      for (const staged of next[firstId] ?? []) revokeStaged(staged);
+      next[firstId] = [{ file: leftover, previewUrl: "" }];
+      return next;
+    });
     markDirty();
   }
 
@@ -377,6 +630,7 @@ export function CourseEditorPanel({
       coverPath,
       modules: nextModules,
       finalQuestions,
+      finalTimeLimitSeconds,
     };
   }
 
@@ -481,6 +735,7 @@ export function CourseEditorPanel({
     const coverVideoToFlush = stagedCoverVideo;
     const coverPdfToFlush = stagedCoverPdf;
     const sectionsToFlush = stagedSectionFiles;
+    const leftoverToFlush = stagedLeftoverFiles;
 
     if (coverToFlush) {
       setUploadToast(coverToFlush.file.name);
@@ -562,6 +817,34 @@ export function CourseEditorPanel({
       }
     }
 
+    for (const [index, draft] of draftLessons.entries()) {
+      const leftover = leftoverToFlush[draft.id];
+      if (!leftover?.length) continue;
+      const savedLesson = matchSavedLesson(draft, flattenBuilderLessons(nextModules), index);
+      if (!savedLesson || !isUuid(savedLesson.id)) {
+        setUploadToast(null);
+        return { modules: nextModules, error: "Save the course first to upload files." };
+      }
+      for (const staged of leftover) {
+        setUploadToast(staged.file.name);
+        const body = new FormData();
+        body.set("file", staged.file);
+        body.set("title", staged.file.name.replace(/\.[^.]+$/, ""));
+        const uploaded = await uploadLessonAsset(savedLesson.id, body);
+        if (!uploaded.ok) {
+          setUploadToast(null);
+          return { modules: nextModules, error: uploaded.error };
+        }
+        revokeStaged(staged);
+        setStagedLeftoverFiles((current) => {
+          const next = { ...current };
+          delete next[draft.id];
+          return next;
+        });
+        nextModules = applyAssetsToModules(nextModules, savedLesson.id, uploaded.assets);
+      }
+    }
+
     setUploadToast(null);
     return { modules: nextModules };
   }
@@ -614,7 +897,7 @@ export function CourseEditorPanel({
   }
 
   async function remove() {
-    if (pending || slug === "new" || slug === "dptc") return;
+    if (pending || slug === "new") return;
     if (
       !window.confirm(
         "Delete this course? Lessons, enrolments, progress, and related records will be removed."
@@ -624,13 +907,18 @@ export function CourseEditorPanel({
     }
     setPending("delete");
     setError(null);
-    const result = await deleteCourse(slug);
-    setPending(null);
-    if (!result.ok) {
-      setError(result.error);
-      return;
+    try {
+      const result = await deleteCourse(slug);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      onClose({ force: true });
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not delete this course.");
+    } finally {
+      setPending(null);
     }
-    onClose({ force: true });
   }
 
   async function toggleStatus() {
@@ -654,6 +942,7 @@ export function CourseEditorPanel({
 
   const live = status === "published";
   const lockedQuiz = slug === "dptc";
+  const canPreviewFinal = saved && !loading && finalQuestions.length > 0;
   const editingModule = modules.find((module) => module.id === editingModuleId) ?? modules[0];
   const editingLesson =
     editingModule?.lessons.find((lesson) => lesson.id === editingLessonId) ??
@@ -803,30 +1092,68 @@ export function CourseEditorPanel({
 
             {editingModule && editingLesson ? (
               <>
-                {modules.length > 1 ? (
-                  <FieldRow label="Module">
-                    <div className="flex min-w-0 flex-1 flex-wrap gap-2">
-                      {modules.map((module) => (
-                        <button
+                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
+                  <button
+                    type="button"
+                    onClick={createModule}
+                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
+                  >
+                    + Create new module
+                  </button>
+                </div>
+                <FieldRow label="Module">
+                  <div className="flex min-w-0 flex-1 flex-wrap gap-2">
+                    {modules.map((module) => {
+                      const moduleLabel = module.title.trim() || "Untitled module";
+                      const canDeleteModule = modules.length > 1;
+                      return (
+                        <div
                           key={module.id}
-                          type="button"
                           onClick={() => {
                             setEditingModuleId(module.id);
                             setEditingLessonId(module.lessons[0]?.id ?? "");
                           }}
                           className={cn(
-                            "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                            "inline-flex cursor-pointer items-center gap-0.5 rounded-full py-1 text-[11px] font-semibold",
+                            canDeleteModule ? "pl-3 pr-1" : "px-3",
                             editingModule.id === module.id
                               ? "bg-neutral-950 text-white"
                               : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                           )}
                         >
-                          {module.title.trim() || "Untitled module"}
-                        </button>
-                      ))}
-                    </div>
-                  </FieldRow>
-                ) : null}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingModuleId(module.id);
+                              setEditingLessonId(module.lessons[0]?.id ?? "");
+                            }}
+                            className="max-w-[12rem] truncate py-0.5"
+                          >
+                            {moduleLabel}
+                          </button>
+                          {canDeleteModule ? (
+                            <button
+                              type="button"
+                              aria-label={`Delete ${moduleLabel}`}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                removeModule(module.id);
+                              }}
+                              className={cn(
+                                "flex size-5 shrink-0 items-center justify-center rounded-full",
+                                editingModule.id === module.id
+                                  ? "text-white/70 hover:text-red-600 focus-visible:text-red-600"
+                                  : "text-neutral-400 hover:text-red-600 focus-visible:text-red-600"
+                              )}
+                            >
+                              <X className="size-3" strokeWidth={2.5} />
+                            </button>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </FieldRow>
                 <FieldRow label="Module title">
                   <input
                     value={editingModule.title}
@@ -840,36 +1167,62 @@ export function CourseEditorPanel({
                 <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
                   <button
                     type="button"
-                    onClick={createModule}
-                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
+                    onClick={() => createLesson(editingModule.id)}
+                    disabled={Boolean(importingDeck) || pending !== null}
+                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950 disabled:opacity-60"
                   >
-                    + Create new module
+                    + Create new lesson
                   </button>
                 </div>
-                {editingModule.lessons.length > 1 ? (
-                  <FieldRow label="Lesson">
-                    <div className="flex min-w-0 flex-1 flex-wrap gap-2">
-                      {editingModule.lessons.map((lesson) => (
-                        <button
+                <FieldRow label="Lesson">
+                  <div className="flex min-w-0 flex-1 flex-wrap gap-2">
+                    {editingModule.lessons.map((lesson) => {
+                      const lessonLabel = lesson.title.trim() || "Untitled lesson";
+                      return (
+                        <div
                           key={lesson.id}
-                          type="button"
                           onClick={() => {
                             setEditingModuleId(editingModule.id);
                             setEditingLessonId(lesson.id);
                           }}
                           className={cn(
-                            "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                            "inline-flex cursor-pointer items-center gap-0.5 rounded-full py-1 pl-3 pr-1 text-[11px] font-semibold",
                             editingLesson.id === lesson.id
                               ? "bg-neutral-950 text-white"
                               : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
                           )}
                         >
-                          {lesson.title.trim() || "Untitled lesson"}
-                        </button>
-                      ))}
-                    </div>
-                  </FieldRow>
-                ) : null}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingModuleId(editingModule.id);
+                              setEditingLessonId(lesson.id);
+                            }}
+                            className="max-w-[12rem] truncate py-0.5"
+                          >
+                            {lessonLabel}
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Delete ${lessonLabel}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              removeLesson(editingModule.id, lesson.id);
+                            }}
+                            className={cn(
+                              "flex size-5 shrink-0 items-center justify-center rounded-full",
+                              editingLesson.id === lesson.id
+                                ? "text-white/70 hover:text-red-600 focus-visible:text-red-600"
+                                : "text-neutral-400 hover:text-red-600 focus-visible:text-red-600"
+                            )}
+                          >
+                            <X className="size-3" strokeWidth={2.5} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </FieldRow>
                 <FieldRow label="Lesson title">
                   <input
                     value={editingLesson.title}
@@ -880,15 +1233,6 @@ export function CourseEditorPanel({
                     className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
                   />
                 </FieldRow>
-                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
-                  <button
-                    type="button"
-                    onClick={() => createLesson(editingModule.id)}
-                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
-                  >
-                    + Create new lesson
-                  </button>
-                </div>
                 <EditorBlock
                   key={`${editingLesson.id}-main`}
                   label="Lesson"
@@ -917,6 +1261,12 @@ export function CourseEditorPanel({
                       .map((asset) => asset.id)}
                     onChange={(assets) => updateLesson({ ...editingLesson, assets })}
                   />
+                  {stagedLeftoverFiles[editingLesson.id]?.length ? (
+                    <p className="mt-2 text-sm text-neutral-400">
+                      Original {stagedLeftoverFiles[editingLesson.id]?.[0]?.file.name} will upload
+                      when you save.
+                    </p>
+                  ) : null}
                 </div>
               </>
             ) : null}
@@ -930,6 +1280,11 @@ export function CourseEditorPanel({
             emptyHint="No questions yet. Without a module quiz, Next on the last lesson opens the next module."
             questions={editingModule.quizQuestions ?? []}
             onChange={(quizQuestions) => updateModule({ ...editingModule, quizQuestions })}
+            timeLimitMinutes={quizTimeLimitMinutes(editingModule.quizTimeLimitSeconds)}
+            onTimeLimitMinutesChange={(minutes) =>
+              updateModule({ ...editingModule, quizTimeLimitSeconds: quizTimeLimitSeconds(minutes) })
+            }
+            timeLimitLabel="Module quiz time"
           />
         ) : null}
 
@@ -940,6 +1295,12 @@ export function CourseEditorPanel({
               setFinalQuestions(next);
               markDirty();
             }}
+            timeLimitMinutes={quizTimeLimitMinutes(finalTimeLimitSeconds)}
+            onTimeLimitMinutesChange={(minutes) => {
+              setFinalTimeLimitSeconds(quizTimeLimitSeconds(minutes));
+              markDirty();
+            }}
+            timeLimitLabel="Final assessment time"
           />
         ) : null}
       </div>
@@ -967,7 +1328,7 @@ export function CourseEditorPanel({
         >
           {pending === "save" ? "Saving…" : "Save draft"}
         </button>
-        {slug !== "new" && slug !== "dptc" ? (
+        {slug !== "new" ? (
           <button
             type="button"
             onClick={() => void remove()}
@@ -979,7 +1340,7 @@ export function CourseEditorPanel({
         ) : null}
         <div className="rounded-[28px] border border-neutral-200 bg-white px-5 py-6 text-center">
           <p className="text-[11px] font-bold tracking-[0.16em] text-neutral-500 uppercase">
-            Assessment
+            Final assessment
           </p>
           {lockedQuiz ? (
             <p className="mt-2 text-sm text-neutral-400">
@@ -989,7 +1350,7 @@ export function CourseEditorPanel({
           ) : (
             <>
               <p className="mt-2 text-sm text-neutral-400">
-                Add an assessment to this lesson by clicking the button below
+                Certificate quiz for this course. Add questions, Save, then preview as a learner.
               </p>
               <ul className="mt-4 space-y-2">
                 {finalQuestions.map((question, index) => (
@@ -1034,14 +1395,56 @@ export function CourseEditorPanel({
               </button>
               <button
                 type="button"
-                onClick={() => setQuizOpen((open) => !open)}
-                className="mt-3 h-10 w-full rounded-xl border border-neutral-200 text-[10px] font-bold tracking-[0.12em] uppercase hover:bg-neutral-50"
+                disabled={!canPreviewFinal}
+                onClick={() => setPreviewOpen(true)}
+                className="mt-3 h-10 w-full rounded-xl border border-neutral-200 text-[10px] font-bold tracking-[0.12em] uppercase hover:bg-neutral-50 disabled:cursor-not-allowed disabled:text-neutral-400 disabled:hover:bg-transparent"
               >
-                {quizOpen ? "Hide quiz" : "Preview quiz"}
+                Preview
               </button>
+              {!canPreviewFinal ? (
+                <p className="mt-2 text-[11px] text-neutral-400">
+                  {finalQuestions.length === 0
+                    ? "Add at least one question, then Save."
+                    : "Save to preview as a learner."}
+                </p>
+              ) : null}
             </>
           )}
         </div>
+        {previewOpen && canPreviewFinal ? (
+          <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#f7f7f7]">
+            <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
+              <div className="mb-6 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-neutral-700">Preview as learner</p>
+                <button
+                  type="button"
+                  onClick={() => setPreviewOpen(false)}
+                  className="inline-flex h-10 items-center gap-1.5 rounded-full bg-white px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
+                >
+                  <X className="size-3.5" />
+                  Close
+                </button>
+              </div>
+              <ModuleQuiz
+                preview
+                courseSlug={courseSlug || slug}
+                quizSlug="final"
+                questions={finalQuestions.map((question) => ({
+                  id: question.id,
+                  prompt: question.prompt,
+                  options: [...question.options],
+                }))}
+                previewCorrectIndexes={finalQuestions.map((question) => question.correctIndex)}
+                title={
+                  title.trim() ? `${title.trim()} — Final assessment` : "Final assessment"
+                }
+                seconds={finalTimeLimitSeconds}
+                maxAttempts={3}
+                attemptsUsed={0}
+              />
+            </div>
+          </div>
+        ) : null}
         {uploadToast ? (
           <p className="inline-flex items-center gap-2 self-end rounded-full bg-emerald-50 px-3 py-2 text-[11px] font-semibold text-emerald-700">
             <span className="size-2 animate-pulse rounded-full bg-emerald-500" />

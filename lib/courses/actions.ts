@@ -14,6 +14,7 @@ import {
   type BuilderModule,
   type BuilderQuizQuestion,
   type LessonStatus,
+  clampQuizTimeLimitSeconds,
 } from "@/lib/courses/types";
 import { requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -106,6 +107,7 @@ export type SaveCourseInput = {
   coverPath?: string;
   modules: BuilderModule[];
   finalQuestions?: BuilderQuizQuestion[];
+  finalTimeLimitSeconds?: number;
 };
 
 export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
@@ -166,7 +168,11 @@ export async function saveCourse(input: SaveCourseInput): Promise<SlugResult> {
   if (moduleError) return { ok: false, error: moduleError };
 
   if (slug !== "dptc") {
-    const quizError = await replaceFinalQuiz(courseId, input.finalQuestions ?? []);
+    const quizError = await replaceFinalQuiz(
+      courseId,
+      input.finalQuestions ?? [],
+      input.finalTimeLimitSeconds
+    );
     if (quizError) return { ok: false, error: quizError };
     const moduleQuizError = await replaceModuleQuizzes(courseId, input.modules);
     if (moduleQuizError) return { ok: false, error: moduleQuizError };
@@ -373,9 +379,33 @@ function isMissingModuleQuizColumn(message: string | undefined) {
   );
 }
 
-async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion[]) {
+function isSkippableSchemaError(message: string | undefined) {
+  if (!message) return false;
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("schema cache") ||
+    lower.includes("does not exist") ||
+    lower.includes("could not find the table") ||
+    lower.includes("could not find the")
+  );
+}
+
+function deleteStepError(message: string | undefined, fallback: string): ActionResult {
+  const text = (message || fallback).trim();
+  if (/foreign key|violates foreign key/i.test(text)) {
+    return fail(`${fallback} ${text}`);
+  }
+  return fail(text || fallback);
+}
+
+async function replaceFinalQuiz(
+  courseId: string,
+  questions: BuilderQuizQuestion[],
+  timeLimitSeconds?: number | null
+) {
   const admin = createAdminClient();
   const cleaned = await cleanedQuizQuestions(questions);
+  const seconds = clampQuizTimeLimitSeconds(timeLimitSeconds);
 
   const { data: existing } = await admin
     .from("quizzes")
@@ -412,12 +442,18 @@ async function replaceFinalQuiz(courseId: string, questions: BuilderQuizQuestion
         kind: "final",
         pass_mark_percent: 70,
         max_attempts: 3,
-        time_limit_seconds: 1800,
+        time_limit_seconds: seconds,
       })
       .select("id")
       .single();
     if (error || !data) return error?.message || "Could not save the final quiz.";
     quizId = data.id;
+  } else {
+    const { error } = await admin
+      .from("quizzes")
+      .update({ time_limit_seconds: seconds })
+      .eq("id", quizId);
+    if (error) return error.message || "Could not save the final quiz.";
   }
 
   const { error: deleteError } = await admin
@@ -496,6 +532,7 @@ async function replaceModuleQuizzes(courseId: string, modules: BuilderModule[]) 
       }
     }
     let quizId = existing?.id ?? null;
+    const seconds = clampQuizTimeLimitSeconds(cleanedModules[index]?.quizTimeLimitSeconds);
     if (!quizId) {
       const { data, error } = await admin
         .from("quizzes")
@@ -506,7 +543,7 @@ async function replaceModuleQuizzes(courseId: string, modules: BuilderModule[]) 
           module_id: moduleRow.id,
           pass_mark_percent: 70,
           max_attempts: 3,
-          time_limit_seconds: 1800,
+          time_limit_seconds: seconds,
         })
         .select("id")
         .single();
@@ -516,11 +553,11 @@ async function replaceModuleQuizzes(courseId: string, modules: BuilderModule[]) 
           : error?.message || "Could not save a module quiz.";
       }
       quizId = data.id;
-    } else if (existing && existing.slug !== slug) {
+    } else {
       const { error } = await admin
         .from("quizzes")
-        .update({ slug, module_id: moduleRow.id })
-        .eq("id", existing.id);
+        .update({ slug, module_id: moduleRow.id, time_limit_seconds: seconds })
+        .eq("id", quizId);
       if (error) {
         return isMissingModuleQuizColumn(error.message)
           ? MISSING_PLAYER_SQL
@@ -632,90 +669,146 @@ export async function publishSavedCourse(
 
 export async function deleteCourse(slug: string): Promise<ActionResult> {
   await requireStaff();
-  if (slug === "dptc") {
-    return fail("The DPTC course cannot be deleted.");
-  }
-  const supabase = await createClient();
-  const { data: course } = await supabase
-    .from("courses")
-    .select("id, cover_path")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (!course) return fail("That course was not found.");
 
-  const { data: lessonRows } = await supabase
-    .from("course_lessons")
-    .select("id")
-    .eq("course_id", course.id);
-  await removeLessonMediaObjects((lessonRows ?? []).map((row) => row.id));
+  try {
+    const admin = createAdminClient();
+    const { data: course, error: courseError } = await admin
+      .from("courses")
+      .select("id, cover_path")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (courseError) return fail(courseError.message || "Could not load this course.");
+    if (!course) return fail("That course was not found.");
 
-  const admin = createAdminClient();
-  if (course.cover_path && !isPublicCoverPath(course.cover_path)) {
+    const { data: lessonRows } = await admin
+      .from("course_lessons")
+      .select("id")
+      .eq("course_id", course.id);
+    const lessonIds = (lessonRows ?? []).map((row) => row.id);
     try {
-      await admin.storage.from(COURSE_MEDIA_BUCKET).remove([course.cover_path]);
+      await removeLessonMediaObjects(lessonIds);
     } catch {
-      /* cover cleanup is best-effort */
+      /* media cleanup is best-effort */
     }
-  }
 
-  const { data: certRows } = await admin
-    .from("certificates")
-    .select("storage_path")
-    .eq("course_id", course.id);
-  const certPaths = (certRows ?? [])
-    .map((row) => row.storage_path)
-    .filter((path): path is string => Boolean(path));
-  if (certPaths.length) {
-    try {
-      await admin.storage.from("certificates").remove(certPaths);
-    } catch {
-      /* certificate file cleanup is best-effort */
+    if (course.cover_path && !isPublicCoverPath(course.cover_path)) {
+      try {
+        await admin.storage.from(COURSE_MEDIA_BUCKET).remove([course.cover_path]);
+      } catch {
+        /* cover cleanup is best-effort */
+      }
     }
+
+    const { data: certRows } = await admin
+      .from("certificates")
+      .select("id, storage_path")
+      .eq("course_id", course.id);
+    const certIds = (certRows ?? []).map((row) => row.id);
+    const certPaths = (certRows ?? [])
+      .map((row) => row.storage_path)
+      .filter((path): path is string => Boolean(path));
+    if (certPaths.length) {
+      try {
+        await admin.storage.from("certificates").remove(certPaths);
+      } catch {
+        /* certificate file cleanup is best-effort */
+      }
+    }
+
+    const { data: quizRows } = await admin
+      .from("quizzes")
+      .select("id")
+      .eq("course_id", course.id);
+    const quizIds = (quizRows ?? []).map((row) => row.id);
+
+    const wipe = async (
+      error: { message: string } | null,
+      fallback: string
+    ): Promise<ActionResult | null> => {
+      if (!error || isSkippableSchemaError(error.message)) return null;
+      return deleteStepError(error.message, fallback);
+    };
+
+    // Child rows first so a missing ON DELETE CASCADE (modules, quizzes,
+    // questions, invites) cannot block the course row.
+    if (quizIds.length) {
+      const blocked =
+        (await wipe(
+          (await admin.from("quiz_attempts").delete().in("quiz_id", quizIds)).error,
+          "Could not delete quiz attempts."
+        )) ||
+        (await wipe(
+          (await admin.from("quiz_questions").delete().in("quiz_id", quizIds)).error,
+          "Could not delete quiz questions."
+        ));
+      if (blocked) return blocked;
+    }
+    if (certIds.length) {
+      const blocked = await wipe(
+        (await admin.from("certificate_revocations").delete().in("certificate_id", certIds)).error,
+        "Could not delete certificate revocations."
+      );
+      if (blocked) return blocked;
+    }
+
+    const blocked =
+      (await wipe(
+        (await admin.from("certificates").delete().eq("course_id", course.id)).error,
+        "Could not delete certificates."
+      )) ||
+      (await wipe(
+        (await admin.from("course_progress").delete().eq("course_id", course.id)).error,
+        "Could not delete course progress."
+      )) ||
+      (await wipe(
+        (await admin.from("enrolment_requests").delete().eq("course_id", course.id)).error,
+        "Could not delete enrolment requests."
+      )) ||
+      (await wipe(
+        (await admin.from("enrolments").delete().eq("course_id", course.id)).error,
+        "Could not delete enrolments."
+      )) ||
+      (await wipe(
+        (
+          await admin
+            .from("organisation_invites")
+            .update({ course_id: null })
+            .eq("course_id", course.id)
+        ).error,
+        "Could not detach organisation invites."
+      )) ||
+      (quizIds.length
+        ? await wipe(
+            (await admin.from("quizzes").delete().in("id", quizIds)).error,
+            "Could not delete quizzes."
+          )
+        : null) ||
+      (lessonIds.length
+        ? await wipe(
+            (await admin.from("lesson_assets").delete().in("lesson_id", lessonIds)).error,
+            "Could not delete lesson media records."
+          )
+        : null) ||
+      (await wipe(
+        (await admin.from("course_lessons").delete().eq("course_id", course.id)).error,
+        "Could not delete lessons."
+      )) ||
+      (await wipe(
+        (await admin.from("course_modules").delete().eq("course_id", course.id)).error,
+        "Could not delete course modules."
+      ));
+    if (blocked) return blocked;
+
+    const { error } = await admin.from("courses").delete().eq("id", course.id);
+    if (error) return deleteStepError(error.message, "Could not delete this course.");
+
+    revalidateCourse(slug);
+    revalidatePath("/certificates");
+    revalidatePath("/admin/reports");
+    return { ok: true };
+  } catch (error) {
+    return fail(error instanceof Error ? error.message : "Could not delete this course.");
   }
-
-  const { data: quizRows } = await admin
-    .from("quizzes")
-    .select("id")
-    .eq("course_id", course.id);
-  const quizIds = (quizRows ?? []).map((row) => row.id);
-  if (quizIds.length) {
-    const { error } = await admin.from("quiz_attempts").delete().in("quiz_id", quizIds);
-    if (error) return fail(error.message || "Could not delete quiz attempts.");
-  }
-
-  const { error: certError } = await admin
-    .from("certificates")
-    .delete()
-    .eq("course_id", course.id);
-  if (certError) return fail(certError.message || "Could not delete certificates.");
-
-  const { error: progressError } = await admin
-    .from("course_progress")
-    .delete()
-    .eq("course_id", course.id);
-  if (progressError) return fail(progressError.message || "Could not delete course progress.");
-
-  const { error: requestError } = await admin
-    .from("enrolment_requests")
-    .delete()
-    .eq("course_id", course.id);
-  if (requestError) {
-    return fail(requestError.message || "Could not delete enrolment requests.");
-  }
-
-  const { error: enrolError } = await admin
-    .from("enrolments")
-    .delete()
-    .eq("course_id", course.id);
-  if (enrolError) return fail(enrolError.message || "Could not delete enrolments.");
-
-  const { error } = await admin.from("courses").delete().eq("id", course.id);
-  if (error) return fail(error.message || "Could not delete this course.");
-
-  revalidateCourse(slug);
-  revalidatePath("/certificates");
-  revalidatePath("/admin/reports");
-  return { ok: true };
 }
 
 export async function staffEnrolLearner(

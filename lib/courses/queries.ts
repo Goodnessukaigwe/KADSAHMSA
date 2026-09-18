@@ -47,6 +47,8 @@ import {
   coverMediaAssets,
   courseCoverMedia,
   flattenBuilderLessons,
+  DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
+  clampQuizTimeLimitSeconds,
 } from "@/lib/courses/types";
 import { courseHasFinalQuiz } from "@/lib/quiz/queries";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -624,7 +626,7 @@ export async function getAdminCourse(slug: string): Promise<AdminCourseDetail | 
     coverPath: course.cover_path,
     enrolled: count ?? 0,
     modules: await listBuilderModules(course.id),
-    finalQuestions: await listBuilderFinalQuestions(course.id, course.slug),
+    ...(await listBuilderFinalQuestions(course.id, course.slug)),
   };
 }
 
@@ -667,22 +669,27 @@ export async function listBuilderModules(courseId: string): Promise<BuilderModul
       slug: lesson.slug,
       lessons: [lesson],
       quizQuestions: [],
+      quizTimeLimitSeconds: DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
     }));
   }
 
-  return moduleRows.map((module) => ({
-    id: module.id,
-    title: module.title,
-    slug: module.slug,
-    quizQuestions: quizByModule.get(module.id) ?? [],
-    lessons: (lessonRows ?? [])
-      .filter((row) => row.module_id === module.id)
-      .sort((a, b) => a.position - b.position)
-      .flatMap((row) => {
-        const lesson = builderById.get(row.id);
-        return lesson ? [lesson] : [];
-      }),
-  }));
+  return moduleRows.map((module) => {
+    const bank = quizByModule.get(module.id);
+    return {
+      id: module.id,
+      title: module.title,
+      slug: module.slug,
+      quizQuestions: bank?.questions ?? [],
+      quizTimeLimitSeconds: bank?.timeLimitSeconds ?? DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
+      lessons: (lessonRows ?? [])
+        .filter((row) => row.module_id === module.id)
+        .sort((a, b) => a.position - b.position)
+        .flatMap((row) => {
+          const lesson = builderById.get(row.id);
+          return lesson ? [lesson] : [];
+        }),
+    };
+  });
 }
 
 export async function listBuilderLessons(courseId: string): Promise<BuilderLesson[]> {
@@ -692,41 +699,52 @@ export async function listBuilderLessons(courseId: string): Promise<BuilderLesso
 async function listBuilderFinalQuestions(
   courseId: string,
   courseSlug: string
-): Promise<BuilderQuizQuestion[]> {
-  if (courseSlug === "dptc") return [];
+): Promise<{ finalQuestions: BuilderQuizQuestion[]; finalTimeLimitSeconds: number }> {
+  const empty = {
+    finalQuestions: [] as BuilderQuizQuestion[],
+    finalTimeLimitSeconds: DEFAULT_QUIZ_TIME_LIMIT_SECONDS,
+  };
+  if (courseSlug === "dptc") return empty;
   let admin;
   try {
     admin = createAdminClient();
   } catch {
-    return [];
+    return empty;
   }
   const { data: quiz } = await admin
     .from("quizzes")
-    .select("id")
+    .select("id, time_limit_seconds")
     .eq("course_id", courseId)
     .eq("slug", "final")
     .maybeSingle();
-  if (!quiz) return [];
+  if (!quiz) return empty;
+
+  const timeLimit = {
+    finalTimeLimitSeconds: clampQuizTimeLimitSeconds(quiz.time_limit_seconds),
+  };
 
   const { data, error } = await admin
     .from("quiz_questions")
     .select("id, prompt, options, correct_index")
     .eq("quiz_id", quiz.id)
     .order("position", { ascending: true });
-  if (error || !data) return [];
+  if (error || !data) return { finalQuestions: [], ...timeLimit };
 
-  return data.flatMap((row) => {
-    const options = padOptions(row.options);
-    if (!options) return [];
-    return [
-      {
-        id: row.id,
-        prompt: row.prompt,
-        options,
-        correctIndex: Math.min(Math.max(row.correct_index, 0), 3),
-      },
-    ];
-  });
+  return {
+    ...timeLimit,
+    finalQuestions: data.flatMap((row) => {
+      const options = padOptions(row.options);
+      if (!options) return [];
+      return [
+        {
+          id: row.id,
+          prompt: row.prompt,
+          options,
+          correctIndex: Math.min(Math.max(row.correct_index, 0), 3),
+        },
+      ];
+    }),
+  };
 }
 
 function padOptions(options: string[] | null): [string, string, string, string] | null {
@@ -934,12 +952,12 @@ async function listCourseLessonOrder(courseId: string) {
   );
   return (lessonRows ?? [])
     .map((row) => {
-      const module = modules.get(row.module_id);
+      const parentModule = modules.get(row.module_id);
       return {
         ...row,
-        modulePosition: module?.position ?? row.position,
-        moduleTitle: module?.title ?? row.title,
-        moduleSlug: module?.slug ?? row.slug,
+        modulePosition: parentModule?.position ?? row.position,
+        moduleTitle: parentModule?.title ?? row.title,
+        moduleSlug: parentModule?.slug ?? row.slug,
       };
     })
     .sort(
@@ -952,12 +970,17 @@ export async function listLiveLessons(courseId: string) {
   return lessons.filter((row) => row.status === "live");
 }
 
-async function listModuleQuizQuestions(courseId: string): Promise<Map<string, BuilderQuizQuestion[]>> {
-  const grouped = new Map<string, BuilderQuizQuestion[]>();
+type ModuleQuizBank = {
+  questions: BuilderQuizQuestion[];
+  timeLimitSeconds: number;
+};
+
+async function listModuleQuizQuestions(courseId: string): Promise<Map<string, ModuleQuizBank>> {
+  const grouped = new Map<string, ModuleQuizBank>();
   const supabase = await createClient();
   const { data: quizzes, error } = await supabase
     .from("quizzes")
-    .select("id, module_id")
+    .select("id, module_id, time_limit_seconds")
     .eq("course_id", courseId)
     .eq("kind", "module");
   if (error || !quizzes?.length) {
@@ -989,7 +1012,10 @@ async function listModuleQuizQuestions(courseId: string): Promise<Map<string, Bu
   }
   for (const quiz of withModule) {
     if (!quiz.module_id) continue;
-    grouped.set(quiz.module_id, byQuiz.get(quiz.id) ?? []);
+    grouped.set(quiz.module_id, {
+      questions: byQuiz.get(quiz.id) ?? [],
+      timeLimitSeconds: clampQuizTimeLimitSeconds(quiz.time_limit_seconds),
+    });
   }
   return grouped;
 }
@@ -997,7 +1023,7 @@ async function listModuleQuizQuestions(courseId: string): Promise<Map<string, Bu
 async function moduleIdsWithQuizzes(courseId: string): Promise<Set<string>> {
   const questions = await listModuleQuizQuestions(courseId);
   return new Set(
-    [...questions.entries()].filter(([, items]) => items.length > 0).map(([id]) => id)
+    [...questions.entries()].filter(([, bank]) => bank.questions.length > 0).map(([id]) => id)
   );
 }
 

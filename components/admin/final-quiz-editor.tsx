@@ -2,7 +2,13 @@
 
 import { Plus, Trash2 } from "lucide-react";
 
-import type { BuilderQuizQuestion } from "@/lib/courses/types";
+import {
+  MAX_QUIZ_TIME_LIMIT_MINUTES,
+  MIN_QUIZ_TIME_LIMIT_MINUTES,
+  quizTimeLimitMinutes,
+  quizTimeLimitSeconds,
+  type BuilderQuizQuestion,
+} from "@/lib/courses/types";
 
 const letters = ["A", "B", "C", "D"] as const;
 
@@ -18,15 +24,21 @@ function emptyQuestion(): BuilderQuizQuestion {
 export function FinalQuizEditor({
   questions,
   onChange,
+  timeLimitMinutes,
+  onTimeLimitMinutesChange,
   heading = "Final assessment",
   description = "Multiple choice only. Pass mark 70%, three attempts. A certificate is issued when every live lesson is complete and the learner scores 70% or above. Leave this empty if the course has no quiz and no certificate.",
   emptyHint = "No questions yet. Add at least one, then Save. Without a final quiz this course will not issue a certificate.",
+  timeLimitLabel = "Final assessment time",
 }: {
   questions: BuilderQuizQuestion[];
   onChange: (questions: BuilderQuizQuestion[]) => void;
+  timeLimitMinutes: number;
+  onTimeLimitMinutesChange: (minutes: number) => void;
   heading?: string;
   description?: string;
   emptyHint?: string;
+  timeLimitLabel?: string;
 }) {
   function update(index: number, next: BuilderQuizQuestion) {
     onChange(questions.map((question, i) => (i === index ? next : question)));
@@ -48,6 +60,20 @@ export function FinalQuizEditor({
           Add question
         </button>
       </div>
+
+      <label className="mt-5 block max-w-xs text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
+        {timeLimitLabel}
+        <input
+          type="number"
+          min={MIN_QUIZ_TIME_LIMIT_MINUTES}
+          max={MAX_QUIZ_TIME_LIMIT_MINUTES}
+          value={quizTimeLimitMinutes(quizTimeLimitSeconds(timeLimitMinutes))}
+          onChange={(event) =>
+            onTimeLimitMinutesChange(quizTimeLimitMinutes(quizTimeLimitSeconds(event.target.value)))
+          }
+          className="mt-2 h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
+        />
+      </label>
 
       {questions.length === 0 ? (
         <p className="mt-6 text-sm text-neutral-400">{emptyHint}</p>

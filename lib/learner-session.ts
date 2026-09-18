@@ -247,6 +247,8 @@ export type QuizAttemptState = {
   answers: Array<number | null>;
   index: number;
   remaining: number;
+  /** Configured limit in seconds. Used to drop stale countdowns after staff change the minutes. */
+  seconds?: number;
   attemptsUsed: number;
   submitted: boolean;
   score: number | null;
@@ -263,6 +265,7 @@ export function defaultQuizState(questionCount: number, seconds: number): QuizAt
     answers: Array.from({ length: questionCount }, () => null),
     index: 0,
     remaining: seconds,
+    seconds,
     attemptsUsed: 0,
     submitted: false,
     score: null,
