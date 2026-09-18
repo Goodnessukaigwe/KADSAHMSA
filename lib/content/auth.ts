@@ -58,7 +58,7 @@ export const authCopy = {
     imageAlt:
       "A miniature Japanese noodle stall at night, lit by lanterns — a pause before you return to learning",
   },
-  loginImage: "/Training/IMG_7634.jpg",
-  registerImage: "/Training/IMG_7634.jpg",
+  loginImage: "/login/IMG_1633.jpg",
+  registerImage: "/signin/IMG_1633.jpg",
   resetImage: "/Training/IMG_7625.jpg",
 } as const;
