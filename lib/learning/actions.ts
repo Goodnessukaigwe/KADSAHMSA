@@ -34,7 +34,7 @@ function progressWithoutResume(payload: {
   user_id: string;
   course_id: string;
   current_module: number;
-  completed_indexes: unknown;
+  completed_indexes: number[];
   player_seconds: number;
   resume_lesson_slug?: string | null;
 }) {

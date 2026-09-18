@@ -37,7 +37,7 @@ export type CoverResult =
   | { ok: true; path: string }
   | { ok: false; error: string };
 
-function fail(error: string): AssetsResult {
+function fail(error: string): { ok: false; error: string } {
   return { ok: false, error };
 }
 
