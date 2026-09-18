@@ -3,16 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  GraduationCap,
-  Headphones,
-  Home,
-  Menu,
-  Moon,
-  PlaySquare,
-  Sun,
-  X,
-} from "lucide-react";
+import { GraduationCap, Headphones, Home, Menu, PlaySquare, X } from "lucide-react";
 
 import { ChromeAvatarLink } from "@/components/profile/chrome-avatar";
 import { ChromeNavLink } from "@/components/shells/chrome-nav-link";
@@ -36,19 +27,12 @@ export function StudentChrome({
 }) {
   const pathname = usePathname();
   const [navOpen, setNavOpen] = useState(false);
-  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     setNavOpen(false);
   }, [pathname]);
 
   const firstName = firstNameOf(user.name || "Learner");
-
-  function toggleTheme() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-  }
 
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">
@@ -73,27 +57,12 @@ export function StudentChrome({
             </Link>
           </div>
 
-          <div className="ml-auto flex items-center gap-1">
-            <Link
-              href="/help"
-              className="flex size-10 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100"
-              aria-label="Help Center"
-            >
-              <Headphones className="size-4" />
-            </Link>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex size-10 items-center justify-center rounded-full text-neutral-700 hover:bg-neutral-100"
-              aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {dark ? <Moon className="size-4" /> : <Sun className="size-4" />}
-            </button>
+          <div className="ml-auto flex items-center">
             <ChromeAvatarLink
               href="/my/profile"
               name={user.name}
               avatarUrl={user.avatarUrl}
-              className="ml-1 size-9 bg-neutral-950 text-xs text-white"
+              className="size-9 bg-neutral-950 text-xs text-white"
             />
           </div>
         </div>
