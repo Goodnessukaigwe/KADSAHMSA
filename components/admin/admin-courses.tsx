@@ -413,16 +413,22 @@ export function AdminCourses({
         </div>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-xl border border-neutral-200 bg-white">
-          <table className="w-full min-w-215 border-collapse text-left">
+          <table className="w-full min-w-[54rem] table-fixed border-collapse text-left">
             <thead>
               <tr className="border-b border-neutral-100 text-[9px] font-bold tracking-[0.12em] text-neutral-400 uppercase">
                 <th className="w-14 px-4 py-4" aria-label="Select and reorder" />
                 {columns.map((column) => (
-                  <th key={column.id} className="whitespace-nowrap px-4 py-4">
+                  <th
+                    key={column.id}
+                    className={cn(
+                      "overflow-hidden px-4 py-4 whitespace-nowrap",
+                      columnWidthClass(column.id)
+                    )}
+                  >
                     {column.label}
                   </th>
                 ))}
-                <th className="w-12 px-4 py-4" aria-label="Edit" />
+                <th className="w-16 px-4 py-4" aria-label="Edit" />
               </tr>
             </thead>
             <tbody>
@@ -553,6 +559,21 @@ function PublishProgress({
   );
 }
 
+function columnWidthClass(id: AdminCourseColumnId) {
+  switch (id) {
+    case "title":
+      return "w-[22%]";
+    case "status":
+      return "w-28";
+    case "slug":
+      return "w-36";
+    case "duration":
+      return "w-40";
+    default:
+      return "w-28";
+  }
+}
+
 function FieldList({
   columns,
   draggedColumn,
@@ -618,7 +639,13 @@ function CourseRow({
         </div>
       </td>
       {columns.map((column) => (
-        <td key={column} className="max-w-52.5 px-4 py-4 text-xs text-neutral-500">
+        <td
+          key={column}
+          className={cn(
+            "min-w-0 overflow-hidden px-4 py-4 text-xs text-neutral-500",
+            columnWidthClass(column)
+          )}
+        >
           <CourseCell
             column={column}
             course={course}
@@ -660,7 +687,8 @@ function CourseCell({
         <button
           type="button"
           onClick={onOpen}
-          className="block truncate text-left font-medium text-neutral-900 hover:underline"
+          title={course.title}
+          className="block w-full min-w-0 truncate text-left font-medium text-neutral-900 hover:underline"
         >
           {course.title}
         </button>
@@ -668,9 +696,17 @@ function CourseCell({
     case "status":
       return <StatusMenu status={course.status} pending={pending} onChange={onStatusChange} />;
     case "slug":
-      return <span className="block max-w-42.5 truncate font-mono text-[10px]">{course.slug}</span>;
+      return (
+        <span className="block min-w-0 truncate font-mono text-[10px]" title={course.slug}>
+          {course.slug}
+        </span>
+      );
     case "duration":
-      return <>{course.duration || "--"}</>;
+      return (
+        <span className="block min-w-0 truncate" title={course.duration || undefined}>
+          {course.duration || "--"}
+        </span>
+      );
     case "image00":
       return <MediaReference value={course.image ? "Cover image" : "Cover Photo"} />;
     case "image01":
@@ -749,7 +785,7 @@ function StatusMenu({
 
 function MediaReference({ value }: { value: string }) {
   return (
-    <span className="block max-w-30 truncate text-[10px] text-neutral-400" title={value}>
+    <span className="block min-w-0 truncate text-[10px] text-neutral-400" title={value}>
       {value}
     </span>
   );
