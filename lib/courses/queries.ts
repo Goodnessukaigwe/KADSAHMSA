@@ -977,8 +977,13 @@ type ModuleQuizBank = {
 
 async function listModuleQuizQuestions(courseId: string): Promise<Map<string, ModuleQuizBank>> {
   const grouped = new Map<string, ModuleQuizBank>();
-  const supabase = await createClient();
-  const { data: quizzes, error } = await supabase
+  let admin;
+  try {
+    admin = createAdminClient();
+  } catch {
+    return grouped;
+  }
+  const { data: quizzes, error } = await admin
     .from("quizzes")
     .select("id, module_id, time_limit_seconds")
     .eq("course_id", courseId)
@@ -989,7 +994,7 @@ async function listModuleQuizQuestions(courseId: string): Promise<Map<string, Mo
   }
   const withModule = quizzes.filter((row) => row.module_id);
   if (!withModule.length) return grouped;
-  const { data: rows } = await supabase
+  const { data: rows } = await admin
     .from("quiz_questions")
     .select("id, quiz_id, prompt, options, correct_index")
     .in(
