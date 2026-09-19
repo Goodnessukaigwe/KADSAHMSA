@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { removeMember, setMemberRole } from "@/lib/org/actions";
+import { progressPercent } from "@/lib/org/progress";
 import type { OrgMemberRow } from "@/lib/org/types";
 
 export function OrgMembersTable({
@@ -106,7 +107,7 @@ export function OrgMembersTable({
                     <td className="px-2 py-4 text-neutral-500">
                       {row.courseSlug ? progressLabel(row.completed, row.total) : "—"}
                     </td>
-                    <td className="px-2 py-4">{outcome(row.quizResult)}</td>
+                    <td className="px-2 py-4">{outcome(row.quizResult, row.quizScore)}</td>
                     <td className="px-2 py-4">{certLabel(row.certificate)}</td>
                     {allowManage ? (
                       <td className="px-5 py-4 text-right">
@@ -155,15 +156,15 @@ export function OrgMembersTable({
 }
 
 export function progressLabel(completed: number, total: number) {
-  if (!total) return `${completed}/0`;
-  if (completed >= total) return `Completed (${completed}/${total})`;
-  return `${completed}/${total} lessons`;
+  if (total && completed >= total) return `Completed (${completed}/${total})`;
+  return `${progressPercent(completed, total)}% · ${completed}/${total}`;
 }
 
-export function outcome(value: "pass" | "fail" | "none") {
-  if (value === "pass") return "Pass";
-  if (value === "fail") return "Fail";
-  return "—";
+export function outcome(value: "pass" | "fail" | "none", score?: number | null) {
+  if (value === "none") return "—";
+  const label = value === "pass" ? "Pass" : "Fail";
+  if (score == null) return label;
+  return `${label} · ${Math.round(score)}%`;
 }
 
 export function certLabel(value: "issued" | "revoked" | "none") {

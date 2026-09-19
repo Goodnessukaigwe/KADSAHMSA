@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { GraduationCap, Headphones, Home, Menu, PlaySquare, X } from "lucide-react";
 
 import { ChromeAvatarLink } from "@/components/profile/chrome-avatar";
+import { ChromeAccount } from "@/components/shells/chrome-account";
 import { ChromeNavLink } from "@/components/shells/chrome-nav-link";
 import { site } from "@/lib/content/landing";
 import { firstNameOf } from "@/lib/learner-session";
@@ -37,8 +38,8 @@ export function StudentChrome({
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">
       <header className="sticky top-0 z-40 border-b border-neutral-200/80 bg-white">
-        <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
-          <div className="flex items-center gap-2">
+        <div className="flex h-16 items-center gap-3 pl-4 pr-5 sm:pl-6 sm:pr-8">
+          <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
               className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 lg:hidden"
@@ -51,20 +52,19 @@ export function StudentChrome({
             <Link href="/my" className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
-              <span className="text-sm font-bold tracking-[0.08em] uppercase sm:tracking-[0.14em]">
+              <span className="hidden text-sm font-bold tracking-[0.08em] uppercase sm:inline sm:tracking-[0.14em]">
                 {site.name}
               </span>
             </Link>
           </div>
 
-          <div className="ml-auto flex items-center">
-            <ChromeAvatarLink
-              href="/my/profile"
-              name={user.name}
-              avatarUrl={user.avatarUrl}
-              className="size-9 bg-neutral-950 text-xs text-white"
-            />
-          </div>
+          <ChromeAccount
+            name={user.name}
+            email={user.email}
+            avatarUrl={user.avatarUrl}
+            profileHref="/my/profile"
+            tone="light"
+          />
         </div>
       </header>
 

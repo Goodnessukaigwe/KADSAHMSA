@@ -1,4 +1,5 @@
 import { AdminChrome } from "@/components/admin/admin-chrome";
+import { countUnreadFeedback } from "@/lib/feedback/queries";
 import { requireSessionProfile, requireStaff } from "@/lib/permissions";
 
 export default async function AdminLayout({
@@ -7,9 +8,13 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   await requireStaff();
-  const profile = await requireSessionProfile();
+  const [profile, unreadFeedback] = await Promise.all([
+    requireSessionProfile(),
+    countUnreadFeedback(),
+  ]);
   return (
     <AdminChrome
+      unreadFeedback={unreadFeedback}
       user={{
         name: profile.name,
         email: profile.email,

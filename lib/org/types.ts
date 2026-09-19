@@ -21,6 +21,7 @@ export type OrgMemberRow = {
   completed: number;
   total: number;
   quizResult: "pass" | "fail" | "none";
+  quizScore: number | null;
   certificate: "issued" | "revoked" | "none";
 };
 
@@ -59,6 +60,7 @@ export type ReportRow = {
   completed: number;
   total: number;
   quizResult: "pass" | "fail" | "none";
+  quizScore: number | null;
   certificate: "issued" | "revoked" | "none";
 };
 

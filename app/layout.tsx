@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Fraunces, JetBrains_Mono, Outfit } from "next/font/google";
+
+import { FeedbackHost } from "@/components/feedback/feedback-host";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -38,6 +41,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <Suspense fallback={null}>
+          <FeedbackHost />
+        </Suspense>
       </body>
     </html>
   );

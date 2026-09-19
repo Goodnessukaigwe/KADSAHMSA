@@ -178,6 +178,7 @@ async function loadLearningMaps(userIds: string[]) {
     enrolments: [] as { user_id: string; course_id: string; created_at: string }[],
     progress: new Map<string, number>(),
     quiz: new Map<string, QuizOutcome>(),
+    quizScore: new Map<string, number>(),
     cert: new Map<string, CertOutcome>(),
   };
   if (!userIds.length) return empty;
@@ -206,15 +207,21 @@ async function loadLearningMaps(userIds: string[]) {
     progress.set(`${row.user_id}:${row.course_id}`, (row.completed_indexes ?? []).length);
   }
 
-  const { data: quizzes } = await supabase.from("quizzes").select("id, course_id");
-  const quizCourse = new Map((quizzes ?? []).map((quiz) => [quiz.id, quiz.course_id]));
+  const { data: quizzes } = await supabase.from("quizzes").select("id, course_id, kind");
+  const quizCourse = new Map(
+    (quizzes ?? [])
+      .filter((quiz) => quiz.kind === "final")
+      .map((quiz) => [quiz.id, quiz.course_id])
+  );
   const quizIds = [...quizCourse.keys()];
   const quiz = new Map<string, QuizOutcome>();
+  const quizScore = new Map<string, number>();
   if (quizIds.length) {
     const { data: attempts } = await supabase
       .from("quiz_attempts")
-      .select("user_id, quiz_id, passed, submitted_at")
+      .select("user_id, quiz_id, passed, score_percent, submitted_at")
       .in("user_id", userIds)
+      .in("quiz_id", quizIds)
       .not("submitted_at", "is", null);
     for (const attempt of attempts ?? []) {
       const courseId = quizCourse.get(attempt.quiz_id);
@@ -222,6 +229,12 @@ async function loadLearningMaps(userIds: string[]) {
       const key = `${attempt.user_id}:${courseId}`;
       if (attempt.passed) quiz.set(key, "pass");
       else if (quiz.get(key) !== "pass") quiz.set(key, "fail");
+      if (typeof attempt.score_percent === "number") {
+        const best = quizScore.get(key);
+        if (best == null || attempt.score_percent > best) {
+          quizScore.set(key, attempt.score_percent);
+        }
+      }
     }
   }
 
@@ -242,6 +255,7 @@ async function loadLearningMaps(userIds: string[]) {
     enrolments: enrolments ?? [],
     progress,
     quiz,
+    quizScore,
     cert,
   };
 }
@@ -277,6 +291,7 @@ function memberRowsFrom(
         completed: 0,
         total: 0,
         quizResult: "none",
+        quizScore: null,
         certificate: "none",
       });
       continue;
@@ -291,6 +306,7 @@ function memberRowsFrom(
         completed: learning.progress.get(key) ?? 0,
         total: learning.liveCounts.get(enrolment.course_id) ?? 0,
         quizResult: learning.quiz.get(key) ?? "none",
+        quizScore: learning.quizScore.get(key) ?? null,
         certificate: learning.cert.get(key) ?? "none",
       });
     }
@@ -461,6 +477,7 @@ export async function listReportRows(organisationId?: string): Promise<ReportRow
       completed: learning.progress.get(key) ?? 0,
       total: learning.liveCounts.get(row.course_id) ?? 0,
       quizResult: learning.quiz.get(key) ?? quizLabel(null),
+      quizScore: learning.quizScore.get(key) ?? null,
       certificate: learning.cert.get(key) ?? "none",
     };
   });

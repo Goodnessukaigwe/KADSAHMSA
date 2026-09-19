@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { certLabel, outcome, progressLabel } from "@/components/org/org-members-table";
 import { downloadCsv, toCsv } from "@/lib/org/csv";
+import { progressPercent } from "@/lib/org/progress";
 import type { ReportRow } from "@/lib/org/types";
 
 export function OrgReportTable({
@@ -39,7 +40,9 @@ export function OrgReportTable({
       "progress",
       "lessons_completed",
       "lessons_total",
+      "progress_percent",
       "quiz",
+      "quiz_score",
       "certificate",
     ];
     const body = visible.map((row) => [
@@ -51,7 +54,9 @@ export function OrgReportTable({
       progressLabel(row.completed, row.total),
       String(row.completed),
       String(row.total),
+      String(progressPercent(row.completed, row.total)),
       outcome(row.quizResult),
+      row.quizScore == null ? "" : String(Math.round(row.quizScore)),
       certLabel(row.certificate),
     ]);
     downloadCsv(filename, toCsv(headers, body));
@@ -134,7 +139,7 @@ export function OrgReportTable({
                   <td className="px-2 py-4 text-neutral-500">
                     {progressLabel(row.completed, row.total)}
                   </td>
-                  <td className="px-2 py-4">{outcome(row.quizResult)}</td>
+                  <td className="px-2 py-4">{outcome(row.quizResult, row.quizScore)}</td>
                   <td className="px-5 py-4">{certLabel(row.certificate)}</td>
                 </tr>
               ))

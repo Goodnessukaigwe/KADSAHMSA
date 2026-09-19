@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { OrgEnrolTools } from "@/components/org/org-enrol-tools";
 import { OrgMembersTable } from "@/components/org/org-members-table";
+import { OrgProgressCards } from "@/components/org/org-progress-cards";
 import { setOrganisationStatus, setSeatLimit } from "@/lib/org/actions";
 import type { OrgDetail } from "@/lib/org/types";
 import { cn } from "@/lib/utils";
@@ -127,6 +128,8 @@ export function OrgDetail({ detail }: { detail: OrgDetail }) {
         )}
         {message ? <p className="w-full text-sm text-neutral-500">{message}</p> : null}
       </div>
+
+      <OrgProgressCards rows={detail.members} />
 
       <div className="mt-8">
         <OrgEnrolTools

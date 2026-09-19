@@ -9,14 +9,14 @@ import {
   FileSpreadsheet,
   GraduationCap,
   Menu,
+  MessageSquare,
   Users,
   X,
 } from "lucide-react";
 
-import { ChromeAvatarLink } from "@/components/profile/chrome-avatar";
+import { ChromeAccount } from "@/components/shells/chrome-account";
 import { ChromeNavLink } from "@/components/shells/chrome-nav-link";
 import { site } from "@/lib/content/landing";
-import { firstNameOf } from "@/lib/learner-session";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -25,18 +25,20 @@ const NAV = [
   { href: "/admin/users", label: "Users Metric", icon: Users },
   { href: "/admin/organizations", label: "Organisations", icon: Building2 },
   { href: "/admin/reports", label: "Reports", icon: FileSpreadsheet },
+  { href: "/admin/feedback", label: "Feedback", icon: MessageSquare },
 ] as const;
 
 export function AdminChrome({
   children,
   user,
+  unreadFeedback = 0,
 }: {
   children: React.ReactNode;
   user: { name: string; email: string; avatarUrl?: string | null };
+  unreadFeedback?: number;
 }) {
   const pathname = usePathname();
   const [navOpen, setNavOpen] = useState(false);
-  const name = firstNameOf(user.name || "Admin");
 
   useEffect(() => {
     setNavOpen(false);
@@ -45,37 +47,30 @@ export function AdminChrome({
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">
       <header className="sticky top-0 z-40 bg-neutral-950 text-white">
-        <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+        <div className="flex h-16 items-center gap-3 pl-4 pr-5 sm:pl-6 sm:pr-8">
           <button
             type="button"
-            className="flex size-10 items-center justify-center rounded-xl border border-white/15 lg:hidden"
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/15 lg:hidden"
             aria-expanded={navOpen}
             onClick={() => setNavOpen((open) => !open)}
           >
             {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
             <span className="sr-only">Toggle navigation</span>
           </button>
-          <Link href="/admin" className="flex items-center gap-2.5">
+          <Link href="/admin" className="flex shrink-0 items-center gap-2.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
-            <span className="text-sm font-bold tracking-[0.08em] uppercase sm:tracking-[0.14em]">
+            <span className="hidden text-sm font-bold tracking-[0.08em] uppercase sm:inline sm:tracking-[0.14em]">
               {site.name}
             </span>
           </Link>
 
-          <div className="ml-auto flex items-center gap-2">
-            <ChromeAvatarLink
-              href="/admin/profile"
-              name={user.name}
-              avatarUrl={user.avatarUrl}
-              className="size-9 text-xs"
-            />
-            <div className="hidden leading-tight sm:block">
-              <p className="text-sm font-semibold" title={user.email}>
-                {name}
-              </p>
-            </div>
-          </div>
+          <ChromeAccount
+            name={user.name}
+            email={user.email}
+            avatarUrl={user.avatarUrl}
+            profileHref="/admin/profile"
+          />
         </div>
       </header>
 
@@ -109,6 +104,11 @@ export function AdminChrome({
                 <ChromeNavLink key={item.label} href={item.href} active={active}>
                   <Icon className="size-4" strokeWidth={active ? 2.4 : 2} />
                   {item.label}
+                  {item.href === "/admin/feedback" && unreadFeedback > 0 ? (
+                    <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-neutral-950">
+                      {unreadFeedback}
+                    </span>
+                  ) : null}
                 </ChromeNavLink>
               );
             })}

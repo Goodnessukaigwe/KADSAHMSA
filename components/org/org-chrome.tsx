@@ -5,10 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Building2, LayoutDashboard, Menu, X } from "lucide-react";
 
-import { ChromeAvatarLink } from "@/components/profile/chrome-avatar";
+import { ChromeAccount } from "@/components/shells/chrome-account";
 import { ChromeNavLink } from "@/components/shells/chrome-nav-link";
 import { site } from "@/lib/content/landing";
-import { firstNameOf } from "@/lib/learner-session";
 import { cn } from "@/lib/utils";
 
 export function OrgChrome({
@@ -22,7 +21,6 @@ export function OrgChrome({
 }) {
   const pathname = usePathname();
   const [navOpen, setNavOpen] = useState(false);
-  const name = firstNameOf(user.name || "Admin");
 
   useEffect(() => {
     setNavOpen(false);
@@ -31,36 +29,29 @@ export function OrgChrome({
   return (
     <div className="min-h-screen bg-[#f7f7f7] font-sans text-neutral-950">
       <header className="sticky top-0 z-40 bg-neutral-950 text-white">
-        <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+        <div className="flex h-16 items-center gap-3 pl-4 pr-5 sm:pl-6 sm:pr-8">
           <button
             type="button"
-            className="flex size-10 items-center justify-center rounded-xl border border-white/15 lg:hidden"
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/15 lg:hidden"
             aria-expanded={navOpen}
             onClick={() => setNavOpen((open) => !open)}
           >
             {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
             <span className="sr-only">Toggle navigation</span>
           </button>
-          <Link href="/org" className="flex items-center gap-2.5">
+          <Link href="/org" className="flex shrink-0 items-center gap-2.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
-            <span className="text-sm font-bold tracking-[0.14em] uppercase">
+            <span className="hidden text-sm font-bold tracking-[0.14em] uppercase sm:inline">
               {site.name}
             </span>
           </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <ChromeAvatarLink
-              href="/org/profile"
-              name={user.name}
-              avatarUrl={user.avatarUrl}
-              className="size-9 text-xs"
-            />
-            <div className="hidden leading-tight sm:block">
-              <p className="text-sm font-semibold" title={user.email}>
-                {name}
-              </p>
-            </div>
-          </div>
+          <ChromeAccount
+            name={user.name}
+            email={user.email}
+            avatarUrl={user.avatarUrl}
+            profileHref="/org/profile"
+          />
         </div>
       </header>
 

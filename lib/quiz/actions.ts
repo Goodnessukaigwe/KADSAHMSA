@@ -142,6 +142,10 @@ async function loadQuizContext(
   };
 }
 
+function isUnlimitedFinal(quiz: QuizContext["quiz"]) {
+  return quiz.kind === "final" || quiz.slug === "final";
+}
+
 function revalidateQuizPaths(courseSlug: string) {
   revalidatePath("/quiz");
   revalidatePath("/certificates");
@@ -181,7 +185,7 @@ export async function startAttempt(
     };
   }
 
-  if (submitted.length >= ctx.quiz.max_attempts) {
+  if (!isUnlimitedFinal(ctx.quiz) && submitted.length >= ctx.quiz.max_attempts) {
     return failStart("You have used all three attempts for this quiz.");
   }
 
@@ -239,7 +243,7 @@ export async function submitAttempt(
     .order("attempt_no", { ascending: false });
 
   const submitted = (rows ?? []).filter((row) => row.submitted_at);
-  if (submitted.length >= ctx.quiz.max_attempts) {
+  if (!isUnlimitedFinal(ctx.quiz) && submitted.length >= ctx.quiz.max_attempts) {
     return failSubmit("You have used all three attempts for this quiz.");
   }
 

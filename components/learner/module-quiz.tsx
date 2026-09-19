@@ -80,6 +80,7 @@ export function ModuleQuiz({
   }, [courseSlug, quizSlug, questions.length, seconds, preview]);
 
   const submitted = state?.submitted ?? false;
+  const isFinal = quizSlug === "final";
 
   useEffect(() => {
     if (submitted) return;
@@ -153,13 +154,23 @@ export function ModuleQuiz({
 
   finishRef.current = finish;
 
+  function startRetake() {
+    setReviewing(false);
+    submitting.current = false;
+    update({
+      ...defaultQuizState(questions.length, seconds),
+      attemptsUsed: preview ? 0 : used,
+    });
+    if (!preview) void startAttempt(courseSlug, quizSlug);
+  }
+
   if (!state) return <QuizQuestionSkeleton />;
 
   const question = questions[state.index];
   const selected = state.answers[state.index];
   const passed = state.score != null && state.score >= DEFAULT_PASS_MARK;
   const showModal = Boolean(state.submitted && state.score != null && !reviewing);
-  const attemptsLeft = Math.max(0, maxAttempts - used);
+  const attemptsLeft = isFinal ? Number.POSITIVE_INFINITY : Math.max(0, maxAttempts - used);
 
   return (
     <div className="relative grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_240px]">
@@ -173,36 +184,30 @@ export function ModuleQuiz({
           verificationId={state.verificationId}
           preview={preview}
           onReview={() => {
-            if (!preview && passed && quizSlug !== "final") {
+            if (!preview && passed && !isFinal) {
               router.push(`/learn/${courseSlug}`);
               return;
             }
-            if (!preview && passed && quizSlug === "final") {
-              router.push("/certificates");
+            if (!preview && passed && isFinal) {
+              startRetake();
               return;
             }
             setReviewing(true);
           }}
           onContinue={() => {
-            if (!preview && passed && quizSlug !== "final") {
+            if (!preview && passed && !isFinal) {
               router.push(nextHref ?? `/learn/${courseSlug}`);
               return;
             }
-            if (!preview && passed && quizSlug === "final") {
+            if (!preview && passed && isFinal) {
               router.push("/certificates");
               return;
             }
-            if (!preview && attemptsLeft <= 0) {
+            if (!preview && !isFinal && attemptsLeft <= 0) {
               router.push("/quiz");
               return;
             }
-            setReviewing(false);
-            submitting.current = false;
-            update({
-              ...defaultQuizState(questions.length, seconds),
-              attemptsUsed: preview ? 0 : used,
-            });
-            if (!preview) void startAttempt(courseSlug, quizSlug);
+            startRetake();
           }}
         />
       ) : null}
@@ -409,9 +414,11 @@ function QuizResultModal({
       >
         <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold tracking-[0.12em] text-neutral-400 uppercase sm:tracking-[0.16em]">
           <p>Result</p>
-          <p>
-            Attempts left: {attemptsLeft}/{maxAttempts}
-          </p>
+          {isFinal ? null : (
+            <p>
+              Attempts left: {attemptsLeft}/{maxAttempts}
+            </p>
+          )}
         </div>
         <p className="mt-6 text-center text-5xl font-bold tracking-tight">
           {score}
@@ -441,7 +448,9 @@ function QuizResultModal({
                 ? isDptc
                   ? "Continue the remaining DPTC modules. The certificate is issued only after all 13 modules and a pass on the final assessment."
                   : "Continue the remaining lessons. A certificate is issued only after every live lesson and a pass on the final assessment."
-                : "Review the questions marked in red, then retry. You have three attempts on this quiz."}
+                : isFinal
+                  ? "Review the questions marked in red, then retry."
+                  : "Review the questions marked in red, then retry. You have three attempts on this quiz."}
         </p>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <button
@@ -450,7 +459,7 @@ function QuizResultModal({
             className="h-12 rounded-full bg-neutral-200 px-3 text-[10px] font-bold tracking-[0.08em] text-neutral-800 uppercase sm:text-[11px] sm:tracking-[0.12em]"
           >
             {liveNav && isFinal
-              ? "Open certificates"
+              ? "Retake quiz"
               : liveNav
                 ? "Back to the course"
                 : "Review answers"}
@@ -461,10 +470,10 @@ function QuizResultModal({
             className="h-12 rounded-full bg-neutral-950 px-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase sm:text-[11px] sm:tracking-[0.12em]"
           >
             {liveNav && isFinal
-              ? "View certificate"
+              ? "Certificate"
               : liveNav
                 ? "Next module"
-                : !preview && attemptsLeft <= 0
+                : !preview && !isFinal && attemptsLeft <= 0
                   ? "Quiz results"
                   : "Retake quiz"}
           </button>

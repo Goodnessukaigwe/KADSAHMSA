@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { SplitCta } from "@/components/landing/split-cta";
-import { clearLearner, firstNameOf } from "@/lib/learner-session";
+import { firstNameOf } from "@/lib/learner-session";
 import { updateProfileName } from "@/lib/profile/actions";
 import { AVATAR_ACCEPT, classifyAvatarUpload } from "@/lib/profile/media";
 import { uploadAvatarFile } from "@/lib/profile/upload-avatar";
-import { createClient } from "@/lib/supabase/client";
 
 export function ProfileForm({
   name,
@@ -26,7 +25,7 @@ export function ProfileForm({
   const [photoUrl, setPhotoUrl] = useState(avatarUrl);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-  const [pending, setPending] = useState<"name" | "photo" | "logout" | null>(null);
+  const [pending, setPending] = useState<"name" | "photo" | null>(null);
 
   const initial = firstNameOf(fullName || name || "Learner").charAt(0).toUpperCase();
   const canSave = fullName.trim().length >= 2 && fullName.trim() !== name.trim();
@@ -78,19 +77,6 @@ export function ProfileForm({
     } finally {
       setPending(null);
     }
-  }
-
-  async function logout() {
-    if (pending) return;
-    setPending("logout");
-    try {
-      await createClient().auth.signOut();
-    } catch {
-      // Still clear leftover client keys below.
-    }
-    clearLearner();
-    router.push("/");
-    router.refresh();
   }
 
   return (
@@ -173,17 +159,6 @@ export function ProfileForm({
         >
           Change password
         </Link>
-
-        <div className="mt-10 border-t border-neutral-100 pt-6">
-          <button
-            type="button"
-            onClick={logout}
-            disabled={pending !== null}
-            className="inline-flex min-h-11 items-center text-sm font-semibold text-neutral-500 hover:text-neutral-950 disabled:opacity-50"
-          >
-            {pending === "logout" ? "Logging out…" : "Log out"}
-          </button>
-        </div>
       </div>
     </div>
   );

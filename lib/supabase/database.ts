@@ -1,5 +1,7 @@
 export type CourseStatus = "draft" | "published";
 export type EnrolmentStatus = "active" | "unenrolled";
+export type FeedbackCategory = "broken" | "access" | "quiz_cert" | "other";
+export type FeedbackTicketStatus = "open" | "resolved";
 
 export type Database = {
   public: {
@@ -268,6 +270,51 @@ export type Database = {
           user_id?: string;
           course_id?: string;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      feedback_tickets: {
+        Row: {
+          id: string;
+          created_at: string;
+          user_id: string | null;
+          submitter_name: string;
+          submitter_email: string;
+          is_anonymous: boolean;
+          category: FeedbackCategory;
+          message: string;
+          page_path: string;
+          status: FeedbackTicketStatus;
+          read_at: string | null;
+          resolved_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          user_id?: string | null;
+          submitter_name: string;
+          submitter_email?: string;
+          is_anonymous?: boolean;
+          category: FeedbackCategory;
+          message: string;
+          page_path?: string;
+          status?: FeedbackTicketStatus;
+          read_at?: string | null;
+          resolved_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          user_id?: string | null;
+          submitter_name?: string;
+          submitter_email?: string;
+          is_anonymous?: boolean;
+          category?: FeedbackCategory;
+          message?: string;
+          page_path?: string;
+          status?: FeedbackTicketStatus;
+          read_at?: string | null;
+          resolved_at?: string | null;
         };
         Relationships: [];
       };

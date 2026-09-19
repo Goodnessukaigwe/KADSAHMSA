@@ -68,7 +68,7 @@ export default async function FinalQuizPage({
         <h1 className="text-3xl font-bold tracking-tight">Final assessment locked</h1>
         <p className="mt-3 text-sm leading-relaxed text-neutral-500">
           The certificate assessment opens after you complete every live lesson.
-          The pass mark is 70%. You have three attempts.
+          The pass mark is 70%.
         </p>
         <div className="mt-8">
           <SplitCta href={`/learn/${courseSlug}`} size="sm">

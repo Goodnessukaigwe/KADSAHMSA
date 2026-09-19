@@ -17,7 +17,10 @@ export default async function ResetPasswordPage() {
   const user = await getAuthUser();
 
   return (
-    <AuthSplit image={authCopy.resetImage} imageAlt={authCopy.reset.imageAlt}>
+    <AuthSplit
+      image={user ? authCopy.resetImage : undefined}
+      imageAlt={user ? authCopy.reset.imageAlt : undefined}
+    >
       {user ? <ResetPasswordForm /> : <ForgotPasswordForm />}
     </AuthSplit>
   );
