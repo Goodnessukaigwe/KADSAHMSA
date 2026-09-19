@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Fraunces, JetBrains_Mono, Outfit } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { FeedbackHost } from "@/components/feedback/feedback-host";
 import "./globals.css";
 
-const outfit = Outfit({
+const inter = Inter({
+  subsets: ["latin"],
   variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-heading",
-  subsets: ["latin"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -37,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${fraunces.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${inter.className} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         {children}

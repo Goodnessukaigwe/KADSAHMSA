@@ -1026,9 +1026,30 @@ async function listModuleQuizQuestions(courseId: string): Promise<Map<string, Mo
 }
 
 async function moduleIdsWithQuizzes(courseId: string): Promise<Set<string>> {
-  const questions = await listModuleQuizQuestions(courseId);
+  const supabase = await createClient();
+  const { data: quizzes, error } = await supabase
+    .from("quizzes")
+    .select("id, module_id")
+    .eq("course_id", courseId)
+    .eq("kind", "module");
+  if (error || !quizzes?.length) {
+    if (error && isMissingPlayerColumn(error.message)) return new Set();
+    return new Set();
+  }
+  const withModule = quizzes.filter((row) => row.module_id);
+  if (!withModule.length) return new Set();
+  const { data: rows } = await supabase
+    .from("quiz_questions")
+    .select("quiz_id")
+    .in(
+      "quiz_id",
+      withModule.map((row) => row.id)
+    );
+  const quizIdsWithQuestions = new Set((rows ?? []).map((row) => row.quiz_id));
   return new Set(
-    [...questions.entries()].filter(([, bank]) => bank.questions.length > 0).map(([id]) => id)
+    withModule
+      .filter((row) => quizIdsWithQuestions.has(row.id))
+      .map((row) => row.module_id as string)
   );
 }
 
