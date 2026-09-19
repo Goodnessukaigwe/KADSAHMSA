@@ -133,7 +133,7 @@ export function OrgEnrolTools({
             ))
           )}
         </select>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap justify-end gap-2">
           <label className="inline-flex h-10 cursor-pointer items-center rounded-full bg-neutral-950 px-4 text-[11px] font-bold tracking-[0.12em] text-white uppercase">
             {importing ? "Importing…" : "Upload CSV"}
             <input

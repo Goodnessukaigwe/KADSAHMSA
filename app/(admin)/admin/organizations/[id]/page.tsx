@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { OrgDetail } from "@/components/admin/org-detail";
 import { getOrgDetail } from "@/lib/org/queries";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Organisation" };
 
 export default async function AdminOrganizationDetailPage({

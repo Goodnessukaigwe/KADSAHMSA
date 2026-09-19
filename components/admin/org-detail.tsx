@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
+import { ConfirmModal } from "@/components/admin/confirm-modal";
 import { OrgEnrolTools } from "@/components/org/org-enrol-tools";
 import { OrgMembersTable } from "@/components/org/org-members-table";
 import { OrgProgressCards } from "@/components/org/org-progress-cards";
@@ -18,6 +19,7 @@ export function OrgDetail({ detail }: { detail: OrgDetail }) {
   const [seats, setSeats] = useState(String(org.seatLimit));
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
 
   async function saveSeats(event: React.FormEvent) {
     event.preventDefault();
@@ -45,7 +47,13 @@ export function OrgDetail({ detail }: { detail: OrgDetail }) {
       setMessage(result.error);
       return;
     }
+    setRejectOpen(false);
     router.refresh();
+  }
+
+  function closeRejectModal() {
+    if (pending) return;
+    setRejectOpen(false);
   }
 
   return (
@@ -114,8 +122,8 @@ export function OrgDetail({ detail }: { detail: OrgDetail }) {
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => void setStatus("rejected")}
-                className="h-11 rounded-full bg-neutral-100 px-5 text-[11px] font-bold tracking-[0.12em] uppercase disabled:opacity-60"
+                onClick={() => setRejectOpen(true)}
+                className="h-11 rounded-full bg-red-600 px-5 text-[11px] font-bold tracking-[0.12em] text-white uppercase disabled:opacity-60"
               >
                 Reject
               </button>
@@ -134,6 +142,17 @@ export function OrgDetail({ detail }: { detail: OrgDetail }) {
       <div className="mt-8">
         <OrgMembersTable organisationId={org.id} members={detail.members} />
       </div>
+
+      <ConfirmModal
+        open={rejectOpen}
+        title="Are you sure?"
+        description={`Reject ${org.name}? They can be approved again later.`}
+        confirmLabel={pending ? "Rejecting…" : "Reject"}
+        pending={pending}
+        danger
+        onCancel={closeRejectModal}
+        onConfirm={() => void setStatus("rejected")}
+      />
     </div>
   );
 }

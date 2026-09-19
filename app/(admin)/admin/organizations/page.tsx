@@ -1,6 +1,7 @@
 import { AdminOrganizations } from "@/components/admin/admin-organizations";
 import { listOrganisations } from "@/lib/org/queries";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Organisations" };
 
 export default async function AdminOrganizationsPage() {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { ConfirmModal } from "@/components/admin/confirm-modal";
 import { createOrganisation, setOrganisationStatus } from "@/lib/org/actions";
 import type { OrgSummary } from "@/lib/org/types";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,9 @@ export function AdminOrganizations({ orgs }: { orgs: OrgSummary[] }) {
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [statusPending, setStatusPending] = useState<string | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<{ id: string; name: string } | null>(
+    null
+  );
 
   async function create(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +45,13 @@ export function AdminOrganizations({ orgs }: { orgs: OrgSummary[] }) {
       setMessage(result.error);
       return;
     }
+    setRejectTarget(null);
     router.refresh();
+  }
+
+  function closeRejectModal() {
+    if (statusPending) return;
+    setRejectTarget(null);
   }
 
   return (
@@ -153,8 +163,8 @@ export function AdminOrganizations({ orgs }: { orgs: OrgSummary[] }) {
                           <button
                             type="button"
                             disabled={statusPending !== null}
-                            onClick={() => void setStatus(org.id, "rejected")}
-                            className="h-9 rounded-full bg-neutral-100 px-4 text-[11px] font-bold tracking-[0.12em] uppercase disabled:opacity-60"
+                            onClick={() => setRejectTarget({ id: org.id, name: org.name })}
+                            className="h-9 rounded-full bg-red-600 px-4 text-[11px] font-bold tracking-[0.12em] text-white uppercase disabled:opacity-60"
                           >
                             Reject
                           </button>
@@ -174,6 +184,24 @@ export function AdminOrganizations({ orgs }: { orgs: OrgSummary[] }) {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        open={rejectTarget !== null}
+        title="Are you sure?"
+        description={
+          rejectTarget
+            ? `Reject ${rejectTarget.name}? They can be approved again later.`
+            : ""
+        }
+        confirmLabel={statusPending ? "Rejecting…" : "Reject"}
+        pending={statusPending !== null}
+        danger
+        onCancel={closeRejectModal}
+        onConfirm={() => {
+          if (!rejectTarget) return;
+          void setStatus(rejectTarget.id, "rejected");
+        }}
+      />
     </div>
   );
 }
