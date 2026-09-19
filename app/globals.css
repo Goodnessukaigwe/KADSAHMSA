@@ -143,4 +143,42 @@
     @apply font-sans;
     scroll-behavior: auto;
   }
+
+  button,
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  input,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Keep native checkmarks — appearance:none strips them. */
+  [type="checkbox"],
+  [type="radio"] {
+    -webkit-appearance: auto;
+    appearance: auto;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  label {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+}
+
+@utility outline-control {
+  @apply appearance-none border border-neutral-200 bg-white hover:bg-neutral-50;
 }

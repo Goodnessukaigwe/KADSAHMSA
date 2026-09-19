@@ -15,7 +15,6 @@ export default async function OrgDashboardPage({
     <OrgDashboard
       org={dashboard.org}
       members={dashboard.members}
-      invites={dashboard.invites}
       courses={dashboard.courses}
       staffOrgs={dashboard.staffOrgs}
       reports={reports}

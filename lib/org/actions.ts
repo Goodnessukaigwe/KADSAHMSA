@@ -10,15 +10,11 @@ import {
   hasRole,
   requireOrgAdmin,
   requireStaff,
-  requireUser,
 } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
-export type InviteResult =
-  | { ok: true; code: string }
-  | { ok: false; error: string };
 export type BulkResult =
   | {
       ok: true;
@@ -250,51 +246,6 @@ function isStaffRoles(roles: string[]) {
   return roles.some((role) => role === "content_admin" || role === "super_admin");
 }
 
-export async function createInvite(
-  organisationId: string,
-  courseId: string,
-  maxUses: number | null
-): Promise<InviteResult> {
-  const { user } = await requireOrgAdmin(organisationId);
-  const supabase = await createClient();
-  const { data: org } = await supabase
-    .from("organisations")
-    .select("status")
-    .eq("id", organisationId)
-    .maybeSingle();
-  if (!org) return { ok: false, error: "That organisation was not found." };
-  if (org.status !== "approved") {
-    return { ok: false, error: "Approve this organisation before creating invites." };
-  }
-
-  let resolvedCourse: string | null = null;
-  if (courseId) {
-    const { data: course } = await supabase
-      .from("courses")
-      .select("id, status")
-      .eq("id", courseId)
-      .maybeSingle();
-    if (!course || course.status !== "published") {
-      return { ok: false, error: "Choose a published course, or none." };
-    }
-    resolvedCourse = course.id;
-  }
-
-  const code = `KAD-ORG-${randomBytes(8).toString("hex").toUpperCase()}`;
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-  const { error } = await supabase.from("organisation_invites").insert({
-    organisation_id: organisationId,
-    code,
-    course_id: resolvedCourse,
-    created_by: user.id,
-    max_uses: maxUses && maxUses > 0 ? maxUses : null,
-    expires_at: expiresAt,
-  });
-  if (error) return { ok: false, error: seatOrSchemaError(error.message) };
-  revalidateOrg(organisationId);
-  return { ok: true, code };
-}
-
 export async function bulkImportMembers(
   organisationId: string,
   courseSlug: string,
@@ -407,87 +358,6 @@ export async function bulkImportMembers(
 
   revalidateOrg(organisationId);
   return { ok: true, created, joined, enrolled, skipped, errors };
-}
-
-export async function redeemInvite(code: string): Promise<ActionResult> {
-  const user = await requireUser();
-  const normalized = code.trim().toUpperCase();
-  if (!normalized.startsWith("KAD-ORG-")) {
-    return fail("That invite code is not valid.");
-  }
-
-  let admin;
-  try {
-    admin = createAdminClient();
-  } catch {
-    return fail("Authentication is not configured.");
-  }
-
-  const { data: invite } = await admin
-    .from("organisation_invites")
-    .select("id, organisation_id, course_id, uses, max_uses, expires_at")
-    .eq("code", normalized)
-    .maybeSingle();
-  if (!invite) return fail("That invite code is not valid.");
-
-  const { data: org } = await admin
-    .from("organisations")
-    .select("id, status")
-    .eq("id", invite.organisation_id)
-    .maybeSingle();
-  if (!org || org.status !== "approved") {
-    return fail("This organisation is not approved yet.");
-  }
-
-  const { data: existing } = await admin
-    .from("organisation_memberships")
-    .select("id")
-    .eq("organisation_id", invite.organisation_id)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!existing) {
-    if (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now()) {
-      return fail("That invite has expired.");
-    }
-    if (invite.max_uses != null && invite.uses >= invite.max_uses) {
-      return fail("That invite has no uses left.");
-    }
-
-    const { error: memberError } = await admin.from("organisation_memberships").insert({
-      organisation_id: invite.organisation_id,
-      user_id: user.id,
-      role: "member",
-    });
-    if (memberError && memberError.code !== "23505") {
-      return fail(seatOrSchemaError(memberError.message));
-    }
-    if (!memberError) {
-      const { error: useError } = await admin
-        .from("organisation_invites")
-        .update({ uses: invite.uses + 1 })
-        .eq("id", invite.id)
-        .eq("uses", invite.uses);
-      if (useError) return fail(useError.message);
-    }
-  }
-
-  if (invite.course_id) {
-    const { data: course } = await admin
-      .from("courses")
-      .select("slug")
-      .eq("id", invite.course_id)
-      .maybeSingle();
-    if (course?.slug) {
-      const enrol = await enrolLearnerWithAdmin(user.id, course.slug);
-      if (!enrol.ok) return enrol;
-    }
-  }
-
-  revalidateOrg(invite.organisation_id, user.id);
-  revalidatePath("/my");
-  revalidatePath("/my/courses");
-  return { ok: true };
 }
 
 export async function setLearnerStaffRoles(

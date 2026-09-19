@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { Plus, Trash2 } from "lucide-react";
 
 import {
@@ -28,7 +29,6 @@ export function FinalQuizEditor({
   onTimeLimitMinutesChange,
   heading = "Final assessment",
   description = "Multiple choice only. Pass mark 70%. Learners can retake until they pass. A certificate is issued when every live lesson is complete and the learner scores 70% or above. Leave this empty if the course has no quiz and no certificate.",
-  emptyHint = "No questions yet. Add at least one, then Save. Without a final quiz this course will not issue a certificate.",
   timeLimitLabel = "Final assessment time",
 }: {
   questions: BuilderQuizQuestion[];
@@ -40,25 +40,40 @@ export function FinalQuizEditor({
   emptyHint?: string;
   timeLimitLabel?: string;
 }) {
+  const draftRef = useRef<BuilderQuizQuestion>(emptyQuestion());
+  const isDraft = questions.length === 0;
+  const displayQuestions = isDraft ? [draftRef.current] : questions;
+
   function update(index: number, next: BuilderQuizQuestion) {
+    if (isDraft) {
+      const committed = {
+        ...draftRef.current,
+        prompt: next.prompt,
+        options: next.options,
+        correctIndex: next.correctIndex,
+      };
+      draftRef.current = emptyQuestion();
+      onChange([committed]);
+      return;
+    }
     onChange(questions.map((question, i) => (i === index ? next : question)));
+  }
+
+  function addQuestion() {
+    if (isDraft) {
+      const committed = draftRef.current;
+      draftRef.current = emptyQuestion();
+      onChange([committed]);
+      return;
+    }
+    onChange([...questions, emptyQuestion()]);
   }
 
   return (
     <section className="mt-8 rounded-[24px] bg-white p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-bold">{heading}</h2>
-          <p className="mt-1 max-w-xl text-sm text-neutral-400">{description}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => onChange([...questions, emptyQuestion()])}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-neutral-100 px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
-        >
-          <Plus className="size-3.5" />
-          Add question
-        </button>
+      <div>
+        <h2 className="text-lg font-bold">{heading}</h2>
+        <p className="mt-1 max-w-xl text-sm text-neutral-400">{description}</p>
       </div>
 
       <label className="mt-5 block max-w-xs text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
@@ -75,24 +90,22 @@ export function FinalQuizEditor({
         />
       </label>
 
-      {questions.length === 0 ? (
-        <p className="mt-6 text-sm text-neutral-400">{emptyHint}</p>
-      ) : (
-        <ol className="mt-6 space-y-6">
-          {questions.map((question, index) => (
-            <li key={question.id} className="rounded-2xl border border-neutral-100 p-4">
-              <div className="flex items-start justify-between gap-3">
-                <label className="min-w-0 flex-1 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
-                  Question {index + 1}
-                  <textarea
-                    value={question.prompt}
-                    onChange={(event) =>
-                      update(index, { ...question, prompt: event.target.value })
-                    }
-                    rows={2}
-                    className="mt-2 w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium tracking-normal text-neutral-950 outline-none"
-                  />
-                </label>
+      <ol className="mt-6 space-y-6">
+        {displayQuestions.map((question, index) => (
+          <li key={question.id} className="rounded-2xl border border-neutral-200 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <label className="min-w-0 flex-1 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
+                Question {index + 1}
+                <textarea
+                  value={question.prompt}
+                  onChange={(event) =>
+                    update(index, { ...question, prompt: event.target.value })
+                  }
+                  rows={2}
+                  className="mt-2 w-full rounded-xl border border-neutral-200 px-3 py-2 text-sm font-medium tracking-normal text-neutral-950 outline-none"
+                />
+              </label>
+              {isDraft ? null : (
                 <button
                   type="button"
                   onClick={() => onChange(questions.filter((_, i) => i !== index))}
@@ -101,41 +114,50 @@ export function FinalQuizEditor({
                 >
                   <Trash2 className="size-4" />
                 </button>
-              </div>
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                {question.options.map((option, optionIndex) => (
-                  <label
-                    key={letters[optionIndex]}
-                    className="flex items-start gap-2 rounded-xl border border-neutral-200 px-3 py-2"
-                  >
-                    <input
-                      type="radio"
-                      name={`correct-${question.id}`}
-                      checked={question.correctIndex === optionIndex}
-                      onChange={() => update(index, { ...question, correctIndex: optionIndex })}
-                      className="mt-2"
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="text-[11px] font-bold tracking-[0.12em] text-neutral-400 uppercase">
-                        {letters[optionIndex]} {question.correctIndex === optionIndex ? "· Correct" : ""}
-                      </span>
-                      <input
-                        value={option}
-                        onChange={(event) => {
-                          const options = [...question.options] as BuilderQuizQuestion["options"];
-                          options[optionIndex] = event.target.value;
-                          update(index, { ...question, options });
-                        }}
-                        className="mt-1 h-9 w-full text-sm tracking-normal text-neutral-950 outline-none"
-                      />
+              )}
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-2">
+              {question.options.map((option, optionIndex) => (
+                <label
+                  key={letters[optionIndex]}
+                  className="flex items-start gap-2 rounded-xl border border-neutral-200 px-3 py-2"
+                >
+                  <input
+                    type="radio"
+                    name={`correct-${question.id}`}
+                    checked={question.correctIndex === optionIndex}
+                    onChange={() => update(index, { ...question, correctIndex: optionIndex })}
+                    className="mt-2"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="text-[11px] font-bold tracking-[0.12em] text-neutral-400 uppercase">
+                      {letters[optionIndex]} {question.correctIndex === optionIndex ? "· Correct" : ""}
                     </span>
-                  </label>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ol>
-      )}
+                    <input
+                      value={option}
+                      onChange={(event) => {
+                        const options = [...question.options] as BuilderQuizQuestion["options"];
+                        options[optionIndex] = event.target.value;
+                        update(index, { ...question, options });
+                      }}
+                      className="mt-1 h-9 w-full text-sm tracking-normal text-neutral-950 outline-none"
+                    />
+                  </span>
+                </label>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <button
+        type="button"
+        onClick={addQuestion}
+        className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-full bg-neutral-100 px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
+      >
+        <Plus className="size-3.5" />
+        Add question
+      </button>
     </section>
   );
 }

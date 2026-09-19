@@ -14,7 +14,6 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   LearnerOrgMembership,
   OrgDetail,
-  OrgInviteRow,
   OrgMemberRow,
   OrgOption,
   OrgSummary,
@@ -323,48 +322,29 @@ export async function getOrgDetail(organisationId: string): Promise<OrgDetail | 
     .select("user_id, role, created_at")
     .eq("organisation_id", organisationId)
     .order("created_at", { ascending: true });
-  if (error) return { org, members: [], invites: [], courses: await publishedCourses() };
+  if (error) return { org, members: [], courses: await publishedCourses() };
 
   const userIds = (memberships ?? []).map((row) => row.user_id);
-  const [{ data: profiles }, emails, learning, { data: inviteRows }] = await Promise.all([
+  const [{ data: profiles }, emails, learning] = await Promise.all([
     userIds.length
       ? supabase.from("profiles").select("id, full_name").in("id", userIds)
       : Promise.resolve({ data: [] as { id: string; full_name: string }[] }),
     emailsOrEmpty(),
     loadLearningMaps(userIds),
-    supabase
-      .from("organisation_invites")
-      .select("id, code, course_id, uses, max_uses, expires_at, created_at")
-      .eq("organisation_id", organisationId)
-      .order("created_at", { ascending: false }),
   ]);
 
   const names = new Map((profiles ?? []).map((profile) => [profile.id, profile.full_name.trim()]));
-  const courses = await publishedCourses();
-  const courseTitleById = new Map(courses.map((course) => [course.id, course.title]));
-
-  const invites: OrgInviteRow[] = (inviteRows ?? []).map((row) => ({
-    id: row.id,
-    code: row.code,
-    courseTitle: row.course_id ? (courseTitleById.get(row.course_id) ?? "Course") : null,
-    uses: row.uses,
-    maxUses: row.max_uses,
-    expiresAt: row.expires_at ? formatDate(row.expires_at) : null,
-    createdAt: formatDate(row.created_at),
-  }));
 
   return {
     org,
     members: memberRowsFrom(memberships ?? [], names, emails, learning),
-    invites,
-    courses,
+    courses: await publishedCourses(),
   };
 }
 
 export async function getOrgDashboard(organisationId?: string): Promise<{
   org: OrgSummary | null;
   members: OrgMemberRow[];
-  invites: OrgInviteRow[];
   courses: { id: string; slug: string; title: string }[];
   staffOrgs: OrgOption[];
 }> {
@@ -396,12 +376,12 @@ export async function getOrgDashboard(organisationId?: string): Promise<{
 
   const staffOrgs = staff ? await listOrgOptions() : [];
   if (!orgId) {
-    return { org: null, members: [], invites: [], courses: await publishedCourses(), staffOrgs };
+    return { org: null, members: [], courses: await publishedCourses(), staffOrgs };
   }
 
   const detail = await getOrgDetail(orgId);
   if (!detail) {
-    return { org: null, members: [], invites: [], courses: await publishedCourses(), staffOrgs };
+    return { org: null, members: [], courses: await publishedCourses(), staffOrgs };
   }
   return { ...detail, staffOrgs };
 }

@@ -10,10 +10,12 @@ import type { ReportRow } from "@/lib/org/types";
 export function OrgReportTable({
   rows,
   showOrganisation = false,
+  showHeading = true,
   filename,
 }: {
   rows: ReportRow[];
   showOrganisation?: boolean;
+  showHeading?: boolean;
   filename: string;
 }) {
   const [course, setCourse] = useState("all");
@@ -41,8 +43,8 @@ export function OrgReportTable({
       "lessons_completed",
       "lessons_total",
       "progress_percent",
-      "quiz",
-      "quiz_score",
+      "final_assessment",
+      "final_assessment_score",
       "certificate",
     ];
     const body = visible.map((row) => [
@@ -64,14 +66,15 @@ export function OrgReportTable({
 
   return (
     <section className="overflow-hidden rounded-[24px] bg-white">
-      <div className="flex flex-wrap items-end justify-between gap-3 px-5 pt-5">
-        <div>
-          <h2 className="text-lg font-bold">Reports</h2>
-          <p className="mt-1 text-sm text-neutral-400">
-            Enrolments, progress, quiz attempts, and certificates. Revenue is not included.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
+      <div
+        className={
+          showHeading
+            ? "flex flex-wrap items-end justify-between gap-3 px-5 pt-5"
+            : "flex flex-wrap items-center justify-start gap-3 px-5 pt-5"
+        }
+      >
+        {showHeading ? <h2 className="text-lg font-bold">Reports</h2> : null}
+        <div className="flex flex-wrap items-center justify-start gap-2">
           <label className="text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
             Course
             <select
@@ -109,7 +112,7 @@ export function OrgReportTable({
               <th className="px-2 py-3 font-bold">Course</th>
               <th className="px-2 py-3 font-bold">Enrolled</th>
               <th className="px-2 py-3 font-bold">Progress</th>
-              <th className="px-2 py-3 font-bold">Quiz</th>
+              <th className="whitespace-nowrap px-2 py-3 font-bold">Final assessment</th>
               <th className="px-5 py-3 font-bold">Certificate</th>
             </tr>
           </thead>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, ChevronDown, GripVertical, Plus, Settings2 } from "lucide-react";
 
+import { AdminSearchField } from "@/components/admin/admin-search-field";
 import { CourseEditorPanel } from "@/components/admin/course-editor-panel";
 import { TabButton } from "@/components/ui/tab-button";
 import {
@@ -28,6 +29,21 @@ type PublishJob = {
   title: string;
   status: "running" | "complete" | "error";
   error?: string;
+};
+
+const COLUMN_WIDTH_CLASS: Record<AdminCourseColumnId, string> = {
+  title: "w-[22%]",
+  status: "w-28",
+  slug: "w-36",
+  duration: "w-40",
+  image00: "w-28",
+  image01: "w-28",
+  image02: "w-28",
+  image03: "w-28",
+  image04: "w-28",
+  introduction: "w-28",
+  main: "w-28",
+  notes: "w-28",
 };
 
 export function AdminCourses({
@@ -65,6 +81,16 @@ export function AdminCourses({
   );
   const [publishJob, setPublishJob] = useState<PublishJob | null>(null);
   const publishGen = useRef(0);
+  const [query, setQuery] = useState("");
+  const searching = query.trim().length > 0;
+  const visibleCourses = useMemo(() => {
+    if (!searching) return courses;
+    const q = query.trim().toLowerCase();
+    return courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(q) || course.slug.toLowerCase().includes(q)
+    );
+  }, [courses, query, searching]);
 
   useEffect(() => {
     if (overlayPhase !== "entering") return;
@@ -342,22 +368,34 @@ export function AdminCourses({
         </div>
       </div>
 
-      <div className="mt-8 flex items-center gap-2 border-b border-neutral-200" role="tablist">
-        <Settings2 className="size-4 text-neutral-500" />
-        <TabButton
-          selected={tab === "lessons"}
-          onClick={() => setTab("lessons")}
-          className="text-xs font-semibold tracking-normal normal-case"
-        >
-          Lessons
-        </TabButton>
-        <TabButton
-          selected={tab === "fields"}
-          onClick={() => setTab("fields")}
-          className="text-xs font-semibold tracking-normal normal-case"
-        >
-          Fields
-        </TabButton>
+      <div className="mt-8 flex items-center gap-4 border-b border-neutral-200 pb-2">
+        <div className="flex min-w-0 items-center gap-2" role="tablist">
+          <Settings2 className="size-4 shrink-0 text-neutral-500" />
+          <TabButton
+            selected={tab === "lessons"}
+            onClick={() => setTab("lessons")}
+            className="text-xs font-semibold tracking-normal normal-case -mb-2"
+          >
+            Lessons
+          </TabButton>
+          <TabButton
+            selected={tab === "fields"}
+            onClick={() => setTab("fields")}
+            className="text-xs font-semibold tracking-normal normal-case -mb-2"
+          >
+            Fields
+          </TabButton>
+        </div>
+        {tab === "lessons" ? (
+          <AdminSearchField
+            id="admin-courses-search"
+            value={query}
+            onChange={setQuery}
+            placeholder="Search courses..."
+            label="Search courses"
+            className="ml-auto w-[min(100%,280px)] shrink-0"
+          />
+        ) : null}
       </div>
 
       {publishJob ? <PublishProgress job={publishJob} onDismiss={() => setPublishJob(null)} /> : null}
@@ -421,10 +459,11 @@ export function AdminCourses({
                   <th
                     key={column.id}
                     className={cn(
-                      "overflow-hidden px-4 py-4 whitespace-nowrap",
-                      columnWidthClass(column.id)
+                      COLUMN_WIDTH_CLASS[column.id],
+                      "overflow-hidden px-4 py-4 whitespace-nowrap"
                     )}
                   >
+                    {/* width from COLUMN_WIDTH_CLASS */}
                     {column.label}
                   </th>
                 ))}
@@ -432,7 +471,7 @@ export function AdminCourses({
               </tr>
             </thead>
             <tbody>
-              {courses.map((course) => (
+              {visibleCourses.map((course) => (
                 <CourseRow
                   key={course.id}
                   course={course}
@@ -448,6 +487,8 @@ export function AdminCourses({
           </table>
           {courses.length === 0 ? (
             <p className="px-5 py-10 text-sm text-neutral-400">No courses yet.</p>
+          ) : visibleCourses.length === 0 ? (
+            <p className="px-5 py-10 text-sm text-neutral-400">No courses match your search.</p>
           ) : null}
         </div>
       )}
@@ -483,7 +524,7 @@ export function AdminCourses({
             <button
               type="button"
               onClick={() => closeEditor()}
-              className="mb-4 inline-flex size-10 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-800 shadow-sm hover:bg-neutral-50"
+              className="outline-control mb-4 inline-flex size-10 items-center justify-center rounded-full text-neutral-800 shadow-sm"
               aria-label="Back to courses"
             >
               <ArrowLeft className="size-4" />
@@ -559,21 +600,6 @@ function PublishProgress({
   );
 }
 
-function columnWidthClass(id: AdminCourseColumnId) {
-  switch (id) {
-    case "title":
-      return "w-[22%]";
-    case "status":
-      return "w-28";
-    case "slug":
-      return "w-36";
-    case "duration":
-      return "w-40";
-    default:
-      return "w-28";
-  }
-}
-
 function FieldList({
   columns,
   draggedColumn,
@@ -642,8 +668,8 @@ function CourseRow({
         <td
           key={column}
           className={cn(
-            "min-w-0 overflow-hidden px-4 py-4 text-xs text-neutral-500",
-            columnWidthClass(column)
+            COLUMN_WIDTH_CLASS[column],
+            "min-w-0 overflow-hidden px-4 py-4 text-xs text-neutral-500"
           )}
         >
           <CourseCell

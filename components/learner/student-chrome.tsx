@@ -42,7 +42,7 @@ export function StudentChrome({
           <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
-              className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 lg:hidden"
+              className="outline-control flex size-10 items-center justify-center rounded-xl lg:hidden"
               aria-expanded={navOpen}
               onClick={() => setNavOpen((open) => !open)}
             >

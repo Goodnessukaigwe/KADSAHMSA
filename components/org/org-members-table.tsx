@@ -61,7 +61,7 @@ export function OrgMembersTable({
       <div className="px-5 pt-5">
         <h2 className="text-lg font-bold">Staff</h2>
         <p className="mt-1 text-sm text-neutral-400">
-          Progress is live lessons completed. Quiz and certificate are per course.
+          Progress is live lessons completed. Final assessment and certificate are per course.
         </p>
         {message ? (
           <p className="mt-3 text-sm text-neutral-500" role="alert">
@@ -75,10 +75,10 @@ export function OrgMembersTable({
             <tr className="border-b border-neutral-100 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
               <th className="px-5 py-3 font-bold">Name</th>
               <th className="px-2 py-3 font-bold">Email</th>
-              <th className="px-2 py-3 font-bold">Role</th>
-              <th className="px-2 py-3 font-bold">Course</th>
+              <th className="whitespace-nowrap px-2 py-3 font-bold">Role</th>
+              <th className="w-[12rem] max-w-[12rem] px-2 py-3 font-bold">Course</th>
               <th className="px-2 py-3 font-bold">Progress</th>
-              <th className="px-2 py-3 font-bold">Quiz</th>
+              <th className="whitespace-nowrap px-2 py-3 font-bold">Final assessment</th>
               <th className="px-2 py-3 font-bold">Certificate</th>
               {allowManage ? (
                 <th className="px-5 py-3">
@@ -98,19 +98,29 @@ export function OrgMembersTable({
               uniquePeople.flatMap(([userId, rows]) =>
                 rows.map((row, index) => (
                   <tr key={`${userId}-${row.courseSlug || "none"}-${index}`} className="border-b border-neutral-100 last:border-0">
-                    <td className="px-5 py-4 font-medium">{index === 0 ? row.name : ""}</td>
-                    <td className="px-2 py-4 text-neutral-500">{index === 0 ? row.email || "—" : ""}</td>
-                    <td className="px-2 py-4 text-neutral-500">
+                    <td className="px-5 py-4 font-medium whitespace-nowrap">
+                      {index === 0 ? row.name : ""}
+                    </td>
+                    <td className="px-2 py-4 whitespace-nowrap text-neutral-500">
+                      {index === 0 ? row.email || "—" : ""}
+                    </td>
+                    <td className="px-2 py-4 whitespace-nowrap text-neutral-500">
                       {index === 0 ? (row.role === "admin" ? "Admin" : "Member") : ""}
                     </td>
-                    <td className="px-2 py-4">{row.courseTitle}</td>
-                    <td className="px-2 py-4 text-neutral-500">
+                    <td className="w-[12rem] max-w-[12rem] overflow-hidden px-2 py-4 align-top">
+                      <p className="line-clamp-2 max-w-[12rem] break-words" title={row.courseTitle || undefined}>
+                        {row.courseTitle}
+                      </p>
+                    </td>
+                    <td className="px-2 py-4 whitespace-nowrap text-neutral-500">
                       {row.courseSlug ? progressLabel(row.completed, row.total) : "—"}
                     </td>
-                    <td className="px-2 py-4">{outcome(row.quizResult, row.quizScore)}</td>
-                    <td className="px-2 py-4">{certLabel(row.certificate)}</td>
+                    <td className="px-2 py-4 whitespace-nowrap">
+                      {outcome(row.quizResult, row.quizScore)}
+                    </td>
+                    <td className="px-2 py-4 whitespace-nowrap">{certLabel(row.certificate)}</td>
                     {allowManage ? (
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-5 py-4 text-right whitespace-nowrap">
                         {index === 0 ? (
                           <div className="flex justify-end gap-2">
                             {row.role === "admin" ? (

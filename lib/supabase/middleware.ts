@@ -9,7 +9,6 @@ const PROTECTED_PREFIXES = [
   "/certificates",
   "/admin",
   "/org",
-  "/join",
   "/quiz",
   "/help",
 ];

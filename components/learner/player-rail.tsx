@@ -51,7 +51,7 @@ export function PlayerRail({
         </div>
         <button
           type="button"
-          className="flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500"
+          className="outline-control flex size-9 items-center justify-center rounded-full text-neutral-500"
           onClick={() => {
             void navigator.clipboard?.writeText(window.location.href);
           }}

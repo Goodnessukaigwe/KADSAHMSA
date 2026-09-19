@@ -64,7 +64,7 @@ export function ChromeAccount({
           "inline-flex h-8 shrink-0 items-center rounded-full px-3 text-xs font-semibold transition-colors disabled:opacity-50",
           onDark
             ? "border border-white/20 text-white hover:bg-white/10"
-            : "border border-neutral-200 text-neutral-700 hover:bg-neutral-50"
+            : "outline-control text-neutral-700"
         )}
       >
         {pending ? "Logging out…" : "Log out"}

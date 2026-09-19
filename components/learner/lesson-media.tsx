@@ -9,6 +9,33 @@ import { embedSrc, videoIdFromAsset } from "@/lib/courses/media";
 import { convertDeckToSlides } from "@/lib/courses/slide-import";
 import type { LessonAsset } from "@/lib/courses/types";
 
+/** Fill the column; height follows the real page/photo ratio (no letterbox). */
+const PAGE_IMAGE_CLASS = "h-auto w-full rounded-2xl";
+
+/**
+ * 16:9 stage that shrinks to remaining viewport so play/seek stay on screen.
+ * Offset matches student header + main padding + kicker + title + media gap
+ * (measured ~15rem on the lesson reader).
+ */
+const VIDEO_STAGE_CLASS =
+  "mx-auto aspect-video min-w-0 overflow-hidden rounded-2xl";
+const VIDEO_STAGE_STYLE = {
+  width: "min(100%, calc((100svh - 15rem) * 16 / 9))",
+  maxHeight: "calc(100svh - 15rem)",
+} as const;
+
+function VideoStage({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      data-video-stage
+      className={`${VIDEO_STAGE_CLASS} bg-neutral-950`}
+      style={VIDEO_STAGE_STYLE}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function LessonMedia({ assets }: { assets: LessonAsset[] }) {
   if (!assets.length) return null;
 
@@ -77,7 +104,7 @@ export function LessonAssetBlock({
             {asset.title}
           </figcaption>
         ) : null}
-        <div className="aspect-video w-full min-w-0 overflow-hidden rounded-2xl bg-neutral-950">
+        <VideoStage>
           <iframe
             title={asset.title || (asset.kind === "youtube" ? "YouTube video" : "Vimeo video")}
             src={embedSrc(asset.kind, id)}
@@ -86,7 +113,7 @@ export function LessonAssetBlock({
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
-        </div>
+        </VideoStage>
       </figure>
     );
   }
@@ -103,11 +130,13 @@ function MediaSkeleton({
 }) {
   return (
     <div
+      {...(aspect === "video" ? { "data-video-stage": "" } : {})}
       className={
         aspect === "image"
           ? "aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200"
-          : "aspect-video w-full overflow-hidden rounded-2xl bg-neutral-200"
+          : `${VIDEO_STAGE_CLASS} bg-neutral-200`
       }
+      style={aspect === "video" ? VIDEO_STAGE_STYLE : undefined}
       aria-busy="true"
       aria-label={label}
     >
@@ -168,11 +197,7 @@ function StoredAsset({
         <img
           src={url}
           alt={asset.title || "Lesson image"}
-          className={
-            layout === "wide"
-              ? "max-h-[min(80vh,56rem)] w-full rounded-2xl bg-neutral-950 object-contain"
-              : "max-h-[32rem] w-full rounded-2xl bg-neutral-100 object-contain"
-          }
+          className={PAGE_IMAGE_CLASS}
         />
         {layout === "wide" || !asset.title ? null : (
           <figcaption className="mt-2 text-sm text-neutral-500">{asset.title}</figcaption>
@@ -204,14 +229,16 @@ function StoredAsset({
             {asset.title}
           </figcaption>
         ) : null}
-        <video
-          controls
-          src={url}
-          className="w-full rounded-2xl bg-neutral-950"
-          preload="metadata"
-        >
-          Your browser cannot play this video.
-        </video>
+        <VideoStage>
+          <video
+            controls
+            src={url}
+            className="size-full object-contain"
+            preload="metadata"
+          >
+            Your browser cannot play this video.
+          </video>
+        </VideoStage>
       </figure>
     );
   }
@@ -286,10 +313,6 @@ function InlineDeck({
     );
   }
 
-  const imageClassName =
-    layout === "wide"
-      ? "max-h-[min(80vh,56rem)] w-full rounded-2xl bg-neutral-950 object-contain"
-      : "max-h-[32rem] w-full rounded-2xl bg-neutral-100 object-contain";
   return (
     <figure className="space-y-4">
       {layout !== "wide" && asset.title ? (
@@ -303,7 +326,7 @@ function InlineDeck({
           key={src}
           src={src}
           alt={`${asset.title || "Lesson slides"} — slide ${index + 1} of ${slides.length}`}
-          className={imageClassName}
+          className={PAGE_IMAGE_CLASS}
         />
       ))}
       <p className="text-sm text-neutral-500">

@@ -294,12 +294,9 @@ export function CourseEditorPanel({
   const [finalTimeLimitSeconds, setFinalTimeLimitSeconds] = useState(
     DEFAULT_QUIZ_TIME_LIMIT_SECONDS
   );
-  const [quizOpen, setQuizOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [uploadToast, setUploadToast] = useState<string | null>(null);
   const [stagedCover, setStagedCover] = useState<StagedFile | null>(null);
-  const [stagedCoverVideo, setStagedCoverVideo] = useState<StagedFile | null>(null);
-  const [stagedCoverPdf, setStagedCoverPdf] = useState<StagedFile | null>(null);
   const [stagedSectionFiles, setStagedSectionFiles] = useState<StagedSectionFiles>({});
   const [saved, setSaved] = useState(true);
   const [pending, setPending] = useState<
@@ -308,6 +305,7 @@ export function CourseEditorPanel({
   const [loading, setLoading] = useState(slug !== "new");
   const [error, setError] = useState<string | null>(null);
   const loadedSlug = useRef<string | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     onDirtyChange(!saved);
@@ -347,17 +345,8 @@ export function CourseEditorPanel({
         setEditingLessonId(nextModule.lessons[0]?.id ?? "");
         setFinalQuestions([]);
         setFinalTimeLimitSeconds(DEFAULT_QUIZ_TIME_LIMIT_SECONDS);
-        setQuizOpen(false);
         setPreviewOpen(false);
         setStagedCover((current) => {
-          revokeStaged(current);
-          return null;
-        });
-        setStagedCoverVideo((current) => {
-          revokeStaged(current);
-          return null;
-        });
-        setStagedCoverPdf((current) => {
           revokeStaged(current);
           return null;
         });
@@ -414,17 +403,8 @@ export function CourseEditorPanel({
     setFinalTimeLimitSeconds(
       course.finalTimeLimitSeconds ?? DEFAULT_QUIZ_TIME_LIMIT_SECONDS
     );
-    setQuizOpen(course.finalQuestions.length > 0);
     setPreviewOpen(false);
     setStagedCover((current) => {
-      revokeStaged(current);
-      return null;
-    });
-    setStagedCoverVideo((current) => {
-      revokeStaged(current);
-      return null;
-    });
-    setStagedCoverPdf((current) => {
       revokeStaged(current);
       return null;
     });
@@ -559,7 +539,6 @@ export function CourseEditorPanel({
         correctIndex: 0,
       },
     ]);
-    setQuizOpen(true);
     markDirty();
   }
 
@@ -576,7 +555,6 @@ export function CourseEditorPanel({
       copy,
       ...current.slice(index + 1),
     ]);
-    setQuizOpen(true);
     markDirty();
   }
 
@@ -605,25 +583,6 @@ export function CourseEditorPanel({
       return { file, previewUrl };
     });
     setCoverUrl(previewUrl);
-    markDirty();
-  }
-
-  function stageCoverMedia(kind: "video" | "pdf", file: File) {
-    const staged = {
-      file,
-      previewUrl: kind === "video" ? URL.createObjectURL(file) : "",
-    };
-    if (kind === "video") {
-      setStagedCoverVideo((current) => {
-        revokeStaged(current);
-        return staged;
-      });
-    } else {
-      setStagedCoverPdf((current) => {
-        revokeStaged(current);
-        return staged;
-      });
-    }
     markDirty();
   }
 
@@ -671,17 +630,6 @@ export function CourseEditorPanel({
     return next;
   }
 
-  function applyLessonAssets(lessonId: string, assets: LessonAsset[]) {
-    setModules((current) =>
-      current.map((module) => ({
-        ...module,
-        lessons: module.lessons.map((item) =>
-          item.id === lessonId ? { ...item, assets } : item
-        ),
-      }))
-    );
-  }
-
   function matchSavedLesson(draft: BuilderLesson, savedLessons: BuilderLesson[], index: number) {
     return (
       savedLessons.find((item) => item.id === draft.id) ??
@@ -721,8 +669,6 @@ export function CourseEditorPanel({
     let nextModules = savedModules;
     const draftLessons = flattenBuilderLessons(draftModules);
     const coverToFlush = stagedCover;
-    const coverVideoToFlush = stagedCoverVideo;
-    const coverPdfToFlush = stagedCoverPdf;
 
     if (coverToFlush) {
       setUploadToast(coverToFlush.file.name);
@@ -738,33 +684,6 @@ export function CourseEditorPanel({
       setStagedCover(null);
       setCoverPath(coverResult.path);
       setCoverUrl(preview.ok ? preview.url : "");
-    }
-
-    const firstDraft = draftModules[0]?.lessons[0];
-    const firstSaved = firstDraft
-      ? matchSavedLesson(firstDraft, flattenBuilderLessons(nextModules), 0)
-      : flattenBuilderLessons(nextModules)[0];
-    const coverFiles: { staged: StagedFile | null; clear: () => void }[] = [
-      { staged: coverVideoToFlush, clear: () => setStagedCoverVideo(null) },
-      { staged: coverPdfToFlush, clear: () => setStagedCoverPdf(null) },
-    ];
-    if (coverFiles.some((item) => item.staged)) {
-      if (!firstSaved || !isUuid(firstSaved.id)) {
-        setUploadToast(null);
-        return { modules: nextModules, error: "Save the course first to upload cover media." };
-      }
-      for (const item of coverFiles) {
-        if (!item.staged) continue;
-        setUploadToast(item.staged.file.name);
-        const uploaded = await uploadSectionedFile(firstSaved.id, "cover", item.staged.file);
-        if (!uploaded.ok) {
-          setUploadToast(null);
-          return { modules: nextModules, error: uploaded.error };
-        }
-        revokeStaged(item.staged);
-        item.clear();
-        nextModules = applyAssetsToModules(nextModules, firstSaved.id, uploaded.assets);
-      }
     }
 
     for (const [index, draft] of draftLessons.entries()) {
@@ -1007,7 +926,6 @@ export function CourseEditorPanel({
     editingModule?.lessons.find((lesson) => lesson.id === editingLessonId) ??
     editingModule?.lessons[0] ??
     null;
-  const firstLesson = modules[0]?.lessons[0] ?? null;
 
   if (loading) {
     return (
@@ -1102,70 +1020,39 @@ export function CourseEditorPanel({
             </FieldRow>
 
             <FieldRow label="Cover">
-              <div className="flex flex-wrap items-start gap-4">
-                <SlotCaption label="Photo">
-                  <CoverThumb
-                    courseId={courseId}
-                    src={coverUrl || (isPublicCoverPath(coverPath) ? coverPath : "")}
-                    onUploading={setUploadToast}
-                    onStaged={stageCover}
-                    onUploaded={async (path) => {
-                      setCoverPath(path);
-                      const preview = await previewCoverPath(path);
-                      setCoverUrl(preview.ok ? preview.url : "");
-                      setSaved(true);
-                      setUploadToast(null);
-                    }}
-                  />
-                </SlotCaption>
-                <SlotCaption
-                  label="Video"
-                  hint="Do not upload videos larger than 10 MB."
-                >
-                  <CoverFileThumb
-                    kind="video"
-                    lessonId={firstLesson?.id ?? null}
-                    asset={sectionedLessonAsset(firstLesson?.assets ?? [], "cover", "video")}
-                    stagedName={stagedCoverVideo?.file.name}
-                    previewUrl={stagedCoverVideo?.previewUrl}
-                    onUploading={setUploadToast}
-                    onStaged={(file) => stageCoverMedia("video", file)}
-                    onUploaded={(lessonId, assets) => {
-                      applyLessonAssets(lessonId, assets);
-                      setSaved(true);
-                    }}
-                  />
-                </SlotCaption>
-                <SlotCaption label="PDF">
-                  <CoverFileThumb
-                    kind="pdf"
-                    lessonId={firstLesson?.id ?? null}
-                    asset={sectionedLessonAsset(firstLesson?.assets ?? [], "cover", "pdf")}
-                    stagedName={stagedCoverPdf?.file.name}
-                    onUploading={setUploadToast}
-                    onStaged={(file) => stageCoverMedia("pdf", file)}
-                    onUploaded={(lessonId, assets) => {
-                      applyLessonAssets(lessonId, assets);
-                      setSaved(true);
-                    }}
-                  />
-                </SlotCaption>
-              </div>
+              <SlotCaption label="Photo">
+                <CoverThumb
+                  courseId={courseId}
+                  src={coverUrl || (isPublicCoverPath(coverPath) ? coverPath : "")}
+                  onUploading={setUploadToast}
+                  onStaged={stageCover}
+                  onUploaded={async (path) => {
+                    setCoverPath(path);
+                    const preview = await previewCoverPath(path);
+                    setCoverUrl(preview.ok ? preview.url : "");
+                    setSaved(true);
+                    setUploadToast(null);
+                  }}
+                />
+              </SlotCaption>
             </FieldRow>
+          </div>
 
             {editingModule && editingLesson ? (
               <>
-                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
-                  <button
-                    type="button"
-                    onClick={createModule}
-                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950"
-                  >
-                    + Create new module
-                  </button>
-                </div>
-                <FieldRow label="Module">
-                  <div className="flex min-w-0 flex-1 flex-wrap gap-2">
+                <div className="mt-6 rounded-[28px] border border-neutral-200 bg-white px-5 py-5 sm:px-6">
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-neutral-950">Module</p>
+                    <button
+                      type="button"
+                      onClick={createModule}
+                      className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase"
+                    >
+                      Create new module
+                      <Plus className="size-4" />
+                    </button>
+                  </div>
+                  <div className="flex min-w-0 flex-wrap gap-2">
                     {modules.map((module) => {
                       const moduleLabel = module.title.trim() || "Untitled module";
                       const canDeleteModule = modules.length > 1;
@@ -1216,29 +1103,54 @@ export function CourseEditorPanel({
                       );
                     })}
                   </div>
-                </FieldRow>
-                <FieldRow label="Module title">
-                  <input
-                    value={editingModule.title}
-                    onChange={(event) =>
-                      updateModule({ ...editingModule, title: event.target.value })
-                    }
-                    placeholder="Untitled module"
-                    className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
-                  />
-                </FieldRow>
-                <div className="border-b border-neutral-100 py-4 pl-0 sm:pl-32">
-                  <button
-                    type="button"
-                    onClick={() => createLesson(editingModule.id)}
-                    disabled={pending !== null}
-                    className="text-[11px] font-bold tracking-[0.12em] text-neutral-500 uppercase hover:text-neutral-950 disabled:opacity-60"
-                  >
-                    + Create new lesson
-                  </button>
+                  <StackedField label="Module title">
+                    <input
+                      value={editingModule.title}
+                      onChange={(event) =>
+                        updateModule({ ...editingModule, title: event.target.value })
+                      }
+                      placeholder="Untitled module"
+                      className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
+                    />
+                  </StackedField>
                 </div>
-                <FieldRow label="Lesson">
-                  <div className="flex min-w-0 flex-1 flex-wrap gap-2">
+                <div className="mt-6 rounded-[28px] border border-neutral-200 bg-white px-5 py-5 sm:px-6">
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-neutral-950">Lesson</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => createLesson(editingModule.id)}
+                        disabled={pending !== null}
+                        className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase disabled:opacity-60"
+                      >
+                        Create new lesson
+                        <Plus className="size-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => pdfInputRef.current?.click()}
+                        disabled={pending !== null}
+                        className="inline-flex items-center gap-3 rounded-xl bg-neutral-950 px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-white uppercase disabled:opacity-60"
+                      >
+                        Upload PDF
+                        <FileText className="size-4" />
+                      </button>
+                      <input
+                        ref={pdfInputRef}
+                        type="file"
+                        accept={PDF_ACCEPT}
+                        className="sr-only"
+                        disabled={pending !== null}
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          event.target.value = "";
+                          if (file) void importPdfAsLessons(file);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex min-w-0 flex-wrap gap-2">
                     {editingModule.lessons.map((lesson) => {
                       const lessonLabel = lesson.title.trim() || "Untitled lesson";
                       return (
@@ -1285,50 +1197,49 @@ export function CourseEditorPanel({
                       );
                     })}
                   </div>
-                </FieldRow>
-                <FieldRow label="Lesson title">
-                  <input
-                    value={editingLesson.title}
-                    onChange={(event) =>
-                      updateLesson({ ...editingLesson, title: event.target.value })
-                    }
-                    placeholder="Untitled lesson"
-                    className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
-                  />
-                </FieldRow>
-                <EditorBlock
-                  key={`${editingLesson.id}-main`}
-                  label="Lesson"
-                  value={editingLesson.main}
-                  onChange={(main) => updateLesson({ ...editingLesson, main })}
-                  media={
-                    <SectionMediaSlots
-                      lessonId={editingLesson.id}
-                      section="main"
-                      assets={editingLesson.assets ?? []}
-                      staged={stagedSectionFiles[editingLesson.id]?.main}
-                      onUploading={setUploadToast}
-                      onStaged={(kind, file) =>
-                        stageSectionFile(editingLesson.id, "main", kind, file)
+                  <StackedField label="Lesson title">
+                    <input
+                      value={editingLesson.title}
+                      onChange={(event) =>
+                        updateLesson({ ...editingLesson, title: event.target.value })
                       }
-                      onUploaded={(assets) => updateLesson({ ...editingLesson, assets })}
-                      onPdfImport={importPdfAsLessons}
+                      placeholder="Untitled lesson"
+                      className="h-11 w-full rounded-full bg-neutral-100 px-4 text-sm outline-none"
                     />
-                  }
-                />
-                <div className="border-t border-neutral-100 py-4 pl-0 sm:pl-32">
-                  <LessonAssetsEditor
-                    lessonId={editingLesson.id}
-                    assets={editingLesson.assets ?? []}
-                    hideIds={(editingLesson.assets ?? [])
-                      .filter((asset) => asset.section)
-                      .map((asset) => asset.id)}
-                    onChange={(assets) => updateLesson({ ...editingLesson, assets })}
+                  </StackedField>
+                  <EditorBlock
+                    key={`${editingLesson.id}-main`}
+                    label="Lesson"
+                    value={editingLesson.main}
+                    onChange={(main) => updateLesson({ ...editingLesson, main })}
+                    media={
+                      <SectionMediaSlots
+                        lessonId={editingLesson.id}
+                        section="main"
+                        kinds={["image", "video"]}
+                        assets={editingLesson.assets ?? []}
+                        staged={stagedSectionFiles[editingLesson.id]?.main}
+                        onUploading={setUploadToast}
+                        onStaged={(kind, file) =>
+                          stageSectionFile(editingLesson.id, "main", kind, file)
+                        }
+                        onUploaded={(assets) => updateLesson({ ...editingLesson, assets })}
+                      />
+                    }
                   />
+                  <div className="border-t border-neutral-100 py-4">
+                    <LessonAssetsEditor
+                      lessonId={editingLesson.id}
+                      assets={editingLesson.assets ?? []}
+                      hideIds={(editingLesson.assets ?? [])
+                        .filter((asset) => asset.section)
+                        .map((asset) => asset.id)}
+                      onChange={(assets) => updateLesson({ ...editingLesson, assets })}
+                    />
+                  </div>
                 </div>
               </>
             ) : null}
-          </div>
 
         {editingModule && !lockedQuiz && !loading ? (
           <FinalQuizEditor
@@ -1345,7 +1256,7 @@ export function CourseEditorPanel({
           />
         ) : null}
 
-        {quizOpen && !lockedQuiz && !loading ? (
+        {!lockedQuiz && !loading ? (
           <FinalQuizEditor
             questions={finalQuestions}
             onChange={(next) => {
@@ -1454,7 +1365,7 @@ export function CourseEditorPanel({
                 type="button"
                 disabled={!canPreviewFinal}
                 onClick={() => setPreviewOpen(true)}
-                className="mt-3 h-10 w-full rounded-xl border border-neutral-200 text-[10px] font-bold tracking-[0.12em] uppercase hover:bg-neutral-50 disabled:cursor-not-allowed disabled:text-neutral-400 disabled:hover:bg-transparent"
+                className="outline-control mt-3 h-10 w-full rounded-xl text-[10px] font-bold tracking-[0.12em] uppercase disabled:cursor-not-allowed disabled:text-neutral-400 disabled:hover:bg-transparent"
               >
                 Preview
               </button>
@@ -1476,7 +1387,7 @@ export function CourseEditorPanel({
                 <button
                   type="button"
                   onClick={() => setPreviewOpen(false)}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-full bg-white px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
+                  className="outline-control inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-[11px] font-bold tracking-[0.12em] uppercase"
                 >
                   <X className="size-3.5" />
                   Close
@@ -1524,6 +1435,21 @@ function FieldRow({
     <div className="flex flex-col gap-2 border-b border-neutral-100 py-4 last:border-0 sm:flex-row sm:items-start">
       <p className="w-32 shrink-0 pt-3 text-sm text-neutral-500">{label}</p>
       <div className="min-w-0 flex-1">{children}</div>
+    </div>
+  );
+}
+
+function StackedField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mt-4 flex flex-col gap-2">
+      <p className="text-sm text-neutral-500">{label}</p>
+      <div className="min-w-0 w-full">{children}</div>
     </div>
   );
 }
@@ -1616,82 +1542,6 @@ function SlotCaption({
   );
 }
 
-function CoverFileThumb({
-  kind,
-  lessonId,
-  asset,
-  stagedName,
-  previewUrl,
-  onUploaded,
-  onStaged,
-  onUploading,
-}: {
-  kind: "video" | "pdf";
-  lessonId: string | null;
-  asset?: LessonAsset;
-  stagedName?: string;
-  previewUrl?: string;
-  onUploaded: (lessonId: string, assets: LessonAsset[]) => void;
-  onStaged: (file: File) => void;
-  onUploading?: (name: string | null) => void;
-}) {
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const saved = Boolean(lessonId && isUuid(lessonId));
-
-  async function onFile(file: File) {
-    if (pending) return;
-    if (kind === "video") {
-      const classified = classifyUpload(file);
-      if (!classified.ok) {
-        setError(classified.error);
-        return;
-      }
-    }
-    if (!saved || !lessonId) {
-      setError(null);
-      onStaged(file);
-      return;
-    }
-    setPending(true);
-    setError(null);
-    onUploading?.(file.name);
-    try {
-      const result = await uploadLessonFile(lessonId, file, "cover");
-      setPending(false);
-      onUploading?.(null);
-      if (!result.ok) {
-        setError(result.error);
-        return;
-      }
-      onUploaded(lessonId, result.assets);
-    } catch (cause) {
-      setPending(false);
-      onUploading?.(null);
-      setError(uploadFailedMessage(cause));
-    }
-  }
-
-  return (
-    <div>
-      <MediaKindSlot
-        kind={kind}
-        asset={asset}
-        previewUrl={kind === "video" ? previewUrl : undefined}
-        pending={pending}
-        label={`Cover ${kind}`}
-        stagedName={stagedName}
-        onFile={(file) => void onFile(file)}
-      />
-      {error ? (
-        <p className="mt-1 max-w-[9rem] text-[11px] text-red-600" role="alert">
-          {error}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
 const SECTION_MEDIA_SLOT_LABEL: Record<SectionedAssetKind, string> = {
   image: "Photo",
   video: "Video",
@@ -1707,6 +1557,7 @@ function SectionMediaSlots({
   onStaged,
   onUploading,
   onPdfImport,
+  kinds = SECTION_MEDIA_KINDS,
 }: {
   lessonId: string;
   section: LessonAssetSection;
@@ -1716,10 +1567,11 @@ function SectionMediaSlots({
   onStaged: (kind: SectionedAssetKind, file: File) => void;
   onUploading?: (name: string | null) => void;
   onPdfImport?: (file: File) => Promise<void>;
+  kinds?: SectionedAssetKind[];
 }) {
   return (
-    <div className="flex flex-col gap-3">
-      {SECTION_MEDIA_KINDS.map((kind) => (
+    <div className="flex flex-row flex-wrap items-start gap-4">
+      {kinds.map((kind) => (
         <SlotCaption
           key={kind}
           label={SECTION_MEDIA_SLOT_LABEL[kind]}
@@ -1962,10 +1814,10 @@ function EditorBlock({
   }
 
   return (
-    <FieldRow label={label}>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+    <StackedField label={label}>
+      <div className="flex flex-col gap-3">
         {media}
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="flex min-w-0 w-full flex-col gap-3">
           {boxes.map((box, index) => (
             <ParagraphBox
               key={box.id}
@@ -1993,7 +1845,7 @@ function EditorBlock({
           ))}
         </div>
       </div>
-    </FieldRow>
+    </StackedField>
   );
 }
 

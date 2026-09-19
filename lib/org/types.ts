@@ -25,20 +25,9 @@ export type OrgMemberRow = {
   certificate: "issued" | "revoked" | "none";
 };
 
-export type OrgInviteRow = {
-  id: string;
-  code: string;
-  courseTitle: string | null;
-  uses: number;
-  maxUses: number | null;
-  expiresAt: string | null;
-  createdAt: string;
-};
-
 export type OrgDetail = {
   org: OrgSummary;
   members: OrgMemberRow[];
-  invites: OrgInviteRow[];
   courses: { id: string; slug: string; title: string }[];
 };
 

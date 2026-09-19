@@ -6,20 +6,18 @@ import { OrgEnrolTools } from "@/components/org/org-enrol-tools";
 import { OrgMembersTable } from "@/components/org/org-members-table";
 import { OrgProgressCards } from "@/components/org/org-progress-cards";
 import { OrgReportTable } from "@/components/org/org-report-table";
-import type { OrgInviteRow, OrgMemberRow, OrgOption, OrgSummary, ReportRow } from "@/lib/org/types";
+import type { OrgMemberRow, OrgOption, OrgSummary, ReportRow } from "@/lib/org/types";
 import { cn } from "@/lib/utils";
 
 export function OrgDashboard({
   org,
   members,
-  invites,
   courses,
   staffOrgs,
   reports,
 }: {
   org: OrgSummary | null;
   members: OrgMemberRow[];
-  invites: OrgInviteRow[];
   courses: { id: string; slug: string; title: string }[];
   staffOrgs: OrgOption[];
   reports: ReportRow[];
@@ -92,7 +90,7 @@ export function OrgDashboard({
       <OrgProgressCards rows={members} />
 
       <div className="mt-8">
-        <OrgEnrolTools organisationId={org.id} courses={courses} invites={invites} />
+        <OrgEnrolTools organisationId={org.id} courses={courses} />
       </div>
       <div className="mt-8">
         <OrgMembersTable organisationId={org.id} members={members} />

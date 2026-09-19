@@ -110,7 +110,7 @@ export function PublicHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white supports-[backdrop-filter]:bg-white/90 supports-[backdrop-filter]:backdrop-blur-md">
       <div className="mx-auto flex h-[72px] w-full max-w-[1120px] items-center justify-between gap-4 px-4 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <Link
           href="/"
@@ -153,7 +153,7 @@ export function PublicHeader() {
 
           <button
             type="button"
-            className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 lg:hidden"
+            className="outline-control flex size-10 items-center justify-center rounded-xl lg:hidden"
             aria-expanded={open}
             aria-controls="landing-mobile-nav"
             onClick={() => setOpen((wasOpen) => !wasOpen)}

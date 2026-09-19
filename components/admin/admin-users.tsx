@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-
+import { AdminSearchField } from "@/components/admin/admin-search-field";
 import type { StaffLearnerRow } from "@/lib/certificates/queries";
 import { downloadCsv, toCsv } from "@/lib/org/csv";
 import { cn } from "@/lib/utils";
@@ -11,11 +11,22 @@ const PAGE_SIZE = 12;
 
 export function AdminUsers({ learners = [] }: { learners?: StaffLearnerRow[] }) {
   const [page, setPage] = useState(1);
-  const pageCount = Math.max(1, Math.ceil(learners.length / PAGE_SIZE));
+  const [query, setQuery] = useState("");
+  const searching = query.trim().length > 0;
+  const filtered = useMemo(() => {
+    if (!searching) return learners;
+    const q = query.trim().toLowerCase();
+    return learners.filter(
+      (learner) =>
+        learner.name.toLowerCase().includes(q) ||
+        (learner.email || "").toLowerCase().includes(q)
+    );
+  }, [learners, query, searching]);
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const visible = useMemo(
-    () => learners.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
-    [learners, safePage]
+    () => filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filtered, safePage]
   );
 
   function exportCsv() {
@@ -63,8 +74,20 @@ export function AdminUsers({ learners = [] }: { learners?: StaffLearnerRow[] }) 
         </div>
       </div>
 
-      <p className="mt-8 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
-        Registered learners ({learners.length})
+      <AdminSearchField
+        id="admin-users-search"
+        value={query}
+        onChange={(value) => {
+          setQuery(value);
+          setPage(1);
+        }}
+        placeholder="Search learners..."
+        label="Search learners"
+        className="mt-8"
+      />
+
+      <p className="mt-6 text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
+        Registered learners ({filtered.length})
       </p>
 
       <div className="mt-4 overflow-hidden rounded-[24px] bg-white">
@@ -116,10 +139,14 @@ export function AdminUsers({ learners = [] }: { learners?: StaffLearnerRow[] }) 
           <p className="px-5 py-10 text-sm text-neutral-400">
             No registered learners yet.
           </p>
+        ) : filtered.length === 0 ? (
+          <p className="px-5 py-10 text-sm text-neutral-400">
+            No learners match your search.
+          </p>
         ) : null}
       </div>
 
-      {learners.length > PAGE_SIZE ? (
+      {filtered.length > PAGE_SIZE ? (
         <div className="mt-5 flex items-center gap-2 text-sm text-neutral-500">
           <span>Page:</span>
           <input

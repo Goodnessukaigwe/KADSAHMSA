@@ -50,7 +50,7 @@ export function SplitCta({
     "flex shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-0.5",
     size === "sm" ? "size-11" : "size-12",
     variant === "dark"
-      ? "bg-white text-neutral-950 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
+      ? "border border-neutral-200 bg-white text-neutral-950"
       : "bg-neutral-950 text-white"
   );
 
