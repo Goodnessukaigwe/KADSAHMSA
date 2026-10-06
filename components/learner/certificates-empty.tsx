@@ -10,7 +10,7 @@ export function CertificatesEmpty() {
       </h1>
       <p className="mt-2 max-w-xl text-sm text-neutral-400">
         Downloadable PDFs with a unique verification ID appear here after you
-        complete every live lesson and pass the final assessment at 70%.
+        complete every live lesson and pass the final assessment at 80%.
       </p>
 
       <div className="mt-10 flex max-w-lg flex-col items-center rounded-[28px] bg-white px-8 py-16 text-center">
@@ -20,7 +20,7 @@ export function CertificatesEmpty() {
         <h2 className="mt-6 text-xl font-bold">No certificates yet</h2>
         <p className="mt-2 max-w-sm text-sm leading-relaxed text-neutral-500">
           Finish every live lesson on a published course, then pass the final
-          assessment at 70% or above. A request alone does not issue a
+          assessment at 80% or above. A request alone does not issue a
           certificate.
         </p>
         <div className="mt-8">

@@ -28,7 +28,7 @@ export function FinalQuizEditor({
   timeLimitMinutes,
   onTimeLimitMinutesChange,
   heading = "Final assessment",
-  description = "Multiple choice only. Pass mark 70%. Learners can retake until they pass. A certificate is issued when every live lesson is complete and the learner scores 70% or above. Leave this empty if the course has no quiz and no certificate.",
+  description = "Multiple choice only. Pass mark 80%. Learners can retake until they pass. A certificate is issued when every live lesson is complete and the learner scores 80% or above. Leave this empty if the course has no quiz and no certificate.",
   timeLimitLabel = "Final assessment time",
 }: {
   questions: BuilderQuizQuestion[];

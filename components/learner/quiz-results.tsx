@@ -44,7 +44,7 @@ export function QuizResults({ view }: { view: QuizResultsView }) {
         <div className="mt-10 max-w-lg rounded-[28px] bg-white px-8 py-12">
           <h2 className="text-xl font-bold">No quizzes yet</h2>
           <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-            Start with a course quiz from My courses. The pass mark is 70%. A
+            Start with a course quiz from My courses. The pass mark is 80%. A
             certificate is issued only after every live lesson and a pass on the
             final assessment.
           </p>
