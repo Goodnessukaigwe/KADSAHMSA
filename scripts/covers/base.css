@@ -1,0 +1,14 @@
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1600px;height:1000px;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;position:relative;-webkit-font-smoothing:antialiased}
+.ribbons{position:absolute;inset:0;pointer-events:none}
+.top{position:absolute;left:96px;right:96px;top:96px;display:flex;align-items:center;justify-content:space-between}
+.logo{background:#fff;border-radius:28px;padding:12px 20px;display:flex;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+.logo img{width:150px;height:auto;display:block}
+.pill{font-weight:700;font-size:22px;letter-spacing:.18em;text-transform:uppercase;padding:14px 26px;border-radius:999px}
+.main{position:absolute;left:96px;top:290px;width:1040px}
+.eyebrow{font-weight:700;font-size:26px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:28px}
+h1{font-weight:800;letter-spacing:-.035em;line-height:.98}
+.sub{font-weight:500;font-size:32px;line-height:1.35;margin-top:30px;max-width:860px}
+.foot{position:absolute;left:96px;right:96px;bottom:96px;display:flex;gap:18px;align-items:center;font-weight:600;font-size:26px}
+.dot{width:8px;height:8px;border-radius:50%;opacity:.6}
