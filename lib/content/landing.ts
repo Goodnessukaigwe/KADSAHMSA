@@ -46,8 +46,8 @@ export const plans = {
   subtitle: "Learn on your own, or equip your organisation with seats and progress reporting.",
   highlights: [
     {
-      title: "Flexible payments",
-      body: "Published courses are free to request. An administrator enrols you when a seat is ready.",
+      title: "Free now, paid courses later",
+      body: "Free courses enrol instantly when you click Enroll. Paid courses will open for enrolment in future.",
     },
     {
       title: "Complete feedback delivery",

@@ -12,9 +12,6 @@ import { DEFAULT_PASS_MARK } from "@/lib/domain";
 const AGENCY = "Kaduna State Substance Abuse and Mental Health Services Agency";
 
 const GREEN = rgb(0.043, 0.302, 0.173); // #0b4d2c
-const DARK = rgb(0.102, 0.227, 0.165); // #1a3a2a
-const GOLD = rgb(0.788, 0.635, 0.153); // #c9a227
-const TINT = rgb(0.91, 0.953, 0.925); // #e8f3ec
 const SLATE = rgb(0.43, 0.49, 0.56); // #6e7d8f
 const FRAME = rgb(0.62, 0.7, 0.78); // #9fb3c7
 const WAX = rgb(0.6, 0.1, 0.1); // #991a1a
