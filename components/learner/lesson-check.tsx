@@ -12,11 +12,14 @@ export function InlineCheck({
   check,
   number,
   selected,
+  large = false,
   onSelect,
 }: {
   check: LessonCheck;
   number?: number;
   selected: number | null;
+  /** Bigger question text, as on the knowledge-check slides. */
+  large?: boolean;
   onSelect: (index: number) => void;
 }) {
   const answered = selected !== null;
@@ -24,9 +27,13 @@ export function InlineCheck({
   const right = answered && known && selected === check.answer;
 
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-5">
-      <p className="text-[15px] leading-snug font-semibold text-neutral-950">
-        {number ? <span className="mr-2 text-neutral-400">{number}.</span> : null}
+    <div className={cn("rounded-2xl bg-white p-4 sm:p-5", large ? "" : "border border-neutral-200")}>
+      <p className={cn("leading-snug font-semibold text-neutral-950", large ? "text-xl sm:text-2xl" : "text-[15px]")}>
+        {number ? (
+          <span className="mr-2.5 inline-flex size-6 items-center justify-center rounded-md bg-[var(--deep,#0b4d2c)] align-[0.1em] text-xs font-bold text-white">
+            {number}
+          </span>
+        ) : null}
         {check.prompt}
       </p>
       <div className="mt-3 space-y-2" role="radiogroup" aria-label={check.prompt}>
