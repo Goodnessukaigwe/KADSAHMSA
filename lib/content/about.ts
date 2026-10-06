@@ -1,7 +1,7 @@
 export const aboutPage = {
   badge: "About KADSAMHSA Academy",
   title: "An online academy for training staff, partners, and communities.",
-  lead: "KADSAMHSA Academy is the official training platform of the Kaduna State Bureau for Substance Abuse Prevention and Treatment. It exists so people can complete evidence-based drug prevention, treatment, and care courses online — then prove they finished.",
+  lead: "KADSAMHSA Academy is the official training platform of the Kaduna State Substance Abuse and Mental Health Services Agency. It exists so people can complete evidence-based drug prevention, treatment, and care courses online — then prove they finished.",
   heroCta: "Browse courses",
   heroCtaHref: "/courses",
   purpose: [
@@ -17,7 +17,7 @@ export const aboutPage = {
   why: {
     badge: "Why it exists",
     title: "Training used to stop at the people in the room.",
-    body: "The Bureau's curricula were delivered as slide decks and manuals in in-person workshops. This platform is how that changes.",
+    body: "The Agency's curricula were delivered as slide decks and manuals in in-person workshops. This platform is how that changes.",
     points: [
       "Only people who could attend in person were trained.",
       "Completion was hard to track, and hard to prove.",
@@ -69,7 +69,7 @@ export const aboutPage = {
     {
       question: "What is KADSAMHSA Academy?",
       answer:
-        "It is the Bureau's official online training platform. Individuals and partner organisations enrol in courses on drug prevention, treatment, and care, complete assessments, and earn certificates that can be verified.",
+        "It is the Agency's official online training platform. Individuals and partner organisations enrol in courses on drug prevention, treatment, and care, complete assessments, and earn certificates that can be verified.",
     },
     {
       question: "Is this course really free?",
