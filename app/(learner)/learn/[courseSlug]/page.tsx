@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CourseOverview } from "@/components/learner/course-overview";
 import { getVisibleCourse } from "@/lib/courses/queries";
 import { getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
+import { isStaffUser } from "@/lib/permissions";
 
 export const metadata = { title: "Course" };
 
@@ -15,9 +16,10 @@ export default async function CourseOverviewPage({
   const course = await getVisibleCourse(courseSlug);
   if (!course) notFound();
 
-  const [enrolled, progress] = await Promise.all([
+  const [enrolled, progress, staff] = await Promise.all([
     isEnrolledIn(courseSlug),
     getMyProgress(courseSlug),
+    isStaffUser(),
   ]);
   return (
     <CourseOverview
@@ -25,6 +27,7 @@ export default async function CourseOverviewPage({
       course={course}
       enrolled={enrolled}
       progress={progress}
+      preview={staff}
     />
   );
 }

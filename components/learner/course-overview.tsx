@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Lock } from "lucide-react";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { LessonSectionMedia } from "@/components/learner/lesson-media";
@@ -8,6 +9,7 @@ import { PlayPoster, ProgressTrack } from "@/components/learner/simulated-video"
 import type { PublishedCourse } from "@/lib/courses/types";
 import { dptcCourse, dptcModules } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
+import { buildAccess } from "@/lib/learning/gating";
 import { continueHref, firstOutlineHref, type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseOverview({
@@ -15,11 +17,13 @@ export function CourseOverview({
   course,
   enrolled,
   progress,
+  preview = false,
 }: {
   slug: string;
   course: PublishedCourse;
   enrolled: boolean;
   progress: CourseProgress;
+  preview?: boolean;
 }) {
   const isDptc = slug === dptcCourse.slug;
   const hasFinal = course.hasFinalQuiz;
@@ -38,6 +42,7 @@ export function CourseOverview({
         }))
       : [];
   const firstHref = firstOutlineHref(slug, outline);
+  const access = buildAccess(outline, progress, preview || !enrolled);
   const resumeHref = enrolled ? continueHref(slug, progress, firstHref) : firstHref;
 
   return (
@@ -111,12 +116,19 @@ export function CourseOverview({
                       <ul className="mt-2 space-y-1">
                         {module.lessons.map((lesson) => (
                           <li key={lesson.slug}>
-                            <Link
-                              href={enrolled ? lesson.href : firstHref}
-                              className="text-[13px] text-neutral-400 hover:text-neutral-700"
-                            >
-                              {lesson.title}
-                            </Link>
+                            {access.lessonOpen(lesson.slug) ? (
+                              <Link
+                                href={enrolled ? lesson.href : firstHref}
+                                className="text-[13px] text-neutral-400 hover:text-neutral-700"
+                              >
+                                {lesson.title}
+                              </Link>
+                            ) : (
+                              <span className="flex items-center gap-1.5 text-[13px] text-neutral-300">
+                                <Lock className="size-3 shrink-0" />
+                                {lesson.title}
+                              </span>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -124,7 +136,13 @@ export function CourseOverview({
                   </div>
                   <div className="hidden w-36 shrink-0 sm:block">
                     <p className="mb-1 text-right text-[11px] text-neutral-400">
-                      {finished ? "Completed" : current ? "In progress" : "Not started"}
+                      {finished
+                        ? "Completed"
+                        : !access.moduleOpen(module.position)
+                          ? "Locked"
+                          : current
+                            ? "In progress"
+                            : "Not started"}
                     </p>
                     <ProgressTrack value={pct} tone={finished ? "complete" : "default"} />
                   </div>

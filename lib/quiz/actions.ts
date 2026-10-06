@@ -4,11 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { issueCertificateIfEligible } from "@/lib/certificates/issue";
 import { isQuizSlug } from "@/lib/domain";
+import { buildAccess } from "@/lib/learning/gating";
 import { isCourseComplete } from "@/lib/learning/progress";
-import { liveLessonCountForSlug } from "@/lib/courses/queries";
+import { getVisibleCourse, liveLessonCountForSlug } from "@/lib/courses/queries";
 import { markModuleComplete } from "@/lib/learning/actions";
 import { getCourseIdBySlug, getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
-import { requireUser } from "@/lib/permissions";
+import { isStaffUser, requireUser } from "@/lib/permissions";
 import { loadBankForScoring, normalizeQuestionAnswers, scoreQuestions } from "@/lib/quiz/bank";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -118,6 +119,20 @@ async function loadQuizContext(
           ? "Quiz rows are missing. Apply supabase/apply-phase3.sql in the dashboard."
           : "This course has no assessment yet.",
     };
+  }
+
+  if (quiz.kind === "module" && courseSlug !== "dptc" && !(await isStaffUser())) {
+    const visible = await getVisibleCourse(courseSlug);
+    const moduleIndex = await moduleIndexForQuiz(courseId, {
+      ...quiz,
+      module_id: "module_id" in quiz ? ((quiz as { module_id?: string | null }).module_id ?? null) : null,
+    });
+    if (visible?.outline.length && moduleIndex) {
+      const access = buildAccess(visible.outline, await getMyProgress(courseSlug));
+      if (!access.moduleOpen(moduleIndex) || !access.moduleReached(moduleIndex)) {
+        return { ok: false, error: "Read every page of this module before taking its quiz." };
+      }
+    }
   }
 
   return {

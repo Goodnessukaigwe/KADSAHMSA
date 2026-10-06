@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Share2 } from "lucide-react";
+import { Lock, Share2 } from "lucide-react";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
@@ -23,6 +23,8 @@ type PlayerRailProps = {
   nextPrimary?: boolean;
   onNext?: () => void;
   navPending?: boolean;
+  /** When set, Next is disabled and this says why. */
+  nextLocked?: string;
 };
 
 export function PlayerRail({
@@ -39,6 +41,7 @@ export function PlayerRail({
   progressPercent,
   onNext,
   navPending = false,
+  nextLocked,
 }: PlayerRailProps) {
   return (
     <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">
@@ -95,7 +98,15 @@ export function PlayerRail({
                   const className = current ? "font-bold" : "text-neutral-500";
                   return (
                     <li key={item.id}>
-                      {item.href ? (
+                      {item.locked ? (
+                        <span
+                          className="flex items-center gap-1.5 text-neutral-300"
+                          title="Finish the earlier pages to unlock this one"
+                        >
+                          <Lock className="size-3 shrink-0" />
+                          {item.label}
+                        </span>
+                      ) : item.href ? (
                         <Link href={item.href} className={className}>
                           {item.label}
                         </Link>
@@ -142,7 +153,7 @@ export function PlayerRail({
         </div>
       ) : null}
 
-      {quizHref ? (
+      {quizHref && !nextLocked ? (
         <SplitCta href={quizHref} className="w-full">
           Take quiz
         </SplitCta>
@@ -167,7 +178,15 @@ export function PlayerRail({
             {previousLabel}
           </span>
         )}
-        {nextHref ? (
+        {nextHref && nextLocked ? (
+          <span
+            title={nextLocked}
+            aria-disabled="true"
+            className="flex h-11 min-w-0 items-center justify-center rounded-full bg-neutral-200 px-2 text-center text-[10px] font-bold tracking-[0.08em] text-neutral-400 uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]"
+          >
+            {nextLabel}
+          </span>
+        ) : nextHref ? (
           onNext ? (
             <button
               type="button"
@@ -207,6 +226,7 @@ export function PlayerRail({
           </span>
         )}
       </div>
+      {nextLocked ? <p className="text-xs leading-relaxed text-neutral-400">{nextLocked}</p> : null}
     </aside>
   );
 }

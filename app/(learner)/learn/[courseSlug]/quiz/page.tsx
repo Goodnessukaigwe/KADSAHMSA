@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { ModuleQuiz } from "@/components/learner/module-quiz";
@@ -7,7 +7,10 @@ import {
   nextHrefAfterModule,
   resolveOutlineModule,
 } from "@/lib/learning/progress";
-import { requireUser } from "@/lib/permissions";
+import { buildAccess } from "@/lib/learning/gating";
+import { getMyProgress } from "@/lib/learning/queries";
+import { lessonPlayerHref } from "@/lib/courses/paths";
+import { isStaffUser, requireUser } from "@/lib/permissions";
 import { countSubmittedAttempts, getPublicQuiz } from "@/lib/quiz/queries";
 
 export const metadata = { title: "Quiz" };
@@ -44,6 +47,16 @@ export default async function CourseQuizPage({
         </div>
       </div>
     );
+  }
+
+  // The quiz opens once every page of its module has been read.
+  if (courseSlug !== "dptc" && !(await isStaffUser())) {
+    const access = buildAccess(visible.outline, await getMyProgress(courseSlug));
+    if (!access.moduleOpen(outlineModule.position) || !access.moduleReached(outlineModule.position)) {
+      redirect(
+        lessonPlayerHref(courseSlug, access.frontierSlug ?? outlineModule.lessons[0]?.slug ?? "")
+      );
+    }
   }
 
   const quizSlug = isDptcModuleOne ? "module-1" : `module-${outlineModule.position}`;

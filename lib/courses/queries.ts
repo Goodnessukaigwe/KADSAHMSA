@@ -23,6 +23,7 @@ import {
   LESSON_ASSET_COLUMNS_LEGACY,
   MISSING_PLAYER_SQL,
 } from "@/lib/courses/media";
+import { splitChecks } from "@/lib/courses/checks";
 import { hasLessonMarkup } from "@/lib/courses/rich-text";
 import {
   ADMIN_COURSE_COLUMN_IDS,
@@ -39,6 +40,7 @@ import {
   type DashboardStat,
   type LessonAsset,
   type PlayerLesson,
+  type PlayerMainBlock,
   type PlayerPageView,
   type PublishedCourse,
   type PublishedModuleOutline,
@@ -301,7 +303,7 @@ function toBuilderLesson(
   };
 }
 
-function parseMainBlocks(main: string): { heading?: string; body: string }[] {
+function parseTextBlocks(main: string): { heading?: string; body: string }[] {
   const chunks = main
     .split(/\n{2,}/)
     .map((chunk) => chunk.trim())
@@ -321,6 +323,26 @@ function parseMainBlocks(main: string): { heading?: string; body: string }[] {
       continue;
     }
     blocks.push({ body: current });
+  }
+  return blocks;
+}
+
+function parseMainBlocks(main: string): PlayerMainBlock[] {
+  if (hasLessonMarkup(main)) return parseTextBlocks(main);
+  const blocks: PlayerMainBlock[] = [];
+  for (const segment of splitChecks(main)) {
+    if (segment.type === "text") {
+      blocks.push(...parseTextBlocks(segment.text));
+      continue;
+    }
+    // A lone "Knowledge Check" line just before a question becomes the question's heading.
+    const last = blocks[blocks.length - 1];
+    let heading: string | undefined;
+    if (last && !last.heading && !last.check && last.body.length <= 40) {
+      heading = last.body;
+      blocks.pop();
+    }
+    blocks.push({ heading, body: "", check: segment.check });
   }
   return blocks;
 }
