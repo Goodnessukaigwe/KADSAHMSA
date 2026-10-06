@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -53,6 +54,7 @@ export function LessonReader({
   const [picked, setPicked] = useState<Record<number, number>>({});
   const [done, setDone] = useState(completed);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const requireChecks = gated && !completed;
   const needsTick = gated && !hasChecks && !hasVideo;
 
@@ -66,7 +68,7 @@ export function LessonReader({
     requireChecks && unanswered > 0
       ? `Answer the ${unanswered === 1 ? "question" : `${unanswered} questions`} on this page to continue.`
       : gated && needsTick && !done
-        ? "Tick “Mark as complete” to continue."
+        ? "Press “Mark as complete” to continue."
         : gated && (hasChecks || hasVideo) && !done
           ? "Finishing this page…"
           : undefined;
@@ -80,8 +82,11 @@ export function LessonReader({
     const result = await completeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
     setSaving(false);
     if (result.ok) {
+      setSaveError(null);
       setDone(true);
       router.refresh();
+    } else {
+      setSaveError(result.error);
     }
   }
 
@@ -245,22 +250,22 @@ export function LessonReader({
           </div>
         ) : null}
         {needsTick ? (
-          <label
+          <button
+            type="button"
+            onClick={() => void finishPage()}
+            disabled={done || saving}
             className={cn(
-              "mt-10 flex max-w-3xl items-center gap-3 rounded-2xl border px-4 py-3.5 text-sm font-semibold",
-              done ? "border-emerald-600 bg-emerald-50 text-emerald-800" : "cursor-pointer border-neutral-300 bg-white"
+              "mt-10 flex h-12 items-center gap-2 rounded-full px-6 text-[11px] font-bold tracking-[0.14em] uppercase",
+              done
+                ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600"
+                : "bg-neutral-950 text-white disabled:opacity-60"
             )}
           >
-            <input
-              type="checkbox"
-              checked={done}
-              disabled={done || saving}
-              onChange={() => void finishPage()}
-              className="size-5 accent-neutral-950"
-            />
+            {done ? <Check className="size-4" /> : null}
             {done ? "Completed" : saving ? "Saving…" : "Mark as complete"}
-          </label>
+          </button>
         ) : null}
+        {saveError ? <p className="mt-3 text-sm text-red-600">{saveError}</p> : null}
       </article>
 
       <PlayerRail

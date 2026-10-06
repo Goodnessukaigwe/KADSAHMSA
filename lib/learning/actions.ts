@@ -179,12 +179,9 @@ export async function completeLesson(
 
   const visible = await getVisibleCourse(slug);
   if (visible?.outline.length) {
-    const progress = await getMyProgress(slug);
-    const access = buildAccess(visible.outline, progress, await isStaffUser());
-    if (!access.lessonOpen(lessonSlug)) return { ok: true };
-    const order = visible.outline.flatMap((module) => module.lessons.map((lesson) => lesson.slug));
-    const current = progress.resumeLessonSlug ? order.indexOf(progress.resumeLessonSlug) : -1;
-    if (order.indexOf(lessonSlug) <= current) return { ok: true };
+    const access = buildAccess(visible.outline, await getMyProgress(slug), await isStaffUser());
+    if (!access.lessonOpen(lessonSlug)) return fail("Finish the earlier pages first.");
+    if (access.lessonDone(lessonSlug)) return { ok: true };
   }
 
   const { courseId, error } = await resolveCourseId(slug);

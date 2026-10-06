@@ -9,6 +9,8 @@ import type { CourseProgress } from "@/lib/learning/progress";
  */
 export type CourseAccess = {
   lessonOpen: (lessonSlug: string) => boolean;
+  /** The learner has completed this page. */
+  lessonDone: (lessonSlug: string) => boolean;
   moduleOpen: (position: number) => boolean;
   /** Every page of the module is complete, so its quiz may open. */
   moduleReached: (position: number) => boolean;
@@ -23,6 +25,7 @@ export function buildAccess(
 ): CourseAccess {
   const completed = new Set(progress.completed);
   const open = new Set<string>();
+  const finished = new Set<string>();
   const reached = new Set<number>();
   const modulesOpen = new Set<number>();
   let frontierSlug: string | null = null;
@@ -41,12 +44,15 @@ export function buildAccess(
       : -1;
     const lastOpen = done ? slugs.length - 1 : Math.min(slugs.length - 1, resumeAt + 1);
     for (let i = 0; i <= lastOpen; i += 1) open.add(slugs[i]);
+    const lastDone = done ? slugs.length - 1 : resumeAt;
+    for (let i = 0; i <= lastDone; i += 1) finished.add(slugs[i]);
     if (done || resumeAt >= slugs.length - 1) reached.add(module.position);
     frontierSlug = slugs[lastOpen];
   });
 
   return {
     lessonOpen: (slug) => open.has(slug),
+    lessonDone: (slug) => finished.has(slug),
     moduleOpen: (position) => modulesOpen.has(position),
     moduleReached: (position) => reached.has(position),
     frontierSlug,
