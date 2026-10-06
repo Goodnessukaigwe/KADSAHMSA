@@ -82,6 +82,8 @@ export async function renderCertificatePdf(input: {
   courseTitle: string;
   issuedAt: Date;
   verificationId: string;
+  /** Set false for a version without the signatory block. */
+  showSignatory?: boolean;
 }): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const page = doc.addPage([842, 595]);
@@ -169,10 +171,11 @@ export async function renderCertificatePdf(input: {
     page.drawText(lines[1], { x, y: lineY - 28, size: 9, font: sans, color: MUTED });
     page.drawText(lines[2], { x, y: lineY - 40, size: 9, font: sans, color: MUTED });
   };
-  block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA"]);
+  const showSignatory = input.showSignatory ?? process.env.CERTIFICATE_SHOW_SIGNATORY !== "false";
+  if (showSignatory) block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA"]);
 
   // Wax seal.
-  const cx = width / 2;
+  const cx = showSignatory ? width / 2 : width / 2 - 33;
   const cy = lineY - 8;
   for (let i = 0; i < 16; i += 1) {
     const angle = (i / 16) * Math.PI * 2;
@@ -189,7 +192,7 @@ export async function renderCertificatePdf(input: {
   const qrPng = await QRCode.toBuffer(verifyUrl, { margin: 0, width: 360, errorCorrectionLevel: "M" });
   const qr = await doc.embedPng(qrPng);
   const qrSize = 58;
-  const qrX = width - 96 - qrSize - 66 + 66;
+  const qrX = showSignatory ? width - 96 - qrSize : cx + 62;
   page.drawImage(qr, { x: qrX, y: cy - 28, width: qrSize, height: qrSize });
   const scan = "Scan to verify";
   page.drawText(scan, {
