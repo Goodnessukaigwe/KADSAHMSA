@@ -10,6 +10,7 @@ import {
 } from "@/components/learner/lesson-media";
 import { CourseCover } from "@/components/courses/course-cover";
 import { InlineCheck } from "@/components/learner/lesson-check";
+import { LessonNotes } from "@/components/learner/lesson-notes";
 import { PlainBody } from "@/components/learner/lesson-prose";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
@@ -301,6 +302,15 @@ export function LessonReader({
           </div>
 
           <LessonMedia assets={bottomMedia} />
+          {gated && !isPreTest ? (
+            <LessonNotes
+              courseSlug={courseSlug}
+              lessonSlug={lesson.slug}
+              prompted={/in your (own )?notes|write your|reflect/i.test(
+                [lesson.introduction, lesson.notes, ...lesson.mainBlocks.map((block) => block.body)].join(" ")
+              )}
+            />
+          ) : null}
           {originalDeckFiles.length ? (
             <div className="mt-6 max-w-3xl space-y-2">
               {originalDeckFiles.map((asset) => (
