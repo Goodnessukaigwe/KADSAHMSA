@@ -18,7 +18,7 @@ import {
   type LessonAssetSection,
   type PlayerPageView,
 } from "@/lib/courses/types";
-import { markModuleComplete, saveResumeLesson } from "@/lib/learning/actions";
+import { completeLesson, markModuleComplete } from "@/lib/learning/actions";
 import { cn } from "@/lib/utils";
 
 const SECTION_LABEL: Record<LessonAssetSection, string> = {
@@ -31,17 +31,30 @@ export function LessonReader({
   courseSlug,
   lesson,
   progressPercent = 0,
-  requireChecks = false,
+  gated = false,
+  completed = false,
+  hasChecks = false,
+  hasVideo = false,
 }: {
   courseSlug: string;
   lesson: PlayerPageView;
   progressPercent?: number;
-  /** The learner has not moved past this page yet, so its questions must be answered first. */
-  requireChecks?: boolean;
+  /** Learners (not staff) must finish each page before the next one opens. */
+  gated?: boolean;
+  /** This page is already complete. */
+  completed?: boolean;
+  /** The page holds questions: answering them completes it. */
+  hasChecks?: boolean;
+  /** The page holds a video: it completes when opened, with no tick. */
+  hasVideo?: boolean;
 }) {
   const router = useRouter();
   const [navPending, setNavPending] = useState(false);
   const [picked, setPicked] = useState<Record<number, number>>({});
+  const [done, setDone] = useState(completed);
+  const [saving, setSaving] = useState(false);
+  const requireChecks = gated && !completed;
+  const needsTick = gated && !hasChecks && !hasVideo;
 
   const checks = useMemo(
     () =>
@@ -52,14 +65,37 @@ export function LessonReader({
   const nextLocked =
     requireChecks && unanswered > 0
       ? `Answer the ${unanswered === 1 ? "question" : `${unanswered} questions`} on this page to continue.`
-      : undefined;
+      : gated && needsTick && !done
+        ? "Tick “Mark as complete” to continue."
+        : gated && (hasChecks || hasVideo) && !done
+          ? "Finishing this page…"
+          : undefined;
   const scored = checks.filter((item) => item.check.answer !== null);
   const correct = scored.filter((item) => picked[item.index] === item.check.answer).length;
   const showSummary = checks.length >= 2 && unanswered === 0 && scored.length === checks.length;
 
+  async function finishPage() {
+    if (done || saving) return;
+    setSaving(true);
+    const result = await completeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
+    setSaving(false);
+    if (result.ok) {
+      setDone(true);
+      router.refresh();
+    }
+  }
+
+  // Video pages complete when opened; question pages complete when every question is answered.
+  const answeredAll = checks.length > 0 && unanswered === 0;
   useEffect(() => {
-    void saveResumeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
-  }, [courseSlug, lesson.slug, lesson.moduleIndex]);
+    if (gated && !completed && hasVideo && !hasChecks) void finishPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (gated && !completed && answeredAll) void finishPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answeredAll]);
+
 
   function goNext() {
     if (navPending) return;
@@ -207,6 +243,23 @@ export function LessonReader({
               <LessonAssetLink key={asset.id} asset={asset} />
             ))}
           </div>
+        ) : null}
+        {needsTick ? (
+          <label
+            className={cn(
+              "mt-10 flex max-w-3xl items-center gap-3 rounded-2xl border px-4 py-3.5 text-sm font-semibold",
+              done ? "border-emerald-600 bg-emerald-50 text-emerald-800" : "cursor-pointer border-neutral-300 bg-white"
+            )}
+          >
+            <input
+              type="checkbox"
+              checked={done}
+              disabled={done || saving}
+              onChange={() => void finishPage()}
+              className="size-5 accent-neutral-950"
+            />
+            {done ? "Completed" : saving ? "Saving…" : "Mark as complete"}
+          </label>
         ) : null}
       </article>
 

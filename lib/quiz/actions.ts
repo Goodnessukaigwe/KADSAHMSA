@@ -130,7 +130,7 @@ async function loadQuizContext(
     if (visible?.outline.length && moduleIndex) {
       const access = buildAccess(visible.outline, await getMyProgress(courseSlug));
       if (!access.moduleOpen(moduleIndex) || !access.moduleReached(moduleIndex)) {
-        return { ok: false, error: "Read every page of this module before taking its quiz." };
+        return { ok: false, error: "Complete every page of this module before taking its quiz." };
       }
     }
   }
