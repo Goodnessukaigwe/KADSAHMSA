@@ -2,6 +2,9 @@ import "server-only";
 
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 
+import QRCode from "qrcode";
+
+import { siteUrl } from "@/lib/email/send";
 import { LOGO_ASPECT, LOGO_PNG_BASE64 } from "@/lib/certificates/logo";
 import { UNODC_LOGO_ASPECT, UNODC_LOGO_PNG_BASE64 } from "@/lib/certificates/unodc-logo";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
@@ -175,23 +178,36 @@ export async function renderCertificatePdf(input: {
   centered(page, "KADSAMHSA", cy + 2, sansBold, 7.5, GREEN, 0.4);
   centered(page, "VERIFIED", cy - 9, sansBold, 7, GOLD, 1);
 
+  // Verification: a QR code to the public verify page (address from SITE_URL, so it can move later).
+  const verifyBase = `${siteUrl()}/verify`;
+  const verifyUrl = `${verifyBase}?id=${encodeURIComponent(input.verificationId)}`;
+  const qrPng = await QRCode.toBuffer(verifyUrl, { margin: 0, width: 360, errorCorrectionLevel: "M" });
+  const qr = await doc.embedPng(qrPng);
+  const qrSize = 62;
   const right = width - 96;
+  page.drawImage(qr, { x: right - qrSize, y: baseline - 16, width: qrSize, height: qrSize });
+  const scan = "Scan to verify";
+  page.drawText(scan, {
+    x: right - qrSize / 2 - sans.widthOfTextAtSize(scan, 7) / 2, y: baseline - 26, size: 7, font: sans, color: MUTED,
+  });
+
+  const textRight = right - qrSize - 16;
   const issued = `Issued ${formatIssued(input.issuedAt)}`;
   page.drawText(issued, {
-    x: right - sansBold.widthOfTextAtSize(issued, 11), y: baseline + 22, size: 11, font: sansBold, color: INK,
+    x: textRight - sansBold.widthOfTextAtSize(issued, 11), y: baseline + 22, size: 11, font: sansBold, color: INK,
   });
   const idLabel = "Verification ID";
   page.drawText(idLabel, {
-    x: right - sans.widthOfTextAtSize(idLabel, 9), y: baseline + 6, size: 9, font: sans, color: MUTED,
+    x: textRight - sans.widthOfTextAtSize(idLabel, 9), y: baseline + 6, size: 9, font: sans, color: MUTED,
   });
   const id = safe(sansBold, input.verificationId);
   page.drawText(id, {
-    x: right - sansBold.widthOfTextAtSize(id, 12), y: baseline - 10, size: 12, font: sansBold, color: GREEN,
+    x: textRight - sansBold.widthOfTextAtSize(id, 12), y: baseline - 10, size: 12, font: sansBold, color: GREEN,
   });
 
   centered(
     page,
-    "Confirm this certificate with its Verification ID on the KADSAMHSA public verify page.",
+    `Confirm this certificate at ${verifyBase.replace(/^https?:\/\//, "")} with its Verification ID, or scan the code.`,
     58,
     sans,
     8.5,
