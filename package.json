@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "import:dptc": "tsx scripts/import-dptc-course.ts"
+    "import:dptc": "tsx scripts/import-dptc-course.ts",
+    "import:mhgap": "tsx scripts/import-dptc-course.ts scripts/mhgap/mhgap-course.generated.json"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

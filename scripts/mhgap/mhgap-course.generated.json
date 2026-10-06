@@ -1,0 +1,1238 @@
+{
+  "course": {
+    "slug": "mhgap-basic",
+    "title": "MhGAP Basic: Mental Health for Communities",
+    "summary": "A free online course from the Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA), adapted from the WHO mhGAP Intervention Guide 3.0. It gives the background knowledge to understand mental health, recognise priority conditions such as depression, anxiety and psychoses, and support people with respect. Each module has an ungraded pre-test, short lessons and a graded post-test (pass mark 80%).",
+    "durationLabel": "~2 hrs · 9 modules"
+  },
+  "modules": [
+    {
+      "position": 1,
+      "slug": "module-0",
+      "title": "Welcome to MhGAP Basic",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-0-welcome-to-mhgap-basic",
+          "title": "Welcome to MhGAP Basic",
+          "main": "A free online course that gives you the background knowledge to understand mental health, recognise the five priority conditions, and support better services in your community.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-0-mental-health-matters-in-every-home-in-kaduna",
+          "title": "Mental health matters — in every home in Kaduna",
+          "main": "Why This Course Exists\n\nMental health conditions are common, they are treatable, and they touch every community — urban and rural, north and south of our state.\nThey are common — in any community, at any time, a meaningful number of people are living with depression, anxiety, psychoses, epilepsy or a substance use problem.\nThey are often hidden — fear, shame and wrong beliefs stop people from seeking help early, when help works best.\nThey are treatable — with the right support, most people recover or live full, productive lives.\nHelp is closer than before — Kaduna State now provides mental health care from ward-level primary health centres up to specialist hospitals — but services only work when communities understand and use them.\nPLAIN LANGUAGE\nMental health: a state of wellbeing in which a person can cope with the normal stresses of life, work productively and contribute to their community.\nStigma: negative attitudes and unfair treatment directed at people because of a condition they have.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-0-what-is-mhgap",
+          "title": "What is mhGAP?",
+          "main": "The Foundation Of This Course\n\nmhGAP stands for the Mental Health Gap Action Programme, created by the World Health Organization (WHO).\nThe gap — in many countries, most people with mental health conditions receive no care at all. mhGAP was designed to close that gap.\nThe idea — you do not need to be a psychiatrist to recognise mental health conditions and offer first-line support. Trained non-specialists can do a great deal.\nThe guide — the mhGAP Intervention Guide (version 3.0) gives step-by-step guidance for priority conditions. Nigeria has adapted it for our own health system.\nThis course — MhGAP Basic takes the knowledge parts of that guide and presents them in simple language for everyone — you do not need any medical background.\nPLAIN LANGUAGE\nWHO: the World Health Organization, the United Nations agency for health.\nNon-specialist: a health worker or community member who is not a mental health specialist (like a psychiatrist) but is trained to help.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-0-the-five-priority-conditions",
+          "title": "The five priority conditions",
+          "main": "What You Will Study\n\nMhGAP Basic focuses on five conditions chosen because they are common, cause real suffering, and can be helped — plus two special modules.\nDepression — persistent sadness and loss of interest that makes daily life difficult.\nAnxiety — fear and worry that become so strong they interfere with living.\nPsychoses — conditions where a person loses touch with reality — hearing voices, holding strange beliefs, or extreme changes in behaviour.\nEpilepsy — a brain condition causing repeated seizures ('fits') — a medical condition, not a spiritual one.\nSubstance use disorders — problems caused by alcohol and drugs, from harmful use to dependence.\nPlus two special modules — Perinatal Mental Health (mothers before and after childbirth) and Safeguarding (protecting children and vulnerable adults).",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-0-nine-modules-taken-at-your-own-pace",
+          "title": "Nine modules, taken at your own pace",
+          "main": "Your Learning Journey\n\nModule 0 — Welcome to MhGAP Basic (you are here).\nModule 1 — Caring for People with Mental Health Conditions — respect, communication and rights. Take this one first; everything else builds on it.\nModules 2–6 — the five priority conditions: Depression, Anxiety, Psychoses, Epilepsy, and Substance Use Disorders. Take them in any order.\nModule 7 — Perinatal Mental Health — supporting mothers during pregnancy and after childbirth.\nModule 8 — Safeguarding Children, Adolescents and Vulnerable Adults.\nTime needed — each module takes about 45–60 minutes. You can pause and return whenever you like.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-0-pre-test-learn-post-test",
+          "title": "Pre-test, learn, post-test",
+          "main": "How Every Module Works\n\n1 · Pre-test\nFive quick questions before you start. Do not worry about your score — it simply shows where you are today. Write your answers down.\n2 · Learn\nWork through the slides at your own pace. Pause on the plain-language boxes, the Kaduna stories, and the try-it-yourself exercise.\n3 · Post-test\nThe same five questions again. Compare with your pre-test answers, then check the answer key to see how much you have grown.\nHave a pen and paper (or your phone's notes app) ready before you start each module.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-0-what-completing-mhgap-basic-gives-you",
+          "title": "What completing MhGAP Basic gives you",
+          "main": "Why Finish The Course\n\nThis course gives you background knowledge — the essential first step. When you complete all modules, you will be able to:\nUnderstand — what the five priority conditions are, how to recognise them, and what good care looks like at each level of Kaduna's health system.\nSupport — family members, neighbours and colleagues with accurate information instead of myths — and help them find care early.\nGo further — pathway 1 — qualify to apply for KADSAMHSA's skills training in non-pharmacological care support (talking-based help such as psychoeducation and structured support), where you learn to deliver help, not just understand it.\nGo further — pathway 2 — serve as a community educator and advocate — speaking up for better services, fighting stigma, and connecting your community to care.\nPLAIN LANGUAGE\nNon-pharmacological: help that does not involve medicines — for example, guided conversations, education and practical support.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-0-tips-for-getting-the-most-from-this-course",
+          "title": "Tips for getting the most from this course",
+          "main": "Learning Online\n\nFind a quiet moment — even 20 minutes of focused reading is better than an hour of distracted scrolling.\nWrite things down — your pre-test and post-test answers, new words, and anything you want to remember. Writing helps learning stick.\nDo the exercises — each module has a 'try it yourself' activity designed for real life — most involve observing, reflecting or practising a conversation.\nTalk about what you learn — explaining an idea to a friend or family member is the best test of whether you truly understand it.\nBe patient with yourself — some topics may feel heavy or personal. It is okay to pause. If anything you read raises worries about yourself or someone close to you, visit your nearest primary health centre.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-0-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Mental health conditions are common, real and treatable — and they affect every community in Kaduna State.\n2. You do not need medical training to understand mental health and make a difference.\n3. MhGAP Basic gives you the background knowledge; further KADSAMHSA training can build your skills.\n4. Learn at your own pace: pre-test, learn, post-test — one module at a time.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-0-you-are-ready-to-begin",
+          "title": "You are ready to begin",
+          "main": "Well Done\n\nThousands of people across Kaduna State are living with conditions that respond to understanding, support and care. By taking this course, you are joining the effort to make sure no one faces a mental health condition alone or in silence.\nStart with Module 1 — it teaches the way of caring that runs through everything else.\nNEXT MODULE\nModule 1 · Caring for People with Mental Health Conditions\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": []
+    },
+    {
+      "position": 2,
+      "slug": "module-1",
+      "title": "Caring for People with Mental Health Conditions",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-1-caring-for-people-with-mental-health-conditions",
+          "title": "Caring for People with Mental Health Conditions",
+          "main": "Respect, communication and rights — the foundation every other module builds on. Adapted from the mhGAP Essential Care and Practice module.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-1-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nCommunicate well — how to talk with — and listen to — a person with a mental health condition in a way that helps.\nProtect dignity — how to treat people with respect and protect their rights, including privacy and the right to decide about their own care.\nSee the whole person — why physical health, family and daily life all matter, not just symptoms.\nSupport without harm — what helps, what hurts, and when to guide someone to professional care.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-1-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. A neighbour tells you, in confidence, that she has been feeling hopeless. Who may you tell?\nA. Her husband, so he can watch her\nB. Anyone at church who can pray for her\nC. No one, without her permission — unless her life is in danger\nD. The whole family, for support\n\nQ2. When talking with someone who is distressed, the most helpful first step is to:\nA. Give strong advice quickly\nB. Listen carefully without judging or interrupting\nC. Change the subject to cheer them up\nD. Tell them others have bigger problems\n\nQ3. A person with a mental health condition has the right to:\nA. Be chained if the family agrees\nB. Make decisions about their own treatment\nC. Be kept away from other people\nD. Lose their job automatically\n\nQ4. Which statement about mental health conditions is TRUE?\nA. They are punishment for wrongdoing\nB. They are always caused by spiritual attack\nC. They are health conditions that can be treated\nD. They only affect weak-minded people\n\nQ5. A man being treated for a mental health condition also has a bad cough. What should happen?\nA. Ignore the cough — mental health comes first\nB. His physical health should be checked and treated too\nC. Coughs are normal in mental illness\nD. He should stop his mental health treatment first",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-1-every-person-whole-and-worthy",
+          "title": "Every person, whole and worthy",
+          "main": "Start Here\n\nBefore learning about any condition, we learn how to treat the person who has it. This is called essential care — and it applies to everyone, everywhere.\nA person is not their condition — say 'a person with epilepsy', not 'an epileptic'. The person always comes first.\nRespect is treatment — how people are treated by family, neighbours and health workers affects whether they recover.\nRights do not disappear — having a mental health condition does not take away a person's right to dignity, privacy, freedom, work, marriage or making their own decisions.\nThe law protects — Nigeria's Mental Health Act and Kaduna State's Mental Health Law both protect these rights. Chaining, beating or confining a person because of illness is abuse.\nPLAIN LANGUAGE\nDignity: being treated as a full human being of equal worth.\nConfidentiality: keeping what a person tells you private, unless they agree to share it or a life is at risk.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-1-good-communication-how-to-listen",
+          "title": "Good communication: how to listen",
+          "main": "Skill 1\n\nYou do not need special equipment to help a distressed person. You need your ears, your patience and your respect.\nChoose a private place — people share more when others cannot overhear.\nGive your full attention — put your phone away, face the person, let them speak at their own pace.\nDo not judge or interrupt — avoid 'why did you...?' questions and quick advice. Let them finish.\nShow you heard — repeat back the main points in your own words: 'So you have not been sleeping since the accident — is that right?'\nUse simple, kind language — no lectures, no blame, no labels like 'mad' or 'crazy'.\nAsk what they want — 'What would help you most right now?' respects the person's own wisdom.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-1-what-helps-and-what-harms",
+          "title": "What helps — and what harms",
+          "main": "Skill 2\n\nHelps: staying connected — isolation makes almost every condition worse. Visits, greetings and inclusion in normal life all help.\nHelps: practical support — help with childcare, farm work or market runs can relieve real pressure.\nHelps: encouraging care — supporting a person to visit the health centre — even going with them — often makes the difference.\nHarms: blame and shame — telling a person to 'snap out of it' or blaming them (or witchcraft, or sin) delays care and deepens suffering.\nHarms: forced 'treatment' — chaining, beating, starving or forcibly confining a person is abuse, causes lasting damage, and is against the law.\nHarms: broken trust — gossiping about a person's condition teaches them — and everyone watching — never to seek help.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-1-ladi-s-brother",
+          "title": "Ladi's brother",
+          "main": "A Story From Kaduna\n\nLadi lives in Kafanchan. Her younger brother Yohanna, once a cheerful okada rider, has stopped working and barely leaves his room. Some relatives say he is lazy; an aunt insists someone 'did juju' to him and wants to take him to a traditional healer far away, where she has heard people are kept in chains until they are 'cured'.\nLadi is worried but does not know what is wrong. She sits with Yohanna one evening. He tells her he feels empty, sleeps badly, and sometimes wishes he would not wake up.\nUsing what you have learned, what should Ladi do?\nListen without judging — she has already done the most important first thing by sitting with him.\nTake his words seriously, especially 'wishes he would not wake up' — this is a danger sign, not attention-seeking.\nKeep his trust: not gossip, but she may involve people who can keep him safe.\nRefuse options that involve chaining or abuse — they are harmful and unlawful.\nEncourage and accompany him to the nearest primary health centre, where trained workers can assess him.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-1-body-and-mind-belong-together",
+          "title": "Body and mind belong together",
+          "main": "The Whole Person\n\nPeople with mental health conditions get malaria, hypertension, diabetes and infections like everyone else — and often receive worse care for them.\nPhysical illness can look mental — untreated infections, thyroid problems or head injury can change mood and behaviour. That is one reason proper assessment at a health facility matters.\nMental conditions affect the body — poor sleep, poor appetite and stress harm physical health over time.\nEveryone deserves both — good care always includes checking physical health — never accept 'it is just in his head' as a reason to skip a proper examination.\nHealthy habits support recovery — regular sleep, daily activity, good food and staying connected to people are part of care for every condition in this course.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-1-kaduna-s-ladder-of-care",
+          "title": "Kaduna's ladder of care",
+          "main": "Where Care Lives\n\nKaduna State has built mental health services into the ordinary health system, so care starts close to home.\nWard primary health centres — your first stop. Health workers across the state are being trained to recognise and manage common conditions.\nCentres of Excellence — selected primary health centres with extra training, medicines and telephone links to specialists.\nGeneral hospitals — for cases that need more specialised attention, with mental health units.\nSpecialist care — the Federal Neuropsychiatric Hospital in Barnawa, Kaduna, for the most complex cases.\nYour role — you do not need to know which level someone needs. Guiding a person to the nearest primary health centre starts the journey — the system moves them to the right level.\nPLAIN LANGUAGE\nReferral: when one level of care sends a person to a higher level for more specialised help.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-1-practise-reflective-listening-this-week",
+          "title": "Practise reflective listening this week",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nThis exercise needs no classroom — just one real conversation.\nThis week, when a friend or family member shares a worry (any worry — money, work, family), stop what you are doing and give them your full attention.\nDo not give advice for the first few minutes. Just listen.\nThen repeat back the heart of what they said in your own words: 'It sounds like...'\nNotice their reaction. Did they open up more? Correct you? Relax?\nAfterwards, write two or three sentences in your notes: what was hard about staying quiet? What surprised you?\nREMEMBER\nMost people have never been truly listened to. The skill you just practised is the foundation of all psychological support — and of the KADSAMHSA skills training you can take after this course.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-1-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. The person always comes first — mental health conditions are health conditions, and rights never disappear.\n2. Listening without judgement is real help. Privacy and trust make it possible.\n3. Chaining, beating and forced confinement are abuse and against the law — never acceptable 'treatment'.\n4. Body and mind belong together: everyone deserves full physical health care too.\n5. When in doubt, guide the person to the nearest primary health centre — that is how the journey to care begins.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-1-you-now-hold-the-foundation",
+          "title": "You now hold the foundation",
+          "main": "Well Done\n\nEverything in the modules ahead — depression, anxiety, psychoses, epilepsy, substance use — rests on what you learned here: respect, listening, rights and the ladder of care.\nComplete your post-test above if you have not yet, compare it with your pre-test, and when you are ready, continue.\nNEXT MODULE\nModule 2 · Depression\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "A neighbour tells you, in confidence, that she has been feeling hopeless. Who may you tell?",
+          "options": [
+            "Her husband, so he can watch her",
+            "Anyone at church who can pray for her",
+            "No one, without her permission — unless her life is in danger",
+            "The whole family, for support"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "When talking with someone who is distressed, the most helpful first step is to:",
+          "options": [
+            "Give strong advice quickly",
+            "Listen carefully without judging or interrupting",
+            "Change the subject to cheer them up",
+            "Tell them others have bigger problems"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A person with a mental health condition has the right to:",
+          "options": [
+            "Be chained if the family agrees",
+            "Make decisions about their own treatment",
+            "Be kept away from other people",
+            "Lose their job automatically"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which statement about mental health conditions is TRUE?",
+          "options": [
+            "They are punishment for wrongdoing",
+            "They are always caused by spiritual attack",
+            "They are health conditions that can be treated",
+            "They only affect weak-minded people"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "A man being treated for a mental health condition also has a bad cough. What should happen?",
+          "options": [
+            "Ignore the cough — mental health comes first",
+            "His physical health should be checked and treated too",
+            "Coughs are normal in mental illness",
+            "He should stop his mental health treatment first"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "slug": "module-2",
+      "title": "Depression",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-2-depression",
+          "title": "Depression",
+          "main": "Understanding persistent sadness that will not lift — how to recognise it, what helps, and where care is found in Kaduna State.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-2-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nRecognise — the difference between normal sadness and depression, and the signs to look for.\nUnderstand — what causes depression, who it affects, and why it is a health condition — not weakness or a spiritual attack.\nSupport — what you can do and say that genuinely helps a person with depression.\nAct on danger signs — recognise when someone may be at risk of suicide and what to do immediately.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-2-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Sadness becomes possible depression when it:\nA. Lasts a full day\nB. Follows a real loss\nC. Lasts at least two weeks and disrupts daily life\nD. Makes a person cry\n\nQ2. Which of these can be a sign of depression?\nA. Sleeping too little or too much\nB. Losing interest in things once enjoyed\nC. Unexplained body aches and tiredness\nD. All of the above\n\nQ3. Depression is best understood as:\nA. Laziness\nB. A treatable health condition\nC. A curse\nD. A rich person's problem\n\nQ4. A friend with depression says life is not worth living. You should:\nA. Change the subject\nB. Tell him not to talk nonsense\nC. Take it seriously, stay with him, and help him get to care\nD. Keep it secret because he told you privately\n\nQ5. Which is TRUE about helping someone with depression?\nA. Telling them to be strong cures it\nB. Listening, staying connected and encouraging care all help\nC. They should be left alone until it passes\nD. Only medicine works",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-2-what-is-depression",
+          "title": "What is depression?",
+          "main": "Understanding The Condition\n\nDepression is one of the most common health conditions in the world — and one of the most misunderstood.\nMore than sadness — it is a persistent low mood, or loss of interest and pleasure in life, lasting at least two weeks.\nIt disrupts life — work, farming, business, studies, prayer, family duties — things that once came easily become mountains.\nIt is common — worldwide, roughly one adult in twenty is living with depression right now. In every Kaduna community — every market, every congregation — there are people quietly carrying it.\nIt has causes — difficult life events (loss, poverty, violence), ongoing stress, physical illness, childbirth, and family history can all contribute. Often several causes combine.\nIt is treatable — talking-based support works for most people; health workers can add medicines for moderate to severe cases.\nPLAIN LANGUAGE\nPersistent: continuing day after day, most of the day — not coming and going in hours.\nLow mood: feeling sad, empty, heavy or hopeless.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-2-signs-to-look-for",
+          "title": "Signs to look for",
+          "main": "Recognising It\n\nNo single sign proves depression. Look for a pattern — several signs, most days, for two weeks or more.\nFeelings — sadness, emptiness, hopelessness, irritability, guilt, feeling worthless.\nLoss of interest — no longer enjoying friends, food, work, football, music — things that used to bring joy.\nBody changes — poor sleep or too much sleep, loss of appetite or overeating, low energy, unexplained aches, headaches or 'heat in the body'.\nThinking changes — poor concentration, indecision, slowed thoughts, believing one is a burden.\nBehaviour changes — withdrawing from people, missing work or worship, neglecting appearance, abandoning duties.\nIn our setting — many people never say 'I am sad' — they visit the chemist repeatedly for tiredness and body pains. Depression often hides behind physical complaints.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-2-myths-and-facts",
+          "title": "Myths and facts",
+          "main": "Clearing The Fog\n\nMyth: depression is weakness or laziness. — Fact: it is a health condition. Strong, hardworking people get depression — and effort alone cannot cure it, just as effort cannot cure malaria.\nMyth: it is caused by a curse or spiritual attack. — Fact: depression has natural causes. Faith and community can comfort and support, but the condition itself responds to health care.\nMyth: talking about suicide puts the idea in someone's head. — Fact: asking directly and kindly ('Are you having thoughts of ending your life?') brings relief — it opens the door to help.\nMyth: depression only affects women, or the rich, or city people. — Fact: it affects men and women, rich and poor, urban and rural. Men often hide it — and are more likely to die by suicide.\nMyth: once depressed, always depressed. — Fact: most people recover with support and treatment, and many never have another episode.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-2-musa-at-the-mechanic-yard",
+          "title": "Musa at the mechanic yard",
+          "main": "A Story From Kaduna\n\nMusa, 34, works at a mechanic yard in Rigasa. For the past month his workmates have noticed he barely talks, eats his lunch alone or not at all, and has made careless mistakes he never used to make. He looks exhausted.\nWhen his friend Bello asks, Musa first says 'body no gree me' — just tiredness. But when Bello sits with him quietly after work, Musa admits he has not slept properly in weeks, feels like a failure since his business debt grew, and sometimes thinks his family would be better off without him.\nWhat do you notice, and what should Bello do?\nThe pattern: withdrawn, not eating, poor sleep, exhaustion, mistakes — lasting weeks, not days.\nIt appeared first as a body complaint ('body no gree me') — common for men in our setting.\n'Better off without me' is a suicide danger sign. Bello must take it seriously.\nBello should stay with him, listen without judging, and not keep this danger sign secret.\nHe should support Musa to reach the nearest primary health centre — and ideally go with him.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-2-when-someone-talks-of-death-act",
+          "title": "When someone talks of death: act",
+          "main": "Danger Signs\n\nSuicide can be prevented. Most people who consider it do not want to die — they want their pain to end. Your response can save a life.\nTake every mention seriously — 'I am tired of this life', 'they will soon rest from me', giving away possessions, sudden calm after despair — all are warnings.\nAsk directly and calmly — 'Are you having thoughts of ending your life?' Asking does not cause suicide. It shows the person they can talk to you.\nDo not leave the person alone — stay with them, or make sure someone trusted stays.\nReduce immediate danger — with the family, calmly remove access to means of harm in the home.\nGet help now — go to the nearest health facility the same day, or call Kaduna State Emergency Medical Services on 0806 411 1599. This is an emergency, like severe bleeding — not something to 'watch and see'.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-2-how-you-can-support-a-person-with-depression",
+          "title": "How you can support a person with depression",
+          "main": "What Helps\n\nListen more than you speak — use the skills from Module 1: private place, full attention, no judging, no quick advice.\nStay connected — keep visiting, keep greeting, keep including them. Depression whispers 'nobody cares' — your presence answers it.\nEncourage small activity — a short walk, one small task, sitting outside. Gentle activity lifts mood over time; do not demand big steps.\nSupport the basics — regular sleep times, regular meals, and cutting down alcohol — which worsens depression.\nEncourage professional care — support them to visit the primary health centre. Offer to go along. Treatment plus community support works best of all.\nNever — mock, preach at, shame, or compare ('others have it worse'). And never treat talk of death as a joke.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-2-where-care-is-found-in-kaduna-state",
+          "title": "Where care is found in Kaduna State",
+          "main": "The Care Pathway\n\nStart at the primary health centre — trained health workers can assess depression, offer psychoeducation and structured support, and treat many cases right there.\nCentres of Excellence and general hospitals — for moderate to severe cases, health workers can add medicines and closer follow-up, with specialist backup by phone.\nSpecialist care — the most complex cases, or any emergency involving suicide risk, can be referred onwards — up to the Federal Neuropsychiatric Hospital, Barnawa.\nFollow-up matters — recovery takes weeks. Encourage the person to keep appointments and continue treatment even after they start feeling better.\nPLAIN LANGUAGE\nPsychoeducation: clear, simple teaching about a condition — what it is, what helps — given to the person and family.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-2-map-your-circle",
+          "title": "Map your circle",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nA private reflection exercise. No one will see it but you.\nWrite down (privately) the names of three people in your life who have shown possible signs from this module — withdrawal, constant tiredness, lost interest, repeated body complaints with no clear cause.\nFor each, note which signs you have observed and for roughly how long.\nChoose one person. Write one opening sentence you could use this week — kind, private, unhurried. Example: 'I have noticed you seem tired lately. How are you, really?'\nIf any name came with talk of death or self-harm, act on the danger-sign steps this week — do not wait.\nREMEMBER\nYou are not diagnosing anyone — only a trained health worker can do that. Your role is to notice, to open a caring conversation, and to connect people to care.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-2-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Depression is persistent — two weeks or more of low mood or lost interest that disrupts daily life.\n2. It often hides behind body complaints: tiredness, aches, poor sleep.\n3. It is a treatable health condition — not weakness, laziness or a curse.\n4. Any talk of death or self-harm is an emergency: ask directly, stay close, get help the same day.\n5. Listening, staying connected, and supporting the journey to the health centre are powerful help anyone can give.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-2-you-can-now-see-what-others-miss",
+          "title": "You can now see what others miss",
+          "main": "Well Done\n\nMost depression in our communities goes unrecognised — dismissed as laziness, tiredness or spiritual trouble. You now know the pattern, the myths, the danger signs and the path to care.\nComplete your post-test, compare with your pre-test, and continue when ready.\nNEXT MODULE\nModule 3 · Anxiety\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Sadness becomes possible depression when it:",
+          "options": [
+            "Lasts a full day",
+            "Follows a real loss",
+            "Lasts at least two weeks and disrupts daily life",
+            "Makes a person cry"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Which of these can be a sign of depression?",
+          "options": [
+            "Sleeping too little or too much",
+            "Losing interest in things once enjoyed",
+            "Unexplained body aches and tiredness",
+            "All of the above"
+          ],
+          "correctIndex": 3
+        },
+        {
+          "prompt": "Depression is best understood as:",
+          "options": [
+            "Laziness",
+            "A treatable health condition",
+            "A curse",
+            "A rich person's problem"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A friend with depression says life is not worth living. You should:",
+          "options": [
+            "Change the subject",
+            "Tell him not to talk nonsense",
+            "Take it seriously, stay with him, and help him get to care",
+            "Keep it secret because he told you privately"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Which is TRUE about helping someone with depression?",
+          "options": [
+            "Telling them to be strong cures it",
+            "Listening, staying connected and encouraging care all help",
+            "They should be left alone until it passes",
+            "Only medicine works"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 4,
+      "slug": "module-3",
+      "title": "Anxiety",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-3-anxiety",
+          "title": "Anxiety",
+          "main": "When fear and worry take over — recognising anxiety conditions, calming the body, and knowing when to seek care.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-3-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nRecognise — the difference between normal worry and an anxiety condition, including panic attacks.\nUnderstand — how anxiety shows up in the body — racing heart, tight chest, dizziness — and why it is often mistaken for physical illness.\nSupport — simple calming techniques and helpful responses you can use and teach.\nGuide to care — know when worry has become a condition needing professional help, and where that help is.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-3-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Worry becomes an anxiety condition when it is:\nA. About real problems\nB. Excessive, hard to control, and interferes with daily life\nC. Felt before an exam\nD. Felt by adults only\n\nQ2. A panic attack is:\nA. A heart attack\nB. Pretending to be sick\nC. A sudden wave of intense fear with strong body symptoms that peaks within minutes\nD. A sign of madness\n\nQ3. Anxiety often shows in the body as:\nA. Racing heart and tight chest\nB. Trembling and sweating\nC. Dizziness and stomach upset\nD. All of the above\n\nQ4. When someone is having a panic attack, you should:\nA. Shout at them to stop\nB. Stay calm, speak gently, and breathe slowly with them\nC. Pour water on them\nD. Leave them alone to recover\n\nQ5. Which is TRUE about anxiety conditions?\nA. They are rare\nB. They cannot be treated\nC. They are common and respond well to talking-based support\nD. Only medicine helps",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-3-what-is-anxiety",
+          "title": "What is anxiety?",
+          "main": "Understanding The Condition\n\nFear is a gift — it keeps us alive. Anxiety conditions happen when the body's alarm system fires too strongly, too often, or without real danger.\nNormal worry — comes with a real problem, stays in proportion, and fades when the problem passes.\nAn anxiety condition — is excessive fear or worry that is hard to control, happens most days, lasts for months, and interferes with daily life.\nCommon forms — constant worry about many things (generalised anxiety); sudden attacks of intense fear (panic); intense fear of being judged by people (social anxiety); overwhelming fear of one specific thing (phobia).\nVery common — anxiety conditions affect people of every age, background and community — including children.\nOften mixed with depression — the two frequently occur together; recognising one should prompt you to think of the other.\nPLAIN LANGUAGE\nAnxiety: a feeling of fear, dread or unease — in the mind and in the body.\nPhobia: an intense fear of one specific thing or situation, far beyond the real danger.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-3-how-anxiety-shows-itself",
+          "title": "How anxiety shows itself",
+          "main": "Recognising It\n\nAnxiety speaks through the body as loudly as through the mind.\nIn the body — racing or pounding heart, tight chest, shortness of breath, trembling, sweating, dizziness, 'butterflies' or upset stomach, frequent urination, tension headaches.\nIn the mind — constant worry, dread that something terrible will happen, difficulty concentrating, mind going blank, irritability.\nIn behaviour — avoiding places, people or tasks; needing constant reassurance; unable to relax; poor sleep.\nThe clinic-to-clinic pattern — many people with anxiety spend money on repeated tests for the heart, stomach or 'typhoid' that find nothing. When tests keep coming back normal, think of anxiety.\nRule out physical causes — some medical conditions and substances (including excess caffeine, some medicines, and drug withdrawal) can mimic anxiety — another reason proper assessment at a health facility matters.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-3-panic-attacks-frightening-but-not-dangerous",
+          "title": "Panic attacks: frightening but not dangerous",
+          "main": "A Special Situation\n\nWhat happens — a sudden wave of intense fear — pounding heart, breathlessness, choking feeling, trembling, dizziness, fear of dying or 'losing one's mind' — peaking within minutes, then fading.\nWhat it is not — not a heart attack, not spirit possession, not madness. The body's alarm has fired at full power without danger.\nHelping in the moment — stay calm and stay close. Speak slowly and gently: 'You are safe. This will pass.' Breathe slowly and visibly, and invite them to follow your rhythm.\nAfterwards — encourage assessment at a health facility — both to rule out physical causes and to learn skills that prevent future attacks.\nAvoid — crowding the person, shouting, shaking them, or forcing water or drinks on them.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-3-hauwa-and-the-market-crowds",
+          "title": "Hauwa and the market crowds",
+          "main": "A Story From Kaduna\n\nHauwa, 28, sells vegetables in Ikara. Three months ago, in a crowded section of the market, her heart suddenly pounded, her chest tightened, and she felt she was about to die. Neighbours rushed her to a chemist; nothing was found.\nSince then it has happened twice more. Now Hauwa dreads the market. She sends her younger sister to sell for her and stays home, worrying constantly about when the next attack will come. Her savings are shrinking, and she has started avoiding naming ceremonies and church, afraid it will happen in front of people.\nWhat is happening, and what would genuinely help Hauwa?\nSudden peaks of fear with strong body symptoms — panic attacks — followed by fear of the next one.\nAvoidance is growing: market, ceremonies, church. Avoidance brings short-term relief but makes anxiety stronger and shrinks her life and income.\nReassurance that panic attacks are frightening but not dangerous is itself helpful.\nShe should be supported to visit the primary health centre for assessment and to learn calming and gradual-return skills.\nFamily can help her return to the market step by step — short visits, quiet hours first — rather than taking over her duties permanently.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-3-calming-the-body-skills-anyone-can-learn",
+          "title": "Calming the body: skills anyone can learn",
+          "main": "What Helps\n\nThese simple techniques help in anxious moments. They work best when practised daily, not only during crisis.\nSlow breathing — breathe in gently through the nose for a count of 4, out slowly through the mouth for a count of 6. Continue for 2–3 minutes. Slow out-breaths tell the body the danger has passed.\nGrounding (5-4-3-2-1) — name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This pulls the mind out of the fear spiral and into the present.\nFace fears in small steps — avoidance feeds anxiety. Gentle, gradual return — with support — starves it.\nDaily habits — regular sleep, physical activity, less caffeine and kolanut late in the day, and no alcohol or drugs 'to calm nerves' — these worsen anxiety over time.\nTalk about worries — naming worries to a trusted person, or writing them down at a set 'worry time', loosens their grip.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-3-when-and-where-to-seek-care",
+          "title": "When and where to seek care",
+          "main": "The Care Pathway\n\nSeek care when — worry or fear is present most days for weeks, disturbs sleep or work, causes repeated 'normal' medical tests, leads to growing avoidance — or whenever panic attacks occur.\nStart at the primary health centre — trained workers can assess, rule out physical causes, teach calming skills, and provide structured support.\nHigher levels when needed — severe cases, or anxiety mixed with depression or suicidal thoughts, can be referred through Centres of Excellence and general hospitals to specialist care.\nWatch for the danger sign — if anxiety comes with hopelessness or talk of death, treat it as an emergency — use the steps from Module 2.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-3-practise-slow-breathing-for-three-days",
+          "title": "Practise slow breathing for three days",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nYou cannot teach a skill you have not felt. This exercise makes you the first student.\nTwice a day for three days — once in the morning, once before sleep — practise slow breathing: in for 4, out for 6, for two minutes.\nBefore you start each session, rate your tension from 0 (fully calm) to 10 (very tense). Rate again after. Write both numbers down.\nOn day three, try the 5-4-3-2-1 grounding exercise once, anywhere.\nNote in your own words: what changed in your body? When in daily life could this help you — or someone you know?\nREMEMBER\nThese same techniques appear in the professional support that health workers offer. By mastering them now, you are already preparing for the KADSAMHSA skills training pathway.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-3-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Worry becomes a condition when it is excessive, hard to control, lasts weeks to months, and disrupts life.\n2. Anxiety speaks through the body — repeated normal medical tests are a clue.\n3. Panic attacks are frightening but not dangerous, and calm presence helps them pass.\n4. Avoidance feeds anxiety; gentle, gradual facing of fears — with support — shrinks it.\n5. Anxiety conditions are common and treatable — the primary health centre is the place to start.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-3-fear-loses-power-when-it-is-understood",
+          "title": "Fear loses power when it is understood",
+          "main": "Well Done\n\nYou can now recognise anxiety behind the racing heart and the endless tests, help someone through a panic attack, and teach two calming skills that work.\nComplete your post-test, compare with your pre-test, and continue when ready.\nNEXT MODULE\nModule 4 · Psychoses\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Worry becomes an anxiety condition when it is:",
+          "options": [
+            "About real problems",
+            "Excessive, hard to control, and interferes with daily life",
+            "Felt before an exam",
+            "Felt by adults only"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A panic attack is:",
+          "options": [
+            "A heart attack",
+            "Pretending to be sick",
+            "A sudden wave of intense fear with strong body symptoms that peaks within minutes",
+            "A sign of madness"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Anxiety often shows in the body as:",
+          "options": [
+            "Racing heart and tight chest",
+            "Trembling and sweating",
+            "Dizziness and stomach upset",
+            "All of the above"
+          ],
+          "correctIndex": 3
+        },
+        {
+          "prompt": "When someone is having a panic attack, you should:",
+          "options": [
+            "Shout at them to stop",
+            "Stay calm, speak gently, and breathe slowly with them",
+            "Pour water on them",
+            "Leave them alone to recover"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "Which is TRUE about anxiety conditions?",
+          "options": [
+            "They are rare",
+            "They cannot be treated",
+            "They are common and respond well to talking-based support",
+            "Only medicine helps"
+          ],
+          "correctIndex": 2
+        }
+      ]
+    },
+    {
+      "position": 5,
+      "slug": "module-4",
+      "title": "Psychoses",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-4-psychoses",
+          "title": "Psychoses",
+          "main": "When a person loses touch with reality — understanding the most stigmatised of all conditions, and how dignity, treatment and community bring people back to full lives.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-4-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nRecognise — the signs of psychoses — hallucinations, unusual fixed beliefs, disorganised behaviour — and the manic episodes of bipolar disorder.\nUnderstand — that psychoses are brain-based health conditions, not spiritual possession or moral failure.\nRespond safely — how to interact calmly and respectfully with a person experiencing psychosis, including during a crisis.\nChampion recovery — why treatment, family support and community acceptance allow many people to live full lives.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-4-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Hearing voices that others cannot hear is called:\nA. A hallucination\nB. A lie\nC. Possession\nD. Imagination\n\nQ2. Psychoses are best understood as:\nA. Punishment for sin\nB. Health conditions affecting the brain, which can be treated\nC. Contagious diseases\nD. Permanent madness with no hope\n\nQ3. When talking with a person who believes something untrue and frightening, you should:\nA. Argue until they admit they are wrong\nB. Laugh it off\nC. Stay calm, speak simply, and not argue about the belief\nD. Agree that the belief is completely true\n\nQ4. Chaining a person with psychosis at home or in a healing centre is:\nA. Acceptable if the family is tired\nB. Traditional and therefore fine\nC. Harmful, against the law, and never a treatment\nD. Good for the person's safety\n\nQ5. With treatment and support, a person who has had psychosis can:\nA. Never work again\nB. Never marry\nC. Recover and live a full life in the community\nD. Only live in an institution",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-4-what-are-psychoses",
+          "title": "What are psychoses?",
+          "main": "Understanding The Condition\n\nPsychoses are conditions in which a person's mind loses contact with shared reality. The mhGAP module covers psychosis itself and the manic episodes of bipolar disorder.\nHallucinations — hearing voices, or seeing or feeling things, that are not there — completely real to the person.\nDelusions — firm beliefs that are clearly untrue and are not shared by the person's community — for example, that neighbours are poisoning their food, or that radios broadcast their thoughts.\nDisorganised speech and behaviour — words that do not connect; neglecting washing and dressing; behaviour that makes no sense to others.\nManic episodes (bipolar disorder) — periods of abnormally elevated energy and mood — little sleep yet full of energy, rapid talk, grand plans, reckless spending or behaviour — often alternating with periods of depression.\nWho and when — psychoses often first appear in the late teens and twenties. Early treatment protects the brain and the person's future.\nPLAIN LANGUAGE\nPsychosis: a state in which a person cannot tell what is real from what is not.\nMania: an episode of abnormally high mood and energy with little need for sleep.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-4-early-signs-families-often-see-first",
+          "title": "Early signs families often see first",
+          "main": "Recognising It\n\nWithdrawal — pulling away from friends and family, staying alone for long periods.\nTalking or laughing alone — responding to voices no one else hears.\nGrowing suspicion — refusing food from family, accusing loved ones of plots, covering windows.\nSelf-neglect — abandoning washing, dressing and eating habits the person once kept.\nSleep changes — staying awake all night; in mania, going days with little sleep yet bursting with energy and plans.\nFalling performance — a student or worker whose results collapse over months for no clear reason.\nWhy early matters — families often wait years, trying one healing place after another, while the condition deepens. The earlier treatment starts, the better the recovery.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-4-myths-and-facts",
+          "title": "Myths and facts",
+          "main": "Clearing The Fog\n\nMyth: psychosis is possession or a spiritual attack. — Fact: it is a brain-based health condition. Families may pray and seek health care at the same time — but health care must not be delayed or replaced.\nMyth: people with psychosis are violent and dangerous. — Fact: the vast majority are not violent — they are far more often victims of violence, mockery and abuse than causes of it.\nMyth: it is contagious, or shames the whole family line. — Fact: you cannot catch psychosis, and having a relative with it is nothing to hide. Hiding delays treatment.\nMyth: chaining or beating drives out the madness. — Fact: chaining causes wounds, infection and trauma, and is prohibited by law. It has never cured anyone.\nMyth: recovery is impossible. — Fact: with treatment and support, many people recover fully; many others manage the condition and live productive lives.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-4-ibrahim-comes-home-from-university",
+          "title": "Ibrahim comes home from university",
+          "main": "A Story From Kaduna\n\nIbrahim, 21, returned to Tudun Wada from university mid-semester. At first his family thought he was just tired. But weeks passed: he stays in his room, talks and laughs alone at night, and has stopped bathing. Yesterday he refused his mother's food, saying quietly that 'they' have been putting something in it.\nHis father is ashamed and wants no one to know. An uncle suggests taking him to a camp in another state where 'difficult cases' are kept. His younger sister Fatima has just finished the MhGAP Basic course.\nWhat should Fatima help her family understand and do?\nThe signs — withdrawal, responding to unheard voices, self-neglect, suspicion about food — point to possible psychosis, a treatable health condition.\nThis is nobody's fault and nothing to hide. Secrecy and shame only delay treatment.\nCamps that confine and chain people are harmful and unlawful — recovery does not live there.\nIbrahim needs assessment soon: the family should take him to the health facility, starting from the nearest primary health centre, which can refer him to the right level.\nAt home: stay calm and kind, do not argue about the beliefs, keep him safe and included, and make sure one trusted person he still accepts stays close to him.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-4-how-to-interact-during-psychosis",
+          "title": "How to interact during psychosis",
+          "main": "In The Moment\n\nWhether at home or in public, a few principles keep everyone safe and preserve the person's dignity.\nStay calm and unhurried — your calm is contagious. Lower your voice; slow your movements.\nGive space — do not crowd, corner, grab or surround the person — fear drives most crisis behaviour.\nSpeak simply and honestly — short sentences, one idea at a time, no tricks or false promises.\nDo not argue about beliefs or voices — respond to the feeling instead: 'That sounds frightening. I am here with you. You are safe.'\nProtect from mockery — disperse laughing crowds; never film or share videos of a person in crisis — it is degrading and haunts their recovery.\nIn an emergency — if the person is at immediate risk of harming themselves or others, get them to a health facility urgently — with help from calm adults, not a mob, and never with beatings or chains.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-4-treatment-family-and-community-recovery-s-three-legs",
+          "title": "Treatment, family and community: recovery's three legs",
+          "main": "The Road Back\n\nTreatment works — medicines prescribed by health workers calm hallucinations and delusions; continuing them — even after improvement — prevents relapse. Stopping suddenly is the most common cause of relapse.\nFollow-up matters — regular reviews let health workers adjust treatment and catch early warning signs (sleep changes, renewed withdrawal, growing suspicion).\nFamily support — a calm home, patience during recovery, help with medicines, and freedom from blame — families also deserve support and education themselves.\nCommunity acceptance — returning to work, worship, farming and friendship is treatment too. A community that welcomes a person back is completing their care.\nWhere care is found — start at the primary health centre; Centres of Excellence and general hospitals manage treatment with specialist backup; the Federal Neuropsychiatric Hospital, Barnawa, handles the most complex care.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-4-rewrite-the-story-your-community-tells",
+          "title": "Rewrite the story your community tells",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nStigma lives in the words we use every day. This exercise changes yours first.\nWrite down three words or phrases used in your community for people with psychosis (in any language you know).\nFor each, write what effect that word has on a family deciding whether to seek help openly.\nNow write the sentence you will use instead — for example: 'He has a health condition that affects the brain. It can be treated.'\nThis week, if the topic arises in conversation, use your new sentence once, and note how people respond.\nREMEMBER\nEvery time one respected voice in a community speaks of psychosis as a treatable health condition, seeking help becomes easier for someone listening quietly.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-4-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Psychoses are brain-based health conditions — hallucinations and delusions are symptoms, not possession or lies.\n2. People with psychosis are far more often victims of abuse than dangers to others.\n3. Never argue with the beliefs; respond calmly to the person and their fear.\n4. Chaining and beating are unlawful abuse — treatment, started early, is what heals.\n5. Recovery stands on three legs: continued treatment, supported family, welcoming community.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-4-dignity-is-the-beginning-of-recovery",
+          "title": "Dignity is the beginning of recovery",
+          "main": "Well Done\n\nNo condition in this course carries heavier stigma — and none rewards community understanding more richly. You now know the signs, the safe responses, and the truth that recovery is real.\nComplete your post-test, compare with your pre-test, and continue when ready.\nNEXT MODULE\nModule 5 · Epilepsy\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Hearing voices that others cannot hear is called:",
+          "options": [
+            "A hallucination",
+            "A lie",
+            "Possession",
+            "Imagination"
+          ],
+          "correctIndex": 0
+        },
+        {
+          "prompt": "Psychoses are best understood as:",
+          "options": [
+            "Punishment for sin",
+            "Health conditions affecting the brain, which can be treated",
+            "Contagious diseases",
+            "Permanent madness with no hope"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "When talking with a person who believes something untrue and frightening, you should:",
+          "options": [
+            "Argue until they admit they are wrong",
+            "Laugh it off",
+            "Stay calm, speak simply, and not argue about the belief",
+            "Agree that the belief is completely true"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Chaining a person with psychosis at home or in a healing centre is:",
+          "options": [
+            "Acceptable if the family is tired",
+            "Traditional and therefore fine",
+            "Harmful, against the law, and never a treatment",
+            "Good for the person's safety"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "With treatment and support, a person who has had psychosis can:",
+          "options": [
+            "Never work again",
+            "Never marry",
+            "Recover and live a full life in the community",
+            "Only live in an institution"
+          ],
+          "correctIndex": 2
+        }
+      ]
+    },
+    {
+      "position": 6,
+      "slug": "module-5",
+      "title": "Epilepsy",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-5-epilepsy",
+          "title": "Epilepsy",
+          "main": "A brain condition, not a spiritual one — recognising seizures, giving safe first aid, and supporting people to live full lives on treatment.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-5-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nUnderstand — what epilepsy is, what causes it, and why it is a medical condition of the brain.\nRecognise — convulsive and non-convulsive seizures, including the quiet ones people miss.\nGive first aid — exactly what to do — and what never to do — when someone has a seizure.\nSupport treatment — why daily medicine lets most people live seizure-free, and how to fight the stigma that keeps them from it.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-5-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Epilepsy is caused by:\nA. Evil spirits\nB. Abnormal electrical activity in the brain\nC. Contact with a person having a seizure\nD. Witchcraft\n\nQ2. You can catch epilepsy by touching a person during a seizure or contacting their saliva.\nA. True\nB. False\n\nQ3. During a convulsive seizure, you should:\nA. Force a spoon into the mouth\nB. Hold the person down firmly\nC. Protect the head, turn them on their side, and stay until they recover\nD. Pour water or make them smell onions\n\nQ4. With regular daily medicine, most people with epilepsy:\nA. Still seize daily\nB. Become addicted\nC. Can become seizure-free and live normal lives\nD. Get worse\n\nQ5. A seizure becomes an emergency needing urgent hospital care when:\nA. It lasts more than 5 minutes or repeats without recovery\nB. It happens in a pregnant woman or with fever or injury\nC. The person does not wake up after it ends\nD. Any of the above",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-5-what-is-epilepsy",
+          "title": "What is epilepsy?",
+          "main": "Understanding The Condition\n\nEpilepsy is one of the world's oldest recognised conditions — and one of the most wrapped in fear. The facts are simpler and more hopeful than the myths.\nA brain condition — epilepsy is a chronic, non-communicable disorder of the brain causing repeated seizures — sudden bursts of abnormal electrical activity.\nKnown causes — complications at birth, head injuries, brain infections such as meningitis or severe malaria, and family tendency. Often, no cause is ever found — and that is still epilepsy, not mystery or magic.\nAnyone, any age — it affects children, adults and the elderly, in every community. Millions of people worldwide live with it; most live in countries like ours.\nNot contagious. Not a curse. — you cannot catch it, and it is not punishment. These two myths cause more suffering than the seizures themselves.\nHighly treatable — with inexpensive daily medicine, most people become completely seizure-free.\nPLAIN LANGUAGE\nSeizure: a sudden episode caused by abnormal electrical activity in the brain — sometimes called a 'fit'.\nChronic: long-lasting; continuing over months or years.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-5-two-faces-of-seizures",
+          "title": "Two faces of seizures",
+          "main": "Recognising It\n\nNot every seizure looks like the dramatic collapse people picture. Recognising the quiet ones matters just as much.\nConvulsive seizures — the person loses consciousness, the body stiffens, then jerks for one to two minutes. There may be tongue-biting, frothing, or loss of urine. Afterwards: deep tiredness, confusion, sleep, headache.\nSome people sense a warning — a strange smell, feeling or sound moments before — called an aura — which can give time to sit or lie down safely.\nNon-convulsive seizures — brief episodes of blank staring, stopping mid-sentence, lip-smacking or fumbling movements, or sudden confusion — with no memory of it afterwards.\nThe child who 'daydreams' — a pupil repeatedly drifting blank for seconds may be having absence seizures, not being stubborn. Teachers and parents are often the first who could notice.\nRepeated and unprovoked — epilepsy means seizures that keep returning without an immediate trigger — a single seizure during high fever in a small child, for instance, is not automatically epilepsy. Assessment at a health facility settles it.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-5-seizure-first-aid-do-this",
+          "title": "Seizure first aid: do this",
+          "main": "Life-Saving Knowledge\n\nMost seizures end safely on their own within one to two minutes. Your job is to protect the person until it passes.\nStay calm and stay there — note the time the seizure starts. Send someone to clear away onlookers.\nProtect the head — place something soft (folded cloth, wrapper, bag) under the head; move hard or sharp objects, fire and water away.\nTurn onto the side — as soon as possible, roll the person gently onto their side so saliva drains and breathing stays clear.\nLoosen tight clothing — especially around the neck.\nLet it finish — do not restrain the jerking movements. When it ends, the person will be confused and exhausted — speak gently, explain what happened, and stay until they fully recover.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-5-seizure-first-aid-never-do-this",
+          "title": "Seizure first aid: never do this",
+          "main": "Just As Important\n\nNever put anything in the mouth — no spoon, stick, cloth or fingers. A person cannot swallow their tongue — but objects break teeth, wound the mouth and block the airway.\nNever hold the person down — restraining causes fractures and dislocations. Guide, do not grip.\nNever pour liquids into the mouth — water, oil or medicine given during or right after a seizure goes into the lungs and can kill.\nNever apply 'remedies' — burning the feet, pressing onions or perfume to the nose, or beating 'the spirit out' — these injure and humiliate; none of them ends a seizure.\nNever walk away — abandoning someone mid-seizure — out of fear of 'catching it' — leaves them to injury, drowning or burns. You cannot catch epilepsy. Stay.\nGo urgently to a health facility if — the seizure passes 5 minutes, repeats without recovery, the person does not wake, is pregnant, is injured, or has fever — or call Kaduna State Emergency Medical Services on 0806 411 1599.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-5-sani-the-boy-who-left-school",
+          "title": "Sani, the boy who left school",
+          "main": "A Story From Kaduna\n\nSani, 13, of Soba, had his first convulsive seizure in class a year ago. Frightened classmates scattered; a teacher pushed a spoon into his mouth, breaking a tooth. Word spread that Sani had 'the falling sickness' and that it could be caught from his spit.\nHis parents withdrew him from school for treatment at a healing centre, selling a goat each visit. The seizures continued — about twice a month. Sani now stays home, keeps away from other children, and has stopped talking about becoming a teacher.\nWhat went wrong here — and what could put Sani's life back on track?\nThe spoon injured him; the contagion rumour isolated him. Both came from myths, not facts.\nA year of untreated seizures — and lost schooling — while money went to approaches that could not stop them.\nSani needs assessment at a health facility, where inexpensive daily medicine can very likely make him seizure-free.\nThe school should welcome him back; a teacher informed with this module's first aid could make the classroom safe for him.\nNeighbours who learn 'you cannot catch epilepsy' become his protection instead of his exile.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-5-treatment-and-daily-living",
+          "title": "Treatment and daily living",
+          "main": "The Road To A Full Life\n\nDaily medicine works — taken every day — not only after seizures — anti-seizure medicines make most people seizure-free. They are among the least expensive medicines in the health system, and they are not addictive.\nNever stop suddenly — stopping medicine abruptly can trigger dangerous seizures. Any change should be guided by a health worker, who will review regularly at follow-up.\nEveryday safety, not exclusion — sensible precautions — showering rather than bathing alone in deep water, care around open fire and heights until seizures are controlled — allow full participation in school, work and family life.\nSchool and work — children with epilepsy learn normally and belong in school; adults can work, marry and raise families. Excluding them is stigma, not safety.\nWomen and pregnancy — women with epilepsy can have healthy pregnancies — but should visit a health facility when planning pregnancy, so treatment can be adjusted safely. Never simply stop medicine on discovering pregnancy.\nWhere care is found — start at the primary health centre; trained workers assess, start treatment and follow up, referring complex cases up the ladder when needed.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-5-teach-seizure-first-aid-to-one-household",
+          "title": "Teach seizure first aid to one household",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nFirst aid knowledge only saves lives when it spreads. Be the one who spreads it.\nFrom memory, write the five DO steps and five NEVER steps of seizure first aid. Then check yourself against the slides and correct your list.\nThis week, teach the corrected list to at least one household — your own family counts. A cooking pot of time: ten minutes.\nDemonstrate the side position on a mat with a volunteer, and cushioning the head with a folded wrapper.\nAsk your 'students' the two killer questions: What goes in the mouth? (Nothing.) Can you catch epilepsy? (Never.)\nNote who you taught and one question they asked that you want to remember.\nREMEMBER\nIn a state of millions, most seizure injuries happen because no bystander knew these ten points. Every household you teach becomes a safe place for someone.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-5-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Epilepsy is a brain condition with medical causes — never contagious, never a curse.\n2. Seizure first aid: cushion the head, turn to the side, time it, stay. Nothing in the mouth, no restraint, no liquids.\n3. Over 5 minutes, repeated seizures, no waking, pregnancy, injury or fever — go to a health facility urgently.\n4. Inexpensive daily medicine makes most people seizure-free — taken every day, never stopped suddenly.\n5. Children with epilepsy belong in school; adults belong at work. Inclusion is part of treatment.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-5-you-now-carry-knowledge-that-prevents-injury-and-saves-lives",
+          "title": "You now carry knowledge that prevents injury and saves lives",
+          "main": "Well Done\n\nSeizure first aid may be the most immediately practical thing in this entire course — and the myths you can now correct have cost real people their schooling, marriages and lives.\nComplete your post-test, compare with your pre-test, and continue when ready.\nNEXT MODULE\nModule 6 · Substance Use Disorders\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Epilepsy is caused by:",
+          "options": [
+            "Evil spirits",
+            "Abnormal electrical activity in the brain",
+            "Contact with a person having a seizure",
+            "Witchcraft"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "You can catch epilepsy by touching a person during a seizure or contacting their saliva.",
+          "options": [
+            "True",
+            "False"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "During a convulsive seizure, you should:",
+          "options": [
+            "Force a spoon into the mouth",
+            "Hold the person down firmly",
+            "Protect the head, turn them on their side, and stay until they recover",
+            "Pour water or make them smell onions"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "With regular daily medicine, most people with epilepsy:",
+          "options": [
+            "Still seize daily",
+            "Become addicted",
+            "Can become seizure-free and live normal lives",
+            "Get worse"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "A seizure becomes an emergency needing urgent hospital care when:",
+          "options": [
+            "It lasts more than 5 minutes or repeats without recovery",
+            "It happens in a pregnant woman or with fever or injury",
+            "The person does not wake up after it ends",
+            "Any of the above"
+          ],
+          "correctIndex": 3
+        }
+      ]
+    },
+    {
+      "position": 7,
+      "slug": "module-6",
+      "title": "Substance Use Disorders",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-6-substance-use-disorders",
+          "title": "Substance Use Disorders",
+          "main": "Alcohol and drugs — understanding how use becomes harm and harm becomes dependence, why dependence is a health condition, and how recovery really happens.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-6-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nUnderstand — the journey from use to harmful use to dependence — and why dependence is a health condition, not simply bad character.\nRecognise — signs of substance problems, the substances common in our communities, and the emergencies: overdose and severe withdrawal.\nRespond — how to talk with a person about their substance use in a way that opens doors instead of closing them.\nConnect to care — know that effective treatment exists in Kaduna State and how people reach it.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-6-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Substance dependence means:\nA. Enjoying alcohol at parties\nB. Using once out of curiosity\nC. The substance has taken control — strong cravings, inability to stop, use continuing despite serious harm\nD. Weakness of character\n\nQ2. Dependence is best understood as:\nA. A crime deserving punishment only\nB. A health condition affecting the brain, which can be treated\nC. A choice the person can simply reverse anytime\nD. Hopeless\n\nQ3. The most helpful way to raise someone's substance use with them is to:\nA. Shame them publicly\nB. Talk privately, without judging, about what you have noticed and what they want\nC. Threaten to report them\nD. Hide their substance and say nothing\n\nQ4. A person who uses drugs is found unconscious with very slow breathing. This is:\nA. Normal deep sleep\nB. An overdose emergency — get them to a health facility immediately\nC. Best left to sleep it off\nD. Punishment taking effect\n\nQ5. A heavy daily drinker who suddenly stops and develops severe trembling, confusion and seeing things needs:\nA. To be tied until it passes\nB. Prayer only\nC. Urgent medical care — severe alcohol withdrawal can kill\nD. More alcohol permanently",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-6-from-use-to-harm-to-dependence",
+          "title": "From use to harm to dependence",
+          "main": "Understanding The Problem\n\nSubstance problems are not one thing. Understanding the journey helps us respond to each stage correctly.\nUse — taking alcohol or a drug. Any use carries some risk — but not all use is a disorder.\nHarmful use — a pattern of use that is already damaging the person's physical health, mental health, or social life (family conflict, money problems, trouble at work) — even without dependence.\nDependence — the substance takes priority over everything once valued. Strong cravings; failed attempts to stop; needing more for the same effect (tolerance); sickness when stopping (withdrawal); use continuing despite obvious destruction.\nIntoxication — the temporary state while a substance is acting — altered behaviour, judgement, coordination and consciousness.\nWhy it is a health condition — repeated use rewires the brain's reward and control systems. That is why 'just stop' fails, and why treatment — not condemnation — is what works.\nPLAIN LANGUAGE\nCraving: an intense, hard-to-resist urge to use the substance.\nWithdrawal: the sickness that appears when a dependent person stops or reduces use.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-6-substances-in-our-communities",
+          "title": "Substances in our communities",
+          "main": "Our Context\n\nDifferent substances, different dangers — but the journey to dependence is the same.\nAlcohol — legal and everywhere; the most widely harmful substance in most communities. Heavy use damages the liver, brain, family and finances — and its severe withdrawal can kill.\nCannabis — widely used by young people; heavy use, especially starting in the teenage years, harms memory, motivation and schooling, and raises the risk of psychosis in vulnerable people.\nOpioids — including misused codeine cough syrups and tramadol. Highly dependence-forming; overdose stops breathing and kills.\nStimulants and inhalants — amphetamine-type pills, and solvent sniffing among street-connected children — cheap, devastating, and often overlooked.\nMixed street substances — locally mixed concoctions circulate in our state whose true contents even users do not know — unknown contents mean unpredictable danger.\nWhy people start — curiosity, peer pressure, easing pain or distress, staying awake to work — understanding the 'why' is the beginning of helping.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-6-signs-a-person-may-be-in-trouble",
+          "title": "Signs a person may be in trouble",
+          "main": "Recognising It\n\nChanging priorities — money disappearing; selling belongings; abandoning work, school or family duties; new secretive routines and companions.\nPhysical signs — declining appearance and hygiene, red eyes, unexplained weight loss, marks on the skin, smelling of substances, shaking hands in the morning.\nBehavioural signs — mood swings, irritability or aggression, lying about use, borrowing constantly, sleeping at odd hours.\nThe morning marker — needing the substance early in the day 'to feel normal' is a strong sign of dependence.\nLook with compassion — these signs call for concern and conversation — not spying, public accusation or disgrace.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-6-two-situations-that-kill-know-them",
+          "title": "Two situations that kill: know them",
+          "main": "Emergencies\n\nOverdose — too much of a substance overwhelms the body. Danger signs: cannot be woken, very slow or stopped breathing, blue lips, choking sounds.\nOverdose response — this is death approaching, not 'sleeping it off'. Turn the person on their side, keep the airway clear, and get them to a health facility immediately — or call Kaduna State Emergency Medical Services on 0806 411 1599. For opioid overdose, health workers have a medicine that reverses it — minutes matter.\nSevere withdrawal — when a heavily dependent person (especially on alcohol) stops suddenly: violent trembling, drenching sweats, confusion, seeing things, seizures. This can kill.\nWithdrawal response — urgent medical care — withdrawal from heavy alcohol dependence should always be planned with health workers, never attempted abruptly alone at home.\nNever as a response to either — tying the person, beating 'the drug out', or locking them away to 'dry out'. These kill and are unlawful.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-6-grace-s-husband",
+          "title": "Grace's husband",
+          "main": "A Story From Kaduna\n\nGrace, of Sabon Tasha, has watched her husband Danjuma change over two years. Once a steady welder, he now drinks from mid-morning, shakes until his first drink, and has sold two of his machines. Money for school fees vanished last term. When Grace raised it, he exploded; when her brothers confronted him publicly at a family meeting, he disappeared for three days and returned worse.\nHer pastor advises patience and prayer. A neighbour suggests locking him in a room until 'the thing leaves him'. Grace loves her husband and is running out of ideas.\nUsing this module, what should Grace understand and do?\nMorning shaking relieved by drinking points to alcohol dependence — a health condition, not simply moral failure.\nPublic confrontation deepened shame and drove him further in; private, non-judging conversation works better.\nLocking him in to stop suddenly could trigger severe withdrawal — which can kill. Never this.\nDanjuma needs professional help: assessment and a safe, supported plan to reduce and stop, starting from a health facility — Grace can seek advice there even before he agrees to go.\nGrace deserves support too: for her own wellbeing, the family's finances and the children — care for the family is part of the treatment.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-6-talking-so-a-person-can-hear-you",
+          "title": "Talking so a person can hear you",
+          "main": "What Helps\n\nYou cannot force a person to change — but the right conversation makes change more likely. This approach underlies professional counselling too.\nPick the moment — private, sober, unhurried. Never mid-argument or in front of others.\nDescribe, do not accuse — 'I have noticed the school fees money is finished and you shake in the mornings. I am worried about you' — not 'You are a drunkard.'\nAsk, then listen — 'How do you see your drinking?' People move toward change when they hear themselves talk about it, not when they hear a lecture.\nRespect the struggle — expect mixed feelings — wanting and not wanting to change at once is normal, not dishonesty.\nOffer the door, not the shove — 'If you ever want to talk to someone at the clinic, I will go with you.' Then keep the relationship warm; doors stay open through connection.\nRelapse is not failure — recovery often takes several attempts. Each return to trying is progress, and shame is its enemy.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-6-treatment-and-recovery-in-kaduna-state",
+          "title": "Treatment and recovery in Kaduna State",
+          "main": "The Care Pathway\n\nTreatment exists and works — counselling-based support, mutual help groups, family support and — for some substances — medicines prescribed by health workers to manage withdrawal safely and reduce cravings.\nWhere to start — any primary health centre can assess and connect a person onwards. Kaduna State also runs dedicated treatment and rehabilitation services for substance use under KADSAMHSA.\nHelp, not punishment — the direction of our state and national response is to treat people with substance use disorders as patients needing care — including pathways that divert eligible cases from prison into treatment.\nRecovery is a journey — treatment, then rebuilding: work, family trust, new routines and companions. Communities that welcome people back protect their recovery.\nFamilies are clients too — spouses, parents and children affected by a person's use deserve — and can receive — support in their own right.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-6-script-one-caring-conversation",
+          "title": "Script one caring conversation",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nThe hardest step is the first sentence. Prepare yours in writing, even if you never need it.\nThink of a person you are concerned about (or imagine Danjuma from the story). Write down: What exactly have you observed? Stick to facts you saw, not rumours.\nDraft your opening two sentences using the describe-do-not-accuse pattern: what you noticed + that you are worried about them.\nWrite one open question you would ask next ('How do you see it?'), and one offer that keeps the door open.\nRead your script aloud twice. Cross out any word that shames, labels or threatens.\nKeep the script in your notes. If the real conversation comes, you will be ready.\nREMEMBER\nThis structure — notice, express care, ask, listen, offer — is the seed of motivational conversation, a core skill in the professional training pathway that follows this course.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-6-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. Use, harmful use, dependence — a journey, and dependence is a treatable brain-based health condition.\n2. Shame drives use into hiding; private, respectful conversation opens the door to change.\n3. Overdose (cannot wake, slow breathing) and severe alcohol withdrawal are emergencies — get medical help fast.\n4. Never chain, beat or lock a person in to 'cure' them — it kills and it is unlawful.\n5. Treatment works, relapse is part of recovery, and Kaduna State has services — starting from any health centre.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 13,
+          "slug": "module-6-from-condemnation-to-care",
+          "title": "From condemnation to care",
+          "main": "Well Done\n\nSubstance use disorders destroy quietly in every community — and recover loudly wherever families and communities replace shame with support and connection to treatment. You now know the journey, the emergencies, and the conversation that opens doors.\nComplete your post-test, compare with your pre-test, and continue when ready.\nNEXT MODULE\nModule 7 · Perinatal Mental Health\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Substance dependence means:",
+          "options": [
+            "Enjoying alcohol at parties",
+            "Using once out of curiosity",
+            "The substance has taken control — strong cravings, inability to stop, use continuing despite serious harm",
+            "Weakness of character"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Dependence is best understood as:",
+          "options": [
+            "A crime deserving punishment only",
+            "A health condition affecting the brain, which can be treated",
+            "A choice the person can simply reverse anytime",
+            "Hopeless"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "The most helpful way to raise someone's substance use with them is to:",
+          "options": [
+            "Shame them publicly",
+            "Talk privately, without judging, about what you have noticed and what they want",
+            "Threaten to report them",
+            "Hide their substance and say nothing"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A person who uses drugs is found unconscious with very slow breathing. This is:",
+          "options": [
+            "Normal deep sleep",
+            "An overdose emergency — get them to a health facility immediately",
+            "Best left to sleep it off",
+            "Punishment taking effect"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A heavy daily drinker who suddenly stops and develops severe trembling, confusion and seeing things needs:",
+          "options": [
+            "To be tied until it passes",
+            "Prayer only",
+            "Urgent medical care — severe alcohol withdrawal can kill",
+            "More alcohol permanently"
+          ],
+          "correctIndex": 2
+        }
+      ]
+    },
+    {
+      "position": 8,
+      "slug": "module-7",
+      "title": "Perinatal Mental Health",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-7-perinatal-mental-health",
+          "title": "Perinatal Mental Health",
+          "main": "Supporting mothers before and after childbirth — because in Kaduna State, about 1 in 7 pregnant and recently delivered women shows signs of significant mental distress.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-7-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nUnderstand — why pregnancy and the two years after birth are a time of special mental health risk — and special opportunity to help.\nRecognise — the difference between short-lived 'baby blues', perinatal depression and anxiety, and the rare emergency of postpartum psychosis.\nSupport — what families — especially husbands, mothers and mothers-in-law — can do that protects a mother's mind.\nConnect to care — how antenatal and postnatal clinic visits in Kaduna State now include mental health, and when to seek help urgently.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-7-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. 'Perinatal' refers to the period:\nA. Only the day of delivery\nB. During pregnancy and roughly the first two years after birth\nC. Before marriage\nD. After weaning only\n\nQ2. In Kaduna State, about how many pregnant or recently delivered women show signs of significant mental distress?\nA. 1 in 100\nB. 1 in 50\nC. 1 in 7\nD. None — motherhood protects the mind\n\nQ3. 'Baby blues' — tearfulness and mood swings in the first days after delivery — usually:\nA. Lasts for years\nB. Passes within about two weeks with rest and support\nC. Means the mother is unfit\nD. Requires admission\n\nQ4. A week after delivery, a new mother stops sleeping entirely, talks strangely, and says the baby is not hers. This is:\nA. Normal tiredness\nB. Bad character\nC. A possible postpartum psychosis — a medical emergency\nD. Something to hide from the clinic\n\nQ5. A mother's untreated depression can affect her baby because:\nA. It cannot — babies notice nothing\nB. Depression makes bonding, breastfeeding and care harder, affecting the baby's growth and development\nC. Babies catch depression like a cold\nD. Only the father's mood matters",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-7-motherhood-and-the-mind-in-kaduna-state",
+          "title": "Motherhood and the mind in Kaduna State",
+          "main": "Why This Module Exists\n\nPregnancy and new motherhood bring joy — and enormous physical, emotional and social pressure. Our own state's evidence tells us how common the struggle is.\nThe Kaduna evidence — a state-wide survey of nearly 1,900 pregnant and postpartum women found about 1 in 7 showing signs of probable mental distress — rising to about 1 in 5 in the southern zone.\nIn every antenatal queue — that means in any clinic waiting line of fourteen expectant or new mothers, two are likely struggling — usually in silence.\nWhy this period is risky — hormonal changes, exhausted sleep, birth complications, money pressure, an unsupportive or violent home, loss of a baby, and the weight of expectations can all converge at once.\nWhy it stays hidden — a mother who admits to sadness fears being called ungrateful, bewitched or unfit — so she smiles at the clinic and weeps at home.\nTwo lives at once — caring for a mother's mind is caring for her baby's growth, feeding, and development. That is why Kaduna State has built mental health into antenatal and postnatal care.\nPLAIN LANGUAGE\nPerinatal: relating to pregnancy and the period after childbirth.\nPostpartum / postnatal: the period after delivery.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-7-three-patterns-to-tell-apart",
+          "title": "Three patterns to tell apart",
+          "main": "Recognising It\n\n1 · Baby blues (common, passes) — tearfulness, mood swings, worry and irritability in the first days after delivery, affecting many mothers. With rest, kindness and practical help, it fades within about two weeks.\n2 · Perinatal depression and anxiety (common, needs care) — the signs from Modules 2 and 3 — persistent sadness or worry, exhaustion beyond newborn tiredness, guilt, feeling like a bad mother, loss of interest in the baby or in life — lasting beyond two weeks, during pregnancy or after birth.\n3 · Postpartum psychosis (rare, emergency) — usually within days to weeks of delivery: severe confusion, no sleep at all, strange beliefs (often about the baby), hearing voices, or dramatic swings between frenzy and stupor. Same-day medical care — this endangers mother and baby.\nThe question that opens doors — asked privately and kindly: 'Many mothers feel low or worried at this time. How has it been for you — truly?'\nDanger signs — act today — talk of death or self-harm, thoughts of harming the baby, or any sign of psychosis. These are emergencies, never secrets to keep.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-7-amina-s-second-baby",
+          "title": "Amina's second baby",
+          "main": "A Story From Kaduna\n\nAmina, 24, of Zaria, delivered her second child six weeks ago. Her mother-in-law notices the compound has gone quiet: Amina no longer sings to the baby, barely eats, and yesterday was found sitting motionless while the baby cried beside her. When asked, Amina whispered that she is a useless mother and the family 'would do better without her'.\nHer husband Salisu is away at work in another town most of the month. A neighbour says some women are simply lazy after delivery; another whispers about spiritual attack from a jealous co-wife.\nWhat is happening, and what should this family do?\nSix weeks of withdrawal, poor eating, loss of interest in the baby and feelings of worthlessness — this is beyond baby blues; it fits perinatal depression.\n'Better without her' is a danger sign — treat it as an emergency: do not leave her alone, and get her assessed the same day.\nNeither laziness nor spiritual attack: this is a treatable health condition, and blame will deepen it.\nThe mother-in-law who noticed is the key protector: she can arrange the clinic visit, share the housework and baby care, and guard Amina from gossip.\nSalisu should be called: a husband's presence, kindness and share of the load are among the strongest medicines this condition knows.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-7-the-family-as-the-first-treatment",
+          "title": "The family as the first treatment",
+          "main": "What Helps\n\nMost of what protects a mother's mind costs nothing and lives inside her own household.\nShare the load — cooking, washing, night feeds, minding older children — practical help is mental health care. No mother should carry a newborn season alone.\nGuard her sleep — arrange stretches of unbroken sleep; exhaustion feeds depression and anxiety.\nFeed her well and kindly — a nursing mother eating last and least is a risk sign in itself.\nSpeak life, not blame — no taunts about the baby's sex, her body, her milk or her housekeeping. Words in this season sink deep.\nHusbands are half the answer — presence, tenderness, protecting her from criticism, and going along to clinic visits — fathers who do this protect two lives.\nKeep her connected — visits from women who listen without judging; gentle return to the gatherings she loves.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-7-where-mothers-find-help-in-kaduna-state",
+          "title": "Where mothers find help in Kaduna State",
+          "main": "The Care Pathway\n\nIt starts at the clinic she already attends — antenatal and postnatal visits at primary health centres now include attention to how the mother is feeling — not only her body and the baby's.\nScreening is normal, not shameful — being asked questions about mood at the clinic is routine care for every mother, the same as checking blood pressure.\nTalking-based support — trained health workers offer structured support that helps mothers manage low mood and worry — built on approaches proven to work for mothers in settings like ours.\nHigher care when needed — moderate to severe cases are referred up the ladder — with treatment choices that respect pregnancy and breastfeeding, decided by health workers.\nEmergencies go same-day — danger signs (self-harm, thoughts of harming the baby, psychosis) go straight to a health facility — bring her, with the baby cared for, without delay. In an emergency, call Kaduna State Emergency Medical Services on 0806 411 1599.\nLoss is perinatal too — mothers who lose a pregnancy or a baby deserve the same attention to their grief and mental health — check on them, and connect them to care.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-7-the-two-question-visit",
+          "title": "The two-question visit",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nSomewhere near you is a pregnant woman or new mother. This exercise is a real visit, done kindly.\nIdentify one pregnant woman or mother of a baby under two years in your family or neighbourhood.\nVisit or call her this week. After greetings, ask privately: 'How are you — not just the baby, you?' Then be quiet and listen with your Module 1 skills.\nAsk the second question: 'What is the heaviest load on you right now?' Offer one concrete piece of help within your power — an errand, an hour of childcare, a meal.\nAfterwards, note: what did she say when given the space? Any signs from this module? If danger signs appeared, act on them today.\nREMEMBER\nMost mothers are asked daily about the baby and never about themselves. The question 'and how are YOU?' — asked sincerely, privately, twice — finds more hidden suffering than any machine.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-7-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. About 1 in 7 pregnant and postpartum women in Kaduna State shows signs of significant mental distress — common, hidden, treatable.\n2. Baby blues pass within two weeks; longer or deeper struggles are perinatal depression or anxiety and deserve care.\n3. No sleep, confusion or strange beliefs about the baby after delivery = possible postpartum psychosis = same-day emergency.\n4. Practical help, protected sleep, kind words and present husbands are powerful protection for a mother's mind.\n5. Mental health is now part of antenatal and postnatal care in Kaduna State — screening is routine, not shame.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-7-care-for-the-mother-and-you-care-for-two",
+          "title": "Care for the mother, and you care for two",
+          "main": "Well Done\n\nEvery mother you now check on — with the question 'and how are you?' — is a door opened that our clinics, our data and our services are working to keep open across the state.\nComplete your post-test, compare with your pre-test, and continue to the final module.\nNEXT MODULE\nModule 8 · Safeguarding Children, Adolescents and Vulnerable Adults\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "'Perinatal' refers to the period:",
+          "options": [
+            "Only the day of delivery",
+            "During pregnancy and roughly the first two years after birth",
+            "Before marriage",
+            "After weaning only"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "In Kaduna State, about how many pregnant or recently delivered women show signs of significant mental distress?",
+          "options": [
+            "1 in 100",
+            "1 in 50",
+            "1 in 7",
+            "None — motherhood protects the mind"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "'Baby blues' — tearfulness and mood swings in the first days after delivery — usually:",
+          "options": [
+            "Lasts for years",
+            "Passes within about two weeks with rest and support",
+            "Means the mother is unfit",
+            "Requires admission"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "A week after delivery, a new mother stops sleeping entirely, talks strangely, and says the baby is not hers. This is:",
+          "options": [
+            "Normal tiredness",
+            "Bad character",
+            "A possible postpartum psychosis — a medical emergency",
+            "Something to hide from the clinic"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "A mother's untreated depression can affect her baby because:",
+          "options": [
+            "It cannot — babies notice nothing",
+            "Depression makes bonding, breastfeeding and care harder, affecting the baby's growth and development",
+            "Babies catch depression like a cold",
+            "Only the father's mood matters"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    },
+    {
+      "position": 9,
+      "slug": "module-8",
+      "title": "Safeguarding Children, Adolescents and Vulnerable Adults",
+      "lessons": [
+        {
+          "position": 1,
+          "slug": "module-8-safeguarding-children-adolescents-and-vulnerable-adults",
+          "title": "Safeguarding Children, Adolescents and Vulnerable Adults",
+          "main": "Recognising abuse and neglect, responding to a disclosure without causing harm, and knowing the channels that protect people who cannot fully protect themselves.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 2,
+          "slug": "module-8-what-you-will-learn",
+          "title": "What you will learn",
+          "main": "What You Will Learn\n\nIdentify — who counts as vulnerable — children, adolescents, people with mental health conditions or disabilities, older adults and others — and why.\nRecognise — the forms of abuse and neglect, and the signs that should make you concerned.\nRespond well — exactly what to do — and what never to do — when a child or vulnerable adult discloses harm to you.\nReport and protect — the laws that protect vulnerable people in Nigeria and the channels through which concerns become protection.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 3,
+          "slug": "module-8-pre-test",
+          "title": "Pre-test",
+          "main": "Pre-test: check your starting point (not graded)\n\nWrite down your answers on paper or your phone. Your score is only for you.\n\nQ1. Under Nigerian and international standards, a child is any person below:\nA. 12 years\nB. 15 years\nC. 18 years\nD. 21 years\n\nQ2. Which of these should make you CONSIDER possible abuse or neglect?\nA. Injuries that do not match the explanation given\nB. A child fearful of one specific person\nC. Sudden behaviour change, school refusal or self-harm\nD. All of the above\n\nQ3. A 14-year-old girl quietly tells you an uncle 'touches her'. Your FIRST response should be to:\nA. Promise to keep it secret\nB. Listen calmly, tell her she did right to speak, and explain you must involve people who can keep her safe\nC. Call the uncle to hear his side\nD. Tell her to avoid him\n\nQ4. You suspect abuse, but the child denies anything is wrong. You should:\nA. Close the matter — no disclosure, no case\nB. Record your concerns factually and report through the proper safeguarding channel\nC. Confront the family loudly\nD. Wait for injuries to become serious\n\nQ5. People with mental health conditions and disabilities are:\nA. Rarely abused\nB. At higher risk of abuse and less likely to be believed — so their reports deserve extra care\nC. Making up stories usually\nD. Protected automatically",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 4,
+          "slug": "module-8-who-needs-safeguarding-and-why",
+          "title": "Who needs safeguarding — and why",
+          "main": "Understanding Vulnerability\n\nSafeguarding means protecting the health, wellbeing and rights of people less able to protect themselves.\nChildren and adolescents — anyone under 18 is a child; adolescents are aged 10–19. Dependence on adults is their strength and their exposure.\nPeople with mental health conditions or disabilities — physical, intellectual or mental-health related — at sharply higher risk of abuse, exploitation and neglect, and less likely to be believed.\nOthers at raised risk — orphans; women and girls facing violence; frail or isolated older adults; street-connected children; refugees and displaced people; those in extreme poverty.\nWhy vulnerability arises — physical dependence on caregivers, limited power to refuse or escape, trust in adults, social and economic dependence, and isolation.\nWhy it belongs in this course — abuse in childhood and ongoing abuse in adulthood are among the strongest drivers of the mental health conditions in Modules 2–7. Protection is prevention.\nPLAIN LANGUAGE\nSafeguarding: actions that protect people's safety, wellbeing and rights — especially those least able to protect themselves.\nDisclosure: when a person tells someone about harm being done to them.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 5,
+          "slug": "module-8-forms-of-abuse-and-neglect",
+          "title": "Forms of abuse and neglect",
+          "main": "Recognising It\n\nPhysical abuse — beating, burning, shaking, chaining — any deliberate injury. Discipline that leaves marks or terror is abuse.\nSexual abuse — any sexual act involving a child, or a vulnerable adult who cannot consent — including touching, exposure and exploitation. The abuser is usually someone known and trusted, not a stranger.\nEmotional abuse — constant humiliation, rejection, threats, or terrorising — wounds without marks that shape a lifetime.\nNeglect — failing to provide the food, clothing, medical care, schooling, supervision or affection a dependent person needs — including abandoning a person with a mental health condition.\nExploitation — using a vulnerable person for gain: forced labour and hawking that replaces school, trafficking, forced begging, or taking a vulnerable adult's money or property.\nHarmful practices — child marriage and other practices that injure children's bodies and futures are safeguarding concerns, whatever tradition surrounds them.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 6,
+          "slug": "module-8-what-should-raise-your-concern",
+          "title": "What should raise your concern",
+          "main": "Warning Signs\n\nOne sign alone rarely proves anything. Look for patterns, and take unexplained changes seriously.\nOn the body — injuries that do not match the story given; injuries in unusual places; marks in patterns (belts, cords, burns); repeated 'accidents'.\nIn behaviour — sudden change in a child — withdrawal, aggression, school refusal, falling grades, bed-wetting returning, self-harm; fear of one specific person or place; flinching at sudden movements.\nKnowledge that does not fit — sexual knowledge or behaviour far beyond a child's age is a serious signal.\nIn vulnerable adults — unexplained injuries; fear of a caregiver; hunger and poor hygiene despite family means; money and property vanishing; a person with a mental health condition kept hidden, tied or confined.\nAround the person — a caregiver who blocks private conversation, answers every question for them, or moves them from place to place when questions start.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 7,
+          "slug": "module-8-when-someone-discloses-do-and-never",
+          "title": "When someone discloses: do and never",
+          "main": "The Critical Moment\n\nHow you respond in the first minutes of a disclosure shapes everything that follows.\nDo: stay calm and listen — let them tell it in their own words, at their own pace. Your shock or anger, if shown, becomes their guilt.\nDo: believe and reassure — 'I believe you. You did the right thing telling me. This is not your fault.'\nDo: be honest about secrets — never promise secrecy. Say gently: 'I cannot keep this just between us, because keeping you safe means telling people whose job is to protect you.'\nDo: record and report — write down facts as soon as possible — date, time, their exact words, what you observed — and report through the proper channel without delay.\nNever: interrogate or investigate — no repeated questioning, no leading questions, no gathering your own 'evidence'. That is the job of trained authorities — and doing it yourself can destroy a case and re-traumatise the person.\nNever: alert the suspected person — confronting them warns them, endangers the victim, and gives time to intimidate or destroy evidence.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 8,
+          "slug": "module-8-mary-notices-a-change-in-talatu",
+          "title": "Mary notices a change in Talatu",
+          "main": "A Story From Kaduna\n\nMary teaches Primary 5 in Kagoro. Talatu, 10, once lively, has grown silent over the term. She flinches when adults raise a hand, wears long sleeves in hot weather, and last week refused to go home with the relative who collects her, crying until another pupil's mother intervened.\nToday, during break, Talatu lingers by Mary's desk and says quietly: 'Aunty, if I tell you something, will you promise not to tell anybody?'\nWalk through Mary's next steps using this module.\nThe pattern is already concerning: withdrawal, flinching, concealed arms, terror of one specific adult.\nMary must not promise secrecy — she should say warmly that she will listen, and that keeping Talatu safe may mean involving people whose job is protection.\nIf Talatu discloses: stay calm, believe her, praise her courage, avoid interrogating — no pressing for details beyond what she offers freely.\nImmediately after: write down Talatu's exact words, the date and what Mary has observed this term.\nReport the same day through the school's safeguarding channel and, as needed, to child protection authorities — not to the relative, and not as gossip in the staff room.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 9,
+          "slug": "module-8-the-law-is-on-the-side-of-the-vulnerable",
+          "title": "The law is on the side of the vulnerable",
+          "main": "Protection Channels\n\nThe legal backbone — the UN Conventions on the Rights of the Child and of Persons with Disabilities; Nigeria's Child Rights Act; the Violence Against Persons (Prohibition) framework; and the national and Kaduna State mental health laws — together they make abuse of the vulnerable a crime, not a family matter.\nWhere reports go — school safeguarding focal persons; the Ministry of Women Affairs and Social Development and its child protection services; the police (including gender/family units); health facilities for examination and care; and the National Human Rights Commission.\nHealth facilities protect too — survivors of sexual violence need urgent medical care — ideally within 72 hours — for treatment, protection against infection and pregnancy where relevant, and documentation. Go early.\nReporting is protection, not accusation — you report a concern; trained authorities investigate. You do not need proof to report — you need honest, factual concern.\nProtect the survivor's story — confidentiality (Module 1) matters doubly here: information goes to those who protect, never into gossip.\nPeople with mental health conditions — abuse of a person because of their condition — chaining, confinement, exploitation — can be reported through these same channels, and through KADSAMHSA (0814 621 1112 · 0708 938 8327 · kadsamhsa@kdsg.gov.ng) and health facilities.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 10,
+          "slug": "module-8-build-your-personal-safeguarding-card",
+          "title": "Build your personal safeguarding card",
+          "main": "Try It Yourself  ·  Digital Exercise\n\nIn a real disclosure, you will not have time to search. Prepare now.\nOn paper or in your phone, create your 'safeguarding card' with three sections.\nSection 1 — the five DO responses to a disclosure, in your own words (calm, believe, no secrecy promise, record, report).\nSection 2 — the two NEVERs (never investigate yourself, never alert the suspected person).\nSection 3 — your local channels: the name of the nearest child protection contact, the nearest health facility, the police station, and (if you are in a school or organisation) your safeguarding focal person. Fill in the ones you know; find the ones you do not this week.\nTest yourself in three days: can you recall Sections 1 and 2 without looking?\nREMEMBER\nThe response to a disclosure is a skill of seconds; the card makes it automatic. Congratulations — this is the final exercise of MhGAP Basic.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 11,
+          "slug": "module-8-if-you-remember-nothing-else-remember-this",
+          "title": "If you remember nothing else, remember this",
+          "main": "Key Messages\n\n1. A child is anyone under 18; people with mental health conditions and disabilities are among the most abused and least believed.\n2. Look for patterns: unexplained injuries, fear of one person, sudden behaviour change, knowledge that does not fit the age.\n3. At disclosure: stay calm, believe, never promise secrecy, record the exact words, report the same day.\n4. Never investigate yourself and never alert the suspected person — protection is the job of trained channels.\n5. Reporting a concern is not accusing — it is opening the door to protection the law already guarantees.",
+          "durationLabel": "2 min read"
+        },
+        {
+          "position": 12,
+          "slug": "module-8-you-have-completed-mhgap-basic",
+          "title": "You have completed MhGAP Basic",
+          "main": "Well Done\n\nNine modules ago, you began with a promise: that understanding could be the beginning of better mental health services for Kaduna State. You now carry the knowledge — the five priority conditions, the care that protects mothers, the shield around the vulnerable, and the way of caring that runs through it all.\nTwo pathways are open to you: KADSAMHSA's skills training in non-pharmacological care support, and service as a community educator and advocate. Whichever you choose — or even if you simply carry this knowledge into your own household — Kaduna State is safer for it. Thank you.\nWHAT NEXT\nWatch the learning platform for KADSAMHSA skills training and community educator opportunities — and share this course with someone who should take it.\nQuestions or support:  0814 621 1112  ·  0708 938 8327  ·  kadsamhsa@kdsg.gov.ng\nMedical emergency:  Kaduna State Emergency Medical Services — 0806 411 1599",
+          "durationLabel": "2 min read"
+        }
+      ],
+      "quizQuestions": [
+        {
+          "prompt": "Under Nigerian and international standards, a child is any person below:",
+          "options": [
+            "12 years",
+            "15 years",
+            "18 years",
+            "21 years"
+          ],
+          "correctIndex": 2
+        },
+        {
+          "prompt": "Which of these should make you CONSIDER possible abuse or neglect?",
+          "options": [
+            "Injuries that do not match the explanation given",
+            "A child fearful of one specific person",
+            "Sudden behaviour change, school refusal or self-harm",
+            "All of the above"
+          ],
+          "correctIndex": 3
+        },
+        {
+          "prompt": "A 14-year-old girl quietly tells you an uncle 'touches her'. Your FIRST response should be to:",
+          "options": [
+            "Promise to keep it secret",
+            "Listen calmly, tell her she did right to speak, and explain you must involve people who can keep her safe",
+            "Call the uncle to hear his side",
+            "Tell her to avoid him"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "You suspect abuse, but the child denies anything is wrong. You should:",
+          "options": [
+            "Close the matter — no disclosure, no case",
+            "Record your concerns factually and report through the proper safeguarding channel",
+            "Confront the family loudly",
+            "Wait for injuries to become serious"
+          ],
+          "correctIndex": 1
+        },
+        {
+          "prompt": "People with mental health conditions and disabilities are:",
+          "options": [
+            "Rarely abused",
+            "At higher risk of abuse and less likely to be believed — so their reports deserve extra care",
+            "Making up stories usually",
+            "Protected automatically"
+          ],
+          "correctIndex": 1
+        }
+      ]
+    }
+  ],
+  "finalQuestions": []
+}
