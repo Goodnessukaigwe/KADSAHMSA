@@ -58,6 +58,7 @@ export function CourseDetail({
     }
     setAsked(true);
     setPending(false);
+    router.push(firstHref);
     router.refresh();
   }
 
@@ -90,7 +91,7 @@ export function CourseDetail({
           {course.summary ||
             (isDptc
               ? dptcCourse.description
-              : "A KADSAMHSA course. Request enrolment to read the published lessons.")}
+              : "A KADSAMHSA course. Enroll to read the published lessons.")}
         </p>
 
         {error ? (
@@ -220,18 +221,13 @@ export function CourseDetail({
               onClick={signedIn && !enrolled && !waiting ? enroll : undefined}
             >
               {pending
-                ? "Requesting…"
+                ? dashboardCopy.enrolling
                 : signedIn && enrolled
                   ? "Continue this course"
                   : signedIn && waiting
                     ? dashboardCopy.requested
                     : dashboardCopy.enroll}
             </SplitCta>
-            {signedIn && !enrolled ? (
-              <p className="mt-3 text-center text-[12px] leading-relaxed text-white/60">
-                {dashboardCopy.requestHint}
-              </p>
-            ) : null}
           </div>
         </aside>
       </div>

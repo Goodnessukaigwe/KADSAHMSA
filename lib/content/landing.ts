@@ -66,7 +66,7 @@ export const plans = {
     href: "/register",
     features: [
       "Browse the public catalogue",
-      "Request enrolment in a published course",
+      "Enroll in a free course in one click",
       "Resume on any device, including phones",
       "Module quizzes and final assessment",
       "Verifiable PDF certificate",

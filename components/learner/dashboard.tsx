@@ -18,7 +18,6 @@ export function LearnerDashboard({
   firstName,
   snapshot,
   catalogue = [],
-  requestedSlugs = [],
 }: {
   firstName: string;
   snapshot: LearningSnapshot;
@@ -31,33 +30,27 @@ export function LearnerDashboard({
         firstName={firstNameOf(firstName)}
         snapshot={snapshot}
         catalogue={catalogue}
-        requestedSlugs={requestedSlugs}
       />
     );
   }
 
-  return <NewLearnerHome catalogue={catalogue} requestedSlugs={requestedSlugs} />;
+  return <NewLearnerHome catalogue={catalogue} />;
 }
 
 function NewLearnerHome({
   catalogue,
-  requestedSlugs,
 }: {
   catalogue: CatalogueCourse[];
-  requestedSlugs: string[];
 }) {
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
-  const [asked, setAsked] = useState<string[]>(requestedSlugs);
+  const [asked, setAsked] = useState<string[]>([]);
 
   useEffect(() => {
     setShowOnboarding(!isOnboardingDone());
   }, []);
-  useEffect(() => {
-    setAsked(requestedSlugs);
-  }, [requestedSlugs]);
 
   const featured = catalogue[0] ?? null;
   const exploreList = featured
@@ -103,7 +96,7 @@ function NewLearnerHome({
 
       {featured ? (
         <article className="mt-8 grid overflow-hidden rounded-[28px] bg-neutral-950 text-white lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="relative min-h-[220px] lg:min-h-[280px]">
+          <div className="relative aspect-[8/5] w-full bg-neutral-950 lg:self-center">
             <CourseCover
               slug={featured.slug}
               src={featured.image}
@@ -129,7 +122,7 @@ function NewLearnerHome({
                 onClick={() => enroll(featured.slug)}
               >
                 {pending === featured.slug
-                  ? "Requesting…"
+                  ? dashboardCopy.enrolling
                   : asked.includes(featured.slug)
                     ? dashboardCopy.requested
                     : dashboardCopy.enroll}
@@ -143,10 +136,6 @@ function NewLearnerHome({
             </div>
           </div>
         </article>
-      ) : null}
-
-      {asked.length > 0 ? (
-        <p className="mt-4 text-sm text-neutral-500">{dashboardCopy.requestHint}</p>
       ) : null}
 
       <ExploreSection
@@ -164,21 +153,16 @@ function EnrolledHome({
   firstName,
   snapshot,
   catalogue,
-  requestedSlugs,
 }: {
   firstName: string;
   snapshot: LearningSnapshot;
   catalogue: CatalogueCourse[];
-  requestedSlugs: string[];
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
-  const [asked, setAsked] = useState<string[]>(requestedSlugs);
+  const [asked, setAsked] = useState<string[]>([]);
 
-  useEffect(() => {
-    setAsked(requestedSlugs);
-  }, [requestedSlugs]);
 
   const featured = snapshot.inProgress[0] ?? null;
   const started = snapshot.inProgress.filter(
@@ -370,7 +354,7 @@ function ExploreSection({
                   {pending === course.slug
                     ? enrolled.includes(course.slug)
                       ? "Opening…"
-                      : "Requesting…"
+                      : dashboardCopy.enrolling
                     : enrolled.includes(course.slug)
                       ? dashboardCopy.continue
                       : requested.includes(course.slug)

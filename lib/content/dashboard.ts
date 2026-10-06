@@ -4,9 +4,9 @@ export const dashboardCopy = {
   returningEyebrow: "Continue your learning journey",
   startedTitle: "You also started these courses",
   exploreTitle: "Explore more courses",
-  enroll: "Request enrolment",
-  requested: "Requested",
-  requestHint: "An administrator will enrol you. You can start when they do.",
+  enroll: "Enroll",
+  enrolling: "Enrolling…",
+  requested: "Enrolled",
   continue: "Continue this course",
   continueFeatured: "Continue with this course",
   continueShort: "Continue",
@@ -18,8 +18,8 @@ export const dashboardCopy = {
       body: "Choose a published course from the catalogue when staff have added one.",
     },
     {
-      title: "Request Enrolment",
-      body: "Ask for a seat on a published course. An administrator enrols you before lessons open.",
+      title: "Enroll",
+      body: "Press Enroll on a free course and you can start straight away.",
     },
     {
       title: "You Are Set",
