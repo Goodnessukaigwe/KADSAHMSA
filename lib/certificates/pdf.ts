@@ -5,7 +5,7 @@ import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf
 import { LOGO_ASPECT, LOGO_PNG_BASE64 } from "@/lib/certificates/logo";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 
-const AGENCY = "Kaduna State Substance Abuse and Mental Health Service Agency";
+const AGENCY = "Kaduna State Substance Abuse and Mental Health Services Agency";
 
 const GREEN = rgb(0.043, 0.302, 0.173); // #0b4d2c
 const DARK = rgb(0.102, 0.227, 0.165); // #1a3a2a

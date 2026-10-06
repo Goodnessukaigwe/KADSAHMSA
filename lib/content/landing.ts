@@ -1,7 +1,7 @@
 export const site = {
   name: "KADSAMHSA",
   fullName:
-    "The Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)",
+    "The Kaduna State Substance Abuse and Mental Health Services Agency (KADSAMHSA)",
   email: "info@kadsamhsa.org",
   phone: "+234 803 808 6191",
   location: "Kaduna State",

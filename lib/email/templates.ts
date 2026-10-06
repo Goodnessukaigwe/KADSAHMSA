@@ -6,7 +6,7 @@ import { siteUrl } from "@/lib/email/send";
  * what email clients render reliably.
  */
 
-const AGENCY = "Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)";
+const AGENCY = "Kaduna State Substance Abuse and Mental Health Services Agency (KADSAMHSA)";
 const GREEN = "#0b4d2c";
 const GOLD = "#c9a227";
 

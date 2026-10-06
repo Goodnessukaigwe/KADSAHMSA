@@ -4,7 +4,7 @@ import { listPublishedCourses } from "@/lib/courses/queries";
 export const metadata = {
   title: "Home",
   description:
-    "Evidence-based drug prevention, treatment, and care training from the Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA).",
+    "Evidence-based drug prevention, treatment, and care training from the Kaduna State Substance Abuse and Mental Health Services Agency (KADSAMHSA).",
 };
 
 export default async function HomePage() {
