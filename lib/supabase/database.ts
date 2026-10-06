@@ -2,6 +2,9 @@ export type CourseStatus = "draft" | "published";
 export type EnrolmentStatus = "active" | "unenrolled";
 export type FeedbackCategory = "broken" | "access" | "quiz_cert" | "other";
 export type FeedbackTicketStatus = "open" | "resolved";
+export type HelpChatStatus = "new" | "working" | "waiting" | "resolved";
+export type HelpChatPriority = "urgent" | "high" | "normal";
+export type HelpMessageKind = "client" | "assistant" | "team" | "note" | "system";
 
 export type Database = {
   public: {
@@ -316,6 +319,135 @@ export type Database = {
           read_at?: string | null;
           resolved_at?: string | null;
         };
+        Relationships: [];
+      };
+      help_chats: {
+        Row: {
+          id: string;
+          token: string;
+          created_at: string;
+          updated_at: string;
+          page: string | null;
+          ip_hash: string | null;
+          name: string | null;
+          email: string | null;
+          user_id: string | null;
+          topic: string | null;
+          summary: string | null;
+          client_turns: number;
+          handoff_at: string | null;
+          staff_joined_at: string | null;
+          status: HelpChatStatus;
+          priority: HelpChatPriority;
+          owner_id: string | null;
+          last_from: string | null;
+          last_text: string | null;
+          last_at: string | null;
+          visitor_seen_at: string | null;
+          notified_at: string | null;
+          visitor_notified_at: string | null;
+          rating: number | null;
+          rating_comment: string | null;
+          rated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          token?: string;
+          created_at?: string;
+          updated_at?: string;
+          page?: string | null;
+          ip_hash?: string | null;
+          name?: string | null;
+          email?: string | null;
+          user_id?: string | null;
+          topic?: string | null;
+          summary?: string | null;
+          client_turns?: number;
+          handoff_at?: string | null;
+          staff_joined_at?: string | null;
+          status?: HelpChatStatus;
+          priority?: HelpChatPriority;
+          owner_id?: string | null;
+          last_from?: string | null;
+          last_text?: string | null;
+          last_at?: string | null;
+          visitor_seen_at?: string | null;
+          notified_at?: string | null;
+          visitor_notified_at?: string | null;
+          rating?: number | null;
+          rating_comment?: string | null;
+          rated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          token?: string;
+          created_at?: string;
+          updated_at?: string;
+          page?: string | null;
+          ip_hash?: string | null;
+          name?: string | null;
+          email?: string | null;
+          user_id?: string | null;
+          topic?: string | null;
+          summary?: string | null;
+          client_turns?: number;
+          handoff_at?: string | null;
+          staff_joined_at?: string | null;
+          status?: HelpChatStatus;
+          priority?: HelpChatPriority;
+          owner_id?: string | null;
+          last_from?: string | null;
+          last_text?: string | null;
+          last_at?: string | null;
+          visitor_seen_at?: string | null;
+          notified_at?: string | null;
+          visitor_notified_at?: string | null;
+          rating?: number | null;
+          rating_comment?: string | null;
+          rated_at?: string | null;
+        };
+        Relationships: [];
+      };
+      help_messages: {
+        Row: {
+          id: string;
+          chat_id: string;
+          created_at: string;
+          kind: HelpMessageKind;
+          author: string | null;
+          author_id: string | null;
+          body: string;
+        };
+        Insert: {
+          id?: string;
+          chat_id: string;
+          created_at?: string;
+          kind: HelpMessageKind;
+          author?: string | null;
+          author_id?: string | null;
+          body: string;
+        };
+        Update: {
+          id?: string;
+          chat_id?: string;
+          created_at?: string;
+          kind?: HelpMessageKind;
+          author?: string | null;
+          author_id?: string | null;
+          body?: string;
+        };
+        Relationships: [];
+      };
+      saved_replies: {
+        Row: { id: string; created_at: string; title: string; body: string; created_by: string | null };
+        Insert: { id?: string; created_at?: string; title: string; body: string; created_by?: string | null };
+        Update: { id?: string; created_at?: string; title?: string; body?: string; created_by?: string | null };
+        Relationships: [];
+      };
+      help_team_presence: {
+        Row: { user_id: string; last_seen_at: string };
+        Insert: { user_id: string; last_seen_at?: string };
+        Update: { user_id?: string; last_seen_at?: string };
         Relationships: [];
       };
       enrolments: {
