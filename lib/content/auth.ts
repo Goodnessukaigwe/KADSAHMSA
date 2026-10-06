@@ -22,6 +22,12 @@ export const authCopy = {
       "and I consent to KADSAMHSA processing my account and learning data as described there.",
     haveAccount: "Already have an account?",
     loginLink: "Login",
+    verifyTitle: "Check your email",
+    verifyBody:
+      "We sent a confirmation link to {email}. Open it to activate your account and start learning. The link can take a minute to arrive; check your spam folder too.",
+    verifyResend: "Send the email again",
+    verifyResent: "If that address needs confirming, we sent another email.",
+    verifyWrongEmail: "Use a different email",
     imageAlt:
       "KADSAMHSA training session with participants learning together",
   },
@@ -33,6 +39,10 @@ export const authCopy = {
     passwordPlaceholder: "Enter password",
     submit: "Log in",
     forgot: "Forgot password?",
+    unconfirmed:
+      "Your email is not confirmed yet. Open the confirmation link we emailed you, or send it again.",
+    resend: "Send the confirmation email again",
+    resent: "If that address needs confirming, we sent another email.",
     noAccount: "Don’t have an account?",
     registerLink: "Sign up",
     confirmError:

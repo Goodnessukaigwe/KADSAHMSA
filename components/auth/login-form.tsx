@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { confirmPendingEmail } from "@/lib/auth/actions";
+import { confirmPendingEmail, resendVerification } from "@/lib/auth/actions";
 import { homeAfterSignIn } from "@/lib/auth/home";
 import { authCopy } from "@/lib/content/auth";
 import { createClient } from "@/lib/supabase/client";
@@ -35,6 +35,8 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(initialError);
   const [pending, setPending] = useState(false);
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [resent, setResent] = useState(false);
 
   const valid = email.includes("@") && email.trim().length > 5 && password.length >= 8;
 
@@ -62,6 +64,13 @@ export function LoginForm({
       }
 
       if (signInError || !data.user) {
+        if (isUnconfirmed(signInError?.message)) {
+          setNeedsConfirm(true);
+          setError(copy.unconfirmed);
+          setPending(false);
+          return;
+        }
+        setNeedsConfirm(false);
         setError(
           signInError?.message === "Invalid login credentials"
             ? "Wrong email or password."
@@ -133,6 +142,21 @@ export function LoginForm({
         <p className="mt-4 text-sm text-red-600" role="alert">
           {error}
         </p>
+      ) : null}
+      {needsConfirm ? (
+        <div className="mt-2 text-sm">
+          <button
+            type="button"
+            onClick={async () => {
+              await resendVerification(email);
+              setResent(true);
+            }}
+            className="font-bold text-neutral-950 underline underline-offset-2"
+          >
+            {copy.resend}
+          </button>
+          {resent ? <p className="mt-2 text-neutral-500">{copy.resent}</p> : null}
+        </div>
       ) : null}
 
       <button
