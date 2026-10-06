@@ -2,7 +2,7 @@
   "course": {
     "slug": "mhgap-basic",
     "title": "MhGAP Basic: Mental Health for Communities",
-    "summary": "A free online course from the Kaduna State Substance Abuse and Mental Health Services Agency, adapted from the WHO mhGAP Intervention Guide 3.0. It gives the background knowledge to understand mental health, recognise priority conditions such as depression, anxiety and psychoses, and support people with respect. Each module has an ungraded pre-test, short lessons and a graded post-test (pass mark 80%).",
+    "summary": "A free online course from the Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA), adapted from the WHO mhGAP Intervention Guide 3.0. It gives the background knowledge to understand mental health, recognise priority conditions such as depression, anxiety and psychoses, and support people with respect. Each module has an ungraded pre-test, short lessons and a graded post-test (pass mark 80%).",
     "durationLabel": "~2 hrs · 9 modules"
   },
   "modules": [
@@ -15,7 +15,7 @@
           "position": 1,
           "slug": "module-0-welcome-to-mhgap-basic",
           "title": "Welcome to MhGAP Basic",
-          "main": "A free online course that gives you the background knowledge to understand mental health, recognise the five priority conditions, and support better services in your community.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "A free online course that gives you the background knowledge to understand mental health, recognise the five priority conditions, and support better services in your community.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -93,7 +93,7 @@
           "position": 1,
           "slug": "module-1-caring-for-people-with-mental-health-conditions",
           "title": "Caring for People with Mental Health Conditions",
-          "main": "Respect, communication and rights — the foundation every other module builds on. Adapted from the mhGAP Essential Care and Practice module.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "Respect, communication and rights — the foundation every other module builds on. Adapted from the mhGAP Essential Care and Practice module.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -236,7 +236,7 @@
           "position": 1,
           "slug": "module-2-depression",
           "title": "Depression",
-          "main": "Understanding persistent sadness that will not lift — how to recognise it, what helps, and where care is found in Kaduna State.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "Understanding persistent sadness that will not lift — how to recognise it, what helps, and where care is found in Kaduna State.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -386,7 +386,7 @@
           "position": 1,
           "slug": "module-3-anxiety",
           "title": "Anxiety",
-          "main": "When fear and worry take over — recognising anxiety conditions, calming the body, and knowing when to seek care.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "When fear and worry take over — recognising anxiety conditions, calming the body, and knowing when to seek care.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -529,7 +529,7 @@
           "position": 1,
           "slug": "module-4-psychoses",
           "title": "Psychoses",
-          "main": "When a person loses touch with reality — understanding the most stigmatised of all conditions, and how dignity, treatment and community bring people back to full lives.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "When a person loses touch with reality — understanding the most stigmatised of all conditions, and how dignity, treatment and community bring people back to full lives.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -672,7 +672,7 @@
           "position": 1,
           "slug": "module-5-epilepsy",
           "title": "Epilepsy",
-          "main": "A brain condition, not a spiritual one — recognising seizures, giving safe first aid, and supporting people to live full lives on treatment.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "A brain condition, not a spiritual one — recognising seizures, giving safe first aid, and supporting people to live full lives on treatment.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -813,7 +813,7 @@
           "position": 1,
           "slug": "module-6-substance-use-disorders",
           "title": "Substance Use Disorders",
-          "main": "Alcohol and drugs — understanding how use becomes harm and harm becomes dependence, why dependence is a health condition, and how recovery really happens.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "Alcohol and drugs — understanding how use becomes harm and harm becomes dependence, why dependence is a health condition, and how recovery really happens.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -963,7 +963,7 @@
           "position": 1,
           "slug": "module-7-perinatal-mental-health",
           "title": "Perinatal Mental Health",
-          "main": "Supporting mothers before and after childbirth — because in Kaduna State, about 1 in 7 pregnant and recently delivered women shows signs of significant mental distress.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "Supporting mothers before and after childbirth — because in Kaduna State, about 1 in 7 pregnant and recently delivered women shows signs of significant mental distress.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {
@@ -1099,7 +1099,7 @@
           "position": 1,
           "slug": "module-8-safeguarding-children-adolescents-and-vulnerable-adults",
           "title": "Safeguarding Children, Adolescents and Vulnerable Adults",
-          "main": "Recognising abuse and neglect, responding to a disclosure without causing harm, and knowing the channels that protect people who cannot fully protect themselves.\nKaduna State Substance Abuse and Mental Health Services Agency  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
+          "main": "Recognising abuse and neglect, responding to a disclosure without causing harm, and knowing the channels that protect people who cannot fully protect themselves.\nKaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA)  ·  Adapted from the WHO mhGAP Intervention Guide 3.0 (Nigerian adaptation)",
           "durationLabel": "2 min read"
         },
         {

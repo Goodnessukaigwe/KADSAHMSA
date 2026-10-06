@@ -145,7 +145,9 @@ def build_module(path: Path, deck_number: int) -> dict:
         if kind == "TITLE":
             paras = paragraphs(slide)
             module_title = paras[2][0]
-            body = "\n".join(t for t, _ in paras[3:])
+            body = "\n".join(t for t, _ in paras[3:]).replace(
+                "Mental Health Services Agency", "Mental Health Service Agency (KADSAMHSA)"
+            )
             lessons.append((module_title, body))
         elif kind == "PRETEST":
             pre.append(slide)
@@ -206,7 +208,7 @@ def main() -> None:
             "title": "MhGAP Basic: Mental Health for Communities",
             "summary": (
                 "A free online course from the Kaduna State Substance Abuse and Mental Health "
-                "Services Agency, adapted from the WHO mhGAP Intervention Guide 3.0. It gives "
+                "Service Agency (KADSAMHSA), adapted from the WHO mhGAP Intervention Guide 3.0. It gives "
                 "the background knowledge to understand mental health, recognise priority "
                 "conditions such as depression, anxiety and psychoses, and support people with "
                 "respect. Each module has an ungraded pre-test, short lessons and a graded "
