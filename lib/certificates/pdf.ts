@@ -82,8 +82,6 @@ export async function renderCertificatePdf(input: {
   courseTitle: string;
   issuedAt: Date;
   verificationId: string;
-  /** Set false for a version without the signatory block. */
-  showSignatory?: boolean;
 }): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const page = doc.addPage([842, 595]);
@@ -163,19 +161,16 @@ export async function renderCertificatePdf(input: {
     MUTED
   );
 
-  // Signatories, as on the printed certificate.
+  // Approval, printed without a signature line.
   const lineY = 144;
-  const block = (x: number, lines: [string, string, string]) => {
-    page.drawRectangle({ x, y: lineY, width: 190, height: 0.9, color: INK });
-    page.drawText(lines[0], { x, y: lineY - 15, size: 11.5, font: sansBold, color: INK });
-    page.drawText(lines[1], { x, y: lineY - 28, size: 9, font: sans, color: MUTED });
-    page.drawText(lines[2], { x, y: lineY - 40, size: 9, font: sans, color: MUTED });
-  };
-  const showSignatory = input.showSignatory ?? process.env.CERTIFICATE_SHOW_SIGNATORY !== "false";
-  if (showSignatory) block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA"]);
+  const approvedX = 96;
+  page.drawText("Approved by:", { x: approvedX, y: lineY + 4, size: 9, font: sans, color: MUTED });
+  page.drawText("Joseph O. Ike", { x: approvedX, y: lineY - 12, size: 12, font: sansBold, color: INK });
+  page.drawText("Director General,", { x: approvedX, y: lineY - 26, size: 9, font: sans, color: MUTED });
+  page.drawText("KADSAMHSA", { x: approvedX, y: lineY - 38, size: 9, font: sans, color: MUTED });
 
   // Wax seal.
-  const cx = showSignatory ? width / 2 : width / 2 - 33;
+  const cx = width / 2;
   const cy = lineY - 8;
   for (let i = 0; i < 16; i += 1) {
     const angle = (i / 16) * Math.PI * 2;
@@ -192,7 +187,7 @@ export async function renderCertificatePdf(input: {
   const qrPng = await QRCode.toBuffer(verifyUrl, { margin: 0, width: 360, errorCorrectionLevel: "M" });
   const qr = await doc.embedPng(qrPng);
   const qrSize = 58;
-  const qrX = showSignatory ? width - 96 - qrSize : cx + 62;
+  const qrX = width - 96 - qrSize;
   page.drawImage(qr, { x: qrX, y: cy - 28, width: qrSize, height: qrSize });
   const scan = "Scan to verify";
   page.drawText(scan, {
