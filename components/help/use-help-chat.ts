@@ -135,6 +135,10 @@ export function useHelpChat(open: boolean): ChatState {
         });
         const data = (await res.json().catch(() => ({}))) as VisitorView & { error?: string };
         if (!res.ok) {
+          if (res.status === 503) {
+            setError("Chat is not available right now. Please use Submit a ticket.");
+            return false;
+          }
           setError(MESSAGES[data.error ?? ""] ?? "Something went wrong. Please try again.");
           return false;
         }

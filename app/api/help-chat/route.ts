@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       const result = await visitorGet(supabaseStore(admin), deps, token);
       return NextResponse.json(result.json, { status: result.status, headers: noStore });
     }
-    const { error } = await admin.from("help_chats").select("id", { head: true, count: "exact" }).limit(1);
+    const { error } = await admin.from("help_chats").select("id").limit(1);
     if (error) return unavailable();
     return NextResponse.json(
       { enabled: true, team_online: await teamOnline(admin) },

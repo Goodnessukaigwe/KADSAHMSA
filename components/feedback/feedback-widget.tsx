@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { MessageSquare, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import { ChatPanel } from "@/components/help/chat-panel";
+import { ChatWindow } from "@/components/help/chat-panel";
 import { useHelpChat } from "@/components/help/use-help-chat";
 import { FEEDBACK_CATEGORIES, feedbackCopy } from "@/lib/content/feedback";
 import { submitFeedback } from "@/lib/feedback/actions";
@@ -245,7 +245,18 @@ export function FeedbackWidget({
         </button>
       ) : null}
 
-      {open ? (
+      {open && activeTab === "chat" ? (
+        <ChatWindow
+          chat={chat}
+          page={pathname}
+          defaultName={submitterName ?? ""}
+          defaultEmail={submitterEmail ?? ""}
+          onClose={() => setOpen(false)}
+          onTicket={() => setTab("ticket")}
+        />
+      ) : null}
+
+      {open && activeTab !== "chat" ? (
         <div className="fixed inset-0 z-[55] flex items-end justify-center bg-black/40 p-4 backdrop-blur-sm sm:items-center">
           <button
             type="button"
@@ -288,19 +299,7 @@ export function FeedbackWidget({
               </div>
             ) : null}
 
-            {activeTab === "chat" ? (
-              <div>
-                <h2 id={titleId} className="sr-only">
-                  Chat with the KADSAMHSA team
-                </h2>
-                <ChatPanel
-                  chat={chat}
-                  page={pathname}
-                  defaultName={submitterName ?? ""}
-                  defaultEmail={submitterEmail ?? ""}
-                />
-              </div>
-            ) : success ? (
+            {success ? (
               <div className="py-6 text-center">
                 <p className="text-[11px] font-bold tracking-[0.16em] text-[#0b4d2c] uppercase">
                   {feedbackCopy.successTitle}
