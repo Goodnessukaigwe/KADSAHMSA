@@ -15,6 +15,9 @@ const GREEN = rgb(0.043, 0.302, 0.173); // #0b4d2c
 const DARK = rgb(0.102, 0.227, 0.165); // #1a3a2a
 const GOLD = rgb(0.788, 0.635, 0.153); // #c9a227
 const TINT = rgb(0.91, 0.953, 0.925); // #e8f3ec
+const SLATE = rgb(0.43, 0.49, 0.56); // #6e7d8f
+const FRAME = rgb(0.62, 0.7, 0.78); // #9fb3c7
+const WAX = rgb(0.6, 0.1, 0.1); // #991a1a
 const INK = rgb(0.07, 0.1, 0.08);
 const MUTED = rgb(0.32, 0.4, 0.35);
 
@@ -85,132 +88,126 @@ export async function renderCertificatePdf(input: {
   const { width, height } = page.getSize();
   const sans = await doc.embedFont(StandardFonts.Helvetica);
   const sansBold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const serifBold = await doc.embedFont(StandardFonts.TimesRomanBold);
-  const serifItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
+  const serifBoldItalic = await doc.embedFont(StandardFonts.TimesRomanBoldItalic);
   const logo = await doc.embedPng(Buffer.from(LOGO_PNG_BASE64, "base64"));
   const unodcLogo = await doc.embedPng(Buffer.from(UNODC_LOGO_PNG_BASE64, "base64"));
 
-  // Frame: green outer rule, gold inner rule, gold corner squares.
+  // Frame, after the printed template: a chain of rings between two fine rules.
   page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(1, 1, 1) });
-  page.drawRectangle({
-    x: 22, y: 22, width: width - 44, height: height - 44,
-    borderColor: GREEN, borderWidth: 5,
-  });
-  page.drawRectangle({
-    x: 36, y: 36, width: width - 72, height: height - 72,
-    borderColor: GOLD, borderWidth: 1.2,
-  });
-  for (const [cx, cy] of [
-    [36, 36], [width - 36, 36], [36, height - 36], [width - 36, height - 36],
-  ]) {
-    page.drawRectangle({ x: cx - 6, y: cy - 6, width: 12, height: 12, color: GOLD });
+  page.drawRectangle({ x: 16, y: 16, width: width - 32, height: height - 32, borderColor: FRAME, borderWidth: 0.8 });
+  const ring = 7;
+  const step = 9;
+  for (let x = 30; x <= width - 30; x += step) {
+    for (const y of [30, height - 30]) {
+      page.drawCircle({ x, y, size: ring, borderColor: FRAME, borderWidth: 0.7 });
+    }
   }
+  for (let y = 30; y <= height - 30; y += step) {
+    for (const x of [30, width - 30]) {
+      page.drawCircle({ x, y, size: ring, borderColor: FRAME, borderWidth: 0.7 });
+    }
+  }
+  page.drawRectangle({ x: 46, y: 46, width: width - 92, height: height - 92, borderColor: FRAME, borderWidth: 1.4 });
+  page.drawRectangle({ x: 50, y: 50, width: width - 100, height: height - 100, borderColor: FRAME, borderWidth: 0.5 });
 
-  // Header: UNODC logo top left, KADSAMHSA logo top right, then the agency name and a thin rule.
-  const logoWidth = 86;
-  const logoHeight = logoWidth * LOGO_ASPECT;
-  const top = height - 54;
-  const unodcWidth = 190;
+  // Header: UNODC top left, KADSAMHSA top right.
+  const unodcWidth = 170;
   const unodcHeight = unodcWidth * UNODC_LOGO_ASPECT;
+  const logoWidth = 74;
+  const logoHeight = logoWidth * LOGO_ASPECT;
+  const top = height - 76;
   page.drawImage(unodcLogo, {
-    x: 66,
+    x: 84,
     y: top - logoHeight / 2 - unodcHeight / 2,
     width: unodcWidth,
     height: unodcHeight,
   });
-  page.drawImage(logo, {
-    x: width - 66 - logoWidth,
-    y: top - logoHeight,
-    width: logoWidth,
-    height: logoHeight,
-  });
-  centered(page, AGENCY.toUpperCase(), height - 150, sansBold, 10.5, GREEN, 0.6);
-  page.drawRectangle({ x: 96, y: height - 166, width: width - 192, height: 0.8, color: TINT });
+  page.drawImage(logo, { x: width - 84 - logoWidth, y: top - logoHeight, width: logoWidth, height: logoHeight });
+  centered(page, AGENCY.toUpperCase(), height - 148, sansBold, 8.5, SLATE, 0.5);
 
   // Title.
-  centered(page, "CERTIFICATE OF COMPLETION", height - 204, sansBold, 25, DARK, 3.2);
-  page.drawRectangle({ x: width / 2 - 70, y: height - 218, width: 140, height: 1.6, color: GOLD });
+  centered(page, "CERTIFICATE OF COMPLETION", height - 192, sansBold, 31, SLATE, 1.6);
 
   // Recipient.
-  centered(page, "This is to certify that", height - 248, serifItalic, 15, MUTED);
-  const nameLines = wrap(serifBold, input.learnerName.trim(), 36, width - 200);
-  const nameSize = nameLines.length > 1 ? 28 : 36;
-  const name = nameLines.length > 1 ? wrap(serifBold, input.learnerName.trim(), nameSize, width - 200) : nameLines;
-  let y = height - 290;
+  centered(page, "This is to certify that", height - 226, sans, 14, MUTED);
+  const nameLines = wrap(serifBoldItalic, input.learnerName.trim(), 38, width - 220);
+  const nameSize = nameLines.length > 1 ? 28 : 38;
+  const name = nameLines.length > 1 ? wrap(serifBoldItalic, input.learnerName.trim(), nameSize, width - 220) : nameLines;
+  let y = height - 268;
   for (const line of name) {
-    centered(page, line, y, serifBold, nameSize, GREEN);
+    centered(page, line, y, serifBoldItalic, nameSize, INK);
     y -= nameSize + 4;
   }
   const nameWidth = Math.min(
-    width - 200,
-    Math.max(320, serifBold.widthOfTextAtSize(name[0] ?? "", nameSize) + 60)
+    width - 220,
+    Math.max(360, serifBoldItalic.widthOfTextAtSize(name[0] ?? "", nameSize) + 60)
   );
-  page.drawRectangle({ x: (width - nameWidth) / 2, y: y + nameSize - 2, width: nameWidth, height: 1, color: GOLD });
+  page.drawRectangle({ x: (width - nameWidth) / 2, y: y + nameSize - 2, width: nameWidth, height: 1, color: SLATE });
 
   // Course.
-  y -= 12;
-  centered(page, "has successfully completed the online course", y, sans, 13, MUTED);
-  y -= 28;
-  for (const line of wrap(sansBold, input.courseTitle, 17, 640)) {
-    centered(page, line, y, sansBold, 17, INK);
-    y -= 23;
+  y -= 10;
+  centered(page, "has successfully completed the online course", y, sans, 12.5, MUTED);
+  y -= 26;
+  for (const line of wrap(sansBold, input.courseTitle, 16, 620)) {
+    centered(page, line, y, sansBold, 16, INK);
+    y -= 21;
   }
   centered(
     page,
     `and passed the course assessments with a score of at least ${DEFAULT_PASS_MARK}%.`,
-    y - 4,
+    y - 2,
     sans,
-    11.5,
+    11,
     MUTED
   );
 
-  // Footer: signatory, seal, issue details.
-  const baseline = 92;
-  page.drawRectangle({ x: 96, y: baseline + 22, width: 190, height: 0.8, color: INK });
-  page.drawText("Authorised signatory", { x: 96, y: baseline + 8, size: 10, font: sansBold, color: INK });
-  page.drawText("KADSAMHSA Academy", { x: 96, y: baseline - 6, size: 9.5, font: sans, color: MUTED });
+  // Signatories, as on the printed certificate.
+  const lineY = 144;
+  const block = (x: number, lines: [string, string, string]) => {
+    page.drawRectangle({ x, y: lineY, width: 190, height: 0.9, color: INK });
+    page.drawText(lines[0], { x, y: lineY - 15, size: 11.5, font: sansBold, color: INK });
+    page.drawText(lines[1], { x, y: lineY - 28, size: 9, font: sans, color: MUTED });
+    page.drawText(lines[2], { x, y: lineY - 40, size: 9, font: sans, color: MUTED });
+  };
+  block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA, Kaduna"]);
+  block(width - 96 - 190, ["Dr. Akanidomo Ibanga", "Project Lead, UNODC Country Office", "for Nigeria, Abuja"]);
 
+  // Wax seal.
   const cx = width / 2;
-  const cy = baseline + 12;
-  page.drawCircle({ x: cx, y: cy, size: 34, color: GOLD });
-  page.drawCircle({ x: cx, y: cy, size: 30, color: rgb(1, 1, 1) });
-  page.drawCircle({ x: cx, y: cy, size: 28, borderColor: GOLD, borderWidth: 1, color: rgb(1, 1, 1) });
-  centered(page, "KADSAMHSA", cy + 2, sansBold, 7.5, GREEN, 0.4);
-  centered(page, "VERIFIED", cy - 9, sansBold, 7, GOLD, 1);
+  const cy = lineY - 8;
+  for (let i = 0; i < 16; i += 1) {
+    const angle = (i / 16) * Math.PI * 2;
+    page.drawCircle({ x: cx + Math.cos(angle) * 34, y: cy + Math.sin(angle) * 34, size: 7.5, color: WAX });
+  }
+  page.drawCircle({ x: cx, y: cy, size: 35, color: WAX });
+  page.drawCircle({ x: cx, y: cy, size: 27, borderColor: rgb(0.78, 0.35, 0.35), borderWidth: 1.2 });
+  centered(page, "KADSAMHSA", cy + 2, sansBold, 7, rgb(1, 1, 1), 0.4);
+  centered(page, "ACADEMY", cy - 8, sansBold, 6, rgb(0.95, 0.8, 0.8), 1);
 
   // Verification: a QR code to the public verify page (address from SITE_URL, so it can move later).
   const verifyBase = `${siteUrl()}/verify`;
   const verifyUrl = `${verifyBase}?id=${encodeURIComponent(input.verificationId)}`;
   const qrPng = await QRCode.toBuffer(verifyUrl, { margin: 0, width: 360, errorCorrectionLevel: "M" });
   const qr = await doc.embedPng(qrPng);
-  const qrSize = 62;
-  const right = width - 96;
-  page.drawImage(qr, { x: right - qrSize, y: baseline - 16, width: qrSize, height: qrSize });
+  const qrSize = 58;
+  const qrX = cx + 62;
+  page.drawImage(qr, { x: qrX, y: cy - 28, width: qrSize, height: qrSize });
   const scan = "Scan to verify";
   page.drawText(scan, {
-    x: right - qrSize / 2 - sans.widthOfTextAtSize(scan, 7) / 2, y: baseline - 26, size: 7, font: sans, color: MUTED,
+    x: qrX + qrSize / 2 - sans.widthOfTextAtSize(scan, 7) / 2, y: cy - 38, size: 7, font: sans, color: MUTED,
   });
 
-  const textRight = right - qrSize - 16;
-  const issued = `Issued ${formatIssued(input.issuedAt)}`;
-  page.drawText(issued, {
-    x: textRight - sansBold.widthOfTextAtSize(issued, 11), y: baseline + 22, size: 11, font: sansBold, color: INK,
-  });
-  const idLabel = "Verification ID";
-  page.drawText(idLabel, {
-    x: textRight - sans.widthOfTextAtSize(idLabel, 9), y: baseline + 6, size: 9, font: sans, color: MUTED,
-  });
-  const id = safe(sansBold, input.verificationId);
-  page.drawText(id, {
-    x: textRight - sansBold.widthOfTextAtSize(id, 12), y: baseline - 10, size: 12, font: sansBold, color: GREEN,
-  });
-
+  const details = safe(
+    sansBold,
+    `Issued ${formatIssued(input.issuedAt)}   |   Verification ID: ${input.verificationId}`
+  );
+  centered(page, details, 72, sansBold, 9, GREEN);
   centered(
     page,
     `Confirm this certificate at ${verifyBase.replace(/^https?:\/\//, "")} with its Verification ID, or scan the code.`,
-    58,
+    60,
     sans,
-    8.5,
+    8,
     MUTED
   );
 
