@@ -1,3 +1,5 @@
+import type { LessonCheck } from "@/lib/courses/checks";
+
 export type CourseStatus = "draft" | "published";
 export type LessonStatus = "draft" | "live";
 
@@ -273,7 +275,7 @@ export type PlayerLesson = {
   kicker: string;
   readTime: string;
   introduction: string;
-  mainBlocks: { heading?: string; body: string }[];
+  mainBlocks: PlayerMainBlock[];
   notes: string;
   moduleIndex: number;
   previousHref?: string;
@@ -285,11 +287,16 @@ export type PlayerLesson = {
   completeOnNext?: boolean;
 };
 
+export type PlayerMainBlock = { heading?: string; body: string; check?: LessonCheck };
+
 export type PlayerTocItem = {
   id: string;
   label: string;
   href: string;
   current?: boolean;
+  lessonSlug?: string;
+  /** Set for learners who have not reached this page yet. */
+  locked?: boolean;
 };
 
 export type PlayerTocGroup = {

@@ -193,6 +193,7 @@ export function playerTocFromPages(pages: CoursePage[], currentPage: number): Pl
       id: `page-${page.page}`,
       label: page.pageTitle || page.lessonTitle,
       href: page.href,
+      lessonSlug: page.lessonSlug,
       current: page.page === currentPage,
     });
     if (page.page === currentPage) group.current = true;

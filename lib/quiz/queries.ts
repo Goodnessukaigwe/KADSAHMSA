@@ -8,9 +8,12 @@ import {
   toPublicQuestions,
   type PublicQuizQuestion,
 } from "@/lib/content/dptc";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import { isDptcBankSlug } from "@/lib/domain";
 import { getAuthUser } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Database } from "@/lib/supabase/database";
 import { createClient } from "@/lib/supabase/server";
 
 export type QuizAttemptRow = {
@@ -41,6 +44,53 @@ export type PublicQuizView = {
   questions: PublicQuizQuestion[];
 };
 
+export const FINAL_ASSESSMENT_SECONDS = 60 * 60;
+
+type CollatedQuestion = { id: string; prompt: string; options: string[]; correct_index: number };
+
+/**
+ * The final assessment is every module quiz put together, in course order, so it always matches
+ * the module quizzes. Returns an empty list when the course has no module quizzes.
+ */
+async function collateModuleQuestions(
+  client: Pick<SupabaseClient<Database>, "from">,
+  courseId: string
+): Promise<CollatedQuestion[]> {
+  const { data: quizzes } = await client
+    .from("quizzes")
+    .select("id, module_id")
+    .eq("course_id", courseId)
+    .eq("kind", "module");
+  const withModule = (quizzes ?? []).filter((row) => row.module_id);
+  if (!withModule.length) return [];
+
+  const { data: modules } = await client
+    .from("course_modules")
+    .select("id, position")
+    .in("id", withModule.map((row) => row.module_id as string));
+  const positionOf = new Map((modules ?? []).map((row) => [row.id, row.position]));
+  const quizOrder = new Map(
+    withModule.map((row) => [row.id, positionOf.get(row.module_id as string) ?? 0])
+  );
+
+  const { data: rows } = await client
+    .from("quiz_questions")
+    .select("id, quiz_id, position, prompt, options, correct_index")
+    .in("quiz_id", withModule.map((row) => row.id));
+  return (rows ?? [])
+    .slice()
+    .sort(
+      (a, b) =>
+        (quizOrder.get(a.quiz_id) ?? 0) - (quizOrder.get(b.quiz_id) ?? 0) || a.position - b.position
+    )
+    .map((row) => ({
+      id: row.id,
+      prompt: row.prompt,
+      options: (row.options ?? []).slice(0, 6),
+      correct_index: row.correct_index,
+    }));
+}
+
 function dptcTitle(quizSlug: string) {
   if (quizSlug === "module-1") return quizMeta.title;
   if (quizSlug === "final") return finalQuizMeta.title;
@@ -63,7 +113,8 @@ export async function courseHasFinalQuiz(courseId: string, courseSlug: string) {
     .select("id", { count: "exact", head: true })
     .eq("quiz_id", quiz.id);
   if (countError) return false;
-  return (count ?? 0) > 0;
+  if ((count ?? 0) > 0) return true;
+  return (await collateModuleQuestions(supabase, courseId)).length > 0;
 }
 
 export async function getPublicQuiz(
@@ -99,11 +150,16 @@ export async function getPublicQuiz(
     };
   }
 
-  const { data: rows, error } = await supabase
-    .from("quiz_questions")
-    .select("id, prompt, options")
-    .eq("quiz_id", quiz.id)
-    .order("position", { ascending: true });
+  const collated =
+    quizSlug === "final" ? await collateModuleQuestions(supabase, course.id) : [];
+  const { data: ownRows, error } = collated.length
+    ? { data: collated, error: null }
+    : await supabase
+        .from("quiz_questions")
+        .select("id, prompt, options")
+        .eq("quiz_id", quiz.id)
+        .order("position", { ascending: true });
+  const rows = ownRows as { id: string; prompt: string; options: string[] | null }[] | null;
   if (error || !rows?.length) return null;
 
   return {
@@ -114,7 +170,7 @@ export async function getPublicQuiz(
         : quizSlug.startsWith("module-")
           ? `${course.title} — Module quiz`
           : `${course.title} quiz`,
-    seconds: quiz.time_limit_seconds ?? 1800,
+    seconds: quizSlug === "final" ? FINAL_ASSESSMENT_SECONDS : (quiz.time_limit_seconds ?? 1800),
     maxAttempts: quiz.max_attempts,
     passMark: quiz.pass_mark_percent,
     questions: rows.map((row) => ({
@@ -254,16 +310,20 @@ export async function loadScoringQuestions(courseSlug: string, quizSlug: string)
     .maybeSingle();
   if (!quiz) return null;
 
-  const { data: rows } = await admin
-    .from("quiz_questions")
-    .select("options, correct_index")
-    .eq("quiz_id", quiz.id)
-    .order("position", { ascending: true });
+  const collated = quizSlug === "final" ? await collateModuleQuestions(admin, course.id) : [];
+  const { data: ownRows } = collated.length
+    ? { data: collated }
+    : await admin
+        .from("quiz_questions")
+        .select("options, correct_index")
+        .eq("quiz_id", quiz.id)
+        .order("position", { ascending: true });
+  const rows = ownRows as { options: string[] | null; correct_index: number }[] | null;
   if (!rows?.length) return null;
 
   return {
     title: "Final assessment",
-    seconds: quiz.time_limit_seconds ?? 1800,
+    seconds: quizSlug === "final" ? FINAL_ASSESSMENT_SECONDS : (quiz.time_limit_seconds ?? 1800),
     maxAttempts: quiz.max_attempts,
     passMark: quiz.pass_mark_percent,
     questions: rows.map((row) => ({

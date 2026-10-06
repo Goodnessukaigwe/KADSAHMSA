@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -8,6 +8,7 @@ import {
   LessonMedia,
   LessonSectionMedia,
 } from "@/components/learner/lesson-media";
+import { InlineCheck } from "@/components/learner/lesson-check";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
 import {
@@ -30,13 +31,31 @@ export function LessonReader({
   courseSlug,
   lesson,
   progressPercent = 0,
+  requireChecks = false,
 }: {
   courseSlug: string;
   lesson: PlayerPageView;
   progressPercent?: number;
+  /** The learner has not moved past this page yet, so its questions must be answered first. */
+  requireChecks?: boolean;
 }) {
   const router = useRouter();
   const [navPending, setNavPending] = useState(false);
+  const [picked, setPicked] = useState<Record<number, number>>({});
+
+  const checks = useMemo(
+    () =>
+      lesson.mainBlocks.flatMap((block, index) => (block.check ? [{ index, check: block.check }] : [])),
+    [lesson.mainBlocks]
+  );
+  const unanswered = checks.filter((item) => picked[item.index] === undefined).length;
+  const nextLocked =
+    requireChecks && unanswered > 0
+      ? `Answer the ${unanswered === 1 ? "question" : `${unanswered} questions`} on this page to continue.`
+      : undefined;
+  const scored = checks.filter((item) => item.check.answer !== null);
+  const correct = scored.filter((item) => picked[item.index] === item.check.answer).length;
+  const showSummary = checks.length >= 2 && unanswered === 0 && scored.length === checks.length;
 
   useEffect(() => {
     void saveResumeLesson(courseSlug, lesson.slug, lesson.moduleIndex);
@@ -53,6 +72,46 @@ export function LessonReader({
       return;
     }
     setNavPending(false);
+  }
+
+  function renderBlocks() {
+    let number = 0;
+    return (
+      <>
+        {lesson.mainBlocks.map((block, index) => {
+          if (block.check) {
+            number += 1;
+            return (
+              <section key={`check-${index}`}>
+                {block.heading ? (
+                  <h2 className="mb-2 text-lg font-bold text-neutral-950">{block.heading}</h2>
+                ) : null}
+                <InlineCheck
+                  check={block.check}
+                  number={checks.length > 1 ? number : undefined}
+                  selected={picked[index] ?? null}
+                  onSelect={(choice) => setPicked((current) => ({ ...current, [index]: choice }))}
+                />
+              </section>
+            );
+          }
+          return (
+            <section key={`${block.heading ?? "block"}-${index}`}>
+              {block.heading ? (
+                <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
+              ) : null}
+              <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
+            </section>
+          );
+        })}
+        {showSummary ? (
+          <p className="rounded-2xl bg-neutral-950 px-5 py-4 text-sm text-white">
+            You answered <strong>{correct} of {scored.length}</strong> correctly. This is only your
+            starting point: it is not graded.
+          </p>
+        ) : null}
+      </>
+    );
   }
 
   const assets = lesson.assets ?? [];
@@ -126,14 +185,7 @@ export function LessonReader({
                 return media.length ? <LessonSectionMedia key={section} assets={media} /> : null;
               })}
               <LessonRichText value={lesson.introduction} />
-              {lesson.mainBlocks.map((block, index) => (
-                <section key={`${block.heading ?? "block"}-${index}`}>
-                  {block.heading ? (
-                    <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
-                  ) : null}
-                  <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
-                </section>
-              ))}
+              {renderBlocks()}
               <LessonRichText value={lesson.notes} />
             </>
           ) : (
@@ -142,16 +194,7 @@ export function LessonReader({
               {lesson.section === "introduction" ? (
                 <LessonRichText value={lesson.introduction} />
               ) : null}
-              {lesson.section === "main"
-                ? lesson.mainBlocks.map((block, index) => (
-                    <section key={`${block.heading ?? "block"}-${index}`}>
-                      {block.heading ? (
-                        <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
-                      ) : null}
-                      <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
-                    </section>
-                  ))
-                : null}
+              {lesson.section === "main" ? renderBlocks() : null}
               {lesson.section === "notes" ? <LessonRichText value={lesson.notes} /> : null}
             </>
           )}
@@ -178,8 +221,91 @@ export function LessonReader({
         nextPrimary
         navPending={navPending}
         onNext={lesson.completeOnNext ? goNext : undefined}
+        nextLocked={nextLocked}
       />
     </div>
+  );
+}
+
+const URL_PATTERN = /(https?:\/\/[^\s<>"')]+[^\s<>"').,;:!?])/g;
+
+function Linked({ text }: { text: string }) {
+  const parts = text.split(URL_PATTERN);
+  return (
+    <>
+      {parts.map((part, index) =>
+        index % 2 === 1 ? (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="break-all text-neutral-950 underline underline-offset-2 hover:text-neutral-600"
+          >
+            {part}
+          </a>
+        ) : (
+          <span key={index}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
+
+/** Plain lesson text: keeps line breaks, links every web address, and lays resource lists out as links. */
+function PlainText({ value, className }: { value: string; className?: string }) {
+  const lines = value.split("\n").map((line) => line.trim());
+  const isUrl = (line: string) => /^https?:\/\/\S+$/.test(line);
+
+  // "Title — what it is" followed by a web address on the next line is a resource.
+  const resources: { title: string; note: string; url: string }[] = [];
+  const rest: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const next = lines[i + 1];
+    if (lines[i] && !isUrl(lines[i]) && next && isUrl(next)) {
+      const raw = value.split("\n")[i] ?? lines[i];
+      const wide = raw.split(/\s{2,}[—–]\s{2,}/);
+      const [title, ...note] = wide.length > 1 ? wide : lines[i].split(/\s+[—–]\s+/);
+      resources.push({ title: title.trim(), note: note.join(" — ").trim(), url: next });
+      i += 1;
+    } else if (lines[i] || rest.length) {
+      rest.push(lines[i]);
+    }
+  }
+
+  if (resources.length >= 1) {
+    return (
+      <div className={className}>
+        {rest.some(Boolean) ? (
+          <p className="whitespace-pre-line">
+            <Linked text={rest.join("\n").trim()} />
+          </p>
+        ) : null}
+        <ul className="mt-3 space-y-3">
+          {resources.map((item) => (
+            <li key={item.url} className="rounded-2xl border border-neutral-200 bg-white p-4">
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-neutral-950 underline underline-offset-2 hover:text-neutral-600"
+              >
+                {item.title}
+                <span aria-hidden="true"> ↗</span>
+              </a>
+              {item.note ? <p className="mt-1 text-sm text-neutral-500">{item.note}</p> : null}
+              <p className="mt-1 text-xs break-all text-neutral-400">{item.url}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <p className={cn("whitespace-pre-line", className)}>
+      <Linked text={value} />
+    </p>
   );
 }
 
@@ -192,7 +318,7 @@ function LessonRichText({
 }) {
   if (!value) return null;
   if (!hasLessonMarkup(value)) {
-    return <p className={className}>{value}</p>;
+    return <PlainText value={value} className={className} />;
   }
   const html = sanitizeLessonHtml(value);
   if (!html) return null;

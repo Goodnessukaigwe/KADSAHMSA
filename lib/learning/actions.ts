@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 
 import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
 import { emptyProgress } from "@/lib/learning/progress";
-import { isPublishedCourseAvailable } from "@/lib/courses/queries";
-import { getCourseIdBySlug, isEnrolledIn } from "@/lib/learning/queries";
+import { getVisibleCourse, isPublishedCourseAvailable } from "@/lib/courses/queries";
+import { buildAccess } from "@/lib/learning/gating";
+import { getCourseIdBySlug, getMyProgress, isEnrolledIn } from "@/lib/learning/queries";
 import { isStaffUser, requireUser } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -92,6 +93,14 @@ export async function markModuleComplete(
   const seated = await requireExistingEnrolment(slug);
   if (!seated.ok) return seated;
 
+  const visible = await getVisibleCourse(slug);
+  if (visible?.outline.length && !(await isStaffUser())) {
+    const access = buildAccess(visible.outline, await getMyProgress(slug));
+    if (!access.moduleOpen(moduleIndex) || !access.moduleReached(moduleIndex)) {
+      return fail("Finish every page of this module before moving on.");
+    }
+  }
+
   const { courseId, error } = await resolveCourseId(slug);
   if (!courseId) return fail(error ?? "That course is not available yet.");
 
@@ -163,6 +172,17 @@ export async function saveResumeLesson(
   const user = await requireUser();
   const seated = await requireExistingEnrolment(slug);
   if (!seated.ok) return { ok: true };
+
+  // The resume point is the furthest page reached: it only moves forward, one page at a time.
+  const visible = await getVisibleCourse(slug);
+  if (visible?.outline.length) {
+    const progress = await getMyProgress(slug);
+    const access = buildAccess(visible.outline, progress, await isStaffUser());
+    if (!access.lessonOpen(lessonSlug)) return { ok: true };
+    const order = visible.outline.flatMap((module) => module.lessons.map((lesson) => lesson.slug));
+    const current = progress.resumeLessonSlug ? order.indexOf(progress.resumeLessonSlug) : -1;
+    if (order.indexOf(lessonSlug) <= current) return { ok: true };
+  }
 
   const { courseId, error } = await resolveCourseId(slug);
   if (!courseId) return fail(error ?? "That course is not available yet.");
