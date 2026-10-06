@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -9,9 +8,12 @@ import {
   LessonMedia,
   LessonSectionMedia,
 } from "@/components/learner/lesson-media";
+import { CourseCover } from "@/components/courses/course-cover";
 import { InlineCheck } from "@/components/learner/lesson-check";
+import { PlainBody } from "@/components/learner/lesson-prose";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
+import { courseTheme, pageEyebrow } from "@/lib/courses/theme";
 import {
   leftoverNonImageAssets,
   orderedSectionMedia,
@@ -30,6 +32,7 @@ const SECTION_LABEL: Record<LessonAssetSection, string> = {
 
 export function LessonReader({
   courseSlug,
+  courseTitle = "",
   lesson,
   progressPercent = 0,
   gated = false,
@@ -38,6 +41,7 @@ export function LessonReader({
   hasVideo = false,
 }: {
   courseSlug: string;
+  courseTitle?: string;
   lesson: PlayerPageView;
   progressPercent?: number;
   /** Learners (not staff) must finish each page before the next one opens. */
@@ -115,6 +119,8 @@ export function LessonReader({
     setNavPending(false);
   }
 
+  const isPreTest = /pre-test/i.test(lesson.title);
+
   function renderBlocks() {
     let number = 0;
     return (
@@ -122,31 +128,48 @@ export function LessonReader({
         {lesson.mainBlocks.map((block, index) => {
           if (block.check) {
             number += 1;
+            const check = (
+              <InlineCheck
+                check={block.check}
+                number={checks.length > 1 ? number : undefined}
+                selected={picked[index] ?? null}
+                large={!isPreTest}
+                onSelect={(choice) => setPicked((current) => ({ ...current, [index]: choice }))}
+              />
+            );
+            if (isPreTest) return <section key={`check-${index}`}>{check}</section>;
             return (
-              <section key={`check-${index}`}>
-                {block.heading ? (
-                  <h2 className="mb-2 text-lg font-bold text-neutral-950">{block.heading}</h2>
-                ) : null}
-                <InlineCheck
-                  check={block.check}
-                  number={checks.length > 1 ? number : undefined}
-                  selected={picked[index] ?? null}
-                  onSelect={(choice) => setPicked((current) => ({ ...current, [index]: choice }))}
-                />
+              <section key={`check-${index}`} className="rounded-3xl bg-[var(--cream)] p-5 sm:p-7">
+                <p className="mb-3 text-[11px] font-bold tracking-[0.2em] text-[var(--accent)] uppercase">
+                  {block.heading || "Knowledge check"}
+                </p>
+                {check}
+              </section>
+            );
+          }
+          const key = /key points/i.test(block.heading ?? "");
+          if (key) {
+            return (
+              <section key={`key-${index}`} className="rounded-3xl bg-[var(--deep)] p-6 text-white sm:p-8">
+                <p className="text-[11px] font-bold tracking-[0.2em] text-[#f2c14e] uppercase">Key points</p>
+                <h2 className="mt-1 mb-4 text-2xl font-bold tracking-tight">{block.heading}</h2>
+                <PlainBody value={block.body} variant="key" className="!bg-transparent !p-0" />
               </section>
             );
           }
           return (
             <section key={`${block.heading ?? "block"}-${index}`}>
               {block.heading ? (
-                <h2 className="text-lg font-bold text-neutral-950">{block.heading}</h2>
+                <h2 className="mb-3 text-xl font-bold tracking-tight text-[var(--deep)] sm:text-2xl">
+                  {block.heading}
+                </h2>
               ) : null}
-              <LessonRichText className={block.heading ? "mt-2" : undefined} value={block.body} />
+              <LessonRichText value={block.body} />
             </section>
           );
         })}
         {showSummary ? (
-          <p className="rounded-2xl bg-neutral-950 px-5 py-4 text-sm text-white">
+          <p className="rounded-2xl bg-[var(--deep)] px-5 py-4 text-sm text-white">
             You answered <strong>{correct} of {scored.length}</strong> correctly. This is only your
             starting point: it is not graded.
           </p>
@@ -186,86 +209,107 @@ export function LessonReader({
     ? leftoverMedia.filter((asset) => asset.kind !== "pdf")
     : leftoverMedia;
 
+  const theme = courseTheme(courseSlug);
+  const themeVars = {
+    "--deep": theme.deep,
+    "--accent": theme.accent,
+    "--soft": theme.soft,
+    "--cream": theme.cream,
+  } as React.CSSProperties;
+  const moduleTitle = lesson.toc.find((group) => group.current)?.title ?? "";
+  const eyebrow = pageEyebrow(lesson.title, moduleTitle);
+  const special = eyebrow !== moduleTitle;
+  const tinted = eyebrow === "Case study";
+  const footerTag = special ? eyebrow : `Page ${lesson.page} of ${lesson.pageCount}`;
+  const percentOfCourse = lesson.pageCount ? Math.round((lesson.page / lesson.pageCount) * 100) : 0;
+
   return (
-    <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]">
-      <article className="min-w-0">
-        <div className="flex flex-col gap-3 rounded-2xl bg-neutral-950 px-4 py-3 text-white sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-5">
-          <p className="text-[11px] font-bold tracking-[0.14em] uppercase break-words">
-            {lesson.kicker}
-          </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <p className="text-[11px] tracking-[0.12em] uppercase text-white/70">
-              {lesson.readTime}
+    <div className="grid min-w-0 gap-8 overflow-x-clip pb-16 lg:grid-cols-[minmax(0,1fr)_280px]" style={themeVars}>
+      <article className="min-w-0 overflow-hidden rounded-[28px] bg-white shadow-sm ring-1 ring-black/5">
+        <div className="h-1 bg-neutral-100" role="presentation">
+          <div className="h-full bg-[var(--accent)]" style={{ width: `${percentOfCourse}%` }} />
+        </div>
+
+        {lesson.isFirstPageOfModule && moduleTitle ? (
+          <header className="relative isolate overflow-hidden bg-[var(--deep)] px-6 py-10 text-white sm:px-10 sm:py-14">
+            <CourseCover slug={courseSlug} title={moduleTitle} className="-z-10 bg-transparent opacity-20 mix-blend-luminosity" />
+            <span aria-hidden="true" className="absolute -top-24 -right-20 -z-10 size-72 rounded-full bg-white/[0.06]" />
+            <span aria-hidden="true" className="absolute -bottom-32 left-1/3 -z-10 size-72 rounded-full bg-white/[0.04]" />
+            <p className="text-[11px] font-bold tracking-[0.22em] text-[#f2c14e] uppercase">
+              KADSAMHSA Learning Management System
             </p>
-          </div>
-        </div>
+            <p className="mt-8 text-sm font-bold tracking-[0.2em] text-[#f2c14e] uppercase">
+              Module {lesson.moduleIndex}
+            </p>
+            <h2 className="mt-2 max-w-2xl text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
+              {moduleTitle}
+            </h2>
+            <p className="mt-4 text-sm text-white/70">
+              {courseTitle ? `${courseTitle} · ` : ""}pre-test, lessons, knowledge checks and a graded quiz
+            </p>
+          </header>
+        ) : null}
 
-        <h1 className="mt-8 text-3xl font-bold tracking-tight sm:text-4xl">
-          {lesson.title}
-        </h1>
-        {lesson.isSingleLessonPage ? null : (
-          <p className="mt-2 text-sm font-semibold tracking-[0.08em] text-neutral-400 uppercase">
-            {SECTION_LABEL[lesson.section]}
+        <div className={cn("px-6 py-8 sm:px-10 sm:py-10", tinted && "bg-[var(--soft)]")}>
+          <p className="text-[11px] font-bold tracking-[0.2em] text-[var(--accent)] uppercase">
+            {eyebrow}
           </p>
-        )}
+          <h1 className="mt-3 max-w-3xl text-3xl leading-[1.12] font-bold tracking-tight text-[var(--deep)] sm:text-[2.5rem]">
+            {lesson.title}
+          </h1>
+          <p className="mt-3 text-xs font-semibold tracking-[0.1em] text-neutral-400 uppercase">
+            {lesson.readTime}
+            {lesson.isSingleLessonPage ? "" : ` · ${SECTION_LABEL[lesson.section]}`}
+          </p>
 
-        {wideImages.length ? (
-          <div className="mt-8">
-            <LessonSectionMedia assets={wideImages} layout="wide" />
-          </div>
-        ) : null}
+          {wideImages.length ? (
+            <div className="mt-8">
+              <LessonSectionMedia assets={wideImages} layout="wide" />
+            </div>
+          ) : null}
 
-        <div className="mt-8 max-w-3xl space-y-8 text-[15px] leading-relaxed text-neutral-700">
-          {otherCover.length ? <LessonSectionMedia assets={otherCover} /> : null}
-          {lesson.isSingleLessonPage ? (
-            <>
-              {(["introduction", "main", "notes"] as const).map((section) => {
-                const media = orderedSectionMedia(assets, section).filter(
-                  (asset) => asset.kind !== "image"
-                );
-                return media.length ? <LessonSectionMedia key={section} assets={media} /> : null;
-              })}
-              <LessonRichText value={lesson.introduction} />
-              {renderBlocks()}
-              <LessonRichText value={lesson.notes} />
-            </>
-          ) : (
-            <>
-              {otherPageMedia.length ? <LessonSectionMedia assets={otherPageMedia} /> : null}
-              {lesson.section === "introduction" ? (
+          <div className="mt-8 max-w-3xl space-y-10 text-[16px] leading-relaxed text-neutral-700">
+            {otherCover.length ? <LessonSectionMedia assets={otherCover} /> : null}
+            {lesson.isSingleLessonPage ? (
+              <>
+                {(["introduction", "main", "notes"] as const).map((section) => {
+                  const media = orderedSectionMedia(assets, section).filter(
+                    (asset) => asset.kind !== "image"
+                  );
+                  return media.length ? <LessonSectionMedia key={section} assets={media} /> : null;
+                })}
                 <LessonRichText value={lesson.introduction} />
-              ) : null}
-              {lesson.section === "main" ? renderBlocks() : null}
-              {lesson.section === "notes" ? <LessonRichText value={lesson.notes} /> : null}
-            </>
-          )}
+                {renderBlocks()}
+                <LessonRichText value={lesson.notes} />
+              </>
+            ) : (
+              <>
+                {otherPageMedia.length ? <LessonSectionMedia assets={otherPageMedia} /> : null}
+                {lesson.section === "introduction" ? (
+                  <LessonRichText value={lesson.introduction} />
+                ) : null}
+                {lesson.section === "main" ? renderBlocks() : null}
+                {lesson.section === "notes" ? <LessonRichText value={lesson.notes} /> : null}
+              </>
+            )}
+          </div>
+
+          <LessonMedia assets={bottomMedia} />
+          {originalDeckFiles.length ? (
+            <div className="mt-6 max-w-3xl space-y-2">
+              {originalDeckFiles.map((asset) => (
+                <LessonAssetLink key={asset.id} asset={asset} />
+              ))}
+            </div>
+          ) : null}
         </div>
 
-        <LessonMedia assets={bottomMedia} />
-        {originalDeckFiles.length ? (
-          <div className="mt-6 max-w-3xl space-y-2">
-            {originalDeckFiles.map((asset) => (
-              <LessonAssetLink key={asset.id} asset={asset} />
-            ))}
-          </div>
-        ) : null}
-        {needsTick ? (
-          <button
-            type="button"
-            onClick={() => void finishPage()}
-            disabled={done || saving}
-            className={cn(
-              "mt-10 flex h-12 items-center gap-2 rounded-full px-6 text-[11px] font-bold tracking-[0.14em] uppercase",
-              done
-                ? "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600"
-                : "bg-neutral-950 text-white disabled:opacity-60"
-            )}
-          >
-            {done ? <Check className="size-4" /> : null}
-            {done ? "Completed" : saving ? "Saving…" : "Mark as complete"}
-          </button>
-        ) : null}
-        {saveError ? <p className="mt-3 text-sm text-red-600">{saveError}</p> : null}
+        <footer className="flex items-center justify-between gap-4 border-t border-neutral-100 bg-white px-6 py-3.5 text-[11px] text-neutral-400 sm:px-10">
+          <span className="min-w-0 truncate">
+            KADSAMHSA Learning Management System{courseTitle ? ` · ${courseTitle}` : ""} · Module {lesson.moduleIndex}
+          </span>
+          <span className="shrink-0 font-bold tracking-[0.16em] text-[var(--accent)] uppercase">{footerTag}</span>
+        </footer>
       </article>
 
       <PlayerRail
@@ -280,90 +324,11 @@ export function LessonReader({
         navPending={navPending}
         onNext={lesson.completeOnNext ? goNext : undefined}
         nextLocked={nextLocked}
+        complete={
+          needsTick ? { done, saving, error: saveError, onClick: () => void finishPage() } : undefined
+        }
       />
     </div>
-  );
-}
-
-const URL_PATTERN = /(https?:\/\/[^\s<>"')]+[^\s<>"').,;:!?])/g;
-
-function Linked({ text }: { text: string }) {
-  const parts = text.split(URL_PATTERN);
-  return (
-    <>
-      {parts.map((part, index) =>
-        index % 2 === 1 ? (
-          <a
-            key={index}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="break-all text-neutral-950 underline underline-offset-2 hover:text-neutral-600"
-          >
-            {part}
-          </a>
-        ) : (
-          <span key={index}>{part}</span>
-        )
-      )}
-    </>
-  );
-}
-
-/** Plain lesson text: keeps line breaks, links every web address, and lays resource lists out as links. */
-function PlainText({ value, className }: { value: string; className?: string }) {
-  const lines = value.split("\n").map((line) => line.trim());
-  const isUrl = (line: string) => /^https?:\/\/\S+$/.test(line);
-
-  // "Title — what it is" followed by a web address on the next line is a resource.
-  const resources: { title: string; note: string; url: string }[] = [];
-  const rest: string[] = [];
-  for (let i = 0; i < lines.length; i += 1) {
-    const next = lines[i + 1];
-    if (lines[i] && !isUrl(lines[i]) && next && isUrl(next)) {
-      const raw = value.split("\n")[i] ?? lines[i];
-      const wide = raw.split(/\s{2,}[—–]\s{2,}/);
-      const [title, ...note] = wide.length > 1 ? wide : lines[i].split(/\s+[—–]\s+/);
-      resources.push({ title: title.trim(), note: note.join(" — ").trim(), url: next });
-      i += 1;
-    } else if (lines[i] || rest.length) {
-      rest.push(lines[i]);
-    }
-  }
-
-  if (resources.length >= 1) {
-    return (
-      <div className={className}>
-        {rest.some(Boolean) ? (
-          <p className="whitespace-pre-line">
-            <Linked text={rest.join("\n").trim()} />
-          </p>
-        ) : null}
-        <ul className="mt-3 space-y-3">
-          {resources.map((item) => (
-            <li key={item.url} className="rounded-2xl border border-neutral-200 bg-white p-4">
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-neutral-950 underline underline-offset-2 hover:text-neutral-600"
-              >
-                {item.title}
-                <span aria-hidden="true"> ↗</span>
-              </a>
-              {item.note ? <p className="mt-1 text-sm text-neutral-500">{item.note}</p> : null}
-              <p className="mt-1 text-xs break-all text-neutral-400">{item.url}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
-  return (
-    <p className={cn("whitespace-pre-line", className)}>
-      <Linked text={value} />
-    </p>
   );
 }
 
@@ -376,7 +341,7 @@ function LessonRichText({
 }) {
   if (!value) return null;
   if (!hasLessonMarkup(value)) {
-    return <PlainText value={value} className={className} />;
+    return <PlainBody value={value} className={className} />;
   }
   const html = sanitizeLessonHtml(value);
   if (!html) return null;

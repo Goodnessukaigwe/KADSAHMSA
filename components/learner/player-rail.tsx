@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Lock, Share2 } from "lucide-react";
+import { Check, Lock, Share2 } from "lucide-react";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
@@ -25,6 +25,8 @@ type PlayerRailProps = {
   navPending?: boolean;
   /** When set, Next is disabled and this says why. */
   nextLocked?: string;
+  /** The Mark as complete button, shown above Previous and Next. */
+  complete?: { done: boolean; saving: boolean; error?: string | null; onClick: () => void };
 };
 
 export function PlayerRail({
@@ -42,6 +44,7 @@ export function PlayerRail({
   onNext,
   navPending = false,
   nextLocked,
+  complete,
 }: PlayerRailProps) {
   return (
     <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">
@@ -157,6 +160,26 @@ export function PlayerRail({
         <SplitCta href={quizHref} className="w-full">
           Take quiz
         </SplitCta>
+      ) : null}
+
+      {complete ? (
+        <div>
+          <button
+            type="button"
+            onClick={complete.onClick}
+            disabled={complete.done || complete.saving}
+            className={cn(
+              "flex h-11 w-full items-center justify-center gap-2 rounded-full px-2 text-center text-[10px] font-bold tracking-[0.08em] uppercase leading-tight sm:text-[11px] sm:tracking-[0.12em]",
+              complete.done
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-neutral-950 text-white disabled:opacity-60"
+            )}
+          >
+            {complete.done ? <Check className="size-4" /> : null}
+            {complete.done ? "Completed" : complete.saving ? "Saving…" : "Mark as complete"}
+          </button>
+          {complete.error ? <p className="mt-2 text-xs text-red-600">{complete.error}</p> : null}
+        </div>
       ) : null}
 
       <div className="grid min-w-0 grid-cols-2 gap-2">

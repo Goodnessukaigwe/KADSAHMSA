@@ -69,6 +69,7 @@ export default async function LessonPage({
       hasChecks={hasChecks}
       hasVideo={hasVideo}
       courseSlug={courseSlug}
+      courseTitle={visible.title}
       lesson={lesson}
       progressPercent={progressPercent(progress, moduleCountFor(courseSlug, liveCount))}
     />
