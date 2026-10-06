@@ -43,7 +43,14 @@ export function VerifyCertificate({ initialId = "" }: { initialId?: string }) {
 
   return (
     <div className="mx-auto max-w-xl px-6 py-16">
-      <p className="text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">
+      <div className="flex items-center justify-between gap-6">
+        <img src="/brand/unodc.png" alt="United Nations Office on Drugs and Crime" className="h-10 w-auto object-contain" />
+        <img src="/kadsamhsa.svg" alt="KADSAMHSA" className="h-14 w-14 object-contain" />
+      </div>
+      <p className="mt-8 text-xs font-semibold tracking-[0.08em] text-neutral-500 uppercase">
+        Kaduna State Substance Abuse and Mental Health Services Agency
+      </p>
+      <p className="mt-6 text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase">
         Public verify
       </p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
