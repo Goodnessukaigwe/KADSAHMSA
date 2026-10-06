@@ -111,7 +111,7 @@ export async function renderCertificatePdf(input: {
   page.drawRectangle({ x: 50, y: 50, width: width - 100, height: height - 100, borderColor: FRAME, borderWidth: 0.5 });
 
   // Header: UNODC top left, KADSAMHSA top right.
-  const unodcWidth = 170;
+  const unodcWidth = 190;
   const unodcHeight = unodcWidth * UNODC_LOGO_ASPECT;
   const logoWidth = 74;
   const logoHeight = logoWidth * LOGO_ASPECT;
@@ -169,8 +169,7 @@ export async function renderCertificatePdf(input: {
     page.drawText(lines[1], { x, y: lineY - 28, size: 9, font: sans, color: MUTED });
     page.drawText(lines[2], { x, y: lineY - 40, size: 9, font: sans, color: MUTED });
   };
-  block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA, Kaduna"]);
-  block(width - 96 - 190, ["Dr. Akanidomo Ibanga", "Project Lead, UNODC Country Office", "for Nigeria, Abuja"]);
+  block(96, ["Joseph O. Ike", "Director General,", "KADSAMHSA"]);
 
   // Wax seal.
   const cx = width / 2;
@@ -190,7 +189,7 @@ export async function renderCertificatePdf(input: {
   const qrPng = await QRCode.toBuffer(verifyUrl, { margin: 0, width: 360, errorCorrectionLevel: "M" });
   const qr = await doc.embedPng(qrPng);
   const qrSize = 58;
-  const qrX = cx + 62;
+  const qrX = width - 96 - qrSize - 66 + 66;
   page.drawImage(qr, { x: qrX, y: cy - 28, width: qrSize, height: qrSize });
   const scan = "Scan to verify";
   page.drawText(scan, {
