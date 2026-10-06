@@ -3,6 +3,7 @@ import "server-only";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 
 import { LOGO_ASPECT, LOGO_PNG_BASE64 } from "@/lib/certificates/logo";
+import { UNODC_LOGO_ASPECT, UNODC_LOGO_PNG_BASE64 } from "@/lib/certificates/unodc-logo";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 
 const AGENCY = "Kaduna State Substance Abuse and Mental Health Services Agency";
@@ -84,6 +85,7 @@ export async function renderCertificatePdf(input: {
   const serifBold = await doc.embedFont(StandardFonts.TimesRomanBold);
   const serifItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
   const logo = await doc.embedPng(Buffer.from(LOGO_PNG_BASE64, "base64"));
+  const unodcLogo = await doc.embedPng(Buffer.from(UNODC_LOGO_PNG_BASE64, "base64"));
 
   // Frame: green outer rule, gold inner rule, gold corner squares.
   page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(1, 1, 1) });
@@ -101,12 +103,21 @@ export async function renderCertificatePdf(input: {
     page.drawRectangle({ x: cx - 6, y: cy - 6, width: 12, height: 12, color: GOLD });
   }
 
-  // Header: logo and agency name, then a thin rule.
-  const logoWidth = 104;
+  // Header: UNODC logo top left, KADSAMHSA logo top right, then the agency name and a thin rule.
+  const logoWidth = 86;
   const logoHeight = logoWidth * LOGO_ASPECT;
+  const top = height - 54;
+  const unodcWidth = 190;
+  const unodcHeight = unodcWidth * UNODC_LOGO_ASPECT;
+  page.drawImage(unodcLogo, {
+    x: 66,
+    y: top - logoHeight / 2 - unodcHeight / 2,
+    width: unodcWidth,
+    height: unodcHeight,
+  });
   page.drawImage(logo, {
-    x: (width - logoWidth) / 2,
-    y: height - 54 - logoHeight,
+    x: width - 66 - logoWidth,
+    y: top - logoHeight,
     width: logoWidth,
     height: logoHeight,
   });
