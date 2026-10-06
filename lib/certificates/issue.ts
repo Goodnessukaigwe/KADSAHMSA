@@ -3,6 +3,7 @@ import "server-only";
 import { randomBytes } from "crypto";
 
 import { renderCertificatePdf } from "@/lib/certificates/pdf";
+import { notifyCertificate } from "@/lib/email/notify";
 import { dptcCourse } from "@/lib/content/dptc";
 import { liveLessonCountForSlug } from "@/lib/courses/queries";
 import { displayNameFromEmail } from "@/lib/learner-session";
@@ -172,6 +173,13 @@ export async function issueCertificateIfEligible(
     await admin.storage.from("certificates").remove([storagePath]);
     return { ok: false, error: insertError.message || "Could not issue the certificate." };
   }
+
+  await notifyCertificate(admin, {
+    userId,
+    courseTitle: course.title,
+    verificationId: inserted.verification_id,
+    pdf,
+  });
 
   return { ok: true, verificationId: inserted.verification_id, existing: false };
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { registerAccount } from "@/lib/auth/actions";
+import { registerAccount, resendVerification } from "@/lib/auth/actions";
 import { authCopy } from "@/lib/content/auth";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,8 @@ export function RegisterForm() {
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [resent, setResent] = useState(false);
 
   const valid =
     name.trim().length >= 2 &&
@@ -48,6 +50,12 @@ export function RegisterForm() {
         return;
       }
 
+      if (created.verify) {
+        setSentTo(normalizedEmail);
+        setPending(false);
+        return;
+      }
+
       router.push("/my");
       router.refresh();
     } catch (cause) {
@@ -58,6 +66,47 @@ export function RegisterForm() {
       );
       setPending(false);
     }
+  }
+
+  async function onResend() {
+    if (!sentTo) return;
+    await resendVerification(sentTo);
+    setResent(true);
+  }
+
+  if (sentTo) {
+    return (
+      <div className="flex flex-col">
+        <h1 className="text-[2rem] leading-tight font-bold tracking-tight text-neutral-950 sm:text-[2.35rem]">
+          {copy.verifyTitle}
+        </h1>
+        <p className="mt-6 text-sm leading-relaxed text-neutral-600" role="status">
+          {copy.verifyBody.replace("{email}", sentTo)}
+        </p>
+        <button
+          type="button"
+          onClick={onResend}
+          className="mt-8 h-12 w-full rounded-full bg-neutral-950 text-[12px] font-bold tracking-[0.18em] text-white uppercase transition-colors hover:bg-neutral-800"
+        >
+          {copy.verifyResend}
+        </button>
+        {resent ? (
+          <p className="mt-3 text-sm text-neutral-500" role="status">
+            {copy.verifyResent}
+          </p>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => {
+            setSentTo(null);
+            setResent(false);
+          }}
+          className="mt-5 text-center text-sm font-bold text-neutral-950 hover:underline"
+        >
+          {copy.verifyWrongEmail}
+        </button>
+      </div>
+    );
   }
 
   return (

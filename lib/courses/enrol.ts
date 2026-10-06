@@ -2,6 +2,7 @@ import "server-only";
 
 import { revalidatePath } from "next/cache";
 
+import { notifyEnrolled } from "@/lib/email/notify";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type EnrolResult = { ok: true } | { ok: false; error: string };
@@ -38,7 +39,7 @@ export async function enrolLearnerWithAdmin(
   const admin = createAdminClient();
   const { data: course } = await admin
     .from("courses")
-    .select("id, slug")
+    .select("id, slug, title")
     .eq("slug", courseSlug)
     .maybeSingle();
   if (!course) return fail("That course was not found.");
@@ -88,6 +89,10 @@ export async function enrolLearnerWithAdmin(
   }
 
   revalidateEnrolment(userId, course.slug);
+  // A brand-new seat only; re-activating an old seat stays quiet.
+  if (!enrolError) {
+    await notifyEnrolled(admin, { userId, courseTitle: course.title, courseSlug: course.slug });
+  }
   return { ok: true };
 }
 
