@@ -55,9 +55,7 @@ export default async function LessonPage({
     })),
   };
 
-  const order = visible.outline.flatMap((module) => module.lessons.map((item) => item.slug));
-  const furthest = progress.resumeLessonSlug ? order.indexOf(progress.resumeLessonSlug) : -1;
-  const completed = order.indexOf(lessonSlug) <= furthest;
+  const completed = access.lessonDone(lessonSlug);
   const hasChecks = lesson.mainBlocks.some((block) => block.check);
   const hasVideo = (lesson.assets ?? []).some((asset) =>
     ["video", "youtube", "vimeo"].includes(asset.kind)

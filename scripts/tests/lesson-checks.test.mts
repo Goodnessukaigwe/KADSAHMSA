@@ -52,6 +52,12 @@ const outline = [
   { slug: "m1", title: "M1", position: 1, durationLabel: "", hasQuiz: true, lessons: [1, 2, 3].map((n) => ({ slug: `m1-${n}`, title: "", href: "" })) },
   { slug: "m2", title: "M2", position: 2, durationLabel: "", hasQuiz: false, lessons: [1, 2].map((n) => ({ slug: `m2-${n}`, title: "", href: "" })) },
 ];
+// A stale resume point in a later module must not mark early pages complete.
+const stale = buildAccess(outline, { currentModule: 2, completed: [], playerSeconds: 0, resumeLessonSlug: "m2-2" });
+check("stale resume in a locked module: page 1 not done, page 2 locked", !stale.lessonDone("m1-1") && stale.lessonOpen("m1-1") && !stale.lessonOpen("m1-2"));
+const doneOne = buildAccess(outline, { currentModule: 1, completed: [], playerSeconds: 0, resumeLessonSlug: "m1-1" });
+check("page 1 done opens page 2", doneOne.lessonDone("m1-1") && doneOne.lessonOpen("m1-2") && !doneOne.lessonDone("m1-2"));
+
 const fresh = buildAccess(outline, { currentModule: 1, completed: [], playerSeconds: 0, resumeLessonSlug: null });
 check("new learner: first page only", fresh.lessonOpen("m1-1") && !fresh.lessonOpen("m1-2"));
 check("new learner: module 2 locked", !fresh.moduleOpen(2) && !fresh.lessonOpen("m2-1"));
