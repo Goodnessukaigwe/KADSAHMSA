@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { VisitorPanel } from "@/components/admin/visitor-panel";
 import {
   inboxHeartbeat,
   listInbox,
@@ -42,6 +43,7 @@ export function AdminInbox({ initialChat }: { initialChat: string | null }) {
   const [team, setTeam] = useState<Teammate[]>([]);
   const [saved, setSaved] = useState<SavedReply[]>([]);
   const [me, setMe] = useState("");
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("needs reply");
   const [selected, setSelected] = useState<string | null>(initialChat);
@@ -62,6 +64,7 @@ export function AdminInbox({ initialChat }: { initialChat: string | null }) {
     setTeam(result.team);
     setSaved(result.saved);
     setMe(result.me);
+    setIsSuperAdmin(result.isSuperAdmin);
   }, []);
 
   const load = useCallback(async (id: string) => {
@@ -129,7 +132,7 @@ export function AdminInbox({ initialChat }: { initialChat: string | null }) {
       </p>
       {error ? <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[320px_1fr]">
+      <div className="mt-5 grid gap-4 lg:grid-cols-[300px_1fr] xl:grid-cols-[300px_1fr_340px]">
         <section className="rounded-[24px] bg-white p-3">
           <div className="flex gap-1 rounded-full bg-neutral-100 p-1">
             {FILTERS.map((f) => (
@@ -298,6 +301,18 @@ export function AdminInbox({ initialChat }: { initialChat: string | null }) {
             </>
           )}
         </section>
+        {current && current.id === selected ? (
+          <VisitorPanel
+            key={current.id}
+            chatId={current.id}
+            isSuperAdmin={isSuperAdmin}
+            onOpenChat={(id) => setSelected(id)}
+            onRemoved={() => {
+              void refresh();
+              if (selected) void load(selected);
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );

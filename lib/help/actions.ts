@@ -1,7 +1,16 @@
 "use server";
 
+import { findUserIdByEmail } from "@/lib/auth/admin-users";
+import {
+  getCertificatesForUser,
+  getStaffLearner,
+  getStaffLearnerLearning,
+  type StaffActivityItem,
+  type StaffCertificate,
+  type StaffEnrolmentProgress,
+} from "@/lib/certificates/queries";
 import { notifyVisitor } from "@/lib/help/notify";
-import { requireSessionProfile, requireStaff } from "@/lib/permissions";
+import { getUserRoles, hasRole, requireSessionProfile, requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type {
   Database,
@@ -55,9 +64,15 @@ function failure(message: string | undefined) {
 }
 
 export async function listInbox(): Promise<
-  InboxResult<{ chats: InboxChat[]; team: Teammate[]; saved: SavedReply[]; me: string }>
+  InboxResult<{
+    chats: InboxChat[];
+    team: Teammate[];
+    saved: SavedReply[];
+    me: string;
+    isSuperAdmin: boolean;
+  }>
 > {
-  const { user } = await requireStaff();
+  const { user, roles: myRoles } = await requireStaff();
   const admin = createAdminClient();
   const [chats, saved, roles] = await Promise.all([
     admin.from("help_chats").select(LIST_COLUMNS).order("last_at", { ascending: false, nullsFirst: false }).limit(200),
@@ -78,6 +93,7 @@ export async function listInbox(): Promise<
     team,
     saved: (saved.data ?? []) as SavedReply[],
     me: user.id,
+    isSuperAdmin: hasRole(myRoles, "super_admin"),
   };
 }
 
@@ -203,4 +219,132 @@ export async function countChatsNeedingReply(): Promise<number> {
   } catch {
     return 0;
   }
+}
+
+export type VisitorProfile = {
+  name: string;
+  email: string | null;
+  page: string | null;
+  startedAt: string;
+  account: null | {
+    id: string;
+    name: string;
+    email: string;
+    joined: string;
+    organisationName: string;
+    roles: string[];
+    isAdmin: boolean;
+    enrolments: StaffEnrolmentProgress[];
+    certificates: StaffCertificate[];
+    activity: StaffActivityItem[];
+  };
+  otherChats: { id: string; status: string; lastText: string | null; lastAt: string | null }[];
+  tickets: { id: string; category: string; message: string; createdAt: string; status: string }[];
+};
+
+/** Everything we know about the person in a conversation, for the inbox side panel. */
+export async function getVisitorProfile(chatId: string): Promise<InboxResult<{ profile: VisitorProfile }>> {
+  await requireStaff();
+  const admin = createAdminClient();
+  const { data: chat, error } = await admin
+    .from("help_chats")
+    .select("id, name, email, page, user_id, created_at")
+    .eq("id", chatId)
+    .maybeSingle();
+  if (error) return failure(error.message);
+  if (!chat) return { ok: false, error: "Chat not found." };
+
+  const userId = chat.user_id ?? (chat.email ? await findUserIdByEmail(admin, chat.email) : null);
+  const learner = userId ? await getStaffLearner(userId) : null;
+
+  let account: VisitorProfile["account"] = null;
+  if (userId && learner) {
+    const [learning, certificates, roles] = await Promise.all([
+      getStaffLearnerLearning(userId),
+      getCertificatesForUser(userId),
+      getUserRoles(userId),
+    ]);
+    account = {
+      id: userId,
+      name: learner.name,
+      email: learner.email,
+      joined: learner.joined,
+      organisationName: learner.organisationName,
+      roles,
+      isAdmin: roles.some((role) => role !== "learner"),
+      enrolments: learning.enrolments,
+      certificates,
+      activity: learning.activity.slice(0, 8),
+    };
+  }
+
+  // Separate queries (not one .or() string) so an odd email cannot change the filter.
+  const chatRows = new Map<string, { id: string; status: string; last_text: string | null; last_at: string | null }>();
+  const ticketRows = new Map<
+    string,
+    { id: string; category: string; message: string; created_at: string; status: string }
+  >();
+  const email = chat.email?.trim() ?? "";
+  await Promise.all([
+    email
+      ? admin
+          .from("help_chats")
+          .select("id, status, last_text, last_at")
+          .eq("email", email)
+          .neq("id", chatId)
+          .limit(10)
+          .then(({ data }) => (data ?? []).forEach((row) => chatRows.set(row.id, row)))
+      : Promise.resolve(),
+    userId
+      ? admin
+          .from("help_chats")
+          .select("id, status, last_text, last_at")
+          .eq("user_id", userId)
+          .neq("id", chatId)
+          .limit(10)
+          .then(({ data }) => (data ?? []).forEach((row) => chatRows.set(row.id, row)))
+      : Promise.resolve(),
+    email
+      ? admin
+          .from("feedback_tickets")
+          .select("id, category, message, created_at, status")
+          .eq("submitter_email", email)
+          .limit(10)
+          .then(({ data }) => (data ?? []).forEach((row) => ticketRows.set(row.id, row)))
+      : Promise.resolve(),
+    userId
+      ? admin
+          .from("feedback_tickets")
+          .select("id, category, message, created_at, status")
+          .eq("user_id", userId)
+          .limit(10)
+          .then(({ data }) => (data ?? []).forEach((row) => ticketRows.set(row.id, row)))
+      : Promise.resolve(),
+  ]);
+  const others = [...chatRows.values()].sort((a, b) => (b.last_at ?? "").localeCompare(a.last_at ?? ""));
+  const tickets = [...ticketRows.values()].sort((a, b) => b.created_at.localeCompare(a.created_at));
+
+  return {
+    ok: true,
+    profile: {
+      name: chat.name ?? "",
+      email: chat.email,
+      page: chat.page,
+      startedAt: chat.created_at,
+      account,
+      otherChats: others.map((row) => ({
+        id: row.id,
+        status: row.status,
+        lastText: row.last_text,
+        lastAt: row.last_at,
+      })),
+      tickets: tickets.map((row) => ({
+        id: row.id,
+        category: row.category,
+        message: row.message,
+        createdAt: row.created_at,
+        status: row.status,
+      })),
+    },
+  };
 }
