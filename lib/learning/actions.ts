@@ -164,7 +164,11 @@ export async function markModuleComplete(
   return { ok: true };
 }
 
-export async function saveResumeLesson(
+/**
+ * Marks a page as completed. The resume point is the last page the learner completed; it only
+ * moves forward, one page at a time, and the next page opens once it moves.
+ */
+export async function completeLesson(
   slug: string,
   lessonSlug: string,
   moduleIndex: number
@@ -173,7 +177,6 @@ export async function saveResumeLesson(
   const seated = await requireExistingEnrolment(slug);
   if (!seated.ok) return { ok: true };
 
-  // The resume point is the furthest page reached: it only moves forward, one page at a time.
   const visible = await getVisibleCourse(slug);
   if (visible?.outline.length) {
     const progress = await getMyProgress(slug);

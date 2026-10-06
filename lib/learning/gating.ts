@@ -4,13 +4,13 @@ import type { CourseProgress } from "@/lib/learning/progress";
 /**
  * Learners move through a course in order. A module opens only when the one before it is
  * complete (its quiz passed, or its last page read when it has no quiz). Inside an open module a
- * page opens only once the page before it has been reached. `resumeLessonSlug` is the furthest
- * page reached, so going back never closes anything that was already open.
+ * page opens only once the page before it is complete. `resumeLessonSlug` is the last page the
+ * learner completed, so going back never closes anything that was already open.
  */
 export type CourseAccess = {
   lessonOpen: (lessonSlug: string) => boolean;
   moduleOpen: (position: number) => boolean;
-  /** Every page of the module has been reached, so its quiz may open. */
+  /** Every page of the module is complete, so its quiz may open. */
   moduleReached: (position: number) => boolean;
   /** The furthest page this learner may open now; where a locked page sends them. */
   frontierSlug: string | null;

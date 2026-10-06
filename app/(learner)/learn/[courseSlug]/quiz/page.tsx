@@ -49,7 +49,7 @@ export default async function CourseQuizPage({
     );
   }
 
-  // The quiz opens once every page of its module has been read.
+  // The quiz opens once every page of its module is complete.
   if (courseSlug !== "dptc" && !(await isStaffUser())) {
     const access = buildAccess(visible.outline, await getMyProgress(courseSlug));
     if (!access.moduleOpen(outlineModule.position) || !access.moduleReached(outlineModule.position)) {
