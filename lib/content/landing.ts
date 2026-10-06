@@ -1,7 +1,7 @@
 export const site = {
   name: "KADSAMHSA",
   fullName:
-    "Kaduna State Bureau for Substance Abuse Prevention and Treatment",
+    "Kaduna State Substance Abuse and Mental Health Services Agency",
   email: "info@kadsamhsa.org",
   phone: "+234 803 808 6191",
   location: "Kaduna State",
