@@ -1,7 +1,7 @@
 export const aboutPage = {
   badge: "About KADSAMHSA Academy",
   title: "An online academy for training staff, partners, and communities.",
-  lead: "KADSAMHSA Academy is the official training platform of the Kaduna State Substance Abuse and Mental Health Service Agency (KADSAMHSA). It exists so people can complete evidence-based drug prevention, treatment, and care courses online — then prove they finished.",
+  lead: "KADSAMHSA Academy is the official training platform of the Kaduna State Substance Abuse and Mental Health Services Agency (KADSAMHSA). It exists so people can complete evidence-based drug prevention, treatment, and care courses online — then prove they finished.",
   heroCta: "Browse courses",
   heroCtaHref: "/courses",
   purpose: [

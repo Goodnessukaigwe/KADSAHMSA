@@ -146,7 +146,7 @@ def build_module(path: Path, deck_number: int) -> dict:
             paras = paragraphs(slide)
             module_title = paras[2][0]
             body = "\n".join(t for t, _ in paras[3:]).replace(
-                "Mental Health Services Agency", "Mental Health Service Agency (KADSAMHSA)"
+                "Mental Health Services Agency", "Mental Health Services Agency (KADSAMHSA)"
             )
             lessons.append((module_title, body))
         elif kind == "PRETEST":
