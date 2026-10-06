@@ -8,6 +8,7 @@ import {
   Building2,
   FileSpreadsheet,
   GraduationCap,
+  Inbox,
   Menu,
   MessageSquare,
   Users,
@@ -25,6 +26,7 @@ const NAV = [
   { href: "/admin/users", label: "Users Metric", icon: Users },
   { href: "/admin/organizations", label: "Organisations", icon: Building2 },
   { href: "/admin/reports", label: "Reports", icon: FileSpreadsheet },
+  { href: "/admin/inbox", label: "Chat inbox", icon: Inbox },
   { href: "/admin/feedback", label: "Feedback", icon: MessageSquare },
 ] as const;
 
@@ -32,13 +34,17 @@ export function AdminChrome({
   children,
   user,
   unreadFeedback = 0,
+  chatsWaiting = 0,
 }: {
   children: React.ReactNode;
   user: { name: string; email: string; avatarUrl?: string | null };
   unreadFeedback?: number;
+  chatsWaiting?: number;
 }) {
   const pathname = usePathname();
   const [navOpen, setNavOpen] = useState(false);
+  const badge = (href: string) =>
+    href === "/admin/feedback" ? unreadFeedback : href === "/admin/inbox" ? chatsWaiting : 0;
 
   useEffect(() => {
     setNavOpen(false);
@@ -104,9 +110,9 @@ export function AdminChrome({
                 <ChromeNavLink key={item.label} href={item.href} active={active}>
                   <Icon className="size-4" strokeWidth={active ? 2.4 : 2} />
                   {item.label}
-                  {item.href === "/admin/feedback" && unreadFeedback > 0 ? (
+                  {badge(item.href) > 0 ? (
                     <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-neutral-950">
-                      {unreadFeedback}
+                      {badge(item.href)}
                     </span>
                   ) : null}
                 </ChromeNavLink>

@@ -3,5 +3,10 @@ import { getSessionProfile } from "@/lib/permissions";
 
 export async function FeedbackHost() {
   const profile = await getSessionProfile();
-  return <FeedbackWidget submitterName={profile?.name ?? null} />;
+  return (
+    <FeedbackWidget
+      submitterName={profile?.name ?? null}
+      submitterEmail={profile?.email ?? null}
+    />
+  );
 }

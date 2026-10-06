@@ -4,6 +4,8 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { MessageSquare, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+import { ChatPanel } from "@/components/help/chat-panel";
+import { useHelpChat } from "@/components/help/use-help-chat";
 import { FEEDBACK_CATEGORIES, feedbackCopy } from "@/lib/content/feedback";
 import { submitFeedback } from "@/lib/feedback/actions";
 import type { FeedbackCategory } from "@/lib/feedback/types";
@@ -49,7 +51,13 @@ function defaultPos(width: number, height: number): Pos {
   return clamp(window.innerWidth - width - 20, window.innerHeight - height - 20, width, height);
 }
 
-export function FeedbackWidget({ submitterName }: { submitterName: string | null }) {
+export function FeedbackWidget({
+  submitterName,
+  submitterEmail = null,
+}: {
+  submitterName: string | null;
+  submitterEmail?: string | null;
+}) {
   const pathname = usePathname() || "/";
   const titleId = useId();
   const displayName = submitterName ? firstNameOf(submitterName) : null;
@@ -61,6 +69,10 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
 
   const [pos, setPos] = useState<Pos | null>(null);
   const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<"chat" | "ticket">("chat");
+  const chat = useHelpChat(open);
+  const chatOn = chat.available === true && !pathname.startsWith("/admin");
+  const activeTab = chatOn ? tab : "ticket";
   const [success, setSuccess] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +139,8 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
   }, [success]);
 
   function openPanel() {
+    if (chatOn && chat.view) setTab("chat");
+    chat.markSeen();
     setSuccess(false);
     setError(null);
     setOpen(true);
@@ -203,15 +217,15 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
         <button
           ref={buttonRef}
           type="button"
-          aria-label={feedbackCopy.button}
-          title={feedbackCopy.button}
+          aria-label={chatOn ? "Chat with us or send feedback" : feedbackCopy.button}
+          title={chatOn ? "Chat with us or send feedback" : feedbackCopy.button}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onClick={onClick}
           className={cn(
-            "fixed z-[55] flex size-10 touch-none items-center justify-center rounded-full bg-[#0b4d2c] text-white shadow-[0_10px_24px_rgba(11,77,44,0.28)] ring-2 ring-[#c9a227]/80",
+            "fixed z-[55] flex size-10 touch-none items-center justify-center rounded-full bg-neutral-950 text-white shadow-[0_10px_24px_rgba(0,0,0,0.3)] ring-2 ring-white/80",
             "select-none",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a227]",
             pos ? "opacity-100" : "opacity-0"
@@ -223,6 +237,11 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
           }
         >
           <MessageSquare className="size-4" strokeWidth={2.2} />
+          {chatOn && chat.unread > 0 ? (
+            <span className="absolute -top-1 -right-1 flex min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+              {chat.unread}
+            </span>
+          ) : null}
         </button>
       ) : null}
 
@@ -249,7 +268,39 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
               <span className="sr-only">{feedbackCopy.close}</span>
             </button>
 
-            {success ? (
+            {chatOn ? (
+              <div className="mb-4 flex gap-1 rounded-full bg-neutral-100 p-1 pr-12" role="tablist">
+                {(["chat", "ticket"] as const).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === value}
+                    onClick={() => setTab(value)}
+                    className={cn(
+                      "h-9 flex-1 rounded-full text-[11px] font-bold tracking-[0.12em] uppercase",
+                      activeTab === value ? "bg-neutral-950 text-white" : "text-neutral-500"
+                    )}
+                  >
+                    {value === "chat" ? "Chat" : "Submit a ticket"}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            {activeTab === "chat" ? (
+              <div>
+                <h2 id={titleId} className="sr-only">
+                  Chat with the KADSAMHSA team
+                </h2>
+                <ChatPanel
+                  chat={chat}
+                  page={pathname}
+                  defaultName={submitterName ?? ""}
+                  defaultEmail={submitterEmail ?? ""}
+                />
+              </div>
+            ) : success ? (
               <div className="py-6 text-center">
                 <p className="text-[11px] font-bold tracking-[0.16em] text-[#0b4d2c] uppercase">
                   {feedbackCopy.successTitle}
@@ -280,7 +331,7 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
                       className={cn(
                         "h-9 rounded-full px-3 text-[11px] font-bold tracking-[0.04em]",
                         category === value
-                          ? "bg-[#0b4d2c] text-white"
+                          ? "bg-neutral-950 text-white"
                           : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
                       )}
                     >
@@ -300,7 +351,7 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
                     value={message}
                     onChange={(event) => setMessage(event.target.value)}
                     placeholder={feedbackCopy.messagePlaceholder}
-                    className="mt-2 min-h-[140px] w-full resize-y rounded-2xl border border-neutral-200 bg-[#fafafa] px-4 py-3 text-sm outline-none focus:border-[#0b4d2c]"
+                    className="mt-2 min-h-[140px] w-full resize-y rounded-2xl border border-neutral-200 bg-[#fafafa] px-4 py-3 text-sm outline-none focus:border-neutral-950"
                   />
                 </label>
 
@@ -326,7 +377,7 @@ export function FeedbackWidget({ submitterName }: { submitterName: string | null
                 <button
                   type="submit"
                   disabled={pending}
-                  className="mt-5 h-12 w-full rounded-full bg-[#0b4d2c] text-[11px] font-bold tracking-[0.16em] text-white uppercase disabled:opacity-60"
+                  className="mt-5 h-12 w-full rounded-full bg-neutral-950 text-[11px] font-bold tracking-[0.16em] text-white uppercase disabled:opacity-60"
                 >
                   {pending ? feedbackCopy.sending : feedbackCopy.submit}
                 </button>

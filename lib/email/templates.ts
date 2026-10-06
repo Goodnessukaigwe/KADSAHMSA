@@ -140,3 +140,42 @@ export function certificateEmail(input: {
     button: { label: "View my certificates", url: input.url },
   });
 }
+
+export function chatTeamAlertEmail(input: {
+  visitorName: string;
+  visitorEmail: string | null;
+  reason: string;
+  text: string;
+  url: string;
+}): RenderedEmail {
+  const who = input.visitorName || "A website visitor";
+  return build(`New message from ${who} (live chat)`, {
+    preview: `${who} ${input.reason}.`,
+    heading: "New chat message",
+    paragraphs: [
+      `${who}${input.visitorEmail ? ` (${input.visitorEmail})` : ""} ${input.reason}:`,
+      input.text.slice(0, 1500),
+    ],
+    button: { label: "Open the conversation", url: input.url },
+    note: "Reply in the inbox so the visitor sees it in their chat. We send at most one alert per conversation every 10 minutes.",
+  });
+}
+
+export function chatReplyEmail(input: {
+  name: string;
+  helper: string;
+  text: string;
+  url: string;
+}): RenderedEmail {
+  return build(`${input.helper} from KADSAMHSA replied`, {
+    preview: `${input.helper} replied to your message.`,
+    heading: "You have a reply",
+    paragraphs: [
+      `Hello ${firstName(input.name)},`,
+      `${input.helper} from the KADSAMHSA team replied:`,
+      input.text.slice(0, 1500),
+    ],
+    button: { label: "Continue the conversation", url: input.url },
+    note: "Please reply in the chat so the whole team can see it.",
+  });
+}
