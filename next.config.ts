@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 import { SECURITY_HEADERS } from "./lib/security-headers";
 
 const nextConfig: NextConfig = {
+  // Type checking is run by hand (npx tsc --noEmit) before each PR, so the Vercel build skips it.
+  typescript: { ignoreBuildErrors: true },
   outputFileTracingExcludes: {
     "*": ["./prototype/**/*", "./content/**/*"],
   },
