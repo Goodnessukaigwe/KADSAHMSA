@@ -232,21 +232,27 @@ export function LessonReader({
 
         {lesson.isFirstPageOfModule && moduleTitle ? (
           <header className="relative isolate overflow-hidden bg-[var(--deep)] px-6 py-10 text-white sm:px-10 sm:py-14">
-            <CourseCover slug={courseSlug} title={moduleTitle} className="-z-10 bg-transparent opacity-20 mix-blend-luminosity" />
             <span aria-hidden="true" className="absolute -top-24 -right-20 -z-10 size-72 rounded-full bg-white/[0.06]" />
             <span aria-hidden="true" className="absolute -bottom-32 left-1/3 -z-10 size-72 rounded-full bg-white/[0.04]" />
-            <p className="text-[11px] font-bold tracking-[0.22em] text-[#f2c14e] uppercase">
-              KADSAMHSA Learning Management System
-            </p>
-            <p className="mt-8 text-sm font-bold tracking-[0.2em] text-[#f2c14e] uppercase">
-              Module {lesson.moduleIndex}
-            </p>
-            <h2 className="mt-2 max-w-2xl text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
-              {moduleTitle}
-            </h2>
-            <p className="mt-4 text-sm text-white/70">
-              {courseTitle ? `${courseTitle} · ` : ""}pre-test, lessons, knowledge checks and a graded quiz
-            </p>
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div className="min-w-0 md:max-w-[58%]">
+                <p className="text-[11px] font-bold tracking-[0.22em] text-[#f2c14e] uppercase">
+                  KADSAMHSA Learning Management System
+                </p>
+                <p className="mt-8 text-sm font-bold tracking-[0.2em] text-[#f2c14e] uppercase">
+                  Module {lesson.moduleIndex}
+                </p>
+                <h2 className="mt-2 text-3xl leading-tight font-bold tracking-tight sm:text-4xl">
+                  {moduleTitle}
+                </h2>
+                <p className="mt-4 text-sm text-white/70">
+                  {courseTitle ? `${courseTitle} · ` : ""}pre-test, lessons, knowledge checks and a graded quiz
+                </p>
+              </div>
+              <div className="relative hidden aspect-[8/5] w-60 shrink-0 overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/20 md:block lg:w-72">
+                <CourseCover slug={courseSlug} title={moduleTitle} />
+              </div>
+            </div>
           </header>
         ) : null}
 
