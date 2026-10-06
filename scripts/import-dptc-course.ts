@@ -129,23 +129,28 @@ type GeneratedCourse = {
   finalQuestions: GeneratedQuestion[];
 };
 
-const COURSE_SLUG: string = "dptc-course";
-if (COURSE_SLUG === "dptc") {
-  // Guard against ever accidentally reintroducing the landmine slug.
-  throw new Error("Refusing to use slug 'dptc' -- see plan doc for why.");
-}
+// Optional first CLI argument: path to another generated manifest (e.g. the
+// MhGAP Basic course, `npm run import:mhgap`). Defaults to the DPTC manifest.
+const MANIFEST_PATH = resolve(
+  REPO_ROOT,
+  process.argv[2] ?? "scripts/dptc/dptc-course.generated.json"
+);
+let COURSE_SLUG = "dptc-course";
 
 const SUPER_ADMIN_EMAIL = "goodnessukaigwe2020@gmail.com";
 const SUPER_ADMIN_PASSWORD = "12345678";
 
 function loadGeneratedCourse(): GeneratedCourse {
-  const path = resolve(REPO_ROOT, "scripts/dptc/dptc-course.generated.json");
-  if (!existsSync(path)) {
-    throw new Error(
-      `Missing ${path} -- run the extractor first: scripts/dptc/.venv/bin/python3 scripts/dptc/extract.py`
-    );
+  if (!existsSync(MANIFEST_PATH)) {
+    throw new Error(`Missing ${MANIFEST_PATH} -- run the matching extractor under scripts/ first.`);
   }
-  return JSON.parse(readFileSync(path, "utf8")) as GeneratedCourse;
+  const generated = JSON.parse(readFileSync(MANIFEST_PATH, "utf8")) as GeneratedCourse;
+  COURSE_SLUG = generated.course.slug;
+  if (COURSE_SLUG === "dptc") {
+    // Guard against ever accidentally reintroducing the landmine slug.
+    throw new Error("Refusing to use slug 'dptc' -- see plan doc for why.");
+  }
+  return generated;
 }
 
 // ---------------------------------------------------------------------------
@@ -372,7 +377,7 @@ async function upsertModuleQuizzes(
 
   for (const module of modules) {
     const moduleId = moduleIdByPosition.get(module.position);
-    if (!moduleId) continue;
+    if (!moduleId || module.quizQuestions.length === 0) continue;
     const slug = `module-${module.position}`;
     const existing = quizBySlug.get(slug);
     let quizId: string;
@@ -419,6 +424,7 @@ async function upsertFinalQuiz(
   courseId: string,
   finalQuestions: GeneratedQuestion[]
 ): Promise<{ questionCount: number }> {
+  if (finalQuestions.length === 0) return { questionCount: 0 };
   const { data: existing, error } = await supabase
     .from("quizzes")
     .select("id")
