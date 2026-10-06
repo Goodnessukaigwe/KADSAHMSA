@@ -430,7 +430,7 @@ const extraLessons: Record<string, Omit<LessonContent, "slug" | "kicker" | "read
       {
         id: "path",
         title: "How the 13 modules fit",
-        body: "Modules move from the national picture, through biology and stigma, into supply, demand and harm reduction, screening, treatment, families, special populations, rights, law enforcement, and advocacy. Each module has a short quiz. The certificate assessment needs 70%.",
+        body: "Modules move from the national picture, through biology and stigma, into supply, demand and harm reduction, screening, treatment, families, special populations, rights, law enforcement, and advocacy. Each module has a short quiz. The certificate assessment needs 80%.",
       },
       {
         id: "how",

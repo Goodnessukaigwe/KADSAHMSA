@@ -51,7 +51,7 @@ export const plans = {
     },
     {
       title: "Complete feedback delivery",
-      body: "Module quizzes and a final exam with a 70% pass mark, retries, and clear scores.",
+      body: "Module quizzes and a final exam with an 80% pass mark, retries, and clear scores.",
     },
     {
       title: "Get your certificate",
@@ -107,7 +107,7 @@ export const faqs = [
   {
     question: "Will I get a certificate?",
     answer:
-      "Complete the required modules and pass the final assessment (default 70%) to receive a PDF certificate with a public verification ID.",
+      "Complete the required modules and pass the final assessment (80% pass mark) to receive a PDF certificate with a public verification ID.",
   },
   {
     question: "Can my organisation enrol staff in bulk?",

@@ -4,7 +4,7 @@
  * Implemented from Phase 2 onward.
  */
 
-export const DEFAULT_PASS_MARK = 70;
+export const DEFAULT_PASS_MARK = 80;
 export const DEFAULT_MAX_ATTEMPTS = 3;
 
 export const QUIZ_SLUGS = ["module-1", "final"] as const;

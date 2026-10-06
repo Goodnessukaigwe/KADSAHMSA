@@ -84,7 +84,7 @@ export const aboutPage = {
     {
       question: "Will I get a certificate?",
       answer:
-        "Yes. Complete required modules and pass the final assessment (default 70%) to receive a PDF certificate with a public verification ID.",
+        "Yes. Complete required modules and pass the final assessment (80% pass mark) to receive a PDF certificate with a public verification ID.",
     },
     {
       question: "Can my organization enroll multiple staff?",

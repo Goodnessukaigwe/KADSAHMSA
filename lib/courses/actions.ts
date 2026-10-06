@@ -16,6 +16,7 @@ import {
   type LessonStatus,
   clampQuizTimeLimitSeconds,
 } from "@/lib/courses/types";
+import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { requireStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -440,7 +441,7 @@ async function replaceFinalQuiz(
         course_id: courseId,
         slug: "final",
         kind: "final",
-        pass_mark_percent: 70,
+        pass_mark_percent: DEFAULT_PASS_MARK,
         max_attempts: 3,
         time_limit_seconds: seconds,
       })
@@ -541,7 +542,7 @@ async function replaceModuleQuizzes(courseId: string, modules: BuilderModule[]) 
           slug,
           kind: "module",
           module_id: moduleRow.id,
-          pass_mark_percent: 70,
+          pass_mark_percent: DEFAULT_PASS_MARK,
           max_attempts: 3,
           time_limit_seconds: seconds,
         })

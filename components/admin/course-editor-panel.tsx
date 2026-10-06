@@ -1244,7 +1244,7 @@ export function CourseEditorPanel({
         {editingModule && !lockedQuiz && !loading ? (
           <FinalQuizEditor
             heading="Module quiz"
-            description="Optional. Leave empty if this module has no quiz — Next on the last lesson goes to the next module. Pass mark 70%, three attempts."
+            description="Optional. Leave empty if this module has no quiz — Next on the last lesson goes to the next module. Pass mark 80%, three attempts."
             emptyHint="No questions yet. Without a module quiz, Next on the last lesson opens the next module."
             questions={editingModule.quizQuestions ?? []}
             onChange={(quizQuestions) => updateModule({ ...editingModule, quizQuestions })}

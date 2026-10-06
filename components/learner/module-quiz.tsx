@@ -437,13 +437,13 @@ function QuizResultModal({
               : isDptc && quizSlug === "module-1"
                 ? "You passed Module 1"
                 : "You passed this quiz"
-            : "Below the 70% pass mark"}
+            : "Below the 80% pass mark"}
         </h2>
         <p className="mt-3 text-center text-sm leading-relaxed text-neutral-500">
           {passed && isFinal && verificationId
             ? `Your certificate ID is ${verificationId}. Download it from Certificates, or check it on the public verify page.`
             : passed && isFinal
-              ? "You reached 70%. If every live lesson is complete, your certificate is on the Certificates page."
+              ? "You reached 80%. If every live lesson is complete, your certificate is on the Certificates page."
               : passed
                 ? isDptc
                   ? "Continue the remaining DPTC modules. The certificate is issued only after all 13 modules and a pass on the final assessment."

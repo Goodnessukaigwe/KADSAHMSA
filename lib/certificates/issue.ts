@@ -102,7 +102,7 @@ export async function issueCertificateIfEligible(
     .limit(1)
     .maybeSingle();
   if (!passedFinal) {
-    return { ok: false, error: "Pass the final assessment at 70% or above." };
+    return { ok: false, error: "Pass the final assessment at 80% or above." };
   }
   const storedScore = Math.max(scorePercent, passedFinal.score_percent ?? scorePercent);
 
