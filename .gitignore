@@ -49,3 +49,8 @@ Thumbs.db
 # Supabase CLI
 supabase/.temp/
 supabase/.branches/
+
+# Never commit credentials
+Database_Password*
+*_Password_*
+*.password.md
