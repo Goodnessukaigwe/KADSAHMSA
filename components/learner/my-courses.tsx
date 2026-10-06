@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
@@ -22,7 +22,6 @@ export function MyCourses({
   snapshot,
   certificateCount = 0,
   catalogue = [],
-  requestedSlugs = [],
 }: {
   snapshot: LearningSnapshot;
   certificateCount?: number;
@@ -33,11 +32,8 @@ export function MyCourses({
   const [tab, setTab] = useState<Tab>("all");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<string | null>(null);
-  const [asked, setAsked] = useState<string[]>(requestedSlugs);
+  const [asked, setAsked] = useState<string[]>([]);
 
-  useEffect(() => {
-    setAsked(requestedSlugs);
-  }, [requestedSlugs]);
 
   const free = catalogue;
   const inProgress = snapshot.inProgress;
@@ -77,16 +73,13 @@ export function MyCourses({
     <div className="pb-12">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">My courses</h1>
       <p className="mt-2 text-sm text-neutral-400">
-        Courses you are enrolled in, plus published courses you can request.
+        Courses you are enrolled in, plus free courses you can join.
       </p>
 
       {error ? (
         <p className="mt-4 text-sm text-red-600" role="alert">
           {error}
         </p>
-      ) : null}
-      {asked.length > 0 ? (
-        <p className="mt-4 text-sm text-neutral-500">{dashboardCopy.requestHint}</p>
       ) : null}
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -354,7 +347,7 @@ function CatalogueGrid({
               onClick={() => onEnroll(course.slug)}
             >
               {pending === course.slug
-                ? "Requesting…"
+                ? dashboardCopy.enrolling
                 : requested.includes(course.slug)
                   ? dashboardCopy.requested
                   : dashboardCopy.enroll}

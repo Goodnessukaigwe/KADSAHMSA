@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
 import { emptyProgress } from "@/lib/learning/progress";
 import { isPublishedCourseAvailable } from "@/lib/courses/queries";
 import { getCourseIdBySlug, isEnrolledIn } from "@/lib/learning/queries";
@@ -10,17 +11,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
-const APPLY_REQUESTS = "Apply supabase/apply-enrol-requests.sql in the dashboard, then try again.";
-
 function fail(error: string): ActionResult {
   return { ok: false, error };
-}
-
-function isMissingRequests(message: string | undefined) {
-  return Boolean(
-    message &&
-      (message.includes("enrolment_requests") || message.includes("schema cache"))
-  );
 }
 
 function isMissingResume(message: string | undefined) {
@@ -72,27 +64,20 @@ async function requireExistingEnrolment(slug: string): Promise<ActionResult> {
   return { ok: true };
 }
 
+/**
+ * Enrol the signed-in learner on a published course straight away. Every course is free today,
+ * so there is no approval step; a paid course would go through `enrolment_requests` instead.
+ */
 export async function requestEnrolment(slug: string): Promise<ActionResult> {
   const user = await requireUser();
   const staff = await isStaffUser();
   const visible = staff ? true : await isPublishedCourseAvailable(slug);
   if (!visible) return fail("That course is not available yet.");
 
-  const { courseId, error } = await resolveCourseId(slug);
-  if (!courseId) return fail(error ?? "That course is not available yet.");
-
   if (await isEnrolledIn(slug)) return { ok: true };
 
-  const supabase = await createClient();
-  const { error: requestError } = await supabase.from("enrolment_requests").insert({
-    user_id: user.id,
-    course_id: courseId,
-  });
-
-  if (requestError && requestError.code !== "23505") {
-    if (isMissingRequests(requestError.message)) return fail(APPLY_REQUESTS);
-    return fail(requestError.message || "Could not request enrolment.");
-  }
+  const result = await enrolLearnerWithAdmin(user.id, slug);
+  if (!result.ok) return fail(result.error);
 
   revalidateLearning(slug);
   return { ok: true };
