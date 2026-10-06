@@ -214,7 +214,7 @@ def main() -> None:
                 "respect. Each module has an ungraded pre-test, short lessons and a graded "
                 "post-test (pass mark 80%)."
             ),
-            "durationLabel": f"~2 hrs · {len(modules)} modules",
+            "durationLabel": f"{len(modules)} modules · 45–60 min each",
         },
         "modules": modules,
         "finalQuestions": [],
