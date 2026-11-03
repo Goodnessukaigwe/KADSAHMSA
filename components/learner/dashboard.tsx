@@ -9,7 +9,12 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { OnboardingModal } from "@/components/learner/onboarding-modal";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { dashboardCopy, returningGreeting } from "@/lib/content/dashboard";
+import {
+  dashboardCopy,
+  enrolButtonLabel,
+  enrollingButtonLabel,
+  returningGreeting,
+} from "@/lib/content/dashboard";
 import { ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
@@ -129,10 +134,10 @@ function NewLearnerHome({
                 onClick={() => enroll(featured.slug)}
               >
                 {pending === featured.slug
-                  ? dashboardCopy.enrolling
+                  ? enrollingButtonLabel(featured.priceKobo)
                   : asked.includes(featured.slug)
                     ? dashboardCopy.requested
-                    : dashboardCopy.enroll}
+                    : enrolButtonLabel(featured.priceKobo)}
               </SplitCta>
               <Link
                 href={`/courses/${featured.slug}`}
@@ -362,12 +367,12 @@ function ExploreSection({
                   {pending === course.slug
                     ? enrolled.includes(course.slug)
                       ? "Opening…"
-                      : dashboardCopy.enrolling
+                      : enrollingButtonLabel(course.priceKobo)
                     : enrolled.includes(course.slug)
                       ? dashboardCopy.continue
                       : requested.includes(course.slug)
                         ? dashboardCopy.requested
-                        : dashboardCopy.enroll}
+                        : enrolButtonLabel(course.priceKobo)}
                 </SplitCta>
                 <Link
                   href={

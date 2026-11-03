@@ -11,7 +11,7 @@ import { ProgressTrack } from "@/components/learner/simulated-video";
 import { TabButton } from "@/components/ui/tab-button";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { dashboardCopy } from "@/lib/content/dashboard";
+import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { feeBadge } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
@@ -349,10 +349,10 @@ function CatalogueGrid({
               onClick={() => onEnroll(course.slug)}
             >
               {pending === course.slug
-                ? dashboardCopy.enrolling
+                ? enrollingButtonLabel(course.priceKobo)
                 : requested.includes(course.slug)
                   ? dashboardCopy.requested
-                  : dashboardCopy.enroll}
+                  : enrolButtonLabel(course.priceKobo)}
             </SplitCta>
             <Link
               href={`/courses/${course.slug}`}
