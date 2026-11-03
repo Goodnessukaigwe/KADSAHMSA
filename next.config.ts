@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
       },
       middlewareClientMaxBodySize: 85 * 1024 * 1024,
     },
+  // The learner area moved from /my to /dashboard. Old links, emails and in-flight Paystack
+  // returns keep working (the query string is carried over).
+  async redirects() {
+    return [
+      { source: "/my", destination: "/dashboard", permanent: true },
+      { source: "/my/:path*", destination: "/dashboard/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

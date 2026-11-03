@@ -15,7 +15,7 @@ export default async function PaymentCallbackPage({
   const user = await requireUser();
   const { reference, trxref } = await searchParams;
   const ref = (reference ?? trxref ?? "").trim();
-  if (!ref) redirect("/my/payments");
+  if (!ref) redirect("/dashboard/payments");
 
   // A learner can only confirm their own payment (row-level security hides others).
   const supabase = await createClient();
@@ -25,7 +25,7 @@ export default async function PaymentCallbackPage({
     .eq("reference", ref)
     .eq("user_id", user.id)
     .maybeSingle();
-  if (!own) redirect("/my/payments");
+  if (!own) redirect("/dashboard/payments");
 
   const result = await fulfilPayment(ref);
   if (result.ok) redirect(`/learn/${result.courseSlug}`);
@@ -44,7 +44,7 @@ export default async function PaymentCallbackPage({
             : "You have not been charged for an incomplete payment."}
         </p>
         <Link
-          href="/my/payments"
+          href="/dashboard/payments"
           className="mt-6 inline-flex h-11 items-center rounded-full bg-neutral-950 px-6 text-sm font-semibold text-white"
         >
           View my payments

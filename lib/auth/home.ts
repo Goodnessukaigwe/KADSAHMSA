@@ -10,7 +10,7 @@ export function homeFromRoles(roles: readonly string[]): string {
   if (roles.some((role) => role === "org_admin")) {
     return "/org";
   }
-  return "/my";
+  return "/dashboard";
 }
 
 export async function homeAfterSignIn(
@@ -25,6 +25,6 @@ export async function homeAfterSignIn(
 
     return homeFromRoles((data ?? []).map((row) => row.role_id));
   } catch {
-    return "/my";
+    return "/dashboard";
   }
 }

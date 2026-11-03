@@ -42,8 +42,8 @@ function progressWithoutResume(payload: {
 }
 
 function revalidateLearning(slug: string) {
-  revalidatePath("/my");
-  revalidatePath("/my/courses");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/courses");
   revalidatePath(`/learn/${slug}`);
   revalidatePath(`/learn/${slug}/play`);
   revalidatePath(`/courses/${slug}`);

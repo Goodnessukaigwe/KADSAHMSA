@@ -87,7 +87,7 @@ export async function requireRole(...needed: Role[]): Promise<{
   const user = await requireUser();
   const roles = await getUserRoles(user.id);
   if (!needed.some((role) => hasRole(roles, role))) {
-    redirect("/my");
+    redirect("/dashboard");
   }
   return { user, roles };
 }
@@ -108,7 +108,7 @@ export async function requireOrgAdmin(organisationId: string): Promise<{
   const user = await requireUser();
   const roles = await getUserRoles(user.id);
   if (!/^[0-9a-f-]{36}$/i.test(organisationId)) {
-    redirect("/my");
+    redirect("/dashboard");
   }
 
   if (isStaff(roles)) {
@@ -116,7 +116,7 @@ export async function requireOrgAdmin(organisationId: string): Promise<{
   }
 
   if (!hasRole(roles, "org_admin")) {
-    redirect("/my");
+    redirect("/dashboard");
   }
 
   const supabase = await createClient();
@@ -128,7 +128,7 @@ export async function requireOrgAdmin(organisationId: string): Promise<{
     .maybeSingle();
 
   if (membership?.role !== "admin") {
-    redirect("/my");
+    redirect("/dashboard");
   }
 
   return { user, roles, organisationId };

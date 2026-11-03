@@ -24,7 +24,7 @@ export function CertificatesEmpty() {
           certificate.
         </p>
         <div className="mt-8">
-          <SplitCta href="/my/courses" size="sm">
+          <SplitCta href="/dashboard/courses" size="sm">
             Go to My courses
           </SplitCta>
         </div>

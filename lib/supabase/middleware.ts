@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { applySecurityHeaders } from "@/lib/security-headers";
 
 const PROTECTED_PREFIXES = [
-  "/my",
+  "/dashboard",
   "/learn",
   "/certificates",
   "/admin",
@@ -30,7 +30,7 @@ function safeNextPath(pathname: string, search: string) {
   if (next.startsWith("/") && !next.startsWith("//")) {
     return next;
   }
-  return "/my";
+  return "/dashboard";
 }
 
 function secured(response: NextResponse) {
@@ -96,7 +96,7 @@ export async function updateSession(request: NextRequest) {
       ? "/admin"
       : roles.some((role) => role === "org_admin")
         ? "/org"
-        : "/my";
+        : "/dashboard";
     home.search = "";
     return secured(NextResponse.redirect(home));
   }

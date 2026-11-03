@@ -34,7 +34,7 @@ const RESEND_COOLDOWN_SECONDS = 60;
 const STAFF_ROLES = ["super_admin", "content_admin", "org_admin"];
 
 function confirmLink(origin: string, tokenHash: string, type: "signup" | "magiclink" | "recovery") {
-  const next = type === "recovery" ? "/reset-password" : "/my";
+  const next = type === "recovery" ? "/reset-password" : "/dashboard";
   return `${origin}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${type}&next=${encodeURIComponent(next)}`;
 }
 

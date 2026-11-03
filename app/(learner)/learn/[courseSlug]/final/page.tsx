@@ -77,7 +77,7 @@ export default async function FinalQuizPage({
         </div>
         <p className="mt-6 text-sm text-neutral-400">
           Already finished the lessons on another device?{" "}
-          <Link href="/my/courses" className="font-semibold text-neutral-700 underline">
+          <Link href="/dashboard/courses" className="font-semibold text-neutral-700 underline">
             Check My courses
           </Link>
           .

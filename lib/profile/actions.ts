@@ -26,7 +26,7 @@ type PreparedAvatarUpload =
   | { ok: false; error: string };
 
 function revalidateProfileSurfaces() {
-  revalidatePath("/my", "layout");
+  revalidatePath("/dashboard", "layout");
   revalidatePath("/admin", "layout");
   revalidatePath("/org", "layout");
 }

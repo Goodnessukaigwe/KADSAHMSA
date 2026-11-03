@@ -67,7 +67,7 @@ export async function startCheckoutFor(
       email: user.email,
       amountKobo: terms.priceKobo,
       reference,
-      callbackUrl: `${siteUrl()}/my/payments/callback`,
+      callbackUrl: `${siteUrl()}/dashboard/payments/callback`,
       customFields: [
         { display_name: "Project", variable_name: "project", value: "KADSAMHSA LMS" },
         { display_name: "Course", variable_name: "course", value: terms.title },
@@ -143,7 +143,7 @@ export async function fulfilPayment(reference: string): Promise<FulfilResult> {
   if (!enrolled.ok) {
     return { ok: false, error: enrolled.error };
   }
-  revalidatePath("/my/payments");
+  revalidatePath("/dashboard/payments");
   return { ok: true, courseSlug: course.slug };
 }
 
