@@ -6,7 +6,9 @@ import QRCode from "qrcode";
 
 import { siteUrl } from "@/lib/email/send";
 import { LOGO_ASPECT, LOGO_PNG_BASE64 } from "@/lib/certificates/logo";
+import { KDSG_LOGO_ASPECT, KDSG_LOGO_PNG_BASE64 } from "@/lib/certificates/kdsg-logo";
 import { UNODC_LOGO_ASPECT, UNODC_LOGO_PNG_BASE64 } from "@/lib/certificates/unodc-logo";
+import { WHO_LOGO_ASPECT, WHO_LOGO_PNG_BASE64 } from "@/lib/certificates/who-logo";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 
 const AGENCY = "Kaduna State Substance Abuse and Mental Health Services Agency";
@@ -79,6 +81,8 @@ export async function renderCertificatePdf(input: {
   courseTitle: string;
   issuedAt: Date;
   verificationId: string;
+  /** Picks the partner logo: mhGAP courses carry WHO, every other course UNODC. */
+  courseSlug?: string;
 }): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const page = doc.addPage([842, 595]);
@@ -87,7 +91,12 @@ export async function renderCertificatePdf(input: {
   const sansBold = await doc.embedFont(StandardFonts.HelveticaBold);
   const serifBoldItalic = await doc.embedFont(StandardFonts.TimesRomanBoldItalic);
   const logo = await doc.embedPng(Buffer.from(LOGO_PNG_BASE64, "base64"));
-  const unodcLogo = await doc.embedPng(Buffer.from(UNODC_LOGO_PNG_BASE64, "base64"));
+  const partnerIsWho = /mhgap/i.test(input.courseSlug ?? "");
+  const partner = await doc.embedPng(
+    Buffer.from(partnerIsWho ? WHO_LOGO_PNG_BASE64 : UNODC_LOGO_PNG_BASE64, "base64")
+  );
+  const partnerAspect = partnerIsWho ? WHO_LOGO_ASPECT : UNODC_LOGO_ASPECT;
+  const kdsg = await doc.embedPng(Buffer.from(KDSG_LOGO_PNG_BASE64, "base64"));
 
   // Frame, after the printed template: a chain of rings between two fine rules.
   page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(1, 1, 1) });
@@ -107,20 +116,28 @@ export async function renderCertificatePdf(input: {
   page.drawRectangle({ x: 46, y: 46, width: width - 92, height: height - 92, borderColor: FRAME, borderWidth: 1.4 });
   page.drawRectangle({ x: 50, y: 50, width: width - 100, height: height - 100, borderColor: FRAME, borderWidth: 0.5 });
 
-  // Header: UNODC top left, KADSAMHSA top right.
-  const unodcWidth = 190;
-  const unodcHeight = unodcWidth * UNODC_LOGO_ASPECT;
+  // Header: partner (UNODC or WHO) top left; Kaduna State Government and KADSAMHSA top right.
+  const partnerWidth = 190;
+  const partnerHeight = partnerWidth * partnerAspect;
   const logoWidth = 74;
   const logoHeight = logoWidth * LOGO_ASPECT;
+  const kdsgSize = 62;
   const top = height - 76;
-  page.drawImage(unodcLogo, {
+  page.drawImage(partner, {
     x: 84,
-    y: top - logoHeight / 2 - unodcHeight / 2,
-    width: unodcWidth,
-    height: unodcHeight,
+    y: top - logoHeight / 2 - partnerHeight / 2,
+    width: partnerWidth,
+    height: partnerHeight,
   });
-  page.drawImage(logo, { x: width - 84 - logoWidth, y: top - logoHeight, width: logoWidth, height: logoHeight });
-  centered(page, AGENCY.toUpperCase(), height - 148, sansBold, 8.5, SLATE, 0.5);
+  const logoX = width - 84 - logoWidth;
+  page.drawImage(logo, { x: logoX, y: top - logoHeight, width: logoWidth, height: logoHeight });
+  page.drawImage(kdsg, {
+    x: logoX - 18 - kdsgSize,
+    y: top - logoHeight / 2 - (kdsgSize * KDSG_LOGO_ASPECT) / 2,
+    width: kdsgSize,
+    height: kdsgSize * KDSG_LOGO_ASPECT,
+  });
+  centered(page, AGENCY.toUpperCase(), height - 152, sansBold, 8.5, SLATE, 0.5);
 
   // Title.
   centered(page, "CERTIFICATE OF COMPLETION", height - 192, sansBold, 31, SLATE, 1.6);
