@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { listCourseFeedback } from "@/lib/admin/course-feedback";
 import { listPayments } from "@/lib/admin/payments";
 import { listUserEmails } from "@/lib/auth/admin-users";
 import { getAuthUser, getUserRoles, isStaff } from "@/lib/permissions";
@@ -18,7 +19,7 @@ function csv(header: string[], rows: unknown[][]) {
   return `﻿${[header, ...rows].map((row) => row.map(cell).join(",")).join("\r\n")}\r\n`;
 }
 
-const KINDS = ["learners", "quizzes", "certificates", "payments"] as const;
+const KINDS = ["learners", "quizzes", "certificates", "payments", "course_feedback"] as const;
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -28,6 +29,28 @@ export async function GET(request: NextRequest) {
   const kind = request.nextUrl.searchParams.get("kind");
   if (!KINDS.includes(kind as (typeof KINDS)[number])) {
     return NextResponse.json({ error: "unknown export" }, { status: 400 });
+  }
+
+  if (kind === "course_feedback") {
+    const { rows } = await listCourseFeedback();
+    const body = csv(
+      [
+        "submitted_at", "learner", "email", "course", "overall", "ease_of_use", "content_quality",
+        "mobile_experience", "recommend_0_10", "worked_well", "improve", "had_problem", "problem",
+      ],
+      rows.map((row) => [
+        row.createdAt, row.learnerName, row.learnerEmail, row.course, row.overall, row.easeOfUse,
+        row.contentQuality, row.mobileExperience, row.recommend, row.enjoyed, row.improve,
+        row.hadProblems ? "yes" : "no", row.problems,
+      ])
+    );
+    return new NextResponse(body, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="kadsamhsa-learner-survey-${new Date().toISOString().slice(0, 10)}.csv"`,
+        "Cache-Control": "no-store",
+      },
+    });
   }
 
   if (kind === "payments") {

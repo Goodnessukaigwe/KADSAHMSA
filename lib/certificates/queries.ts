@@ -5,6 +5,7 @@ import { finalQuizMeta, quizMeta } from "@/lib/content/dptc";
 import { moduleCountFor } from "@/lib/learning/progress";
 import { getAuthUser, requireStaff, requireUser } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getSurveyStatus } from "@/lib/feedback/survey";
 import { createClient } from "@/lib/supabase/server";
 
 export type LearnerCertificate = {
@@ -13,6 +14,8 @@ export type LearnerCertificate = {
   issued: string;
   verificationId: string;
   status: "valid" | "revoked";
+  /** True when the learner still has to complete the feedback survey before downloading. */
+  needsFeedback?: boolean;
 };
 
 export type StaffCertificate = LearnerCertificate & {
@@ -46,12 +49,14 @@ export async function listMyCertificates(): Promise<LearnerCertificate[]> {
     .in("id", courseIds);
   const titleById = new Map((courses ?? []).map((course) => [course.id, course.title]));
 
+  const survey = await getSurveyStatus(user.id, courseIds);
   return rows.map((row) => ({
     id: row.id,
     title: titleById.get(row.course_id) ?? "Certificate",
     issued: formatIssued(row.issued_at),
     verificationId: row.verification_id,
     status: row.status,
+    needsFeedback: survey.ready && !survey.done.has(row.course_id),
   }));
 }
 
@@ -382,7 +387,7 @@ export async function requireOwnCertificate(certificateId: string) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("certificates")
-    .select("id, user_id, storage_path, verification_id, status")
+    .select("id, user_id, course_id, storage_path, verification_id, status")
     .eq("id", certificateId)
     .maybeSingle();
   if (!data || data.user_id !== user.id) return null;

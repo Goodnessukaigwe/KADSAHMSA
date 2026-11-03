@@ -306,6 +306,50 @@ export type Database = {
         };
         Relationships: [];
       };
+      course_feedback: {
+        Row: {
+          id: string;
+          user_id: string;
+          course_id: string;
+          overall: number;
+          ease_of_use: number;
+          content_quality: number;
+          mobile_experience: number;
+          recommend: number;
+          enjoyed: string;
+          improve: string;
+          had_problems: boolean;
+          problems: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          course_id: string;
+          overall: number;
+          ease_of_use: number;
+          content_quality: number;
+          mobile_experience: number;
+          recommend: number;
+          enjoyed?: string;
+          improve?: string;
+          had_problems?: boolean;
+          problems?: string;
+          created_at?: string;
+        };
+        Update: {
+          overall?: number;
+          ease_of_use?: number;
+          content_quality?: number;
+          mobile_experience?: number;
+          recommend?: number;
+          enjoyed?: string;
+          improve?: string;
+          had_problems?: boolean;
+          problems?: string;
+        };
+        Relationships: [];
+      };
       enrolment_requests: {
         Row: {
           id: string;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  ClipboardList,
   Building2,
   FileSpreadsheet,
   GraduationCap,
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/admin/payments", label: "Payments", icon: Wallet },
   { href: "/admin/inbox", label: "Chat inbox", icon: Inbox },
   { href: "/admin/feedback", label: "Feedback", icon: MessageSquare },
+  { href: "/admin/course-feedback", label: "Learner survey", icon: ClipboardList },
 ] as const;
 
 export function AdminChrome({

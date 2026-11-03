@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Award } from "lucide-react";
 
 import { SplitCta } from "@/components/landing/split-cta";
+import { CertificateSurvey } from "@/components/learner/certificate-survey";
 import { getCertificateDownloadUrl } from "@/lib/certificates/actions";
 import type { LearnerCertificate } from "@/lib/certificates/queries";
 
 export function CertificatesList({ certs }: { certs: LearnerCertificate[] }) {
   const [error, setError] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [openSurvey, setOpenSurvey] = useState<string | null>(null);
+  const router = useRouter();
 
   async function download(cert: LearnerCertificate) {
     if (pendingId) return;
@@ -31,7 +35,7 @@ export function CertificatesList({ certs }: { certs: LearnerCertificate[] }) {
         Certificates
       </h1>
       <p className="mt-2 max-w-xl text-sm text-neutral-400">
-        Download the PDF and share the verification ID on the public verify page.
+        Share a quick feedback form for each course, then download the PDF and share the verification ID on the public verify page.
         A revoked certificate still downloads; verify will say it was revoked.
       </p>
 
@@ -43,10 +47,8 @@ export function CertificatesList({ certs }: { certs: LearnerCertificate[] }) {
 
       <div className="mt-8 space-y-3">
         {certs.map((cert) => (
-          <article
-            key={cert.id}
-            className="flex flex-col gap-4 rounded-[24px] bg-white p-5 sm:flex-row sm:items-center"
-          >
+          <article key={cert.id} className="rounded-[24px] bg-white p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-700">
               <Award className="size-5" />
             </span>
@@ -64,14 +66,34 @@ export function CertificatesList({ certs }: { certs: LearnerCertificate[] }) {
               >
                 Verify
               </Link>
-              <SplitCta
-                size="sm"
-                className="shrink-0"
-                onClick={() => void download(cert)}
-              >
-                {pendingId === cert.id ? "Preparing…" : "Download PDF"}
-              </SplitCta>
+              {cert.needsFeedback ? (
+                <SplitCta
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => setOpenSurvey(openSurvey === cert.id ? null : cert.id)}
+                >
+                  Share feedback to download
+                </SplitCta>
+              ) : (
+                <SplitCta
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => void download(cert)}
+                >
+                  {pendingId === cert.id ? "Preparing…" : "Download PDF"}
+                </SplitCta>
+              )}
             </div>
+          </div>
+          {cert.needsFeedback && openSurvey === cert.id ? (
+            <CertificateSurvey
+              certificateId={cert.id}
+              onDone={() => {
+                setOpenSurvey(null);
+                router.refresh();
+              }}
+            />
+          ) : null}
           </article>
         ))}
       </div>
