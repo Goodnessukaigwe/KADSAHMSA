@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, Clock, Mail } from "lucide-react";
 
+import type { UserFeedback } from "@/lib/admin/course-feedback";
 import { revokeCertificate } from "@/lib/certificates/actions";
 import type {
   StaffCertificate,
@@ -25,6 +26,7 @@ export function UserDetail({
   organisations = [],
   memberships = [],
   learnerRoles = ["learner"],
+  feedback = { surveys: [], modules: [] },
   viewerIsSuperAdmin = false,
 }: {
   learner: StaffLearnerRow;
@@ -34,6 +36,7 @@ export function UserDetail({
   organisations?: OrgOption[];
   memberships?: LearnerOrgMembership[];
   learnerRoles?: string[];
+  feedback?: UserFeedback;
   viewerIsSuperAdmin?: boolean;
 }) {
   const router = useRouter();
@@ -409,6 +412,52 @@ export function UserDetail({
               </li>
             ))}
           </ul>
+        )}
+      </section>
+
+      <section className="mt-8 rounded-[24px] bg-white p-5">
+        <h2 className="text-lg font-bold">Feedback from this learner</h2>
+        {feedback.surveys.length === 0 && feedback.modules.length === 0 ? (
+          <p className="mt-2 text-sm text-neutral-400">
+            No feedback yet. It appears here as they finish modules and complete the survey.
+          </p>
+        ) : (
+          <div className="mt-4 space-y-6">
+            {feedback.surveys.map((survey) => (
+              <div key={survey.course + survey.createdAt} className="rounded-2xl bg-neutral-50 p-4 text-sm">
+                <p className="font-semibold">{survey.course || "Course"} · end-of-course survey</p>
+                <p className="mt-1 text-neutral-500">
+                  Overall {survey.overall}/5 · Ease of use {survey.easeOfUse}/5 · Content{" "}
+                  {survey.contentQuality}/5 · Mobile {survey.mobileExperience}/5 · Recommend{" "}
+                  {survey.recommend}/10
+                </p>
+                {survey.enjoyed ? <p className="mt-2"><strong>Worked well:</strong> {survey.enjoyed}</p> : null}
+                {survey.improve ? <p className="mt-1"><strong>Improve:</strong> {survey.improve}</p> : null}
+                {survey.hadProblems ? (
+                  <p className="mt-1 text-red-700"><strong>Problem:</strong> {survey.problems || "(no details given)"}</p>
+                ) : null}
+              </div>
+            ))}
+            {feedback.modules.length > 0 ? (
+              <ul className="space-y-2 text-sm">
+                {feedback.modules.map((item) => (
+                  <li
+                    key={item.course + item.moduleIndex}
+                    className="flex flex-col gap-1 border-b border-neutral-100 pb-2 last:border-0 sm:flex-row sm:items-baseline sm:gap-3"
+                  >
+                    <span className="shrink-0 font-semibold">
+                      {item.course ? `${item.course} · ` : ""}Module {item.moduleIndex}
+                    </span>
+                    <span className="shrink-0 text-neutral-500">{item.rating}/5</span>
+                    <span className="min-w-0 flex-1 break-words">{item.comment || "nil"}</span>
+                    {item.pagePath ? (
+                      <span className="shrink-0 text-xs text-neutral-400">{item.pagePath}</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         )}
       </section>
 

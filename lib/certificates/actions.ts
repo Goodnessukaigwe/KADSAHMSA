@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { issueCertificateIfEligible } from "@/lib/certificates/issue";
 import { requireOwnCertificate } from "@/lib/certificates/queries";
+import { getMissingModuleFeedback } from "@/lib/feedback/module-feedback";
 import { getSurveyStatus } from "@/lib/feedback/survey";
 import { requireStaff, requireUser } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -32,7 +33,8 @@ export async function getCertificateDownloadUrl(
 
   // The feedback survey comes first (once the survey table exists).
   const survey = await getSurveyStatus(cert.user_id, [cert.course_id]);
-  if (survey.ready && !survey.done.has(cert.course_id)) {
+  const missing = await getMissingModuleFeedback(cert.user_id, [cert.course_id]);
+  if ((survey.ready && !survey.done.has(cert.course_id)) || missing.has(cert.course_id)) {
     return { ok: false, error: "Please share your feedback first. It takes about a minute." };
   }
 

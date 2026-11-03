@@ -12,6 +12,7 @@ import { CourseCover } from "@/components/courses/course-cover";
 import { InlineCheck } from "@/components/learner/lesson-check";
 import { LessonNotes } from "@/components/learner/lesson-notes";
 import { PlainBody } from "@/components/learner/lesson-prose";
+import { ModuleFeedbackModal } from "@/components/learner/module-feedback-modal";
 import { PlayerRail } from "@/components/learner/player-rail";
 import { hasLessonMarkup, sanitizeLessonHtml } from "@/lib/courses/rich-text";
 import { courseTheme, pageEyebrow } from "@/lib/courses/theme";
@@ -22,6 +23,7 @@ import {
   type LessonAssetSection,
   type PlayerPageView,
 } from "@/lib/courses/types";
+import { needsModuleFeedback } from "@/lib/feedback/module-feedback-actions";
 import { completeLesson, markModuleComplete } from "@/lib/learning/actions";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +58,7 @@ export function LessonReader({
 }) {
   const router = useRouter();
   const [navPending, setNavPending] = useState(false);
+  const [askFeedback, setAskFeedback] = useState(false);
   const [picked, setPicked] = useState<Record<number, number>>({});
   const [done, setDone] = useState(completed);
   const [saving, setSaving] = useState(false);
@@ -107,11 +110,17 @@ export function LessonReader({
   }, [answeredAll]);
 
 
-  function goNext() {
+  async function goNext() {
     if (navPending) return;
     setNavPending(true);
     if (lesson.completeOnNext) {
       void markModuleComplete(courseSlug, lesson.moduleIndex);
+      // The end of a module: ask for quick feedback first (skipped when already given).
+      if (await needsModuleFeedback(courseSlug, lesson.moduleIndex)) {
+        setNavPending(false);
+        setAskFeedback(true);
+        return;
+      }
     }
     if (lesson.nextHref) {
       router.push(lesson.nextHref);
@@ -327,6 +336,17 @@ export function LessonReader({
           <span className="shrink-0 font-bold tracking-[0.16em] text-[var(--accent)] uppercase">{footerTag}</span>
         </footer>
       </article>
+
+      {askFeedback ? (
+        <ModuleFeedbackModal
+          courseSlug={courseSlug}
+          moduleIndex={lesson.moduleIndex}
+          onDone={() => {
+            setAskFeedback(false);
+            if (lesson.nextHref) router.push(lesson.nextHref);
+          }}
+        />
+      ) : null}
 
       <PlayerRail
         toc={lesson.toc}

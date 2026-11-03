@@ -16,6 +16,8 @@ export type SurveyInput = {
   improve: string;
   hadProblems: boolean;
   problems: string;
+  /** Quick answers for modules finished without feedback. */
+  modules?: { index: number; rating: number; comment: string }[];
 };
 
 export type SurveyResult = { ok: true } | { ok: false; error: string };
@@ -64,6 +66,24 @@ export async function submitCourseSurvey(input: SurveyInput): Promise<SurveyResu
     { onConflict: "user_id,course_id" }
   );
   if (error) return { ok: false, error: "Could not save your feedback. Please try again." };
+
+  for (const item of input.modules ?? []) {
+    if (!Number.isInteger(item.index) || !stars(item.rating)) {
+      return { ok: false, error: "Please rate every module from 1 to 5 stars." };
+    }
+    const { error: moduleError } = await admin.from("module_feedback").upsert(
+      {
+        user_id: user.id,
+        course_id: cert.course_id,
+        module_index: item.index,
+        rating: item.rating,
+        comment: clip(item.comment).slice(0, 1000),
+        page_path: "certificate form",
+      },
+      { onConflict: "user_id,course_id,module_index" }
+    );
+    if (moduleError) return { ok: false, error: "Could not save your module feedback. Please try again." };
+  }
 
   revalidatePath("/certificates");
   revalidatePath("/admin/course-feedback");

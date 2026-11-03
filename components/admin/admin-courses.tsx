@@ -467,7 +467,7 @@ export function AdminCourses({
                     {column.label}
                   </th>
                 ))}
-                <th className="w-16 px-4 py-4" aria-label="Edit" />
+                <th className="w-28 px-4 py-4" aria-label="Edit and add learners" />
               </tr>
             </thead>
             <tbody>
@@ -682,13 +682,21 @@ function CourseRow({
         </td>
       ))}
       <td className="px-4 py-4">
-        <button
-          type="button"
-          onClick={onOpen}
-          className="text-[10px] font-bold uppercase hover:underline"
-        >
-          Edit
-        </button>
+        <div className="flex flex-col items-start gap-2 whitespace-nowrap">
+          <button
+            type="button"
+            onClick={onOpen}
+            className="text-[10px] font-bold uppercase hover:underline"
+          >
+            Edit
+          </button>
+          <a
+            href={`/admin/courses/${course.slug}/analytics#give-access`}
+            className="text-[10px] font-bold uppercase hover:underline"
+          >
+            Add learners
+          </a>
+        </div>
       </td>
     </tr>
   );

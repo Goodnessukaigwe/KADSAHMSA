@@ -47,9 +47,11 @@ const area =
 
 export function CertificateSurvey({
   certificateId,
+  missingModules = [],
   onDone,
 }: {
   certificateId: string;
+  missingModules?: number[];
   onDone: () => void;
 }) {
   const [overall, setOverall] = useState(0);
@@ -59,6 +61,8 @@ export function CertificateSurvey({
   const [recommend, setRecommend] = useState<number | null>(null);
   const [enjoyed, setEnjoyed] = useState("");
   const [improve, setImprove] = useState("");
+  const [moduleRatings, setModuleRatings] = useState<Record<number, number>>({});
+  const [moduleNotes, setModuleNotes] = useState<Record<number, string>>({});
   const [hadProblems, setHadProblems] = useState(false);
   const [problems, setProblems] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +72,10 @@ export function CertificateSurvey({
     event.preventDefault();
     if (!overall || !easeOfUse || !contentQuality || !mobileExperience || recommend === null) {
       setError("Please answer all the rating questions.");
+      return;
+    }
+    if (missingModules.some((index) => !moduleRatings[index])) {
+      setError("Please give each module a star rating. Type nil if you have nothing to add.");
       return;
     }
     setError(null);
@@ -83,6 +91,11 @@ export function CertificateSurvey({
       improve,
       hadProblems,
       problems,
+      modules: missingModules.map((index) => ({
+        index,
+        rating: moduleRatings[index],
+        comment: moduleNotes[index] ?? "",
+      })),
     });
     setPending(false);
     if (!result.ok) {
@@ -142,6 +155,35 @@ export function CertificateSurvey({
         What should we improve?
         <textarea rows={3} maxLength={2000} value={improve} onChange={(e) => setImprove(e.target.value)} className={area} />
       </label>
+
+      {missingModules.length > 0 ? (
+        <div className="space-y-4">
+          <div>
+            <h4 className="text-sm font-semibold">Quick feedback on each module</h4>
+            <p className="mt-1 text-xs text-neutral-500">
+              A star rating for each module, and a note if something confused you or did not work.
+              Type nil if you have nothing to add.
+            </p>
+          </div>
+          {missingModules.map((index) => (
+            <div key={index} className="rounded-xl bg-white p-4">
+              <Stars
+                label={`Module ${index}`}
+                value={moduleRatings[index] ?? 0}
+                onChange={(next) => setModuleRatings((current) => ({ ...current, [index]: next }))}
+              />
+              <input
+                type="text"
+                maxLength={1000}
+                value={moduleNotes[index] ?? ""}
+                onChange={(event) => setModuleNotes((current) => ({ ...current, [index]: event.target.value }))}
+                placeholder="Anything confusing or not working? (nil if none)"
+                className="mt-3 h-11 w-full rounded-xl border border-neutral-200 px-4 text-sm outline-none focus:border-neutral-950"
+              />
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div>
         <label className="flex items-center gap-3 text-sm font-semibold">

@@ -350,6 +350,34 @@ export type Database = {
         };
         Relationships: [];
       };
+      module_feedback: {
+        Row: {
+          id: string;
+          user_id: string;
+          course_id: string;
+          module_index: number;
+          rating: number;
+          comment: string;
+          page_path: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          course_id: string;
+          module_index: number;
+          rating: number;
+          comment?: string;
+          page_path?: string;
+          created_at?: string;
+        };
+        Update: {
+          rating?: number;
+          comment?: string;
+          page_path?: string;
+        };
+        Relationships: [];
+      };
       enrolment_requests: {
         Row: {
           id: string;

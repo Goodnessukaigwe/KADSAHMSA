@@ -88,6 +88,7 @@ export function CertificatesList({ certs }: { certs: LearnerCertificate[] }) {
           {cert.needsFeedback && openSurvey === cert.id ? (
             <CertificateSurvey
               certificateId={cert.id}
+              missingModules={cert.missingModules}
               onDone={() => {
                 setOpenSurvey(null);
                 router.refresh();
