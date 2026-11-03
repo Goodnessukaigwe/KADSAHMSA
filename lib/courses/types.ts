@@ -10,8 +10,6 @@ export type CatalogueCourse = {
   priceType: "free" | "paid";
   /** Price in kobo; 0 means no price is set. */
   priceKobo: number;
-  /** Free places still open (null: no limit). */
-  freeSeatsLeft: number | null;
   image: string;
   summary: string;
   durationLabel: string;

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { CourseAnalyticsView } from "@/components/admin/course-analytics";
 import { CoursePricing } from "@/components/admin/course-pricing";
+import { GrantAccess } from "@/components/admin/grant-access";
 import { getCourseAnalytics } from "@/lib/admin/analytics";
 import { getSeatTerms } from "@/lib/payments/checkout";
 import { paystackConfigured } from "@/lib/payments/paystack";
@@ -20,13 +21,14 @@ export default async function CourseAnalyticsPage({
     <>
       <CourseAnalyticsView analytics={analytics} />
       {terms ? (
-        <CoursePricing
-          slug={slug}
-          priceNaira={terms.priceKobo / 100}
-          freeSeatLimit={terms.freeSeatLimit}
-          freeSeatsLeft={terms.freeSeatsLeft}
-          paymentsReady={paystackConfigured()}
-        />
+        <>
+          <CoursePricing
+            slug={slug}
+            priceNaira={terms.priceKobo / 100}
+            paymentsReady={paystackConfigured()}
+          />
+          <GrantAccess slug={slug} />
+        </>
       ) : null}
     </>
   );

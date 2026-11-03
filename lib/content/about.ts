@@ -74,7 +74,7 @@ export const aboutPage = {
     {
       question: "How much does a course cost?",
       answer:
-        "The first 100 learners on each course enrol free. After that, a course costs ₦10,000, shown on the course page before you pay. Organisation seat packs are available on request.",
+        "A course costs ₦10,000, shown on the course page before you pay. Learners invited by KADSAMHSA are given access free of charge. Organisation seat packs are available on request.",
     },
     {
       question: "Do I need any experience to start?",

@@ -17,41 +17,22 @@ export type SeatTerms = {
   slug: string;
   title: string;
   priceKobo: number;
-  freeSeatLimit: number | null;
-  freeSeatsLeft: number | null;
 };
 
-/** How many free seats remain: the limit minus learners who enrolled without paying. */
+/** A course's price. Self-enrolment on a priced course goes through checkout. */
 export async function getSeatTerms(slug: string): Promise<SeatTerms | null> {
   const admin = createAdminClient();
   const { data: course } = await admin
     .from("courses")
-    .select("id, slug, title, price_kobo, free_seat_limit")
+    .select("id, slug, title, price_kobo")
     .eq("slug", slug)
     .maybeSingle();
   if (!course) return null;
-
-  const priceKobo = course.price_kobo ?? 0;
-  const limit = course.free_seat_limit ?? null;
-  let freeSeatsLeft: number | null = null;
-  if (limit !== null) {
-    const [{ count: seats }, { count: paid }] = await Promise.all([
-      admin.from("enrolments").select("id", { count: "exact", head: true }).eq("course_id", course.id),
-      admin
-        .from("payments")
-        .select("id", { count: "exact", head: true })
-        .eq("course_id", course.id)
-        .eq("status", "success"),
-    ]);
-    freeSeatsLeft = Math.max(0, limit - Math.max(0, (seats ?? 0) - (paid ?? 0)));
-  }
   return {
     courseId: course.id,
     slug: course.slug,
     title: course.title,
-    priceKobo,
-    freeSeatLimit: limit,
-    freeSeatsLeft,
+    priceKobo: course.price_kobo ?? 0,
   };
 }
 

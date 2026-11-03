@@ -12,9 +12,3 @@ export function formatNaira(kobo: number) {
 export function priceLabel(kobo: number) {
   return kobo > 0 ? formatNaira(kobo) : "Free";
 }
-
-/** "First 100 learners free · 37 places left", or null when it does not apply. */
-export function freePlacesNote(priceKobo: number, freeSeatsLeft: number | null) {
-  if (priceKobo <= 0 || freeSeatsLeft === null || freeSeatsLeft <= 0) return null;
-  return `${freeSeatsLeft} free ${freeSeatsLeft === 1 ? "place" : "places"} left`;
-}

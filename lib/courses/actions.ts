@@ -841,3 +841,39 @@ export async function staffUnenrolLearner(
   await requireStaff();
   return unenrolLearnerWithAdmin(userId, courseSlug);
 }
+
+export type GrantAccessResult =
+  | { ok: true; enrolled: number; noAccount: string[]; invalid: string[] }
+  | { ok: false; error: string };
+
+/** Staff only: enrol everyone on a pasted list of emails, free of charge. */
+export async function staffGrantAccessByEmails(
+  courseSlug: string,
+  emailsText: string
+): Promise<GrantAccessResult> {
+  await requireStaff();
+  const parts = [...new Set(emailsText.split(/[\s,;]+/).map((item) => item.trim().toLowerCase()).filter(Boolean))];
+  if (parts.length === 0) return { ok: false, error: "Paste at least one email address." };
+  if (parts.length > 500) return { ok: false, error: "Add up to 500 emails at a time." };
+
+  const admin = createAdminClient();
+  let enrolled = 0;
+  const noAccount: string[] = [];
+  const invalid: string[] = [];
+  for (const email of parts) {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      invalid.push(email);
+      continue;
+    }
+    const userId = await findUserIdByEmail(admin, email);
+    if (!userId) {
+      noAccount.push(email);
+      continue;
+    }
+    const result = await enrolLearnerWithAdmin(userId, courseSlug);
+    if (result.ok) enrolled += 1;
+    else invalid.push(email);
+  }
+  revalidatePath(`/admin/courses/${courseSlug}/analytics`);
+  return { ok: true, enrolled, noAccount, invalid };
+}
