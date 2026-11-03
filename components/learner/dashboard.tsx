@@ -15,7 +15,7 @@ import {
   enrollingButtonLabel,
   returningGreeting,
 } from "@/lib/content/dashboard";
-import { ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
+import { ADMIN_CHARGES, ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { firstNameOf, isOnboardingDone } from "@/lib/learner-session";
@@ -115,7 +115,7 @@ function NewLearnerHome({
           <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
             <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
             <p className="mt-2 text-sm text-white/70">
-              {featured.priceKobo > 0 ? "Administrative fee" : "Price"} {priceLabel(featured.priceKobo)}
+              Price {priceLabel(featured.priceKobo)}
             </p>
             {featured.priceKobo > 0 ? (
               <p className="mt-1 max-w-sm text-xs text-white/50">{ADMIN_FEE_NOTE}</p>
@@ -344,6 +344,9 @@ function ExploreSection({
               <p className="mt-1 text-sm text-neutral-400">
                 {course.lessons} {course.lessons === 1 ? "module" : "modules"}
               </p>
+              {course.priceKobo > 0 ? (
+                <p className="mt-1 text-xs font-semibold text-amber-800">{ADMIN_CHARGES}</p>
+              ) : null}
               <div className="mt-4 flex items-center gap-2">
                 <SplitCta
                   size="sm"

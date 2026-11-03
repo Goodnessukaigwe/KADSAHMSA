@@ -182,7 +182,7 @@ function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
                   <dl className="mt-5 grid grid-cols-3 divide-x divide-neutral-200 text-center">
                     <div className="px-1">
                       <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
-                        {course.priceKobo > 0 ? "Admin fee" : "Price"}
+                        Price
                       </dt>
                       <dd className="mt-1 text-sm font-semibold">{priceLabel(course.priceKobo)}</dd>
                     </div>
