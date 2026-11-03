@@ -87,7 +87,11 @@ export async function startCheckoutFor(
       amountKobo: terms.priceKobo,
       reference,
       callbackUrl: `${siteUrl()}/my/payments/callback`,
-      metadata: { course: terms.slug, user_id: user.id },
+      customFields: [
+        { display_name: "Project", variable_name: "project", value: "KADSAMHSA LMS" },
+        { display_name: "Course", variable_name: "course", value: terms.title },
+        { display_name: "Learner ID", variable_name: "learner_id", value: user.id },
+      ],
     });
     return { ok: true, url: session.authorization_url };
   } catch (cause) {
@@ -148,6 +152,8 @@ export async function fulfilPayment(reference: string): Promise<FulfilResult> {
         status: "success",
         paystack_transaction_id: String(verified.id),
         paid_at: verified.paid_at ?? new Date().toISOString(),
+        channel: verified.channel ?? null,
+        fees_kobo: typeof verified.fees === "number" ? verified.fees : null,
       })
       .eq("id", payment.id);
   }
@@ -158,4 +164,24 @@ export async function fulfilPayment(reference: string): Promise<FulfilResult> {
   }
   revalidatePath("/my/payments");
   return { ok: true, courseSlug: course.slug };
+}
+
+/**
+ * Re-checks this learner's recent pending payments with Paystack. This is what enrols someone who
+ * paid but closed the tab before returning, so the LMS does not depend on a webhook.
+ */
+export async function reconcilePendingPayments(userId: string) {
+  if (!paystackConfigured()) return;
+  const admin = createAdminClient();
+  const since = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: pending } = await admin
+    .from("payments")
+    .select("reference")
+    .eq("user_id", userId)
+    .eq("status", "pending")
+    .gte("created_at", since)
+    .limit(5);
+  for (const row of pending ?? []) {
+    await fulfilPayment(row.reference);
+  }
 }

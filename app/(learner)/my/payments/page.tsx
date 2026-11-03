@@ -1,3 +1,4 @@
+import { reconcilePendingPayments } from "@/lib/payments/checkout";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/permissions";
 
@@ -10,6 +11,7 @@ const label = { success: "Paid", pending: "Pending", failed: "Not completed" } a
 
 export default async function PaymentsPage() {
   const user = await requireUser();
+  await reconcilePendingPayments(user.id);
   const supabase = await createClient();
   const { data: payments } = await supabase
     .from("payments")

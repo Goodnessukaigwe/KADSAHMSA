@@ -21,6 +21,10 @@ create table if not exists public.payments (
   created_at timestamptz not null default now()
 );
 
+alter table public.payments
+  add column if not exists channel text,
+  add column if not exists fees_kobo integer;
+
 create index if not exists payments_user_idx on public.payments (user_id, created_at desc);
 create index if not exists payments_course_idx on public.payments (course_id, status);
 

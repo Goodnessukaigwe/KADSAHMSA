@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CourseDetail } from "@/components/courses/course-detail";
 import { getVisibleCourse } from "@/lib/courses/queries";
 import { getMyProgress, hasRequestedEnrolment, isEnrolledIn } from "@/lib/learning/queries";
-import { getSeatTerms } from "@/lib/payments/checkout";
+import { getSeatTerms, reconcilePendingPayments } from "@/lib/payments/checkout";
 import { getAuthUser } from "@/lib/permissions";
 
 export async function generateMetadata({
@@ -31,6 +31,7 @@ export default async function CourseDetailPage({
   if (!course) notFound();
 
   const user = await getAuthUser();
+  if (user) await reconcilePendingPayments(user.id);
   const [enrolled, requested, progress, terms] = await Promise.all([
     isEnrolledIn(slug),
     hasRequestedEnrolment(slug),
