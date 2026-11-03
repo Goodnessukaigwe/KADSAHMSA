@@ -63,15 +63,17 @@ export function PublicFooter() {
     <footer>
       <section className="bg-white px-4 py-16 sm:px-6 sm:py-20" aria-label={site.name}>
         <div className="mx-auto flex max-w-[1120px] flex-col items-center text-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/kadsamhsa.svg"
-            alt=""
-            className="h-24 w-24 object-contain sm:h-28 sm:w-28"
-          />
-          <p className="mt-4 text-2xl font-bold tracking-[0.22em] text-neutral-950 uppercase">
-            {site.name}
-          </p>
+          <Link href="/" className="flex flex-col items-center" aria-label={`${site.name} home`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/kadsamhsa.svg"
+              alt=""
+              className="h-24 w-24 object-contain sm:h-28 sm:w-28"
+            />
+            <p className="mt-4 text-2xl font-bold tracking-[0.22em] text-neutral-950 uppercase">
+              {site.name}
+            </p>
+          </Link>
           <p className="mt-2 max-w-md text-sm text-neutral-500">{site.fullName}</p>
 
           <div className="mt-6 flex items-center gap-2">
@@ -135,7 +137,18 @@ export function PublicFooter() {
           <div className="mx-auto flex max-w-[1120px] flex-col items-start gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-xs leading-relaxed text-white/55">
               © {site.year} {site.name}. All rights reserved.
-              <span className="block sm:ml-3 sm:inline">Managed by {site.manager}.</span>
+              <span className="block sm:ml-3 sm:inline">
+                Managed by{" "}
+                <a
+                  href={site.managerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-white"
+                >
+                  {site.manager}
+                </a>
+                .
+              </span>
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">
               <Link
