@@ -14,7 +14,7 @@ import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy } from "@/lib/content/dashboard";
 import { requestEnrolment } from "@/lib/learning/actions";
 import { startCheckout } from "@/lib/payments/actions";
-import { freePlacesNote, priceLabel } from "@/lib/payments/format";
+import { priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -24,7 +24,6 @@ export function CourseDetail({
   requested,
   progress,
   priceKobo = 0,
-  freeSeatsLeft = null,
 }: {
   course: PublishedCourse;
   signedIn: boolean;
@@ -32,7 +31,6 @@ export function CourseDetail({
   requested: boolean;
   progress: CourseProgress;
   priceKobo?: number;
-  freeSeatsLeft?: number | null;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +38,6 @@ export function CourseDetail({
   const [asked, setAsked] = useState(requested);
   const isDptc = course.slug === dptcCourse.slug;
   const priceText = priceLabel(priceKobo);
-  const freeNote = freePlacesNote(priceKobo, freeSeatsLeft);
   const waiting = asked || requested;
   const firstHref = firstOutlineHref(course.slug, course.outline);
   const continueTo = enrolled ? continueHref(course.slug, progress, firstHref) : firstHref;
@@ -89,11 +86,6 @@ export function CourseDetail({
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
             {priceText}
           </span>
-          {freeNote ? (
-            <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold text-emerald-800">
-              {freeNote}
-            </span>
-          ) : null}
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">

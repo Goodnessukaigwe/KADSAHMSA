@@ -9,7 +9,7 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { TabButton } from "@/components/ui/tab-button";
 import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { freePlacesNote, priceLabel } from "@/lib/payments/format";
+import { priceLabel } from "@/lib/payments/format";
 
 type Tab = "free" | "paid";
 
@@ -109,11 +109,6 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                   <p className="mt-1 text-sm text-neutral-400">
                     {course.lessons} {course.lessons === 1 ? "module" : "modules"}
                   </p>
-                  {freePlacesNote(course.priceKobo, course.freeSeatsLeft) ? (
-                    <p className="mt-1 text-sm font-semibold text-emerald-700">
-                      {freePlacesNote(course.priceKobo, course.freeSeatsLeft)}
-                    </p>
-                  ) : null}
                   <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
                     <SplitCta
                       href={`/courses/${course.slug}`}

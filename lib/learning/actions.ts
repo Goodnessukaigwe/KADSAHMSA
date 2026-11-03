@@ -67,8 +67,9 @@ async function requireExistingEnrolment(slug: string): Promise<ActionResult> {
 }
 
 /**
- * Enrol the signed-in learner on a published course straight away while free places remain.
- * Once they are used up, a course with a price returns `needsPayment` so the page can start checkout.
+ * Enrol the signed-in learner on a published course straight away when it has no price.
+ * A course with a price returns `needsPayment` so the page can start checkout; people KADSAMHSA
+ * invites are enrolled by staff instead.
  */
 export async function requestEnrolment(
   slug: string
@@ -80,13 +81,13 @@ export async function requestEnrolment(
 
   if (await isEnrolledIn(slug)) return { ok: true };
 
-  // The first N learners enrol free. After that the course must be paid for.
-  const terms = await getSeatTerms(slug);
-  if (terms && terms.freeSeatsLeft === 0) {
-    if (terms.priceKobo > 0) {
-      return { ok: false, error: "The free places are full. Pay to enrol.", needsPayment: true };
+  // Access is by payment or by invitation. A priced course sends the learner to checkout;
+  // staff add the people they invite free of charge from the admin area.
+  if (!staff) {
+    const terms = await getSeatTerms(slug);
+    if (terms && terms.priceKobo > 0) {
+      return { ok: false, error: "Pay to enrol on this course.", needsPayment: true };
     }
-    return fail("The free places on this course are full. Paid enrolment opens soon.");
   }
 
   const result = await enrolLearnerWithAdmin(user.id, slug);

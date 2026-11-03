@@ -47,7 +47,6 @@ export default async function CourseDetailPage({
       requested={requested}
       progress={progress}
       priceKobo={terms?.priceKobo ?? 0}
-      freeSeatsLeft={enrolled ? null : (terms?.freeSeatsLeft ?? null)}
     />
   );
 }

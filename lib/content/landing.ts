@@ -47,8 +47,8 @@ export const plans = {
   subtitle: "Learn on your own, or equip your organisation with seats and progress reporting.",
   highlights: [
     {
-      title: "First 100 learners free, then ₦10,000",
-      body: "The first 100 learners on each course enrol free with one click. After that, a course costs ₦10,000, paid securely online.",
+      title: "₦10,000 per course, paid securely online",
+      body: "Pay once and start straight away. Learners invited by KADSAMHSA are given access directly, free of charge.",
     },
     {
       title: "Complete feedback delivery",
@@ -62,7 +62,7 @@ export const plans = {
   free: {
     name: "Learner",
     price: "₦10,000",
-    blurb: "Per course, paid once. The first 100 learners on each course enrol free.",
+    blurb: "Per course, paid once through Paystack. Invited learners are given access by KADSAMHSA.",
     cta: "Sign up",
     href: "/register",
     features: [
@@ -103,7 +103,7 @@ export const faqs = [
   {
     question: "Is the DPTC course free?",
     answer:
-      "The first 100 learners on each course enrol free. After that, a course costs ₦10,000, shown clearly on the course page before you pay.",
+      "A course costs ₦10,000, shown on the course page before you pay. Some learners are invited by KADSAMHSA and given access free of charge.",
   },
   {
     question: "Will I get a certificate?",
