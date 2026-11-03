@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ListFilter } from "lucide-react";
 
+import { ModuleFeedbackModal } from "@/components/learner/module-feedback-modal";
 import { QuizQuestionSkeleton } from "@/components/skeletons";
+import { needsModuleFeedback } from "@/lib/feedback/module-feedback-actions";
 import type { PublicQuizQuestion } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import {
@@ -35,6 +37,7 @@ export function ModuleQuiz({
   maxAttempts,
   attemptsUsed,
   nextHref,
+  moduleIndex,
   preview = false,
   previewCorrectIndexes,
 }: {
@@ -53,6 +56,7 @@ export function ModuleQuiz({
   const router = useRouter();
   const [state, setState] = useState<QuizAttemptState | null>(null);
   const [reviewing, setReviewing] = useState(false);
+  const [askFeedback, setAskFeedback] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [used, setUsed] = useState(attemptsUsed);
@@ -196,7 +200,16 @@ export function ModuleQuiz({
           }}
           onContinue={() => {
             if (!preview && passed && !isFinal) {
-              router.push(nextHref ?? `/learn/${courseSlug}`);
+              const leave = () => router.push(nextHref ?? `/learn/${courseSlug}`);
+              if (moduleIndex === undefined) {
+                leave();
+                return;
+              }
+              // A passed module quiz ends the module: ask for quick feedback first.
+              void needsModuleFeedback(courseSlug, moduleIndex).then((ask) => {
+                if (ask) setAskFeedback(true);
+                else leave();
+              });
               return;
             }
             if (!preview && passed && isFinal) {
@@ -209,6 +222,14 @@ export function ModuleQuiz({
             }
             startRetake();
           }}
+        />
+      ) : null}
+
+      {askFeedback && moduleIndex !== undefined ? (
+        <ModuleFeedbackModal
+          courseSlug={courseSlug}
+          moduleIndex={moduleIndex}
+          onDone={() => router.push(nextHref ?? `/learn/${courseSlug}`)}
         />
       ) : null}
 

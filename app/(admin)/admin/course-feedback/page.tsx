@@ -1,4 +1,4 @@
-import { listCourseFeedback } from "@/lib/admin/course-feedback";
+import { isNilComment, listCourseFeedback, listModuleFeedback } from "@/lib/admin/course-feedback";
 
 export const metadata = { title: "Learner survey" };
 
@@ -6,7 +6,8 @@ const when = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
 const one = (value: number) => value.toFixed(1);
 
 export default async function CourseFeedbackPage() {
-  const { rows, summary, ready } = await listCourseFeedback();
+  const [{ rows, summary, ready }, modules] = await Promise.all([listCourseFeedback(), listModuleFeedback()]);
+  const moduleNotes = modules.ready ? modules.rows.filter((row) => !isNilComment(row.comment)) : [];
 
   return (
     <div className="pb-16">
@@ -25,6 +26,52 @@ export default async function CourseFeedbackPage() {
           Download CSV
         </a>
       </div>
+
+      {modules.ready && modules.summary.length > 0 ? (
+        <>
+          <h2 className="mt-8 text-lg font-bold">By module</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Quick feedback learners give when they finish a module. Low scores show where to look first.
+          </p>
+          <div className="mt-3 overflow-x-auto rounded-2xl bg-white">
+            <table className="w-full min-w-[520px] text-left text-sm">
+              <thead className="text-[11px] tracking-[0.12em] text-neutral-400 uppercase">
+                <tr>
+                  <th className="px-5 py-3">Course</th>
+                  <th className="px-5 py-3">Module</th>
+                  <th className="px-5 py-3">Responses</th>
+                  <th className="px-5 py-3">Rating</th>
+                  <th className="px-5 py-3">With notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {modules.summary.map((row) => (
+                  <tr key={`${row.course}-${row.moduleIndex}`} className="border-t border-neutral-100">
+                    <td className="px-5 py-3 font-medium">{row.course}</td>
+                    <td className="px-5 py-3">Module {row.moduleIndex}</td>
+                    <td className="px-5 py-3">{row.responses}</td>
+                    <td className="px-5 py-3">{one(row.rating)}</td>
+                    <td className="px-5 py-3">{row.withNotes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {moduleNotes.length > 0 ? (
+            <ul className="mt-4 space-y-2">
+              {moduleNotes.map((row, index) => (
+                <li key={index} className="rounded-2xl bg-white px-5 py-3 text-sm">
+                  <p className="text-xs text-neutral-500">
+                    {when.format(new Date(row.createdAt))} · {row.learnerName || "Learner"} · {row.course} · Module{" "}
+                    {row.moduleIndex} · {row.rating}/5 · {row.pagePath || "page not recorded"}
+                  </p>
+                  <p className="mt-1">{row.comment}</p>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
+      ) : null}
 
       {!ready ? (
         <p className="mt-8 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-sm text-amber-900">

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { listCourseFeedback } from "@/lib/admin/course-feedback";
+import { listCourseFeedback, listModuleFeedback } from "@/lib/admin/course-feedback";
 import { listPayments } from "@/lib/admin/payments";
 import { listUserEmails } from "@/lib/auth/admin-users";
 import { getAuthUser, getUserRoles, isStaff } from "@/lib/permissions";
@@ -19,7 +19,7 @@ function csv(header: string[], rows: unknown[][]) {
   return `﻿${[header, ...rows].map((row) => row.map(cell).join(",")).join("\r\n")}\r\n`;
 }
 
-const KINDS = ["learners", "quizzes", "certificates", "payments", "course_feedback"] as const;
+const KINDS = ["learners", "quizzes", "certificates", "payments", "course_feedback", "module_feedback"] as const;
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -29,6 +29,24 @@ export async function GET(request: NextRequest) {
   const kind = request.nextUrl.searchParams.get("kind");
   if (!KINDS.includes(kind as (typeof KINDS)[number])) {
     return NextResponse.json({ error: "unknown export" }, { status: 400 });
+  }
+
+  if (kind === "module_feedback") {
+    const { rows } = await listModuleFeedback();
+    const body = csv(
+      ["submitted_at", "learner", "email", "course", "module", "rating", "comment", "page"],
+      rows.map((row) => [
+        row.createdAt, row.learnerName, row.learnerEmail, row.course, row.moduleIndex,
+        row.rating, row.comment, row.pagePath,
+      ])
+    );
+    return new NextResponse(body, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="kadsamhsa-module-feedback-${new Date().toISOString().slice(0, 10)}.csv"`,
+        "Cache-Control": "no-store",
+      },
+    });
   }
 
   if (kind === "course_feedback") {

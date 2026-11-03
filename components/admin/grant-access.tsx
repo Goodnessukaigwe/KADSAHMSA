@@ -25,7 +25,7 @@ export function GrantAccess({ slug }: { slug: string }) {
   }
 
   return (
-    <form onSubmit={submit} className="mt-6 max-w-xl rounded-[24px] bg-white p-6">
+    <form id="give-access" onSubmit={submit} className="mt-6 max-w-xl scroll-mt-24 rounded-[24px] bg-white p-6">
       <h2 className="text-lg font-bold">Give access free of charge</h2>
       <p className="mt-1 text-sm text-neutral-500">
         Paste the email addresses of the people who should get this course without paying, one per

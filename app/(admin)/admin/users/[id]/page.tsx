@@ -6,6 +6,7 @@ import {
   getStaffLearner,
   getStaffLearnerLearning,
 } from "@/lib/certificates/queries";
+import { getFeedbackForUser } from "@/lib/admin/course-feedback";
 import { listAssignableCourses } from "@/lib/courses/queries";
 import { listLearnerOrganisations, listOrgOptions } from "@/lib/org/queries";
 import { getUserRoles, hasRole, requireSessionProfile } from "@/lib/permissions";
@@ -19,7 +20,7 @@ export default async function AdminUserDetailPage({
 }) {
   const { id } = await params;
   const profile = await requireSessionProfile();
-  const [learner, certificates, learning, courses, organisations, memberships, learnerRoles] =
+  const [learner, certificates, learning, courses, organisations, memberships, learnerRoles, feedback] =
     await Promise.all([
       getStaffLearner(id),
       getCertificatesForUser(id),
@@ -28,6 +29,7 @@ export default async function AdminUserDetailPage({
       listOrgOptions(),
       listLearnerOrganisations(id),
       getUserRoles(id),
+      getFeedbackForUser(id),
     ]);
   if (!learner) notFound();
   return (
@@ -39,6 +41,7 @@ export default async function AdminUserDetailPage({
       organisations={organisations}
       memberships={memberships}
       learnerRoles={learnerRoles}
+      feedback={feedback}
       viewerIsSuperAdmin={hasRole(profile.roles, "super_admin")}
     />
   );
