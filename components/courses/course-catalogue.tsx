@@ -9,7 +9,7 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { TabButton } from "@/components/ui/tab-button";
 import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { priceLabel } from "@/lib/payments/format";
+import { ADMIN_FEE_NOTE, feeBadge } from "@/lib/payments/format";
 
 type Tab = "free" | "paid";
 
@@ -79,6 +79,10 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
             </div>
           </div>
 
+          {courses.some((course) => course.priceKobo > 0) ? (
+            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-neutral-500">{ADMIN_FEE_NOTE}</p>
+          ) : null}
+
           {visible.length === 0 ? (
             <p className="py-16 text-center text-sm text-neutral-500">
               {tab === "paid" && !searching
@@ -100,7 +104,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                       priority={index === 0}
                     />
                     <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                      {priceLabel(course.priceKobo)}
+                      {feeBadge(course.priceKobo)}
                     </span>
                   </div>
                   <h2 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold break-words">

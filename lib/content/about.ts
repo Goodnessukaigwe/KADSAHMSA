@@ -72,9 +72,9 @@ export const aboutPage = {
         "It is the Agency's official online training platform. Individuals and partner organisations enrol in courses on drug prevention, treatment, and care, complete assessments, and earn certificates that can be verified.",
     },
     {
-      question: "How much does a course cost?",
+      question: "Is there a fee?",
       answer:
-        "A course costs ₦10,000, shown on the course page before you pay. Learners invited by KADSAMHSA are given access free of charge. Organisation seat packs are available on request.",
+        "Each course has a ₦10,000 administrative fee, shown on the course page before you pay. It covers administrative costs only and is not a charge for the programme itself. Learners invited by KADSAMHSA are given access free of charge. Organisation seat packs are available on request.",
     },
     {
       question: "Do I need any experience to start?",

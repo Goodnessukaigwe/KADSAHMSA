@@ -15,7 +15,7 @@ import {
   stats,
 } from "@/lib/content/landing";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { priceLabel } from "@/lib/payments/format";
+import { feeBadge, priceLabel } from "@/lib/payments/format";
 
 const HERO_IMAGES = [
   { src: "/Panel%20Discussion/IMG_1570.jpg", alt: "KADSAMHSA panel discussion" },
@@ -174,7 +174,7 @@ function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
                   className="relative rounded-2xl bg-white px-5 pt-10 pb-5 shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
                 >
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-950 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase">
-                    {priceLabel(course.priceKobo)}
+                    {feeBadge(course.priceKobo)}
                   </span>
                   <h3 className="min-h-[3.5rem] text-[17px] leading-snug font-bold">
                     {course.title}
@@ -182,7 +182,7 @@ function FeaturedCourses({ courses }: { courses: CatalogueCourse[] }) {
                   <dl className="mt-5 grid grid-cols-3 divide-x divide-neutral-200 text-center">
                     <div className="px-1">
                       <dt className="text-[10px] tracking-wide text-neutral-400 uppercase">
-                        Price
+                        {course.priceKobo > 0 ? "Admin fee" : "Price"}
                       </dt>
                       <dd className="mt-1 text-sm font-semibold">{priceLabel(course.priceKobo)}</dd>
                     </div>

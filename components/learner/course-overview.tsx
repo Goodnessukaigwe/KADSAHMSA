@@ -156,7 +156,7 @@ export function CourseOverview({
       <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
         <dl className="space-y-4 text-sm">
           {[
-            ["Price", "Included in your enrolment"],
+            ["Fee", "Covered by your enrolment"],
             ["Level", isDptc ? dptcCourse.level : "Introductory"],
             ["Access", isDptc ? dptcCourse.access : "Self-paced"],
             ["Certificate", hasFinal ? "Included" : "None"],

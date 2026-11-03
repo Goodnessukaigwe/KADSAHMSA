@@ -28,9 +28,9 @@ export function CoursePricing({
 
   return (
     <form onSubmit={save} className="mt-8 max-w-xl rounded-[24px] bg-white p-6">
-      <h2 className="text-lg font-bold">Price</h2>
+      <h2 className="text-lg font-bold">Administrative fee</h2>
       <p className="mt-1 text-sm text-neutral-500">
-        Learners who enrol themselves pay this through Paystack. People you add yourself, below, get
+        Learners who enrol themselves pay this administrative fee through Paystack. It is shown to learners as an administrative fee, not the cost of the programme. People you add yourself, below, get
         access free of charge. A price of 0 makes the course free for everyone.
       </p>
       {!paymentsReady ? (
@@ -39,7 +39,7 @@ export function CoursePricing({
         </p>
       ) : null}
       <label className="mt-5 block text-[11px] font-bold tracking-[0.14em] text-neutral-400 uppercase">
-        Price (naira)
+        Fee (naira)
         <input
           type="number"
           min={0}

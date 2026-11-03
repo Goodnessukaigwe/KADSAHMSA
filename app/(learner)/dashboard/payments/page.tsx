@@ -29,7 +29,7 @@ export default async function PaymentsPage() {
     <div className="pb-16">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Payments</h1>
       <p className="mt-2 max-w-xl text-sm text-neutral-400">
-        Receipts for paid courses appear here.
+        Receipts for the administrative fee appear here.
       </p>
 
       {payments && payments.length > 0 ? (
@@ -51,7 +51,7 @@ export default async function PaymentsPage() {
         <div className="mt-10 max-w-lg rounded-[28px] bg-white px-8 py-16">
           <h2 className="text-xl font-bold">No payments yet</h2>
           <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-            Free places on a course do not charge. Payments show here once you buy a course.
+            Courses you are invited to by KADSAMHSA are free. A receipt shows here when you pay the administrative fee for a course.
           </p>
         </div>
       )}
