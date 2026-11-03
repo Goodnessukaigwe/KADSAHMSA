@@ -10,7 +10,8 @@ import { OnboardingModal } from "@/components/learner/onboarding-modal";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy, returningGreeting } from "@/lib/content/dashboard";
-import { requestEnrolment } from "@/lib/learning/actions";
+import { priceLabel } from "@/lib/payments/format";
+import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { firstNameOf, isOnboardingDone } from "@/lib/learner-session";
 
@@ -61,9 +62,10 @@ function NewLearnerHome({
     if (pending || asked.includes(slug)) return;
     setError(null);
     setPending(slug);
-    const result = await requestEnrolment(slug);
+    const result = await enrolOrPay(slug);
+    if (result.kind === "redirecting") return;
     setPending(null);
-    if (!result.ok) {
+    if (result.kind === "error") {
       setError(result.error);
       return;
     }
@@ -107,7 +109,7 @@ function NewLearnerHome({
           </div>
           <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
             <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
-            <p className="mt-2 text-sm text-white/70">Price Free</p>
+            <p className="mt-2 text-sm text-white/70">Price {priceLabel(featured.priceKobo)}</p>
             {featured.summary ? (
               <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-white/75">
                 {featured.summary}
@@ -178,9 +180,10 @@ function EnrolledHome({
     if (asked.includes(slug)) return;
     setError(null);
     setPending(slug);
-    const result = await requestEnrolment(slug);
+    const result = await enrolOrPay(slug);
+    if (result.kind === "redirecting") return;
     setPending(null);
-    if (!result.ok) {
+    if (result.kind === "error") {
       setError(result.error);
       return;
     }
@@ -322,7 +325,7 @@ function ExploreSection({
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 />
                 <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                  {course.priceType === "free" ? "Free" : "Paid"}
+                  {priceLabel(course.priceKobo)}
                 </span>
               </div>
               <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">

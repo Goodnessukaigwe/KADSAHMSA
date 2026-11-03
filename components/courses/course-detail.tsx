@@ -12,8 +12,7 @@ import { continueHref, firstOutlineHref } from "@/lib/learning/progress";
 import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy } from "@/lib/content/dashboard";
-import { requestEnrolment } from "@/lib/learning/actions";
-import { startCheckout } from "@/lib/payments/actions";
+import { enrolOrPay } from "@/lib/payments/enrol-client";
 import { priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
@@ -55,18 +54,10 @@ export function CourseDetail({
     if (waiting) return;
     setError(null);
     setPending(true);
-    const result = await requestEnrolment(course.slug);
-    if (!result.ok) {
-      if ("needsPayment" in result) {
-        const checkout = await startCheckout(course.slug);
-        if (checkout.ok) {
-          window.location.assign(checkout.url);
-          return;
-        }
-        setError(checkout.error);
-      } else {
-        setError(result.error);
-      }
+    const result = await enrolOrPay(course.slug);
+    if (result.kind === "redirecting") return;
+    if (result.kind === "error") {
+      setError(result.error);
       setPending(false);
       return;
     }
