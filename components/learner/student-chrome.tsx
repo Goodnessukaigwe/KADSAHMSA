@@ -49,7 +49,7 @@ export function StudentChrome({
               {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
               <span className="sr-only">Toggle navigation</span>
             </button>
-            <Link href="/dashboard" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
               <span className="hidden text-sm font-bold tracking-[0.08em] uppercase sm:inline sm:tracking-[0.14em]">

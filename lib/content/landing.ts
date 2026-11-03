@@ -7,6 +7,7 @@ export const site = {
   location: "Kaduna State",
   year: new Date().getFullYear(),
   manager: "Auuxi Technology Ltd",
+  managerUrl: "https://auuxi.org",
 } as const;
 
 export const nav = [

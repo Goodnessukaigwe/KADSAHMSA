@@ -61,7 +61,7 @@ function layout(input: {
       ${paragraphs}${button}${note}
     </td></tr>
     <tr><td style="background:#e8f3ec;padding:16px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#4a5d52;">
-      ${esc(AGENCY)}<br><a href="${esc(site)}" style="color:${GREEN};">${esc(site.replace(/^https?:\/\//, ""))}</a><br><span style="color:#7a8c82;">Managed by Auuxi Technology Ltd</span>
+      ${esc(AGENCY)}<br><a href="${esc(site)}" style="color:${GREEN};">${esc(site.replace(/^https?:\/\//, ""))}</a><br><span style="color:#7a8c82;">Managed by <a href="https://auuxi.org" style="color:#7a8c82;">Auuxi Technology Ltd</a></span>
     </td></tr>
   </table>
 </td></tr></table>
@@ -78,7 +78,7 @@ function plain(input: { heading: string; paragraphs: string[]; button?: { label:
     "—",
     `KADSAMHSA Academy · ${AGENCY}`,
     siteUrl(),
-    "Managed by Auuxi Technology Ltd",
+    "Managed by Auuxi Technology Ltd (https://auuxi.org)",
   ].join("\n");
 }
 

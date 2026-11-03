@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import { SplitCta } from "@/components/landing/split-cta";
 import { verifyCertificate, type VerifyResult } from "@/lib/certificates/actions";
@@ -45,7 +46,9 @@ export function VerifyCertificate({ initialId = "" }: { initialId?: string }) {
     <div className="mx-auto max-w-xl px-6 py-16">
       <div className="flex items-center justify-between gap-6">
         <img src="/brand/unodc.png" alt="United Nations Office on Drugs and Crime" className="h-10 w-auto object-contain" />
-        <img src="/kadsamhsa.svg" alt="KADSAMHSA" className="h-14 w-14 object-contain" />
+        <Link href="/" aria-label="KADSAMHSA home">
+          <img src="/kadsamhsa.svg" alt="KADSAMHSA" className="h-14 w-14 object-contain" />
+        </Link>
       </div>
       <p className="mt-8 text-xs font-semibold tracking-[0.08em] text-neutral-500 uppercase">
         Kaduna State Substance Abuse and Mental Health Services Agency
