@@ -13,8 +13,8 @@ import { firstNameOf } from "@/lib/learner-session";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/my", label: "Homepage", icon: Home },
-  { href: "/my/courses", label: "Courses", icon: PlaySquare },
+  { href: "/dashboard", label: "Homepage", icon: Home },
+  { href: "/dashboard/courses", label: "Courses", icon: PlaySquare },
   { href: "/quiz", label: "Quiz", icon: GraduationCap },
   { href: "/help", label: "Help Center", icon: Headphones },
 ] as const;
@@ -49,7 +49,7 @@ export function StudentChrome({
               {navOpen ? <X className="size-4" /> : <Menu className="size-4" />}
               <span className="sr-only">Toggle navigation</span>
             </button>
-            <Link href="/my" className="flex items-center gap-2.5">
+            <Link href="/dashboard" className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/kadsamhsa.svg" alt="" className="h-9 w-9 object-contain" />
               <span className="hidden text-sm font-bold tracking-[0.08em] uppercase sm:inline sm:tracking-[0.14em]">
@@ -62,7 +62,7 @@ export function StudentChrome({
             name={user.name}
             email={user.email}
             avatarUrl={user.avatarUrl}
-            profileHref="/my/profile"
+            profileHref="/dashboard/profile"
             tone="light"
           />
         </div>
@@ -88,7 +88,7 @@ export function StudentChrome({
         >
           <div className="flex items-center gap-3">
             <ChromeAvatarLink
-              href="/my/profile"
+              href="/dashboard/profile"
               name={user.name}
               avatarUrl={user.avatarUrl}
               className="size-11 text-sm"
@@ -107,11 +107,11 @@ export function StudentChrome({
                 item.label === "Quiz"
                   ? pathname === "/quiz" || pathname.includes("/quiz")
                   : item.label === "Courses"
-                    ? pathname.startsWith("/my/courses") ||
+                    ? pathname.startsWith("/dashboard/courses") ||
                       (pathname.startsWith("/learn") &&
                         !pathname.includes("/quiz"))
-                    : item.href === "/my"
-                      ? pathname === "/my"
+                    : item.href === "/dashboard"
+                      ? pathname === "/dashboard"
                       : pathname === item.href ||
                         pathname.startsWith(`${item.href}/`);
               return (

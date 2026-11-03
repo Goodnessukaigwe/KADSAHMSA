@@ -7,7 +7,7 @@ function safeNext(path: string | null) {
   if (path && path.startsWith("/") && !path.startsWith("//")) {
     return path;
   }
-  return "/my";
+  return "/dashboard";
 }
 
 function destination(type: EmailOtpType, next: string) {

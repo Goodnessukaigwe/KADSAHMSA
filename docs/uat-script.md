@@ -11,8 +11,8 @@ Apply SQL first if tables are missing: `apply-all.sql` → phase 3 → 4 → 4b 
 | # | Step | Expected |
 |---|------|----------|
 | 1.1 | Open `/register`. Leave the privacy box **unticked** and submit. | Signup refused. No account. |
-| 1.2 | Tick the box (link opens `/privacy`). Submit. | Lands on `/my` with a session. A `consents` row exists for that user (`privacy` / `2026-09-08-draft`). No confirmation email. |
-| 1.3 | Open `/courses`, request enrolment on a **free** published course with a live lesson or uploaded media. Confirm `/learn/...` redirects back to the course page. Staff Enrol on that course’s Learners list. | Request is pending until staff Enrol. Then the course appears on `/my` and `/my/courses`, and lessons open. |
+| 1.2 | Tick the box (link opens `/privacy`). Submit. | Lands on `/dashboard` with a session. A `consents` row exists for that user (`privacy` / `2026-09-08-draft`). No confirmation email. |
+| 1.3 | Open `/courses`, request enrolment on a **free** published course with a live lesson or uploaded media. Confirm `/learn/...` redirects back to the course page. Staff Enrol on that course’s Learners list. | Request is pending until staff Enrol. Then the course appears on `/dashboard` and `/dashboard/courses`, and lessons open. |
 | 1.4 | Open a lesson with text and, if attached, PDF / image / audio / uploaded video. | Content reads. Signed media plays or downloads. Unenrolled users cannot get a signed URL. |
 | 1.5 | Open a lesson with a YouTube or Vimeo URL. | Embed plays (CSP must allow youtube-nocookie and `player.vimeo.com`). |
 | 1.6 | Take a module quiz and/or the final (DPTC: Module 1 + final). Fail once, then pass (≥70%). | Score, retries, and pass mark behave as labelled. |
@@ -23,7 +23,7 @@ Apply SQL first if tables are missing: `apply-all.sql` → phase 3 → 4 → 4b 
 
 | # | Step | Expected |
 |---|------|----------|
-| 2.1 | Grant a staff role (`supabase/snippets/grant-super-admin.sql` or Users). Open `/admin`. | Dashboard loads. A learner is redirected to `/my`. |
+| 2.1 | Grant a staff role (`supabase/snippets/grant-super-admin.sql` or Users). Open `/admin`. | Dashboard loads. A learner is redirected to `/dashboard`. |
 | 2.2 | Course builder: create or edit a course, **Save**, **Preview**, **Publish**. | Catalogue shows the published course. Shareable `/courses/[slug]` works. |
 | 2.3 | On a saved lesson, upload a small image or PDF and attach a YouTube or Vimeo URL. | Assets list updates. Learner in §1.4–1.5 can open them. |
 | 2.4 | Course **Learners** roster: enrol a registered email. | Learner sees the course. Progress shows after they study. |

@@ -87,7 +87,7 @@ export function OrgChrome({
                 Admin organisations
               </ChromeNavLink>
             ) : (
-              <ChromeNavLink href="/my">
+              <ChromeNavLink href="/dashboard">
                 <LayoutDashboard className="size-4" />
                 Learner home
               </ChromeNavLink>

@@ -517,8 +517,8 @@ export async function uploadCourseCover(
   revalidateLesson(course.slug);
   revalidatePath("/courses");
   revalidatePath(`/courses/${course.slug}`);
-  revalidatePath("/my");
-  revalidatePath("/my/courses");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/courses");
   return { ok: true, path };
 }
 

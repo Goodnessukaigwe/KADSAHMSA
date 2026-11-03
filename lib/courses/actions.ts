@@ -48,8 +48,8 @@ function revalidateCourse(slug: string) {
   revalidatePath(`/learn/${slug}/play`);
   revalidatePath(`/learn/${slug}/quiz`);
   revalidatePath(`/learn/${slug}/final`);
-  revalidatePath("/my");
-  revalidatePath("/my/courses");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/courses");
 }
 
 function usableCoverPath(path?: string) {

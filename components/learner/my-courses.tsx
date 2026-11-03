@@ -85,14 +85,14 @@ export function MyCourses({
       ) : null}
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard value={String(inProgressCount)} label="In progress" href="/my/courses" />
+        <StatCard value={String(inProgressCount)} label="In progress" href="/dashboard/courses" />
         <StatCard value={String(certificateCount)} label="Certificates" href="/certificates" />
         <StatCard
           value={String(enrolledCount)}
           label="Enrolled"
-          href="/my/courses"
+          href="/dashboard/courses"
         />
-        <StatCard value="0" label="Payments" href="/my/payments" />
+        <StatCard value="0" label="Payments" href="/dashboard/payments" />
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-1" role="tablist">

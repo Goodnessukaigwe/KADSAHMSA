@@ -125,7 +125,7 @@ export function ResetPasswordForm() {
         setPending(false);
         return;
       }
-      router.push("/my");
+      router.push("/dashboard");
       router.refresh();
     } catch {
       setError("Could not save your new password. Try again.");

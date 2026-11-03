@@ -164,8 +164,8 @@ function isUnlimitedFinal(quiz: QuizContext["quiz"]) {
 function revalidateQuizPaths(courseSlug: string) {
   revalidatePath("/quiz");
   revalidatePath("/certificates");
-  revalidatePath("/my");
-  revalidatePath("/my/courses");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/courses");
   revalidatePath(`/learn/${courseSlug}`);
   revalidatePath(`/learn/${courseSlug}/quiz`);
   revalidatePath(`/learn/${courseSlug}/final`);

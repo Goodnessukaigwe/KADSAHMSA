@@ -56,7 +56,7 @@ export function RegisterForm() {
         return;
       }
 
-      router.push("/my");
+      router.push("/dashboard");
       router.refresh();
     } catch (cause) {
       setError(

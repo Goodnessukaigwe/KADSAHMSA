@@ -49,7 +49,7 @@ export function QuizResults({ view }: { view: QuizResultsView }) {
             final assessment.
           </p>
           <div className="mt-6">
-            <SplitCta href="/my/courses" size="sm">
+            <SplitCta href="/dashboard/courses" size="sm">
               Go to My courses
             </SplitCta>
           </div>
