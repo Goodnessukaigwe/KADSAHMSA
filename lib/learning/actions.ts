@@ -86,7 +86,7 @@ export async function requestEnrolment(
   if (!staff) {
     const terms = await getSeatTerms(slug);
     if (terms && terms.priceKobo > 0) {
-      return { ok: false, error: "Pay to enrol on this course.", needsPayment: true };
+      return { ok: false, error: "Pay the administrative fee to enrol on this course.", needsPayment: true };
     }
   }
 

@@ -48,8 +48,8 @@ export const plans = {
   subtitle: "Learn on your own, or equip your organisation with seats and progress reporting.",
   highlights: [
     {
-      title: "₦10,000 per course, paid securely online",
-      body: "Pay once and start straight away. Learners invited by KADSAMHSA are given access directly, free of charge.",
+      title: "₦10,000 administrative fee per course",
+      body: "The fee covers administrative costs only. It is not a charge for the programme itself. Pay once, securely online. Learners invited by KADSAMHSA are given access free of charge.",
     },
     {
       title: "Complete feedback delivery",
@@ -63,7 +63,7 @@ export const plans = {
   free: {
     name: "Learner",
     price: "₦10,000",
-    blurb: "Per course, paid once through Paystack. Invited learners are given access by KADSAMHSA.",
+    blurb: "An administrative fee, not a charge for the programme. Paid once per course through Paystack. Invited learners are given access by KADSAMHSA.",
     cta: "Sign up",
     href: "/register",
     features: [
@@ -104,7 +104,7 @@ export const faqs = [
   {
     question: "Is the DPTC course free?",
     answer:
-      "A course costs ₦10,000, shown on the course page before you pay. Some learners are invited by KADSAMHSA and given access free of charge.",
+      "Each course has a ₦10,000 administrative fee, shown on the course page before you pay. It covers administrative costs only and is not a charge for the programme itself. Some learners are invited by KADSAMHSA and given access free of charge.",
   },
   {
     question: "Will I get a certificate?",

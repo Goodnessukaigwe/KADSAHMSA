@@ -70,6 +70,7 @@ export async function startCheckoutFor(
       callbackUrl: `${siteUrl()}/dashboard/payments/callback`,
       customFields: [
         { display_name: "Project", variable_name: "project", value: "KADSAMHSA LMS" },
+        { display_name: "Payment for", variable_name: "payment_for", value: "Administrative fee (not the cost of the programme)" },
         { display_name: "Course", variable_name: "course", value: terms.title },
         { display_name: "Learner ID", variable_name: "learner_id", value: user.id },
       ],

@@ -10,7 +10,7 @@ import { OnboardingModal } from "@/components/learner/onboarding-modal";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy, returningGreeting } from "@/lib/content/dashboard";
-import { priceLabel } from "@/lib/payments/format";
+import { ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { firstNameOf, isOnboardingDone } from "@/lib/learner-session";
@@ -109,7 +109,12 @@ function NewLearnerHome({
           </div>
           <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
             <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
-            <p className="mt-2 text-sm text-white/70">Price {priceLabel(featured.priceKobo)}</p>
+            <p className="mt-2 text-sm text-white/70">
+              {featured.priceKobo > 0 ? "Administrative fee" : "Price"} {priceLabel(featured.priceKobo)}
+            </p>
+            {featured.priceKobo > 0 ? (
+              <p className="mt-1 max-w-sm text-xs text-white/50">{ADMIN_FEE_NOTE}</p>
+            ) : null}
             {featured.summary ? (
               <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-white/75">
                 {featured.summary}
@@ -325,7 +330,7 @@ function ExploreSection({
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 />
                 <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                  {priceLabel(course.priceKobo)}
+                  {feeBadge(course.priceKobo)}
                 </span>
               </div>
               <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">

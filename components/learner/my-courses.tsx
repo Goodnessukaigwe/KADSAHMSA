@@ -12,7 +12,7 @@ import { TabButton } from "@/components/ui/tab-button";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy } from "@/lib/content/dashboard";
-import { priceLabel } from "@/lib/payments/format";
+import { feeBadge } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { cn } from "@/lib/utils";
@@ -331,7 +331,7 @@ function CatalogueGrid({
               sizes="(max-width: 640px) 100vw, 33vw"
             />
             <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase backdrop-blur-sm">
-              {priceLabel(course.priceKobo)}
+              {feeBadge(course.priceKobo)}
             </span>
           </div>
           <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">
