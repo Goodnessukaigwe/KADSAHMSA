@@ -6,6 +6,7 @@ export const site = {
   phone: "+234 803 808 6191",
   location: "Kaduna State",
   year: new Date().getFullYear(),
+  manager: "Auuxi Technology Ltd",
 } as const;
 
 export const nav = [

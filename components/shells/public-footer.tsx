@@ -133,8 +133,9 @@ export function PublicFooter() {
         </div>
         <div className="border-t border-white/10">
           <div className="mx-auto flex max-w-[1120px] flex-col items-start gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <p className="text-xs text-white/55">
+            <p className="text-xs leading-relaxed text-white/55">
               © {site.year} {site.name}. All rights reserved.
+              <span className="block sm:ml-3 sm:inline">Managed by {site.manager}.</span>
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-5">
               <Link
