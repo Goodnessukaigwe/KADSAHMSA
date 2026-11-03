@@ -11,7 +11,7 @@ import type { PublishedCourse } from "@/lib/courses/types";
 import { continueHref, firstOutlineHref } from "@/lib/learning/progress";
 import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
-import { dashboardCopy } from "@/lib/content/dashboard";
+import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import { ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
@@ -230,12 +230,12 @@ export function CourseDetail({
               onClick={signedIn && !enrolled && !waiting ? enroll : undefined}
             >
               {pending
-                ? dashboardCopy.enrolling
+                ? enrollingButtonLabel(priceKobo)
                 : signedIn && enrolled
                   ? "Continue this course"
                   : signedIn && waiting
                     ? dashboardCopy.requested
-                    : dashboardCopy.enroll}
+                    : enrolButtonLabel(priceKobo)}
             </SplitCta>
           </div>
         </aside>

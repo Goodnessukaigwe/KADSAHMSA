@@ -6,6 +6,8 @@ export const dashboardCopy = {
   exploreTitle: "Explore more courses",
   enroll: "Enroll",
   enrolling: "Enrolling…",
+  payFee: "Pay administrative costs",
+  payingFee: "Opening payment…",
   requested: "Enrolled",
   continue: "Continue this course",
   continueFeatured: "Continue with this course",
@@ -30,4 +32,13 @@ export const dashboardCopy = {
 
 export function returningGreeting(name: string) {
   return `Welcome back, ${name}`;
+}
+
+/** The Enroll button text: a course with a fee asks for the administrative costs instead. */
+export function enrolButtonLabel(priceKobo: number) {
+  return priceKobo > 0 ? dashboardCopy.payFee : dashboardCopy.enroll;
+}
+
+export function enrollingButtonLabel(priceKobo: number) {
+  return priceKobo > 0 ? dashboardCopy.payingFee : dashboardCopy.enrolling;
 }
