@@ -12,6 +12,7 @@ import {
   type LessonPageSource,
 } from "@/lib/courses/player-pages";
 import { resolveWorkingCoverUrl } from "@/lib/courses/cover";
+import { getSeatTerms } from "@/lib/payments/checkout";
 import {
   COURSE_MEDIA_BUCKET,
   coverForSlug,
@@ -176,13 +177,16 @@ function courseHasLearnerContent(
 function toCatalogueCourse(
   row: { slug: string; title: string; summary?: string | null; duration_label?: string | null },
   lessons: number,
-  image: string
+  image: string,
+  terms: { priceKobo: number; freeSeatsLeft: number | null } = { priceKobo: 0, freeSeatsLeft: null }
 ): CatalogueCourse {
   return {
     slug: row.slug ?? "",
     title: row.title ?? "",
     lessons,
-    priceType: "free",
+    priceType: terms.priceKobo > 0 ? "paid" : "free",
+    priceKobo: terms.priceKobo,
+    freeSeatsLeft: terms.freeSeatsLeft,
     image: image ?? "",
     summary: row.summary ?? "",
     durationLabel: row.duration_label ?? "",
@@ -444,7 +448,11 @@ export async function listPublishedCourses(): Promise<CatalogueCourse[]> {
   return Promise.all(
     visible.map(async (row) => {
       const image = await resolveCoverSrc(row.slug, row.cover_path, row.id);
-      return toCatalogueCourse(row, counts.get(row.id) ?? 0, image);
+      const seats = await getSeatTerms(row.slug);
+      return toCatalogueCourse(row, counts.get(row.id) ?? 0, image, {
+        priceKobo: seats?.priceKobo ?? 0,
+        freeSeatsLeft: seats?.freeSeatsLeft ?? null,
+      });
     })
   );
 }
@@ -509,6 +517,7 @@ async function getVisibleCourseInner(
     if (!assetCourseIds.has(course.id)) return null;
   }
 
+  const seatTerms = (await getSeatTerms(course.slug)) ?? { priceKobo: 0, freeSeatsLeft: null };
   const firstLessonId = await firstLessonIdForCourse(course.id);
   const coverMedia = firstLessonId
     ? coverMediaAssets((await listLessonAssets([firstLessonId])).get(firstLessonId) ?? [])
@@ -518,7 +527,9 @@ async function getVisibleCourseInner(
     slug: course.slug,
     title: course.title,
     lessons: outline.length,
-    priceType: "free",
+    priceType: seatTerms.priceKobo > 0 ? "paid" : "free",
+    priceKobo: seatTerms.priceKobo,
+    freeSeatsLeft: seatTerms.freeSeatsLeft,
     image: await resolveCoverSrc(course.slug, course.cover_path, course.id),
     summary: course.summary,
     durationLabel: course.duration_label,

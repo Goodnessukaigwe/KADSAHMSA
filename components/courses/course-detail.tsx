@@ -14,6 +14,7 @@ import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy } from "@/lib/content/dashboard";
 import { requestEnrolment } from "@/lib/learning/actions";
 import { startCheckout } from "@/lib/payments/actions";
+import { freePlacesNote, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -38,12 +39,8 @@ export function CourseDetail({
   const [pending, setPending] = useState(false);
   const [asked, setAsked] = useState(requested);
   const isDptc = course.slug === dptcCourse.slug;
-  const full = freeSeatsLeft === 0;
-  const priceLabel = full
-    ? priceKobo > 0
-      ? new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(priceKobo / 100)
-      : "Paid (opens soon)"
-    : "Free";
+  const priceText = priceLabel(priceKobo);
+  const freeNote = freePlacesNote(priceKobo, freeSeatsLeft);
   const waiting = asked || requested;
   const firstHref = firstOutlineHref(course.slug, course.outline);
   const continueTo = enrolled ? continueHref(course.slug, progress, firstHref) : firstHref;
@@ -90,8 +87,13 @@ export function CourseDetail({
             {isDptc ? dptcCourse.level : "Introductory"}
           </span>
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
-            {priceLabel}
+            {priceText}
           </span>
+          {freeNote ? (
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-semibold text-emerald-800">
+              {freeNote}
+            </span>
+          ) : null}
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
@@ -126,7 +128,7 @@ export function CourseDetail({
               [String(course.lessons || course.outline.length), "Modules"],
               [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
               [course.hasFinalQuiz ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
-              [priceLabel, "Price"],
+              [priceText, "Price"],
             ] as const
           ).map(([value, label]) => (
             <div key={label} className="rounded-2xl bg-[#f7f7f7] px-5 py-4">
@@ -218,7 +220,7 @@ export function CourseDetail({
         <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
           <dl className="space-y-4 text-sm">
             {[
-              ["Price", priceLabel],
+              ["Price", priceText],
               ["Level", isDptc ? dptcCourse.level : "Introductory"],
               ["Access", isDptc ? dptcCourse.access : "Self-paced"],
               ["Certificate", course.hasFinalQuiz ? "Included" : "None"],
