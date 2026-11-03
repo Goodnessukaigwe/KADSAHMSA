@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { listCourseFeedback } from "@/lib/admin/course-feedback";
+import { listPayments } from "@/lib/admin/payments";
 import { listUserEmails } from "@/lib/auth/admin-users";
 import { getAuthUser, getUserRoles, isStaff } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -17,7 +19,7 @@ function csv(header: string[], rows: unknown[][]) {
   return `﻿${[header, ...rows].map((row) => row.map(cell).join(",")).join("\r\n")}\r\n`;
 }
 
-const KINDS = ["learners", "quizzes", "certificates"] as const;
+const KINDS = ["learners", "quizzes", "certificates", "payments", "course_feedback"] as const;
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -27,6 +29,72 @@ export async function GET(request: NextRequest) {
   const kind = request.nextUrl.searchParams.get("kind");
   if (!KINDS.includes(kind as (typeof KINDS)[number])) {
     return NextResponse.json({ error: "unknown export" }, { status: 400 });
+  }
+
+  if (kind === "course_feedback") {
+    const { rows } = await listCourseFeedback();
+    const body = csv(
+      [
+        "submitted_at", "learner", "email", "course", "overall", "ease_of_use", "content_quality",
+        "mobile_experience", "recommend_0_10", "worked_well", "improve", "had_problem", "problem",
+      ],
+      rows.map((row) => [
+        row.createdAt, row.learnerName, row.learnerEmail, row.course, row.overall, row.easeOfUse,
+        row.contentQuality, row.mobileExperience, row.recommend, row.enjoyed, row.improve,
+        row.hadProblems ? "yes" : "no", row.problems,
+      ])
+    );
+    return new NextResponse(body, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="kadsamhsa-learner-survey-${new Date().toISOString().slice(0, 10)}.csv"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
+  if (kind === "payments") {
+    const month = request.nextUrl.searchParams.get("month");
+    const { rows } = await listPayments(month);
+    const csvBody = csv(
+      [
+        "reference",
+        "source",
+        "status",
+        "paid_at",
+        "created_at",
+        "learner",
+        "email",
+        "course",
+        "amount_ngn",
+        "paystack_fee_ngn",
+        "net_ngn",
+        "channel",
+        "paystack_transaction_id",
+      ],
+      rows.map((row) => [
+        row.reference,
+        "KADSAMHSA LMS",
+        row.status,
+        row.paidAt ?? "",
+        row.createdAt,
+        row.learnerName,
+        row.learnerEmail,
+        row.course,
+        (row.amountKobo / 100).toFixed(2),
+        row.feesKobo === null ? "" : (row.feesKobo / 100).toFixed(2),
+        row.status === "success" ? ((row.amountKobo - (row.feesKobo ?? 0)) / 100).toFixed(2) : "",
+        row.channel ?? "",
+        row.transactionId ?? "",
+      ])
+    );
+    return new NextResponse(csvBody, {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="kadsamhsa-payments-${month || new Date().toISOString().slice(0, 10)}.csv"`,
+        "Cache-Control": "no-store",
+      },
+    });
   }
 
   const admin = createAdminClient();

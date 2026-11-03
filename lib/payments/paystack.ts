@@ -14,9 +14,21 @@ function secret() {
   return key;
 }
 
-export function newPaymentReference() {
-  return `KADPAY-${Date.now().toString(36).toUpperCase()}-${randomBytes(4).toString("hex").toUpperCase()}`;
+/**
+ * References start with a project tag so every KADSAMHSA LMS payment can be found on the shared
+ * Paystack account: search "KADLMS" under Transactions. Override with PAYSTACK_REFERENCE_PREFIX.
+ */
+export function referencePrefix() {
+  const raw = process.env.PAYSTACK_REFERENCE_PREFIX?.trim() || "KADLMS";
+  return raw.replace(/[^A-Za-z0-9]/g, "").toUpperCase() || "KADLMS";
 }
+
+export function newPaymentReference() {
+  return `${referencePrefix()}-${Date.now().toString(36).toUpperCase()}-${randomBytes(4).toString("hex").toUpperCase()}`;
+}
+
+/** Shown on the transaction page in the Paystack dashboard. */
+export type CustomField = { display_name: string; variable_name: string; value: string };
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API}${path}`, {
@@ -42,7 +54,7 @@ export async function initializeTransaction(input: {
   amountKobo: number;
   reference: string;
   callbackUrl: string;
-  metadata?: Record<string, unknown>;
+  customFields?: CustomField[];
 }) {
   return call<{ authorization_url: string; access_code: string; reference: string }>(
     "/transaction/initialize",
@@ -54,7 +66,7 @@ export async function initializeTransaction(input: {
         currency: "NGN",
         reference: input.reference,
         callback_url: input.callbackUrl,
-        metadata: input.metadata,
+        metadata: { project: "KADSAMHSA LMS", custom_fields: input.customFields ?? [] },
       }),
     }
   );
@@ -67,6 +79,8 @@ export type VerifiedTransaction = {
   amount: number;
   currency: string;
   paid_at: string | null;
+  channel?: string | null;
+  fees?: number | null;
 };
 
 export async function verifyTransaction(reference: string) {

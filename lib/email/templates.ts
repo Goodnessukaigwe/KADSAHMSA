@@ -134,10 +134,10 @@ export function certificateEmail(input: {
     heading: "Congratulations",
     paragraphs: [
       `Hello ${firstName(input.name)},`,
-      `You have completed ${input.courseTitle}. Your certificate is attached to this email as a PDF, and you can always download it again from your account.`,
+      `You have completed ${input.courseTitle}. Share a short feedback form (about a minute) and your certificate PDF is ready to download from your account, any time.`,
       `Verification ID: ${input.verificationId}. Anyone can confirm your certificate with this ID on our public verify page.`,
     ],
-    button: { label: "View my certificates", url: input.url },
+    button: { label: "Get my certificate", url: input.url },
   });
 }
 

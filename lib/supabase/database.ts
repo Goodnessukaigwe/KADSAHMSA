@@ -272,6 +272,8 @@ export type Database = {
           status: "pending" | "success" | "failed";
           paystack_transaction_id: string | null;
           paid_at: string | null;
+          channel: string | null;
+          fees_kobo: number | null;
           created_at: string;
         };
         Insert: {
@@ -284,6 +286,8 @@ export type Database = {
           status?: "pending" | "success" | "failed";
           paystack_transaction_id?: string | null;
           paid_at?: string | null;
+          channel?: string | null;
+          fees_kobo?: number | null;
           created_at?: string;
         };
         Update: {
@@ -296,7 +300,53 @@ export type Database = {
           status?: "pending" | "success" | "failed";
           paystack_transaction_id?: string | null;
           paid_at?: string | null;
+          channel?: string | null;
+          fees_kobo?: number | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      course_feedback: {
+        Row: {
+          id: string;
+          user_id: string;
+          course_id: string;
+          overall: number;
+          ease_of_use: number;
+          content_quality: number;
+          mobile_experience: number;
+          recommend: number;
+          enjoyed: string;
+          improve: string;
+          had_problems: boolean;
+          problems: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          course_id: string;
+          overall: number;
+          ease_of_use: number;
+          content_quality: number;
+          mobile_experience: number;
+          recommend: number;
+          enjoyed?: string;
+          improve?: string;
+          had_problems?: boolean;
+          problems?: string;
+          created_at?: string;
+        };
+        Update: {
+          overall?: number;
+          ease_of_use?: number;
+          content_quality?: number;
+          mobile_experience?: number;
+          recommend?: number;
+          enjoyed?: string;
+          improve?: string;
+          had_problems?: boolean;
+          problems?: string;
         };
         Relationships: [];
       };

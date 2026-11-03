@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  ClipboardList,
   Building2,
   FileSpreadsheet,
   GraduationCap,
@@ -12,6 +13,7 @@ import {
   Menu,
   MessageSquare,
   Users,
+  Wallet,
   X,
 } from "lucide-react";
 
@@ -26,8 +28,10 @@ const NAV = [
   { href: "/admin/users", label: "Users Metric", icon: Users },
   { href: "/admin/organizations", label: "Organisations", icon: Building2 },
   { href: "/admin/reports", label: "Reports", icon: FileSpreadsheet },
+  { href: "/admin/payments", label: "Payments", icon: Wallet },
   { href: "/admin/inbox", label: "Chat inbox", icon: Inbox },
   { href: "/admin/feedback", label: "Feedback", icon: MessageSquare },
+  { href: "/admin/course-feedback", label: "Learner survey", icon: ClipboardList },
 ] as const;
 
 export function AdminChrome({

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { issueCertificateIfEligible } from "@/lib/certificates/issue";
 import { requireOwnCertificate } from "@/lib/certificates/queries";
+import { getSurveyStatus } from "@/lib/feedback/survey";
 import { requireStaff, requireUser } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -28,6 +29,12 @@ export async function getCertificateDownloadUrl(
 ): Promise<DownloadResult> {
   const cert = await requireOwnCertificate(certificateId);
   if (!cert) return { ok: false, error: "That certificate is not on this account." };
+
+  // The feedback survey comes first (once the survey table exists).
+  const survey = await getSurveyStatus(cert.user_id, [cert.course_id]);
+  if (survey.ready && !survey.done.has(cert.course_id)) {
+    return { ok: false, error: "Please share your feedback first. It takes about a minute." };
+  }
 
   const admin = createAdminClient();
   const { data, error } = await admin.storage

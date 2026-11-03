@@ -56,16 +56,7 @@ export async function notifyCertificate(
       verificationId: input.verificationId,
       url: `${siteUrl()}/certificates`,
     });
-    await sendEmail({
-      to: contact.email,
-      ...mail,
-      attachments: [
-        {
-          filename: `KADSAMHSA-certificate-${input.verificationId}.pdf`,
-          content: Buffer.from(input.pdf).toString("base64"),
-        },
-      ],
-    });
+    await sendEmail({ to: contact.email, ...mail });
   } catch (cause) {
     console.error("notifyCertificate", cause);
   }
