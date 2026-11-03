@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
+import { getSeatTerms } from "@/lib/payments/checkout";
 import { emptyProgress } from "@/lib/learning/progress";
 import { getVisibleCourse, isPublishedCourseAvailable } from "@/lib/courses/queries";
 import { buildAccess } from "@/lib/learning/gating";
@@ -66,16 +67,27 @@ async function requireExistingEnrolment(slug: string): Promise<ActionResult> {
 }
 
 /**
- * Enrol the signed-in learner on a published course straight away. Every course is free today,
- * so there is no approval step; a paid course would go through `enrolment_requests` instead.
+ * Enrol the signed-in learner on a published course straight away while free places remain.
+ * Once they are used up, a course with a price returns `needsPayment` so the page can start checkout.
  */
-export async function requestEnrolment(slug: string): Promise<ActionResult> {
+export async function requestEnrolment(
+  slug: string
+): Promise<ActionResult | { ok: false; error: string; needsPayment: true }> {
   const user = await requireUser();
   const staff = await isStaffUser();
   const visible = staff ? true : await isPublishedCourseAvailable(slug);
   if (!visible) return fail("That course is not available yet.");
 
   if (await isEnrolledIn(slug)) return { ok: true };
+
+  // The first N learners enrol free. After that the course must be paid for.
+  const terms = await getSeatTerms(slug);
+  if (terms && terms.freeSeatsLeft === 0) {
+    if (terms.priceKobo > 0) {
+      return { ok: false, error: "The free places are full. Pay to enrol.", needsPayment: true };
+    }
+    return fail("The free places on this course are full. Paid enrolment opens soon.");
+  }
 
   const result = await enrolLearnerWithAdmin(user.id, slug);
   if (!result.ok) return fail(result.error);

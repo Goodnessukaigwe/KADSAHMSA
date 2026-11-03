@@ -114,6 +114,8 @@ export type Database = {
           summary: string;
           duration_label: string;
           cover_path: string;
+          price_kobo: number;
+          free_seat_limit: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -125,6 +127,8 @@ export type Database = {
           summary?: string;
           duration_label?: string;
           cover_path?: string;
+          price_kobo?: number;
+          free_seat_limit?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -136,6 +140,8 @@ export type Database = {
           summary?: string;
           duration_label?: string;
           cover_path?: string;
+          price_kobo?: number;
+          free_seat_limit?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -251,6 +257,45 @@ export type Database = {
           storage_path?: string | null;
           external_url?: string | null;
           section?: "cover" | "introduction" | "main" | "notes" | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      payments: {
+        Row: {
+          id: string;
+          user_id: string;
+          course_id: string;
+          reference: string;
+          amount_kobo: number;
+          currency: string;
+          status: "pending" | "success" | "failed";
+          paystack_transaction_id: string | null;
+          paid_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          course_id: string;
+          reference: string;
+          amount_kobo: number;
+          currency?: string;
+          status?: "pending" | "success" | "failed";
+          paystack_transaction_id?: string | null;
+          paid_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          course_id?: string;
+          reference?: string;
+          amount_kobo?: number;
+          currency?: string;
+          status?: "pending" | "success" | "failed";
+          paystack_transaction_id?: string | null;
+          paid_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
