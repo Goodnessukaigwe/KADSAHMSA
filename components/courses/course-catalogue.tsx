@@ -9,19 +9,25 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { TabButton } from "@/components/ui/tab-button";
 import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
+import { freePlacesNote, priceLabel } from "@/lib/payments/format";
 
 type Tab = "free" | "paid";
 
 export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
-  const [tab, setTab] = useState<Tab>("free");
+  // Open on the tab that has courses: priced courses live under Paid.
+  const [tab, setTab] = useState<Tab>(
+    courses.some((course) => course.priceKobo > 0) && !courses.some((course) => course.priceKobo <= 0)
+      ? "paid"
+      : "free"
+  );
   const [query, setQuery] = useState("");
   const searching = query.trim().length > 0;
 
   const visible = useMemo(() => {
-    if (tab === "paid") return [];
-    if (!searching) return courses;
+    const ofTab = courses.filter((course) => (tab === "paid" ? course.priceKobo > 0 : course.priceKobo <= 0));
+    if (!searching) return ofTab;
     const q = query.trim().toLowerCase();
-    return courses.filter((course) => course.title.toLowerCase().includes(q));
+    return ofTab.filter((course) => course.title.toLowerCase().includes(q));
   }, [courses, tab, query, searching]);
 
   return (
@@ -75,8 +81,8 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
 
           {visible.length === 0 ? (
             <p className="py-16 text-center text-sm text-neutral-500">
-              {tab === "paid"
-                ? "Paid courses are not on this platform yet. Everything published here is free."
+              {tab === "paid" && !searching
+                ? "No paid courses yet."
                 : searching
                   ? "No published courses match your search."
                   : emptyCatalogueCopy}
@@ -94,7 +100,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                       priority={index === 0}
                     />
                     <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                      Free
+                      {priceLabel(course.priceKobo)}
                     </span>
                   </div>
                   <h2 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold break-words">
@@ -103,6 +109,11 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                   <p className="mt-1 text-sm text-neutral-400">
                     {course.lessons} {course.lessons === 1 ? "module" : "modules"}
                   </p>
+                  {freePlacesNote(course.priceKobo, course.freeSeatsLeft) ? (
+                    <p className="mt-1 text-sm font-semibold text-emerald-700">
+                      {freePlacesNote(course.priceKobo, course.freeSeatsLeft)}
+                    </p>
+                  ) : null}
                   <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
                     <SplitCta
                       href={`/courses/${course.slug}`}

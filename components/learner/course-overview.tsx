@@ -77,7 +77,7 @@ export function CourseOverview({
           [String(outline.length || (isDptc ? dptcModules.length : 0)), "Modules"],
           [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
           [hasFinal ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
-          ["Free", "Access"],
+          ["Enrolled", "Access"],
         ].map(([value, label]) => (
           <div key={label} className="rounded-2xl bg-white px-5 py-4 shadow-sm">
             <p className="text-2xl font-bold">{value}</p>
@@ -156,7 +156,7 @@ export function CourseOverview({
       <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
         <dl className="space-y-4 text-sm">
           {[
-            ["Price", "Free"],
+            ["Price", "Included in your enrolment"],
             ["Level", isDptc ? dptcCourse.level : "Introductory"],
             ["Access", isDptc ? dptcCourse.access : "Self-paced"],
             ["Certificate", hasFinal ? "Included" : "None"],

@@ -17,7 +17,7 @@ import {
 import { markModuleComplete, savePlayerSeconds } from "@/lib/learning/actions";
 
 const facts = [
-  { icon: Tag, label: "Price", value: "Free" },
+  { icon: Tag, label: "Access", value: "Enrolled" },
   { icon: Clock, label: "Duration", value: "Included" },
   { icon: Layers, label: "Level", value: "Foundational" },
   { icon: Award, label: "Certification", value: "Included" },

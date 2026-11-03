@@ -51,7 +51,7 @@ export const aboutPage = {
     items: [
       {
         title: "Individual learners",
-        text: "Register free, complete a course at your own pace, and download a certificate you can share with an employer.",
+        text: "Register, complete a course at your own pace, and download a certificate you can share with an employer.",
       },
       {
         title: "Partner organisations",
@@ -72,9 +72,9 @@ export const aboutPage = {
         "It is the Agency's official online training platform. Individuals and partner organisations enrol in courses on drug prevention, treatment, and care, complete assessments, and earn certificates that can be verified.",
     },
     {
-      question: "Is this course really free?",
+      question: "How much does a course cost?",
       answer:
-        "Launch courses such as DPTC sensitisation are free to enrol. Paid courses and organisation seat packs are labelled clearly in the catalogue.",
+        "The first 100 learners on each course enrol free. After that, a course costs ₦10,000, shown on the course page before you pay. Organisation seat packs are available on request.",
     },
     {
       question: "Do I need any experience to start?",

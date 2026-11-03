@@ -47,8 +47,8 @@ export const plans = {
   subtitle: "Learn on your own, or equip your organisation with seats and progress reporting.",
   highlights: [
     {
-      title: "Free now, paid courses later",
-      body: "Free courses enrol instantly when you click Enroll. Paid courses will open for enrolment in future.",
+      title: "First 100 learners free, then ₦10,000",
+      body: "The first 100 learners on each course enrol free with one click. After that, a course costs ₦10,000, paid securely online.",
     },
     {
       title: "Complete feedback delivery",
@@ -61,13 +61,13 @@ export const plans = {
   ],
   free: {
     name: "Learner",
-    price: "$0",
-    blurb: "Self-register and complete free courses at your own pace.",
-    cta: "Sign up for free",
+    price: "₦10,000",
+    blurb: "Per course, paid once. The first 100 learners on each course enrol free.",
+    cta: "Sign up",
     href: "/register",
     features: [
       "Browse the public catalogue",
-      "Enroll in a free course in one click",
+      "Enroll in a course in one click",
       "Resume on any device, including phones",
       "Module quizzes and final assessment",
       "Verifiable PDF certificate",
@@ -103,7 +103,7 @@ export const faqs = [
   {
     question: "Is the DPTC course free?",
     answer:
-      "Yes. The launch course is free to enrol. Paid courses and organisation seat packs will be labelled clearly in the catalogue.",
+      "The first 100 learners on each course enrol free. After that, a course costs ₦10,000, shown clearly on the course page before you pay.",
   },
   {
     question: "Will I get a certificate?",
