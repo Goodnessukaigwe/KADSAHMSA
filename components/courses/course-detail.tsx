@@ -13,7 +13,7 @@ import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
-import { ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
+import { ADMIN_CHARGES, ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -78,6 +78,11 @@ export function CourseDetail({
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
             {badgeText}
           </span>
+          {priceKobo > 0 ? (
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-semibold text-amber-900">
+              {ADMIN_CHARGES}
+            </span>
+          ) : null}
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
@@ -112,7 +117,7 @@ export function CourseDetail({
               [String(course.lessons || course.outline.length), "Modules"],
               [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
               [course.hasFinalQuiz ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
-              [priceText, priceKobo > 0 ? "Admin fee" : "Price"],
+              [priceText, "Price"],
             ] as const
           ).map(([value, label]) => (
             <div key={label} className="rounded-2xl bg-[#f7f7f7] px-5 py-4">
@@ -204,7 +209,7 @@ export function CourseDetail({
         <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
           <dl className="space-y-4 text-sm">
             {[
-              [priceKobo > 0 ? "Administrative fee" : "Price", priceText],
+              ["Price", priceText],
               ["Level", isDptc ? dptcCourse.level : "Introductory"],
               ["Access", isDptc ? dptcCourse.access : "Self-paced"],
               ["Certificate", course.hasFinalQuiz ? "Included" : "None"],

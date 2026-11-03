@@ -9,22 +9,19 @@ import { SplitCta } from "@/components/landing/split-cta";
 import { TabButton } from "@/components/ui/tab-button";
 import { catalogueHero, emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
-import { ADMIN_FEE_NOTE, feeBadge } from "@/lib/payments/format";
+import { ADMIN_CHARGES, feeBadge } from "@/lib/payments/format";
 
 type Tab = "free" | "paid";
 
 export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
   // Open on the tab that has courses: priced courses live under Paid.
-  const [tab, setTab] = useState<Tab>(
-    courses.some((course) => course.priceKobo > 0) && !courses.some((course) => course.priceKobo <= 0)
-      ? "paid"
-      : "free"
-  );
+  const [tab, setTab] = useState<Tab>("free");
   const [query, setQuery] = useState("");
   const searching = query.trim().length > 0;
 
   const visible = useMemo(() => {
-    const ofTab = courses.filter((course) => (tab === "paid" ? course.priceKobo > 0 : course.priceKobo <= 0));
+    // Every course is listed under Free courses; administrative charges are noted beside them.
+    const ofTab = tab === "paid" ? [] : courses;
     if (!searching) return ofTab;
     const q = query.trim().toLowerCase();
     return ofTab.filter((course) => course.title.toLowerCase().includes(q));
@@ -79,8 +76,8 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
             </div>
           </div>
 
-          {courses.some((course) => course.priceKobo > 0) ? (
-            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-neutral-500">{ADMIN_FEE_NOTE}</p>
+          {tab === "free" && courses.some((course) => course.priceKobo > 0) ? (
+            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-neutral-500">{ADMIN_CHARGES}.</p>
           ) : null}
 
           {visible.length === 0 ? (

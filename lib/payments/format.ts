@@ -8,16 +8,20 @@ export function formatNaira(kobo: number) {
   return naira.format(kobo / 100);
 }
 
-/** Shown wherever the fee appears, so nobody reads it as the cost of the programme. */
-export const ADMIN_FEE_NOTE =
-  "This is an administrative fee. It covers administrative costs only. It is not a charge for the programme itself.";
+/** Short line shown in the courses section and on cards. */
+export const ADMIN_CHARGES = "Administrative charges apply";
 
-/** "₦10,000 admin fee" for a priced course, "Free" when no fee is set. */
-export function feeBadge(kobo: number) {
-  return kobo > 0 ? `${formatNaira(kobo)} admin fee` : "Free";
+/** Longer note on the course page. The amount itself is shown only at checkout. */
+export const ADMIN_FEE_NOTE =
+  "Administrative charges apply. They cover administrative costs only and are not a charge for the programme itself.";
+
+/** Courses are presented under Free courses; the administrative charge is noted beside them. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function feeBadge(_kobo: number) {
+  return "Free";
 }
 
-/** "₦10,000" for a priced course, "Free" when no price is set. */
-export function priceLabel(kobo: number) {
-  return kobo > 0 ? formatNaira(kobo) : "Free";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function priceLabel(_kobo: number) {
+  return "Free";
 }

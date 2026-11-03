@@ -12,7 +12,7 @@ import { TabButton } from "@/components/ui/tab-button";
 import { emptyCatalogueCopy } from "@/lib/content/catalogue";
 import type { CatalogueCourse } from "@/lib/courses/types";
 import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
-import { feeBadge } from "@/lib/payments/format";
+import { ADMIN_CHARGES, feeBadge } from "@/lib/payments/format";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
 import type { EnrolmentRecord, LearningSnapshot } from "@/lib/learning/types";
 import { cn } from "@/lib/utils";
@@ -340,6 +340,9 @@ function CatalogueGrid({
           <p className="mt-1 text-sm text-neutral-400">
             {course.lessons} {course.lessons === 1 ? "module" : "modules"}
           </p>
+              {course.priceKobo > 0 ? (
+                <p className="mt-1 text-xs font-semibold text-amber-800">{ADMIN_CHARGES}</p>
+              ) : null}
           <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
             <SplitCta
               size="sm"
