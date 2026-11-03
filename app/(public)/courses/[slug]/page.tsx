@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CourseDetail } from "@/components/courses/course-detail";
 import { getVisibleCourse } from "@/lib/courses/queries";
 import { getMyProgress, hasRequestedEnrolment, isEnrolledIn } from "@/lib/learning/queries";
+import { getSeatTerms } from "@/lib/payments/checkout";
 import { getAuthUser } from "@/lib/permissions";
 
 export async function generateMetadata({
@@ -30,10 +31,11 @@ export default async function CourseDetailPage({
   if (!course) notFound();
 
   const user = await getAuthUser();
-  const [enrolled, requested, progress] = await Promise.all([
+  const [enrolled, requested, progress, terms] = await Promise.all([
     isEnrolledIn(slug),
     hasRequestedEnrolment(slug),
     getMyProgress(slug),
+    getSeatTerms(slug),
   ]);
 
   return (
@@ -43,6 +45,8 @@ export default async function CourseDetailPage({
       enrolled={enrolled}
       requested={requested}
       progress={progress}
+      priceKobo={terms?.priceKobo ?? 0}
+      freeSeatsLeft={enrolled ? null : (terms?.freeSeatsLeft ?? null)}
     />
   );
 }

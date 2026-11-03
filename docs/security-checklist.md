@@ -42,7 +42,7 @@ Engineering checklist for launch hardening. Tick what is true on the current bui
 
 ## Payments (Phase 9)
 
-- [ ] Paystack webhook signature verification — **not built**. When F9 lands, verify the webhook secret on the server; never put it in `NEXT_PUBLIC_*`.
+- [x] Paystack webhook signature verification (HMAC SHA512 on the raw body, constant-time compare) in `app/api/webhooks/paystack/route.ts`. Payments are also re-verified with Paystack's API and the amount checked before a learner is enrolled. The key stays server-side.
 
 ## OWASP intent (current)
 

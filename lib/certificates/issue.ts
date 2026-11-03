@@ -132,6 +132,7 @@ export async function issueCertificateIfEligible(
     courseTitle: course.title,
     issuedAt,
     verificationId,
+    courseSlug,
   });
 
   const { error: uploadError } = await admin.storage
