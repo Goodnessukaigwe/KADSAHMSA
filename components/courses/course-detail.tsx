@@ -14,7 +14,7 @@ import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
-import { ADMIN_CHARGES, ADMIN_FEE_DETAIL, feeBadge, priceLabel } from "@/lib/payments/format";
+import { ADMIN_CHARGES, feeBadge, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -225,7 +225,6 @@ export function CourseDetail({
           {hasCharge ? (
             <div className="mt-4 text-right">
               <p className="text-[11px] font-medium tracking-wide text-white/75">{ADMIN_CHARGES}</p>
-              <p className="mt-1 text-[10px] leading-relaxed text-white/45">{ADMIN_FEE_DETAIL}</p>
             </div>
           ) : null}
           <div className="mt-8">
