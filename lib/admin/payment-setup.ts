@@ -7,7 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export type SetupCheck = { label: string; ok: boolean; detail: string };
 
-/** Everything that has to be in place for payments to work, with no secret ever shown. */
+/** Not shown in the admin for now (hidden until further notice); kept so it can be switched back on.
+ * Everything that has to be in place for payments to work, with no secret ever shown. */
 export async function getPaymentSetup(): Promise<SetupCheck[]> {
   await requireStaff();
   const checks: SetupCheck[] = [];
