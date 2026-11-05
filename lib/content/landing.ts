@@ -14,7 +14,7 @@ export const nav = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About us" },
   { href: "/courses", label: "Courses" },
-  { href: "/#plans", label: "Pricing" },
+  { href: "/#plans", label: "Plans" },
 ] as const;
 
 export const hero = {

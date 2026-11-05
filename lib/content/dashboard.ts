@@ -35,10 +35,10 @@ export function returningGreeting(name: string) {
 }
 
 /** The Enroll button text: a course with a fee asks for the administrative costs instead. */
-export function enrolButtonLabel(priceKobo: number) {
-  return priceKobo > 0 ? dashboardCopy.payFee : dashboardCopy.enroll;
+export function enrolButtonLabel(hasCharge: boolean) {
+  return hasCharge ? dashboardCopy.payFee : dashboardCopy.enroll;
 }
 
-export function enrollingButtonLabel(priceKobo: number) {
-  return priceKobo > 0 ? dashboardCopy.payingFee : dashboardCopy.enrolling;
+export function enrollingButtonLabel(hasCharge: boolean) {
+  return hasCharge ? dashboardCopy.payingFee : dashboardCopy.enrolling;
 }

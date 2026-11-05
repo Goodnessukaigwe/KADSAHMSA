@@ -46,7 +46,7 @@ export default async function CourseDetailPage({
       enrolled={enrolled}
       requested={requested}
       progress={progress}
-      priceKobo={terms?.priceKobo ?? 0}
+      hasCharge={(terms?.priceKobo ?? 0) > 0}
     />
   );
 }

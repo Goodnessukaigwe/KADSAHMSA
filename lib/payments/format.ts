@@ -16,12 +16,10 @@ export const ADMIN_FEE_NOTE =
   "Administrative charges apply. They cover administrative costs only and are not a charge for the programme itself.";
 
 /** Courses are presented under Free courses; the administrative charge is noted beside them. */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function feeBadge(_kobo: number) {
+export function feeBadge() {
   return "Free";
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function priceLabel(_kobo: number) {
+export function priceLabel() {
   return "Free";
 }

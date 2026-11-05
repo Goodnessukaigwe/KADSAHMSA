@@ -2,7 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { certificateEmail, enrolmentEmail } from "@/lib/email/templates";
+import { certificateEmail, enrolmentEmail, paymentReceiptEmail } from "@/lib/email/templates";
 import { emailConfigured, sendEmail, siteUrl } from "@/lib/email/send";
 import type { Database } from "@/lib/supabase/database";
 
@@ -59,5 +59,33 @@ export async function notifyCertificate(
     await sendEmail({ to: contact.email, ...mail });
   } catch (cause) {
     console.error("notifyCertificate", cause);
+  }
+}
+
+/** Best effort: the payment is already recorded; the receipt is a courtesy copy. */
+export async function notifyPaymentReceipt(
+  admin: AdminClient,
+  input: {
+    userId: string;
+    courseTitle: string;
+    courseSlug: string;
+    reference: string;
+    paidAt: string;
+  }
+) {
+  if (!emailConfigured()) return;
+  try {
+    const contact = await learnerContact(admin, input.userId);
+    if (!contact) return;
+    const mail = paymentReceiptEmail({
+      name: contact.name,
+      courseTitle: input.courseTitle,
+      reference: input.reference,
+      paidOn: new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" }).format(new Date(input.paidAt)),
+      url: `${siteUrl()}/learn/${encodeURIComponent(input.courseSlug)}`,
+    });
+    await sendEmail({ to: contact.email, ...mail });
+  } catch (cause) {
+    console.error("notifyPaymentReceipt", cause);
   }
 }

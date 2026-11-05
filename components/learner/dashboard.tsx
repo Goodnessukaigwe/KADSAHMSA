@@ -115,9 +115,9 @@ function NewLearnerHome({
           <div className="flex flex-col justify-center px-6 py-8 sm:px-8">
             <h2 className="text-xl font-bold sm:text-2xl">{featured.title}</h2>
             <p className="mt-2 text-sm text-white/70">
-              Price {priceLabel(featured.priceKobo)}
+              Enrolment: {priceLabel()}
             </p>
-            {featured.priceKobo > 0 ? (
+            {featured.hasCharge ? (
               <p className="mt-1 max-w-sm text-xs text-white/50">{ADMIN_FEE_NOTE}</p>
             ) : null}
             {featured.summary ? (
@@ -134,10 +134,10 @@ function NewLearnerHome({
                 onClick={() => enroll(featured.slug)}
               >
                 {pending === featured.slug
-                  ? enrollingButtonLabel(featured.priceKobo)
+                  ? enrollingButtonLabel(featured.hasCharge)
                   : asked.includes(featured.slug)
                     ? dashboardCopy.requested
-                    : enrolButtonLabel(featured.priceKobo)}
+                    : enrolButtonLabel(featured.hasCharge)}
               </SplitCta>
               <Link
                 href={`/courses/${featured.slug}`}
@@ -335,7 +335,7 @@ function ExploreSection({
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 />
                 <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                  {feeBadge(course.priceKobo)}
+                  {feeBadge()}
                 </span>
               </div>
               <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">
@@ -344,7 +344,7 @@ function ExploreSection({
               <p className="mt-1 text-sm text-neutral-400">
                 {course.lessons} {course.lessons === 1 ? "module" : "modules"}
               </p>
-              {course.priceKobo > 0 ? (
+              {course.hasCharge ? (
                 <p className="mt-1 text-xs font-semibold text-amber-800">{ADMIN_CHARGES}</p>
               ) : null}
               <div className="mt-4 flex items-center gap-2">
@@ -370,12 +370,12 @@ function ExploreSection({
                   {pending === course.slug
                     ? enrolled.includes(course.slug)
                       ? "Opening…"
-                      : enrollingButtonLabel(course.priceKobo)
+                      : enrollingButtonLabel(course.hasCharge)
                     : enrolled.includes(course.slug)
                       ? dashboardCopy.continue
                       : requested.includes(course.slug)
                         ? dashboardCopy.requested
-                        : enrolButtonLabel(course.priceKobo)}
+                        : enrolButtonLabel(course.hasCharge)}
                 </SplitCta>
                 <Link
                   href={

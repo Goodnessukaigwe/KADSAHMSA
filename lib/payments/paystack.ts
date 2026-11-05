@@ -101,3 +101,21 @@ export function signatureIsValid(rawBody: string, signature: string | null) {
   }
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
+
+/** Cheap authenticated call used by the admin setup check to prove the secret key works. */
+export async function pingPaystack() {
+  try {
+    await call<unknown>("/transaction/totals?perPage=1");
+    return { ok: true as const };
+  } catch (cause) {
+    return { ok: false as const, error: cause instanceof Error ? cause.message : "Could not reach Paystack." };
+  }
+}
+
+export function keyMode(): "test" | "live" | "unknown" | "missing" {
+  const key = process.env.PAYSTACK_SECRET_KEY?.trim();
+  if (!key) return "missing";
+  if (key.startsWith("sk_test_")) return "test";
+  if (key.startsWith("sk_live_")) return "live";
+  return "unknown";
+}

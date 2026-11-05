@@ -112,6 +112,25 @@ export function passwordResetEmail(input: { name: string; url: string }): Render
   });
 }
 
+export function paymentReceiptEmail(input: {
+  name: string;
+  courseTitle: string;
+  reference: string;
+  paidOn: string;
+  url: string;
+}): RenderedEmail {
+  return build(`Receipt: ${input.courseTitle}`, {
+    preview: `We received your administrative payment for ${input.courseTitle}.`,
+    heading: "Payment received",
+    paragraphs: [
+      `Hello ${firstName(input.name)},`,
+      `Thank you. We received your administrative payment for ${input.courseTitle} on ${input.paidOn}. It covers administrative costs only and is not a charge for the programme itself.`,
+      `Reference: ${input.reference}. Keep this email as your receipt. You are now enrolled and can start straight away.`,
+    ],
+    button: { label: "Start learning", url: input.url },
+  });
+}
+
 export function enrolmentEmail(input: { name: string; courseTitle: string; url: string }): RenderedEmail {
   return build(`You are enrolled: ${input.courseTitle}`, {
     preview: `You can start ${input.courseTitle} now.`,

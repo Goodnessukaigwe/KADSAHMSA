@@ -3,6 +3,7 @@ import "server-only";
 import { revalidatePath } from "next/cache";
 
 import { enrolLearnerWithAdmin } from "@/lib/courses/enrol";
+import { notifyPaymentReceipt } from "@/lib/email/notify";
 import { siteUrl } from "@/lib/email/send";
 import {
   initializeTransaction,
@@ -53,6 +54,17 @@ export async function startCheckoutFor(
   }
 
   const admin = createAdminClient();
+
+  // Already in the course (paid, invited or added by staff): nothing to pay.
+  const { data: seat } = await admin
+    .from("enrolments")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("course_id", terms.courseId)
+    .eq("status", "active")
+    .maybeSingle();
+  if (seat) return { ok: false, error: "You are already enrolled on this course." };
+
   const reference = newPaymentReference();
   const { error: insertError } = await admin.from("payments").insert({
     user_id: user.id,
@@ -95,7 +107,7 @@ export async function fulfilPayment(reference: string): Promise<FulfilResult> {
   const admin = createAdminClient();
   const { data: payment } = await admin
     .from("payments")
-    .select("id, user_id, course_id, amount_kobo, currency, status")
+    .select("id, user_id, course_id, amount_kobo, currency, status, reference")
     .eq("reference", reference)
     .maybeSingle();
   if (!payment) return { ok: false, error: "We could not find that payment." };
@@ -128,16 +140,35 @@ export async function fulfilPayment(reference: string): Promise<FulfilResult> {
       console.error("fulfilPayment amount mismatch", reference);
       return { ok: false, error: "The amount paid does not match the course price." };
     }
-    await admin
+    // Only the call that flips the payment to paid sends the receipt (the return page and a
+    // retry can both arrive).
+    const paidAt = verified.paid_at ?? new Date().toISOString();
+    const { data: won } = await admin
       .from("payments")
       .update({
         status: "success",
         paystack_transaction_id: String(verified.id),
-        paid_at: verified.paid_at ?? new Date().toISOString(),
+        paid_at: paidAt,
         channel: verified.channel ?? null,
         fees_kobo: typeof verified.fees === "number" ? verified.fees : null,
       })
-      .eq("id", payment.id);
+      .eq("id", payment.id)
+      .neq("status", "success")
+      .select("id");
+    if (won && won.length > 0) {
+      const { data: titleRow } = await admin
+        .from("courses")
+        .select("title")
+        .eq("id", payment.course_id)
+        .maybeSingle();
+      await notifyPaymentReceipt(admin, {
+        userId: payment.user_id,
+        courseTitle: titleRow?.title ?? "your course",
+        courseSlug: course.slug,
+        reference: payment.reference,
+        paidAt,
+      });
+    }
   }
 
   const enrolled = await enrolLearnerWithAdmin(payment.user_id, course.slug);

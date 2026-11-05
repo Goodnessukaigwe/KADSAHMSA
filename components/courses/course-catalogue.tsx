@@ -76,7 +76,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
             </div>
           </div>
 
-          {tab === "free" && courses.some((course) => course.priceKobo > 0) ? (
+          {tab === "free" && courses.some((course) => course.hasCharge) ? (
             <p className="mb-6 max-w-2xl text-sm leading-relaxed text-neutral-500">{ADMIN_CHARGES}.</p>
           ) : null}
 
@@ -101,7 +101,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
                       priority={index === 0}
                     />
                     <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] text-neutral-950 uppercase backdrop-blur-sm">
-                      {feeBadge(course.priceKobo)}
+                      {feeBadge()}
                     </span>
                   </div>
                   <h2 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold break-words">

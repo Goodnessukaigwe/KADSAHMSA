@@ -4,7 +4,6 @@ import { requireUser } from "@/lib/permissions";
 
 export const metadata = { title: "Payments" };
 
-const naira = new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" });
 const when = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 const label = { success: "Paid", pending: "Pending", failed: "Not completed" } as const;
@@ -15,7 +14,7 @@ export default async function PaymentsPage() {
   const supabase = await createClient();
   const { data: payments } = await supabase
     .from("payments")
-    .select("id, reference, amount_kobo, status, paid_at, created_at, course_id")
+    .select("id, reference, status, paid_at, created_at, course_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -29,7 +28,7 @@ export default async function PaymentsPage() {
     <div className="pb-16">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Payments</h1>
       <p className="mt-2 max-w-xl text-sm text-neutral-400">
-        Receipts for the administrative fee appear here.
+        Your administrative payments appear here, with their reference numbers.
       </p>
 
       {payments && payments.length > 0 ? (
@@ -38,7 +37,6 @@ export default async function PaymentsPage() {
             <li key={row.id} className="rounded-[24px] bg-white px-6 py-5">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-semibold">{titles.get(row.course_id) ?? "Course"}</p>
-                <p className="font-bold">{naira.format(row.amount_kobo / 100)}</p>
               </div>
               <p className="mt-1 text-xs text-neutral-500">
                 {label[row.status]} · {when.format(new Date(row.paid_at ?? row.created_at))} · Ref{" "}
