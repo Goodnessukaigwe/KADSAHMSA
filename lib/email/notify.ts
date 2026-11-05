@@ -2,7 +2,7 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { certificateEmail, enrolmentEmail, paymentReceiptEmail } from "@/lib/email/templates";
+import { certificateEmail, enrolmentEmail, paymentReceiptEmail, waitlistEmail } from "@/lib/email/templates";
 import { emailConfigured, sendEmail, siteUrl } from "@/lib/email/send";
 import type { Database } from "@/lib/supabase/database";
 
@@ -87,5 +87,25 @@ export async function notifyPaymentReceipt(
     await sendEmail({ to: contact.email, ...mail });
   } catch (cause) {
     console.error("notifyPaymentReceipt", cause);
+  }
+}
+
+/** Best effort: the waitlist entry is already saved; this is only a courtesy confirmation. */
+export async function notifyWaitlistJoined(input: {
+  email: string;
+  name: string;
+  courseTitle: string;
+  courseSlug: string;
+}) {
+  if (!emailConfigured()) return;
+  try {
+    const mail = waitlistEmail({
+      name: input.name,
+      courseTitle: input.courseTitle,
+      url: `${siteUrl()}/courses/${encodeURIComponent(input.courseSlug)}`,
+    });
+    await sendEmail({ to: input.email, ...mail });
+  } catch (cause) {
+    console.error("notifyWaitlistJoined", cause);
   }
 }

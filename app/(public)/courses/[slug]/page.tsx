@@ -47,6 +47,8 @@ export default async function CourseDetailPage({
       requested={requested}
       progress={progress}
       hasCharge={(terms?.priceKobo ?? 0) > 0}
+      viewerName={typeof user?.user_metadata?.full_name === "string" ? user.user_metadata.full_name : ""}
+      viewerEmail={user?.email ?? ""}
     />
   );
 }

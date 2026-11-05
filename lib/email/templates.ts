@@ -131,6 +131,19 @@ export function paymentReceiptEmail(input: {
   });
 }
 
+export function waitlistEmail(input: { name: string; courseTitle: string; url: string }): RenderedEmail {
+  return build(`You are on the waitlist: ${input.courseTitle}`, {
+    preview: `We have your details for ${input.courseTitle}.`,
+    heading: "You are on the waitlist",
+    paragraphs: [
+      `Hello ${firstName(input.name)},`,
+      `Thank you for your interest in ${input.courseTitle}. We have added you to the waitlist. If a place is offered to you, we will write to this email address.`,
+      "You do not need to do anything else. If you would rather not wait, you can also enrol on the course page.",
+    ],
+    button: { label: "View the course", url: input.url },
+  });
+}
+
 export function enrolmentEmail(input: { name: string; courseTitle: string; url: string }): RenderedEmail {
   return build(`You are enrolled: ${input.courseTitle}`, {
     preview: `You can start ${input.courseTitle} now.`,

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { CourseCover } from "@/components/courses/course-cover";
+import { WaitlistForm } from "@/components/courses/waitlist-form";
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
 import type { PublishedCourse } from "@/lib/courses/types";
@@ -13,7 +14,7 @@ import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
-import { ADMIN_CHARGES, ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
+import { ADMIN_CHARGES, ADMIN_FEE_DETAIL, feeBadge, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -23,6 +24,8 @@ export function CourseDetail({
   requested,
   progress,
   hasCharge = false,
+  viewerName = "",
+  viewerEmail = "",
 }: {
   course: PublishedCourse;
   signedIn: boolean;
@@ -30,6 +33,8 @@ export function CourseDetail({
   requested: boolean;
   progress: CourseProgress;
   hasCharge?: boolean;
+  viewerName?: string;
+  viewerEmail?: string;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -78,11 +83,6 @@ export function CourseDetail({
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
             {badgeText}
           </span>
-          {hasCharge ? (
-            <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-semibold text-amber-900">
-              {ADMIN_CHARGES}
-            </span>
-          ) : null}
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
@@ -223,7 +223,10 @@ export function CourseDetail({
             ))}
           </dl>
           {hasCharge ? (
-            <p className="mt-4 text-xs leading-relaxed text-white/60">{ADMIN_FEE_NOTE}</p>
+            <div className="mt-4 text-right">
+              <p className="text-[11px] font-medium tracking-wide text-white/75">{ADMIN_CHARGES}</p>
+              <p className="mt-1 text-[10px] leading-relaxed text-white/45">{ADMIN_FEE_DETAIL}</p>
+            </div>
           ) : null}
           <div className="mt-8">
             <SplitCta
@@ -243,6 +246,9 @@ export function CourseDetail({
                     : enrolButtonLabel(hasCharge)}
             </SplitCta>
           </div>
+          {!enrolled ? (
+            <WaitlistForm courseSlug={course.slug} defaultName={viewerName} defaultEmail={viewerEmail} />
+          ) : null}
         </aside>
       </div>
     </div>

@@ -378,6 +378,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      course_waitlist: {
+        Row: {
+          id: string;
+          course_id: string;
+          name: string;
+          email: string;
+          phone: string;
+          organisation: string;
+          note: string;
+          status: "waiting" | "invited";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          name: string;
+          email: string;
+          phone?: string;
+          organisation?: string;
+          note?: string;
+          status?: "waiting" | "invited";
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          phone?: string;
+          organisation?: string;
+          note?: string;
+          status?: "waiting" | "invited";
+        };
+        Relationships: [];
+      };
       enrolment_requests: {
         Row: {
           id: string;

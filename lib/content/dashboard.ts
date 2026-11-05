@@ -6,8 +6,6 @@ export const dashboardCopy = {
   exploreTitle: "Explore more courses",
   enroll: "Enroll",
   enrolling: "Enrolling…",
-  payFee: "Pay administrative costs",
-  payingFee: "Opening payment…",
   requested: "Enrolled",
   continue: "Continue this course",
   continueFeatured: "Continue with this course",
@@ -34,11 +32,13 @@ export function returningGreeting(name: string) {
   return `Welcome back, ${name}`;
 }
 
-/** The Enroll button text: a course with a fee asks for the administrative costs instead. */
-export function enrolButtonLabel(hasCharge: boolean) {
-  return hasCharge ? dashboardCopy.payFee : dashboardCopy.enroll;
+/** The button always says Enroll; a course with a charge sends the learner to checkout. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function enrolButtonLabel(_hasCharge: boolean) {
+  return dashboardCopy.enroll;
 }
 
-export function enrollingButtonLabel(hasCharge: boolean) {
-  return hasCharge ? dashboardCopy.payingFee : dashboardCopy.enrolling;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function enrollingButtonLabel(_hasCharge: boolean) {
+  return dashboardCopy.enrolling;
 }

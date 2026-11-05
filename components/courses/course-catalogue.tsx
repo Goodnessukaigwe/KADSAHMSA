@@ -20,7 +20,7 @@ export function CourseCatalogue({ courses }: { courses: CatalogueCourse[] }) {
   const searching = query.trim().length > 0;
 
   const visible = useMemo(() => {
-    // Every course is listed under Free courses; administrative charges are noted beside them.
+    // Every course is listed under Free courses; administrative costs are noted beside them.
     const ofTab = tab === "paid" ? [] : courses;
     if (!searching) return ofTab;
     const q = query.trim().toLowerCase();
