@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { startCheckoutFor, type CheckoutResult } from "@/lib/payments/checkout";
+import { fulfilPayment, startCheckoutFor, type CheckoutResult } from "@/lib/payments/checkout";
 import { requireStaff, requireUser } from "@/lib/permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -30,4 +30,15 @@ export async function setCoursePricing(slug: string, priceNaira: number): Promis
   revalidatePath(`/courses/${slug}`);
   revalidatePath(`/admin/courses/${slug}/analytics`);
   return { ok: true };
+}
+
+/** Staff only: ask Paystack again about a payment that is still pending, and enrol if it went through. */
+export async function recheckPayment(
+  reference: string
+): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
+  await requireStaff();
+  const result = await fulfilPayment(reference);
+  revalidatePath("/admin/payments");
+  if (result.ok) return { ok: true, message: "Paid. The learner is enrolled." };
+  return { ok: false, error: result.error };
 }

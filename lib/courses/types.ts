@@ -8,8 +8,8 @@ export type CatalogueCourse = {
   title: string;
   lessons: number;
   priceType: "free" | "paid";
-  /** Price in kobo; 0 means no price is set. */
-  priceKobo: number;
+  /** True when the course has an administrative charge. The amount is never sent to the browser. */
+  hasCharge: boolean;
   image: string;
   summary: string;
   durationLabel: string;

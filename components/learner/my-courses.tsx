@@ -331,7 +331,7 @@ function CatalogueGrid({
               sizes="(max-width: 640px) 100vw, 33vw"
             />
             <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.16em] uppercase backdrop-blur-sm">
-              {feeBadge(course.priceKobo)}
+              {feeBadge()}
             </span>
           </div>
           <h3 className="mt-4 min-h-[3.25rem] text-[17px] leading-snug font-bold">
@@ -340,7 +340,7 @@ function CatalogueGrid({
           <p className="mt-1 text-sm text-neutral-400">
             {course.lessons} {course.lessons === 1 ? "module" : "modules"}
           </p>
-              {course.priceKobo > 0 ? (
+              {course.hasCharge ? (
                 <p className="mt-1 text-xs font-semibold text-amber-800">{ADMIN_CHARGES}</p>
               ) : null}
           <div className="mt-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
@@ -352,10 +352,10 @@ function CatalogueGrid({
               onClick={() => onEnroll(course.slug)}
             >
               {pending === course.slug
-                ? enrollingButtonLabel(course.priceKobo)
+                ? enrollingButtonLabel(course.hasCharge)
                 : requested.includes(course.slug)
                   ? dashboardCopy.requested
-                  : enrolButtonLabel(course.priceKobo)}
+                  : enrolButtonLabel(course.hasCharge)}
             </SplitCta>
             <Link
               href={`/courses/${course.slug}`}

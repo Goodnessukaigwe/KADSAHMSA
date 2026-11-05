@@ -178,14 +178,14 @@ function toCatalogueCourse(
   row: { slug: string; title: string; summary?: string | null; duration_label?: string | null },
   lessons: number,
   image: string,
-  terms: { priceKobo: number } = { priceKobo: 0 }
+  terms: { hasCharge: boolean } = { hasCharge: false }
 ): CatalogueCourse {
   return {
     slug: row.slug ?? "",
     title: row.title ?? "",
     lessons,
-    priceType: terms.priceKobo > 0 ? "paid" : "free",
-    priceKobo: terms.priceKobo,
+    priceType: terms.hasCharge ? "paid" : "free",
+    hasCharge: terms.hasCharge,
     image: image ?? "",
     summary: row.summary ?? "",
     durationLabel: row.duration_label ?? "",
@@ -449,7 +449,7 @@ export async function listPublishedCourses(): Promise<CatalogueCourse[]> {
       const image = await resolveCoverSrc(row.slug, row.cover_path, row.id);
       const seats = await getSeatTerms(row.slug);
       return toCatalogueCourse(row, counts.get(row.id) ?? 0, image, {
-        priceKobo: seats?.priceKobo ?? 0,
+        hasCharge: (seats?.priceKobo ?? 0) > 0,
       });
     })
   );
@@ -516,6 +516,7 @@ async function getVisibleCourseInner(
   }
 
   const seatTerms = (await getSeatTerms(course.slug)) ?? { priceKobo: 0 };
+  const hasCharge = seatTerms.priceKobo > 0;
   const firstLessonId = await firstLessonIdForCourse(course.id);
   const coverMedia = firstLessonId
     ? coverMediaAssets((await listLessonAssets([firstLessonId])).get(firstLessonId) ?? [])
@@ -525,8 +526,8 @@ async function getVisibleCourseInner(
     slug: course.slug,
     title: course.title,
     lessons: outline.length,
-    priceType: seatTerms.priceKobo > 0 ? "paid" : "free",
-    priceKobo: seatTerms.priceKobo,
+    priceType: hasCharge ? "paid" : "free",
+    hasCharge,
     image: await resolveCoverSrc(course.slug, course.cover_path, course.id),
     summary: course.summary,
     durationLabel: course.duration_label,

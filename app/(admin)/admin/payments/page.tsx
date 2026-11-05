@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { RecheckPayment } from "@/components/admin/recheck-payment";
+import { getPaymentSetup } from "@/lib/admin/payment-setup";
 import { listPayments } from "@/lib/admin/payments";
 
 export const metadata = { title: "Payments" };
@@ -14,7 +16,7 @@ export default async function AdminPaymentsPage({
   searchParams: Promise<{ month?: string }>;
 }) {
   const { month } = await searchParams;
-  const { rows, summary, ready } = await listPayments(month);
+  const [{ rows, summary, ready }, setup] = await Promise.all([listPayments(month), getPaymentSetup()]);
   const paid = rows.filter((row) => row.status === "success");
   const gross = paid.reduce((sum, row) => sum + row.amountKobo, 0);
   const fees = paid.reduce((sum, row) => sum + (row.feesKobo ?? 0), 0);
@@ -50,6 +52,28 @@ export default async function AdminPaymentsPage({
           </a>
         </div>
       </div>
+
+      <section className="mt-8 rounded-2xl bg-white p-5" aria-label="Payment setup">
+        <h2 className="text-lg font-bold">Payment setup</h2>
+        <p className="mt-1 text-sm text-neutral-500">
+          Everything payments need, checked live. Secret keys are never shown here.
+        </p>
+        <ul className="mt-4 space-y-2">
+          {setup.map((check) => (
+            <li key={check.label} className="flex gap-3 text-sm">
+              <span
+                aria-label={check.ok ? "OK" : "Needs attention"}
+                className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${check.ok ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"}`}
+              >
+                {check.ok ? "✓" : "!"}
+              </span>
+              <span>
+                <strong>{check.label}.</strong> <span className="text-neutral-600">{check.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {!ready ? (
         <p className="mt-8 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-sm text-amber-900">
@@ -135,7 +159,14 @@ export default async function AdminPaymentsPage({
                       <td className="px-5 py-3">
                         {row.status === "success" ? "Paid" : row.status === "pending" ? "Pending" : "Not completed"}
                       </td>
-                      <td className="px-5 py-3 font-mono text-xs">{row.reference}</td>
+                      <td className="px-5 py-3 font-mono text-xs">
+                        {row.reference}
+                        {row.status === "pending" ? (
+                          <span className="mt-2 block">
+                            <RecheckPayment reference={row.reference} />
+                          </span>
+                        ) : null}
+                      </td>
                     </tr>
                   ))
                 )}

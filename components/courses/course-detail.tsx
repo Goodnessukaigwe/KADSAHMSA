@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { CourseCover } from "@/components/courses/course-cover";
+import { WaitlistForm } from "@/components/courses/waitlist-form";
 import { SplitCta } from "@/components/landing/split-cta";
 import { ProgressTrack } from "@/components/learner/simulated-video";
 import type { PublishedCourse } from "@/lib/courses/types";
@@ -13,7 +14,7 @@ import { dptcCourse } from "@/lib/content/dptc";
 import { DEFAULT_PASS_MARK } from "@/lib/domain";
 import { dashboardCopy, enrolButtonLabel, enrollingButtonLabel } from "@/lib/content/dashboard";
 import { enrolOrPay } from "@/lib/payments/enrol-client";
-import { ADMIN_CHARGES, ADMIN_FEE_NOTE, feeBadge, priceLabel } from "@/lib/payments/format";
+import { ADMIN_CHARGES, ADMIN_FEE_DETAIL, feeBadge, priceLabel } from "@/lib/payments/format";
 import { type CourseProgress } from "@/lib/learning/progress";
 
 export function CourseDetail({
@@ -22,22 +23,26 @@ export function CourseDetail({
   enrolled,
   requested,
   progress,
-  priceKobo = 0,
+  hasCharge = false,
+  viewerName = "",
+  viewerEmail = "",
 }: {
   course: PublishedCourse;
   signedIn: boolean;
   enrolled: boolean;
   requested: boolean;
   progress: CourseProgress;
-  priceKobo?: number;
+  hasCharge?: boolean;
+  viewerName?: string;
+  viewerEmail?: string;
 }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [asked, setAsked] = useState(requested);
   const isDptc = course.slug === dptcCourse.slug;
-  const priceText = priceLabel(priceKobo);
-  const badgeText = feeBadge(priceKobo);
+  const priceText = priceLabel();
+  const badgeText = feeBadge();
   const waiting = asked || requested;
   const firstHref = firstOutlineHref(course.slug, course.outline);
   const continueTo = enrolled ? continueHref(course.slug, progress, firstHref) : firstHref;
@@ -78,11 +83,6 @@ export function CourseDetail({
           <span className="rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold text-neutral-700">
             {badgeText}
           </span>
-          {priceKobo > 0 ? (
-            <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-semibold text-amber-900">
-              {ADMIN_CHARGES}
-            </span>
-          ) : null}
         </div>
 
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-2xl">
@@ -117,7 +117,7 @@ export function CourseDetail({
               [String(course.lessons || course.outline.length), "Modules"],
               [course.durationLabel || (isDptc ? dptcCourse.durationHours : "Self-paced"), "Duration"],
               [course.hasFinalQuiz ? `${DEFAULT_PASS_MARK}%` : "—", "Pass mark"],
-              [priceText, "Price"],
+              [priceText, "Enrolment"],
             ] as const
           ).map(([value, label]) => (
             <div key={label} className="rounded-2xl bg-[#f7f7f7] px-5 py-4">
@@ -209,7 +209,7 @@ export function CourseDetail({
         <aside className="mt-8 rounded-[24px] bg-neutral-950 p-6 text-white lg:absolute lg:top-0 lg:right-0 lg:mt-0 lg:w-[280px]">
           <dl className="space-y-4 text-sm">
             {[
-              ["Price", priceText],
+              ["Enrolment", priceText],
               ["Level", isDptc ? dptcCourse.level : "Introductory"],
               ["Access", isDptc ? dptcCourse.access : "Self-paced"],
               ["Certificate", course.hasFinalQuiz ? "Included" : "None"],
@@ -222,8 +222,11 @@ export function CourseDetail({
               </div>
             ))}
           </dl>
-          {priceKobo > 0 ? (
-            <p className="mt-4 text-xs leading-relaxed text-white/60">{ADMIN_FEE_NOTE}</p>
+          {hasCharge ? (
+            <div className="mt-4 text-right">
+              <p className="text-[11px] font-medium tracking-wide text-white/75">{ADMIN_CHARGES}</p>
+              <p className="mt-1 text-[10px] leading-relaxed text-white/45">{ADMIN_FEE_DETAIL}</p>
+            </div>
           ) : null}
           <div className="mt-8">
             <SplitCta
@@ -235,14 +238,17 @@ export function CourseDetail({
               onClick={signedIn && !enrolled && !waiting ? enroll : undefined}
             >
               {pending
-                ? enrollingButtonLabel(priceKobo)
+                ? enrollingButtonLabel(hasCharge)
                 : signedIn && enrolled
                   ? "Continue this course"
                   : signedIn && waiting
                     ? dashboardCopy.requested
-                    : enrolButtonLabel(priceKobo)}
+                    : enrolButtonLabel(hasCharge)}
             </SplitCta>
           </div>
+          {!enrolled ? (
+            <WaitlistForm courseSlug={course.slug} defaultName={viewerName} defaultEmail={viewerEmail} />
+          ) : null}
         </aside>
       </div>
     </div>

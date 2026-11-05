@@ -14,7 +14,7 @@ export const nav = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About us" },
   { href: "/courses", label: "Courses" },
-  { href: "/#plans", label: "Pricing" },
+  { href: "/#plans", label: "Plans" },
 ] as const;
 
 export const hero = {
@@ -48,8 +48,8 @@ export const plans = {
   subtitle: "Learn on your own, or equip your organisation with seats and progress reporting.",
   highlights: [
     {
-      title: "Free to join. Administrative charges apply.",
-      body: "Administrative charges cover administrative costs only. They are not a charge for the programme itself, and are paid securely online. Learners invited by KADSAMHSA are given access free of charge.",
+      title: "Free to join. Administrative costs apply.",
+      body: "They cover administrative costs only and are not a charge for the programme itself, and are paid securely online. Learners invited by KADSAMHSA are given access free of charge.",
     },
     {
       title: "Complete feedback delivery",
@@ -63,7 +63,7 @@ export const plans = {
   free: {
     name: "Learner",
     price: "Free",
-    blurb: "Courses are free. Administrative charges apply, covering administrative costs only and not the programme itself. Invited learners are given access by KADSAMHSA.",
+    blurb: "Courses are free. Administrative costs apply, covering administrative costs only and not the programme itself. Invited learners are given access by KADSAMHSA.",
     cta: "Sign up",
     href: "/register",
     features: [
@@ -104,7 +104,7 @@ export const faqs = [
   {
     question: "Is the DPTC course free?",
     answer:
-      "Courses are free to join, but administrative charges apply. They cover administrative costs only and are not a charge for the programme itself. You see the amount at checkout before you pay. Some learners are invited by KADSAMHSA and given access free of charge.",
+      "Courses are free to join, but administrative costs apply. They cover administrative costs only and are not a charge for the programme itself. You see the amount at checkout before you pay. Some learners are invited by KADSAMHSA and given access free of charge.",
   },
   {
     question: "Will I get a certificate?",

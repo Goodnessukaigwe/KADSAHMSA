@@ -112,6 +112,38 @@ export function passwordResetEmail(input: { name: string; url: string }): Render
   });
 }
 
+export function paymentReceiptEmail(input: {
+  name: string;
+  courseTitle: string;
+  reference: string;
+  paidOn: string;
+  url: string;
+}): RenderedEmail {
+  return build(`Receipt: ${input.courseTitle}`, {
+    preview: `We received your administrative payment for ${input.courseTitle}.`,
+    heading: "Payment received",
+    paragraphs: [
+      `Hello ${firstName(input.name)},`,
+      `Thank you. We received your administrative payment for ${input.courseTitle} on ${input.paidOn}. It covers administrative costs only and is not a charge for the programme itself.`,
+      `Reference: ${input.reference}. Keep this email as your receipt. You are now enrolled and can start straight away.`,
+    ],
+    button: { label: "Start learning", url: input.url },
+  });
+}
+
+export function waitlistEmail(input: { name: string; courseTitle: string; url: string }): RenderedEmail {
+  return build(`You are on the waitlist: ${input.courseTitle}`, {
+    preview: `We have your details for ${input.courseTitle}.`,
+    heading: "You are on the waitlist",
+    paragraphs: [
+      `Hello ${firstName(input.name)},`,
+      `Thank you for your interest in ${input.courseTitle}. We have added you to the waitlist. If a place is offered to you, we will write to this email address.`,
+      "You do not need to do anything else. If you would rather not wait, you can also enrol on the course page.",
+    ],
+    button: { label: "View the course", url: input.url },
+  });
+}
+
 export function enrolmentEmail(input: { name: string; courseTitle: string; url: string }): RenderedEmail {
   return build(`You are enrolled: ${input.courseTitle}`, {
     preview: `You can start ${input.courseTitle} now.`,
